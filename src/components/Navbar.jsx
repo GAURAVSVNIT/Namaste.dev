@@ -62,13 +62,13 @@ export default function Navbar() {
                 <ul className="mobile-nav-links">
                   {navItems.map((item, index) => (
                     <li key={index} className="mobile-nav-item">
-                      <Link href="#" className="mobile-nav-link">{item.name}</Link>
+                      <Link href={`/${item.route.replace(/^\/+/, "")}`} className="mobile-nav-link">{item.name}</Link>
                     </li>
                   ))}
                 </ul>
                 <div className="mobile-auth-buttons">
-                  <Link href="#" className="login-btn">Login</Link>
-                  <Link href="#" className="signup-btn">Sign Up</Link>
+                  <Link href="/auth/login" className="login-btn">Login</Link>
+                  <Link href="/auth/register" className="signup-btn">Sign Up</Link>
                 </div>
               </div>
             </>
