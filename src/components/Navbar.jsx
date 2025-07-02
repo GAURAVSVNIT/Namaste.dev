@@ -77,7 +77,7 @@ export default function Navbar() {
               <ul className="nav-links">
                 {navItems.map((item, index) => (
                   <li key={index} className="nav-item">
-                    <Link href={item.route} className="nav-link">
+                    <Link href={`/${item.route.replace(/^\/+/, "")}`} className="nav-link">
                       {item.name}
                     </Link>
                   </li>
