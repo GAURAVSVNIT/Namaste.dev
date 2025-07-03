@@ -95,7 +95,7 @@ const BreadcrumbEllipsis = (props) => {
     </span>
   );
 };
-BreadcrumbEllipsis.displayName = "BreadcrumbElipssis"
+BreadcrumbEllipsis.displayName = "BreadcrumbEllipsis"
 
 export {
   Breadcrumb,
