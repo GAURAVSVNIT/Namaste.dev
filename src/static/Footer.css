@@ -1,0 +1,151 @@
+.footer-glass {
+  background: linear-gradient(135deg, #f5f7fa88, #c3cfe288);
+  background-image: url('/images/footer-bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  font-family: 'Poppins', sans-serif;
+  color: #222;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-wrapper {
+    backdrop-filter: blur(24px);
+    padding: 3rem 2rem;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+  justify-items: center;
+}
+
+.footer-section h3 {
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section li {
+  margin: 0.4rem 0;
+}
+
+.footer-section a {
+  color: #161616;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.footer-section a:hover {
+  transform: translateX(4px);
+  color: var(--color-fashion-primary);
+}
+
+li a {
+  position: relative;
+  display: block;
+  color: #333; 
+  text-decoration: none;
+}
+
+li a::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 0;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+li a:hover::after {
+  width: 100%;
+}
+
+
+
+.floating {
+  transition: transform 0.3s ease;
+}
+/* .floating:hover {
+  transform: translateY(-6px);
+} */
+
+.footer-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.cta-button {
+  background-color: #7f5af0;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.2rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #6842d5;
+  transform: scale(1.03);
+}
+
+.cta-button.secondary {
+  background-color: #00b894;
+}
+
+.cta-button.secondary:hover {
+  background-color: #019875;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.social-icons a {
+  font-size: 1.3rem;
+  color: #444;
+  transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--color-fashion-secondary);
+  transform: scale(1.2);
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .footer-cta {
+    align-items: center;
+    width: 100%;
+  }
+}
