@@ -1,24 +1,20 @@
 import { useState, useEffect } from "react";
 
-const MOBILE_BREAKPOINT = 768;
+import { useState } from "react";
 
-export function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(undefined);
+export function useToast() {
+  const [toastMessage, setToastMessage] = useState(null);
 
-  useEffect(() => {
-    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+  const showToast = (message) => {
+    setToastMessage(message);
+    setTimeout(() => setToastMessage(null), 3000); // Auto-hide after 3 seconds
+  };
 
-    const onChange = () => {
-      setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-    };
-
-    mql.addEventListener("change", onChange);
-    setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
-
-    return () => {
-      mql.removeEventListener("change", onChange);
-    };
-  }, []);
-
-  return !!isMobile;
+  return { toastMessage, showToast };
 }
+
+export const toast = {
+  success: (message) => console.log(`Success: ${message}`),
+  error: (message) => console.error(`Error: ${message}`),
+  info: (message) => console.info(`Info: ${message}`),
+};
