@@ -6,6 +6,7 @@ import Link from "next/link";
 import { auth } from "@/lib/firebase";
 import { onAuthStateChanged, sendEmailVerification } from "firebase/auth";
 import { Loader2 } from "lucide-react";
+import { AuthStyles } from "@/components/auth/auth-styles";
 
 function VerifyPageContent() {
   const router = useRouter();
@@ -74,59 +75,74 @@ function VerifyPageContent() {
 
   if (sessionChecking) {
     return (
-      <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-accent" />
-          <p className="text-sm text-gray-500">Checking verification status...</p>
+      <div className="auth-container">
+        <AuthStyles />
+        <div className="w-full max-w-md">
+          <div className="glass-card p-8 rounded-2xl shadow-2xl flex flex-col items-center justify-center">
+            <Loader2 className="h-10 w-10 animate-spin text-teal-600 mb-4" />
+            <p className="text-gray-600">Checking verification status...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-cal font-bold text-accent">Verify Email</h1>
-          <p className="text-sm text-gray-500 mt-2">
-            Please check your email inbox for a verification link sent to{" "}
-            <span className="font-medium">{currentUserEmail || emailFromQuery || "your email"}</span>.
-          </p>
-          <p className="text-sm text-gray-500 mt-1">If your email is not verified, click the link in the email.</p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">
-            {error}
+<div className="auth-container" role="main" aria-labelledby="verify-email-title">
+      <AuthStyles />
+      
+      <div className="w-full max-w-md">
+        <div className="glass-card p-8 rounded-2xl shadow-2xl">
+          <div className="text-center mb-8">
+            <h1 id="verify-email-title" className="text-3xl font-bold gradient-text mb-2">
+              Verify Your Email
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Please check your inbox for a verification link.
+            </p>
           </div>
-        )}
-        
-        {message && (
-          <div className="bg-green-50 text-green-600 p-3 rounded-lg mb-4 text-sm">
-            {message}
-          </div>
-        )}
 
-        {auth.currentUser && !auth.currentUser.emailVerified && (
-          <div className="mt-6 text-center text-sm text-gray-500">
-            <p>
-              Didn&apos;t receive a verification email?{" "}
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-sm mb-6">
+              <p>{error}</p>
+            </div>
+          )}
+
+          {message && (
+            <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-lg text-sm mb-6">
+              <p>{message}</p>
+            </div>
+          )}
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Didn't receive an email?{" "}
               <button 
-                onClick={handleResendOTP}
-                disabled={resending}
-                className="text-accent hover:underline font-medium disabled:opacity-50"
+                onClick={handleResendOTP} 
+                className="text-teal-600 hover:text-teal-700 font-semibold transition-colors disabled:opacity-50"
+                disabled={resending || sessionChecking}
               >
-                {resending ? "Sending..." : "Resend verification email"}
+                {resending ? (
+                  <span className="flex items-center">
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    Sending...
+                  </span>
+                ) : (
+                  "Resend verification email"
+                )}
               </button>
             </p>
           </div>
-        )}
 
-        <p className="mt-4 text-center text-sm text-gray-500">
-          <Link href="/login" className="text-accent hover:underline font-medium">
-            Back to login
-          </Link>
-        </p>
+          <div className="text-center mt-8 pt-6 border-t border-gray-100">
+            <Link 
+              href="/auth/login" 
+              className="text-sm text-gray-600 hover:text-gray-800 transition-colors"
+            >
+              Back to Login
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -134,10 +150,13 @@ function VerifyPageContent() {
 
 function VerifyPageFallback() {
   return (
-    <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-      <div className="flex flex-col items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-accent" />
-        <p className="mt-2 text-sm text-gray-500">Loading verification page...</p>
+    <div className="auth-container">
+      <AuthStyles />
+      <div className="w-full max-w-md">
+        <div className="glass-card p-8 rounded-2xl shadow-2xl flex flex-col items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-teal-600 mb-4" />
+          <p className="text-gray-600">Loading verification page...</p>
+        </div>
       </div>
     </div>
   );

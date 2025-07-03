@@ -382,7 +382,7 @@ export function LoginForm() {
                   </label>
                 </div>
                 <Link 
-                  href="/forgot-password" 
+                  href="/auth/reset-password" 
                   className="text-sm font-medium text-primary hover:text-primary-dark focus:outline-none focus:text-primary-dark transition-colors duration-200"
                 >
                   Forgot password?

@@ -9,7 +9,8 @@ import {
   confirmPasswordReset,
   applyActionCode,
 } from "firebase/auth";
-import { Loader2, Home } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { AuthStyles } from "@/components/auth/auth-styles";
 
 function AuthActionPageContent() {
   const router = useRouter();
@@ -47,7 +48,7 @@ function AuthActionPageContent() {
             "Your email address has been verified successfully! You can now log in."
           );
           setIsVerifying(false);
-          setTimeout(() => router.push("/login?message=Email verified successfully"), 3000);
+          setTimeout(() => router.push("/auth/login?message=Email verified successfully"), 3000);
         })
         .catch((err) => {
           console.error("Error verifying email:", err);
@@ -90,7 +91,7 @@ function AuthActionPageContent() {
       );
       setNewPassword("");
       setConfirmNewPassword("");
-      setTimeout(() => router.push("/login?message=Password reset successfully"), 3000);
+      setTimeout(() => router.push("/auth/login?message=Password reset successfully"), 3000);
     } catch (err) {
       console.error("Error confirming password reset:", err);
       setError(
@@ -103,10 +104,13 @@ function AuthActionPageContent() {
 
   if (isVerifying) {
     return (
-      <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-accent" />
-          <p className="text-sm text-gray-500">Verifying link...</p>
+      <div className="auth-container">
+        <AuthStyles />
+        <div className="w-full max-w-md">
+          <div className="glass-card p-8 rounded-2xl shadow-2xl flex flex-col items-center justify-center">
+            <Loader2 className="h-10 w-10 animate-spin text-teal-600 mb-4" />
+            <p className="text-gray-600">Verifying link...</p>
+          </div>
         </div>
       </div>
     );
@@ -115,120 +119,166 @@ function AuthActionPageContent() {
   if (mode !== "resetPassword" || !emailForReset) {
     if (mode === "verifyEmail" && !error && message) {
       return (
-        <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-          <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
-            <Link href="/" className="absolute top-4 left-4 flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors text-white py-2 px-3 rounded-lg text-sm md:hidden">
-              <Home className="h-4 w-4" />
-            </Link>
-            <h1 className="text-2xl font-cal font-bold text-accent mb-4">Email Verified!</h1>
-            <div className="bg-green-50 text-green-600 p-3 rounded-lg mb-4 text-sm">
-              {message}
+        <div className="auth-container" role="main" aria-labelledby="email-verified-title">
+          <AuthStyles />
+          <div className="w-full max-w-md">
+            <div className="glass-card p-8 rounded-2xl shadow-2xl text-center">
+              <div className="text-center mb-8">
+                <h1 id="email-verified-title" className="text-3xl font-bold gradient-text mb-2">
+                  Email Verified!
+                </h1>
+                <p className="text-gray-600">
+                  Your email has been successfully verified.
+                </p>
+              </div>
+              
+              <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg text-sm mb-6">
+                <p>{message}</p>
+              </div>
+              
+              <Link 
+                href="/auth/login" 
+                className="gradient-button inline-flex items-center justify-center px-6"
+              >
+                Proceed to Login
+              </Link>
             </div>
-            <Link href="/login" className="text-accent hover:underline font-medium">
-              Proceed to Login
-            </Link>
           </div>
         </div>
       );
     }
     return (
-      <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-        <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8 text-center">
-           <Link href="/" className="absolute top-4 left-4 flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors text-white py-2 px-3 rounded-lg text-sm md:hidden">
-            <Home className="h-4 w-4" />
-          </Link>
-          <h1 className="text-2xl font-cal font-bold text-accent mb-4">Action Required</h1>
-          {error && (
-            <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">
-              {error}
+      <div className="auth-container" role="main" aria-labelledby="action-required-title">
+        <AuthStyles />
+        <div className="w-full max-w-md">
+          <div className="glass-card p-8 rounded-2xl shadow-2xl text-center">
+            <div className="text-center mb-8">
+              <h1 id="action-required-title" className="text-3xl font-bold gradient-text mb-2">
+                Action Required
+              </h1>
+              <p className="text-gray-600">
+                Please complete the requested action to continue.
+              </p>
             </div>
-          )}
-          {message && (
-            <div className="bg-blue-50 text-blue-600 p-3 rounded-lg mb-4 text-sm">
-              {message}
-            </div>
-          )}
-          <Link href="/login" className="text-accent hover:underline font-medium">
-            Back to Login
-          </Link>
+            
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-sm mb-6">
+                <p>{error}</p>
+              </div>
+            )}
+            
+            {message && (
+              <div className="bg-blue-50 border border-blue-200 text-blue-700 p-4 rounded-lg text-sm mb-6">
+                <p>{message}</p>
+              </div>
+            )}
+            
+            <Link 
+              href="/auth/login" 
+              className="gradient-button inline-flex items-center justify-center px-6"
+            >
+              Back to Login
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-       <Link href="/" className="absolute top-4 left-4 flex items-center gap-2 bg-white/20 hover:bg-white/30 transition-colors text-white py-2 px-3 rounded-lg text-sm md:hidden">
-        <Home className="h-4 w-4" />
-      </Link>
-      <div className="max-w-md w-full bg-white rounded-xl shadow-lg p-8">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-cal font-bold text-accent">Set New Password</h1>
-          <p className="text-sm text-gray-500 mt-2">
-            Enter a new password for {emailForReset}.
-          </p>
+    <div className="auth-container" role="main" aria-labelledby="set-password-title">
+      <AuthStyles />
+      <div className="w-full max-w-md">
+        <div className="glass-card p-8 rounded-2xl shadow-2xl">
+          <div className="text-center mb-8">
+            <h1 id="set-password-title" className="text-3xl font-bold gradient-text mb-2">
+              Set New Password
+            </h1>
+            <p className="text-gray-600">
+              Enter a new password for {emailForReset}.
+            </p>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 p-4 rounded-lg text-sm mb-6">
+              <p>{error}</p>
+            </div>
+          )}
+          {message && !error && (
+            <div className="bg-green-50 border border-green-200 text-green-700 p-4 rounded-lg text-sm mb-6">
+              <p>{message}</p>
+            </div>
+          )}
+
+          <form onSubmit={handleConfirmResetPassword} className="space-y-6">
+            <div className="space-y-2">
+              <label
+                htmlFor="newPassword"
+                className="text-sm font-medium"
+              >
+                New Password
+              </label>
+              <div className="relative">
+                <input
+                  id="newPassword"
+                  type="password"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="glass-input w-full"
+                  required
+                  minLength={6}
+                  placeholder="Enter new password"
+                />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="confirmNewPassword"
+                className="text-sm font-medium"
+              >
+                Confirm New Password
+              </label>
+              <div className="relative">
+                <input
+                  id="confirmNewPassword"
+                  type="password"
+                  value={confirmNewPassword}
+                  onChange={(e) => setConfirmNewPassword(e.target.value)}
+                  className="glass-input w-full"
+                  required
+                  minLength={6}
+                  placeholder="Confirm new password"
+                />
+              </div>
+            </div>
+            <button
+              type="submit"
+              disabled={loading || isVerifying}
+              className="gradient-button w-full flex items-center justify-center"
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  <span>Resetting...</span>
+                </>
+              ) : (
+                'Reset Password'
+              )}
+            </button>
+          </form>
+          
+          <div className="text-center mt-8 pt-6 border-t border-gray-100">
+            <p className="text-gray-600 text-sm">
+              Remember your password?{" "}
+              <Link 
+                href="/auth/login" 
+                className="text-teal-600 hover:text-teal-700 transition-colors font-semibold"
+              >
+                Back to Login
+              </Link>
+            </p>
+          </div>
         </div>
-
-        {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">
-            {error}
-          </div>
-        )}
-        {message && !error && (
-          <div className="bg-green-50 text-green-600 p-3 rounded-lg mb-4 text-sm">
-            {message}
-          </div>
-        )}
-
-        <form onSubmit={handleConfirmResetPassword} className="space-y-4">
-          <div>
-            <label
-              htmlFor="newPassword"
-              className="block text-sm font-medium text-accent mb-1">
-              New Password
-            </label>
-            <input
-              id="newPassword"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
-              required
-              minLength={6}
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="confirmNewPassword"
-              className="block text-sm font-medium text-accent mb-1">
-              Confirm New Password
-            </label>
-            <input
-              id="confirmNewPassword"
-              type="password"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-accent"
-              required
-              minLength={6}
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={loading || isVerifying}
-            className="w-full bg-accent hover:bg-accent-light text-white py-2 rounded-md font-medium transition-colors flex items-center justify-center">
-            {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin mr-2" />
-            ) : null}
-            Reset Password
-          </button>
-        </form>
-        <p className="mt-6 text-center text-sm text-gray-500">
-          Remember your password?{" "}
-          <Link href="/login" className="text-accent hover:underline font-medium">
-            Login
-          </Link>
-        </p>
       </div>
     </div>
   );
@@ -236,10 +286,13 @@ function AuthActionPageContent() {
 
 function AuthActionPageFallback() {
   return (
-    <div className="min-h-[100dvh] w-full flex items-center justify-center bg-gradient-to-b from-dark via-accent to-highlight/90 px-4 sm:px-6">
-      <div className="flex flex-col items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-accent" />
-        <p className="mt-2 text-sm text-gray-500">Loading action page...</p>
+    <div className="auth-container">
+      <AuthStyles />
+      <div className="w-full max-w-md">
+        <div className="glass-card p-8 rounded-2xl shadow-2xl flex flex-col items-center justify-center">
+          <Loader2 className="h-10 w-10 animate-spin text-teal-600 mb-4" />
+          <p className="text-gray-600">Loading action page...</p>
+        </div>
       </div>
     </div>
   );
@@ -251,4 +304,4 @@ export default function AuthActionPage() {
       <AuthActionPageContent />
     </Suspense>
   );
-} 
+}
