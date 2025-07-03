@@ -37,11 +37,13 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-console.log('Firebase config:', {
-  apiKey: firebaseConfig.apiKey ? 'SET' : 'MISSING',
-  authDomain: firebaseConfig.authDomain ? 'SET' : 'MISSING',
-  projectId: firebaseConfig.projectId ? 'SET' : 'MISSING',
-});
+if (process.env.NODE_ENV !== 'production') {
+  console.log('Firebase config:', {
+    apiKey: firebaseConfig.apiKey ? 'SET' : 'MISSING',
+    authDomain: firebaseConfig.authDomain ? 'SET' : 'MISSING',
+    projectId: firebaseConfig.projectId ? 'SET' : 'MISSING',
+  });
+}
 
 if (!firebaseConfig.apiKey) {
   throw new Error('Firebase API key is missing');
