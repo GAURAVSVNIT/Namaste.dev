@@ -1,6 +1,6 @@
 const QuizPage = () => {
   return (
-    <h1 className="m-2">Quiz Page</h1>
+    <h1 className="m-2 text-cev-blue font-bold">Quiz Page</h1>
   )
 }
 
