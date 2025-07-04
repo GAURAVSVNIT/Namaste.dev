@@ -291,3 +291,7 @@
     background-position: 200% 0;
   }
 }
+
+body {
+  margin: 6rem 4px;
+}
