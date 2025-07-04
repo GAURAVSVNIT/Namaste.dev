@@ -20,6 +20,18 @@ function VerifyPageContent() {
   const [currentUserEmail, setCurrentUserEmail] = useState(null);
 
   useEffect(() => {
+    // Get all URL parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const mode = urlParams.get('mode');
+    const oobCode = urlParams.get('oobCode');
+    
+    // If we have both mode and oobCode, redirect to action page with all params
+    if (mode && oobCode) {
+      router.push(`/auth/action?mode=${mode}&oobCode=${oobCode}`);
+    }
+  }, []);
+
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setSessionChecking(true);
       if (user) {

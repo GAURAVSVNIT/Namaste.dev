@@ -52,12 +52,18 @@ export function SignupForm() {
 
       // Send verification email
       if (auth.currentUser) {
+        // Use the current window location for development, but you can
+        // customize this for production if needed
+        const actionUrl = `${window.location.origin}/auth/action`;
+        
         const actionCodeSettings = {
-          url: `${window.location.origin}/auth/action?mode=verifyEmail&email=${encodeURIComponent(email)}`,
+          url: actionUrl,
           handleCodeInApp: true,
         };
+        
+        console.log('Sending verification email with action URL:', actionUrl);
         await sendEmailVerification(auth.currentUser, actionCodeSettings);
-        router.push(`/verify?email=${email}`);
+        router.push(`/auth/verify?email=${email}`);
       } else {
         console.error("Signup successful, but auth.currentUser is null before sending verification email.");
         setError("Signup was successful, but couldn't send verification email. Please try logging in.");
