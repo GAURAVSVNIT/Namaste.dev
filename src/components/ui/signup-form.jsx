@@ -53,7 +53,7 @@ export function SignupForm() {
       // Send verification email
       if (auth.currentUser) {
         const actionCodeSettings = {
-          url: `${window.location.origin}/auth/action?email=${encodeURIComponent(email)}`,
+          url: `${window.location.origin}/auth/action?mode=verifyEmail&email=${encodeURIComponent(email)}`,
           handleCodeInApp: true,
         };
         await sendEmailVerification(auth.currentUser, actionCodeSettings);

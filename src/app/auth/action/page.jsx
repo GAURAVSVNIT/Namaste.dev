@@ -48,7 +48,7 @@ function AuthActionPageContent() {
             "Your email address has been verified successfully! You can now log in."
           );
           setIsVerifying(false);
-          setTimeout(() => router.push("/auth/login?message=Email verified successfully"), 3000);
+          setTimeout(() => router.push("/"), 3000);
         })
         .catch((err) => {
           console.error("Error verifying email:", err);
