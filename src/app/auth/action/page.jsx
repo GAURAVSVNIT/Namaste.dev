@@ -15,8 +15,58 @@ import { AuthStyles } from "@/components/auth/auth-styles";
 function AuthActionPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const mode = searchParams.get("mode");
-  const oobCode = searchParams.get("oobCode");
+  let mode = searchParams.get("mode");
+  let oobCode = searchParams.get("oobCode");
+  
+  // Log all search parameters for debugging
+  console.log("All URL search params:", Object.fromEntries([...searchParams.entries()]));
+  
+  // Check for continueUrl parameter that might contain encoded mode and oobCode
+  const continueUrl = searchParams.get("continueUrl");
+  console.log("Initial values:", { mode, oobCode, continueUrl });
+  
+  if (continueUrl) {
+    try {
+      const continueUrlObj = new URL(continueUrl);
+      console.log("Parsed continueUrl:", continueUrlObj.toString());
+      console.log("continueUrl search params:", continueUrlObj.search);
+      
+      const continueParams = new URLSearchParams(continueUrlObj.search);
+      console.log("continueParams entries:", Object.fromEntries([...continueParams.entries()]));
+      
+      // Extract mode and oobCode from continueUrl if present
+      if (!mode) {
+        mode = continueParams.get("mode");
+        console.log("mode from continueUrl:", mode);
+      }
+      if (!oobCode) {
+        oobCode = continueParams.get("oobCode");
+        console.log("oobCode from continueUrl:", oobCode);
+      }
+      
+      // Check if mode and oobCode might be double-encoded
+      if (!mode || !oobCode) {
+        try {
+          // Try to decode the continueUrl once more in case it's double-encoded
+          const decodedUrl = decodeURIComponent(continueUrl);
+          const decodedUrlObj = new URL(decodedUrl);
+          const decodedParams = new URLSearchParams(decodedUrlObj.search);
+          
+          console.log("Decoded continueUrl:", decodedUrl);
+          console.log("Decoded params:", Object.fromEntries([...decodedParams.entries()]));
+          
+          if (!mode) mode = decodedParams.get("mode");
+          if (!oobCode) oobCode = decodedParams.get("oobCode");
+          
+          console.log("After double-decode attempt:", { mode, oobCode });
+        } catch (decodeErr) {
+          console.error("Error attempting to decode continueUrl:", decodeErr);
+        }
+      }
+    } catch (err) {
+      console.error("Error parsing continueUrl:", err);
+    }
+  }
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
@@ -27,9 +77,13 @@ function AuthActionPageContent() {
   const [emailForReset, setEmailForReset] = useState(null);
 
   useEffect(() => {
+    console.log("useEffect running with:", { mode, oobCode });
+    
     if (mode === "resetPassword" && oobCode) {
+      console.log("Handling resetPassword action with code:", oobCode);
       verifyPasswordResetCode(auth, oobCode)
         .then((email) => {
+          console.log("Password reset code verified for email:", email);
           setEmailForReset(email);
           setMessage("Please enter your new password.");
           setIsVerifying(false);
@@ -42,13 +96,15 @@ function AuthActionPageContent() {
           setIsVerifying(false);
         });
     } else if (mode === "verifyEmail" && oobCode) {
+      console.log("Handling verifyEmail action with code:", oobCode);
       applyActionCode(auth, oobCode)
         .then(() => {
+          console.log("Email verification successful");
           setMessage(
             "Your email address has been verified successfully! You can now log in."
           );
           setIsVerifying(false);
-          setTimeout(() => router.push("/auth/login?message=Email verified successfully"), 3000);
+          setTimeout(() => router.push("/"), 3000);
         })
         .catch((err) => {
           console.error("Error verifying email:", err);
@@ -58,6 +114,7 @@ function AuthActionPageContent() {
           setIsVerifying(false);
         });
     } else {
+      console.error("No valid action detected:", { mode, oobCode });
       setError(
         mode ? "Invalid action or missing code." : "No action specified. Please check the link."
       );

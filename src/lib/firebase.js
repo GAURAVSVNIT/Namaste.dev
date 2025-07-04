@@ -7,7 +7,9 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   onAuthStateChanged,
+  sendEmailVerification,
 } from "firebase/auth";
+
 import {
   getFirestore,
   doc,
@@ -83,25 +85,52 @@ export const signIn = async (email, password) => {
 };
 
 export const signInWithGoogle = async () => {
-  const userCredential = await signInWithPopup(auth, googleProvider);
-
-  const userExists = await checkUserExists(userCredential.user.uid);
-
-  if (!userExists) {
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
     const { user } = userCredential;
-    const profileData = {
-      email: user.email,
-      first_name: user.displayName?.split(" ")[0] || "",
-      last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
-      avatar_url: user.photoURL,
-      role: "user",
-      created_at: serverTimestamp(),
-      updated_at: serverTimestamp(),
-    };
-    await createUserProfile(user.uid, profileData);
+    
+    // Important: Google provides a verified email by default, but we check anyway
+    if (user.email) {
+      const userExists = await checkUserExists(user.uid);
+      
+      // For brand new users, we need to create their profile
+      if (!userExists) {
+        const profileData = {
+          email: user.email,
+          first_name: user.displayName?.split(" ")[0] || "",
+          last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
+          avatar_url: user.photoURL,
+          role: "user",
+          created_at: serverTimestamp(),
+          updated_at: serverTimestamp(),
+          last_sign_in_at: serverTimestamp(),
+        };
+        await createUserProfile(user.uid, profileData);
+        
+        // For consistency with email signup flow, we'll send users to the verify page
+        // Note: Most Google sign-ins already have a verified email, but we'll maintain the flow
+        window.location.href = `/auth/verify?email=${encodeURIComponent(user.email)}`;
+        return userCredential;
+      }
+      
+      // Update the user's last sign-in time
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        last_sign_in_at: serverTimestamp(),
+        updated_at: serverTimestamp()
+      });
+    }
+    
+    // For existing users, proceed to normal flow
+    const idToken = await user.getIdToken();
+    const redirectUrl = `/api/auth/callback?token=${idToken}`;
+    window.location.href = redirectUrl;
+    
+    return userCredential;
+  } catch (error) {
+    console.error("Google sign-in error:", error);
+    throw error;
   }
-
-  return userCredential;
 };
 
 export const logOut = async () => {
@@ -184,11 +213,26 @@ if (typeof window !== "undefined") {
             role: "user",
             created_at: serverTimestamp(),
             updated_at: serverTimestamp(),
+            last_sign_in_at: serverTimestamp(),
           };
           await createUserProfile(
             user.uid,
             profileData
           );
+          
+          // For new users who signed in with Google but haven't verified email yet
+          if (user.email && !user.emailVerified && user.providerData.some(p => p.providerId === 'google.com')) {
+            console.log('New Google user, auto-redirecting to verification flow');
+            // Don't auto-send email verification for Google users, just redirect to verify page
+            window.location.href = `/auth/verify?email=${encodeURIComponent(user.email)}`;
+          }
+        } else {
+          // Update last sign in for existing users
+          const userRef = doc(db, "users", user.uid);
+          await updateDoc(userRef, {
+            last_sign_in_at: serverTimestamp(),
+            updated_at: serverTimestamp()
+          });
         }
       } catch (error) {
         console.error(
