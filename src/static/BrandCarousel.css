@@ -1,0 +1,55 @@
+.brand-carousel-container {
+    background-color: #f8f4ff; /* Light background to complement the theme */
+    padding: 4rem 0; /* Increased padding */
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    border-top: 1px solid #e0e0e0; /* Subtle top border */
+    border-bottom: 1px solid #e0e0e0; /* Subtle bottom border */
+    text-align: center;
+}
+
+.brand-carousel-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #2b2d42;
+    margin-bottom: 3rem;
+    font-family: 'Garamond', serif;
+}
+
+.brand-carousel-track {
+    display: flex;
+    width: calc(300px * 10); /* 300px per logo, 5 logos + 5 clones */
+    animation: scroll 30s linear infinite; /* Slower animation for larger images */
+}
+
+.brand-logo {
+    width: 300px; /* Increased width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 2rem;
+}
+
+.brand-logo img {
+    max-width: 200px; /* Increased max-width */
+    max-height: 200px; /* Added max-height for square images */
+    object-fit: contain; /* Ensure aspect ratio is maintained */
+    filter: grayscale(100%);
+    opacity: 0.6;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.brand-logo:hover img {
+    filter: grayscale(0%);
+    opacity: 1;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%); /* Move by the width of the original set of logos */
+    }
+}
