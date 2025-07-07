@@ -4,8 +4,23 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import '../static/Navbar.css'
 import Link from 'next/link';
+import { useAuth } from '@/hooks/useAuth';
+import { getUserById } from '@/lib/user';
+import { logOut } from '@/lib/firebase';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { User, LogOut, Settings } from 'lucide-react';
 
 export default function Navbar() {
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
+  const [userProfile, setUserProfile] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -29,8 +44,37 @@ export default function Navbar() {
     };
   }, []);
 
+  // Load user profile when authenticated
+  useEffect(() => {
+    if (user && !authLoading) {
+      loadUserProfile();
+    } else {
+      setUserProfile(null);
+    }
+  }, [user, authLoading]);
+
+  const loadUserProfile = async () => {
+    try {
+      const profile = await getUserById(user.uid);
+      setUserProfile(profile);
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      setUserProfile(null);
+      setMenuOpen(false);
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
   const navItems = [
     // { name: 'Home'},
+    { name: 'Blog', route: "blog" },
     { name: 'Social Media', route: "social" },
     { name: 'Market Place', route: "marketplace" },
     { name: 'Quiz', route: "quiz" },
@@ -39,6 +83,73 @@ export default function Navbar() {
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
+  };
+
+  const ProfileMenu = () => {
+    if (!userProfile) return null;
+
+    return (
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-gray-100">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={userProfile.photoURL} alt={userProfile.name || userProfile.email} />
+              <AvatarFallback className="bg-gray-200 text-gray-700">
+                {userProfile.name?.charAt(0) || userProfile.email?.charAt(0) || 'U'}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent 
+          className="w-56 bg-white border border-gray-200 shadow-lg rounded-md p-1" 
+          align="end" 
+          sideOffset={12}
+          style={{ zIndex: 10000 }}
+          container={typeof window !== 'undefined' ? document.body : undefined}
+        >
+          <div className="flex items-center justify-start gap-2 p-3 border-b border-gray-100">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={userProfile.photoURL} alt={userProfile.name || userProfile.email} />
+              <AvatarFallback className="bg-gray-200 text-gray-700 text-sm">
+                {userProfile.name?.charAt(0) || userProfile.email?.charAt(0) || 'U'}
+              </AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col space-y-1 leading-none flex-1 min-w-0">
+              <p className="font-medium text-sm text-gray-900 truncate">
+                {userProfile.name || 'User'}
+              </p>
+              <p className="text-xs text-gray-500 truncate">
+                {userProfile.email}
+              </p>
+            </div>
+          </div>
+          
+          <DropdownMenuItem asChild className="focus:bg-gray-50">
+            <Link href="/profile" className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <User className="h-4 w-4" />
+              <span>Profile</span>
+            </Link>
+          </DropdownMenuItem>
+          
+          <DropdownMenuItem asChild className="focus:bg-gray-50">
+            <Link href="/profile/blogs" className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <Settings className="h-4 w-4" />
+              <span>My Blogs</span>
+            </Link>
+          </DropdownMenuItem>
+          
+          <div className="border-t border-gray-100 my-1"></div>
+          
+          <DropdownMenuItem 
+            onClick={handleLogout}
+            className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600"
+          >
+            <LogOut className="h-4 w-4" />
+            <span>Log out</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    );
   };
 
   return (
@@ -67,8 +178,21 @@ export default function Navbar() {
                   ))}
                 </ul>
                 <div className="mobile-auth-buttons">
-                  <Link href="/auth/login" className="login-btn">Login</Link>
-                  <Link href="/auth/register" className="signup-btn">Sign Up</Link>
+                  {isAuthenticated && userProfile ? (
+                    <>
+                      <Link href="/profile" className="login-btn" onClick={() => setMenuOpen(false)}>
+                        <i className="fas fa-user"></i> Profile
+                      </Link>
+                      <button onClick={handleLogout} className="signup-btn">
+                        <i className="fas fa-sign-out-alt"></i> Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link href="/auth/login" className="login-btn">Login</Link>
+                      <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
+                    </>
+                  )}
                 </div>
               </div>
             </>
@@ -84,8 +208,14 @@ export default function Navbar() {
                 ))}
               </ul>
               <div className="auth-buttons">
-                <Link href="/auth/login" className="login-btn">Login</Link>
-                <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
+                {isAuthenticated && userProfile ? (
+                  <ProfileMenu />
+                ) : (
+                  <>
+                    <Link href="/auth/login" className="login-btn">Login</Link>
+                    <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
+                  </>
+                )}
               </div>
             </>
           )}

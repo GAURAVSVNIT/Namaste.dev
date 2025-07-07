@@ -339,3 +339,12 @@ justify-content: center;
     display: block;
 }
 }
+
+/* Ensure dropdown menus appear above navbar */
+[data-radix-popper-content-wrapper] {
+  z-index: 10001 !important;
+}
+
+[role="menu"], [role="dialog"] {
+  z-index: 10001 !important;
+}

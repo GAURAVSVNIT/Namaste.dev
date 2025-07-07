@@ -27,7 +27,16 @@ import {
   getDocs,
   arrayUnion,
   deleteDoc,
+  arrayRemove,
 } from "firebase/firestore";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 // Type imports removed for JavaScript conversion
 
 const firebaseConfig = {
@@ -55,6 +64,7 @@ if (!firebaseConfig.apiKey) {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 
 // ProfileUpdateData interface removed for JavaScript conversion
@@ -98,10 +108,15 @@ export const signInWithGoogle = async () => {
       if (!userExists) {
         const profileData = {
           email: user.email,
+          name: user.displayName || "",
           first_name: user.displayName?.split(" ")[0] || "",
           last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
-          avatar_url: user.photoURL,
+          photoURL: user.photoURL,
+          avatar_url: user.photoURL, // Keep both for compatibility
           role: "user",
+          likedBlogs: [],
+          activity: [],
+          blogCount: 0,
           created_at: serverTimestamp(),
           updated_at: serverTimestamp(),
           last_sign_in_at: serverTimestamp(),
@@ -208,10 +223,15 @@ if (typeof window !== "undefined") {
         if (!exists) {
           const profileData = {
             email: user.email,
+            name: user.displayName || "",
             first_name: user.displayName?.split(" ")[0] || "",
             last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
-            avatar_url: user.photoURL,
+            photoURL: user.photoURL,
+            avatar_url: user.photoURL, // Keep both for compatibility
             role: "user",
+            likedBlogs: [],
+            activity: [],
+            blogCount: 0,
             created_at: serverTimestamp(),
             updated_at: serverTimestamp(),
             last_sign_in_at: serverTimestamp(),
@@ -245,7 +265,7 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { app, auth, db };
+export { app, auth, db, storage };
 
 // FirestoreConversationData interface removed for JavaScript conversion
 

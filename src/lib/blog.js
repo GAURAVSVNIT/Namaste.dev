@@ -39,6 +39,21 @@ export const createBlog = async (blogData, authorId, authorName) => {
     };
 
     const docRef = await addDoc(collection(db, 'blogs'), blogPost);
+    
+    // Add activity to user profile
+    try {
+      const { addActivity } = await import('./user');
+      await addActivity(authorId, {
+        type: 'created',
+        blogId: docRef.id,
+        blogTitle: blogData.title,
+        blogSlug: slug
+      });
+    } catch (activityError) {
+      console.error('Error adding activity:', activityError);
+      // Don't fail blog creation if activity fails
+    }
+    
     return { id: docRef.id, ...blogPost };
   } catch (error) {
     console.error('Error creating blog:', error);
@@ -49,18 +64,34 @@ export const createBlog = async (blogData, authorId, authorName) => {
 // Get all blogs
 export const getAllBlogs = async () => {
   try {
-    const q = query(
-      collection(db, 'blogs'),
-      orderBy('createdAt', 'desc')
-    );
-    const querySnapshot = await getDocs(q);
-    const blogs = [];
+    // Try with orderBy first, fallback to no ordering if index doesn't exist
+    let querySnapshot;
+    try {
+      const q = query(
+        collection(db, 'blogs'),
+        orderBy('createdAt', 'desc')
+      );
+      querySnapshot = await getDocs(q);
+    } catch (indexError) {
+      console.log('Index not available, falling back to client-side sorting');
+      // Fallback to simple query without ordering
+      const q = query(collection(db, 'blogs'));
+      querySnapshot = await getDocs(q);
+    }
     
+    const blogs = [];
     querySnapshot.forEach((doc) => {
       blogs.push({
         id: doc.id,
         ...doc.data()
       });
+    });
+    
+    // Sort client-side if we didn't use orderBy
+    blogs.sort((a, b) => {
+      const dateA = a.createdAt?.seconds ? new Date(a.createdAt.seconds * 1000) : new Date(0);
+      const dateB = b.createdAt?.seconds ? new Date(b.createdAt.seconds * 1000) : new Date(0);
+      return dateB - dateA; // desc order
     });
     
     return blogs;
@@ -152,8 +183,7 @@ export const getBlogsByAuthor = async (authorId) => {
   try {
     const q = query(
       collection(db, 'blogs'),
-      where('authorId', '==', authorId),
-      orderBy('createdAt', 'desc')
+      where('authorId', '==', authorId)
     );
     const querySnapshot = await getDocs(q);
     const blogs = [];
@@ -163,6 +193,13 @@ export const getBlogsByAuthor = async (authorId) => {
         id: doc.id,
         ...doc.data()
       });
+    });
+    
+    // Sort client-side to avoid requiring index
+    blogs.sort((a, b) => {
+      const dateA = a.createdAt?.seconds ? new Date(a.createdAt.seconds * 1000) : new Date(0);
+      const dateB = b.createdAt?.seconds ? new Date(b.createdAt.seconds * 1000) : new Date(0);
+      return dateB - dateA; // desc order
     });
     
     return blogs;
