@@ -1,0 +1,113 @@
+.hero-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 80vh;
+    position: relative;
+    z-index: 2;
+}
+
+.hero-text {
+    max-width: 45%; /* Adjusted for better spacing */
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-text h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+}
+
+.hero-text p {
+    font-size: 1.2rem;
+    margin-bottom: 3rem; /* Increased margin */
+}
+
+.cta-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    max-width: 500px;
+    margin-top: 2rem;
+}
+
+.cta-button {
+    background-color: #ff4d6d;
+    color: white;
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    white-space: nowrap;
+    font-weight: 600;
+}
+
+.cta-button:hover {
+    background-color: #ff758f;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.cta-button--up {
+    transform: translateY(-10px);
+    background-color: #ff758f;
+}
+
+.cta-button--up:hover {
+    transform: translateY(-13px) scale(1.05);
+    background-color: #ff4d6d;
+}
+
+.hero-images {
+    position: relative;
+    width: 40%;
+    height: 100%;
+}
+
+.hero-image {
+    position: absolute;
+    width: 300px;
+    height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, z-index 0s 0.15s; /* Delay z-index change on un-hover */
+}
+
+.hero-image:hover {
+    transform: scale(1.05);
+    z-index: 4; /* Bring to front on hover */
+    transition-delay: 0s; /* Apply z-index change immediately on hover */
+}
+
+.image-1 {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+}
+
+.image-2 {
+    top: 50%;
+    left: 20%;
+    transform: translate(-50%, -50%) rotate(-15deg);
+    z-index: 2;
+}
+
+.image-3 {
+    top: 50%;
+    left: 80%;
+    transform: translate(-50%, -50%) rotate(15deg);
+    z-index: 2;
+}
+
+.image-3:hover {
+    transform: translate(-60%, -50%) rotate(15deg) scale(1.05);
+}
