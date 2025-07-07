@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { toggleLike } from '@/lib/blog';
+import RoleBadge from '@/components/ui/role-badge';
 
 const BlogCard = ({ blog, onEdit, onDelete }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -60,9 +61,12 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
           </h2>
         </Link>
         
-        <div className="flex items-center text-sm text-gray-500 mb-2">
-          <span>By {blog.authorName}</span>
-          <span className="mx-2">•</span>
+        <div className="flex items-center text-sm text-gray-500 mb-2 flex-wrap gap-2">
+          <div className="flex items-center gap-2">
+            <span>By {blog.authorName}</span>
+            {blog.authorRole && <RoleBadge role={blog.authorRole} size="sm" />}
+          </div>
+          <span className="mx-1">•</span>
           <span>{formatDate(blog.createdAt)}</span>
         </div>
       </div>

@@ -6,8 +6,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Camera, Edit3, Save, X } from 'lucide-react';
-import { uploadAvatar } from '@/lib/user';
+import { uploadAvatar, updateMultiavatar, updateUser } from '@/lib/user';
 import { useAuth } from '@/hooks/useAuth';
+import AvatarSelector from '@/components/ui/avatar-selector';
+import SmartAvatar from '@/components/ui/smart-avatar';
+import RoleBadge from '@/components/ui/role-badge';
+import RoleSelector from '@/components/ui/role-selector';
+import { isAdmin, USER_ROLES } from '@/lib/roles';
 
 export default function ProfileHeader({ user, onUpdateProfile }) {
   const { user: currentUser } = useAuth();
@@ -15,16 +20,32 @@ export default function ProfileHeader({ user, onUpdateProfile }) {
   const [name, setName] = useState(user?.name || '');
   const [uploading, setUploading] = useState(false);
   
-  const handleAvatarUpload = async (event) => {
-    const file = event.target.files?.[0];
+  const handleCustomAvatarUpload = async (file) => {
     if (!file || !currentUser) return;
     
     setUploading(true);
     try {
       const photoURL = await uploadAvatar(currentUser.uid, file);
-      onUpdateProfile({ photoURL });
+      onUpdateProfile({ photoURL, avatarSeed: null });
     } catch (error) {
       console.error('Error uploading avatar:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleAvatarSelect = async (avatarData) => {
+    if (!currentUser) return;
+    
+    setUploading(true);
+    try {
+      await updateMultiavatar(currentUser.uid, avatarData);
+      onUpdateProfile({ 
+        photoURL: avatarData.dataUrl, 
+        avatarSeed: avatarData.seed 
+      });
+    } catch (error) {
+      console.error('Error updating avatar:', error);
     } finally {
       setUploading(false);
     }
@@ -39,6 +60,20 @@ export default function ProfileHeader({ user, onUpdateProfile }) {
     setName(user?.name || '');
     setIsEditing(false);
   };
+
+  const handleRoleUpdate = async (newRole) => {
+    if (!currentUser) return;
+    
+    setUploading(true);
+    try {
+      await updateUser(currentUser.uid, { role: newRole });
+      onUpdateProfile({ role: newRole });
+    } catch (error) {
+      console.error('Error updating role:', error);
+    } finally {
+      setUploading(false);
+    }
+  };
   
   if (!user) return null;
   
@@ -48,33 +83,29 @@ export default function ProfileHeader({ user, onUpdateProfile }) {
         <div className="flex flex-col md:flex-row items-center gap-6">
           {/* Avatar */}
           <div className="relative">
-            <Avatar className="w-32 h-32">
-              <AvatarImage src={user.photoURL} alt={user.name} />
-              <AvatarFallback className="text-2xl">
-                {user.name?.charAt(0) || user.email?.charAt(0) || 'U'}
-              </AvatarFallback>
-            </Avatar>
+            <SmartAvatar 
+              user={user} 
+              className="w-32 h-32" 
+              fallbackClassName="text-2xl"
+            />
             
-            {/* Only show upload button if viewing own profile */}
+            {/* Only show avatar selector if viewing own profile */}
             {currentUser?.uid === user.uid && (
               <div className="absolute bottom-0 right-0">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarUpload}
-                  className="hidden"
-                  id="avatar-upload"
+                <AvatarSelector
+                  currentAvatar={user}
+                  onAvatarSelect={handleAvatarSelect}
+                  onCustomUpload={handleCustomAvatarUpload}
+                  trigger={
+                    <div className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full cursor-pointer hover:bg-primary/90 transition-colors">
+                      {uploading ? (
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
+                      ) : (
+                        <Camera className="w-4 h-4" />
+                      )}
+                    </div>
+                  }
                 />
-                <label
-                  htmlFor="avatar-upload"
-                  className="flex items-center justify-center w-10 h-10 bg-primary text-primary-foreground rounded-full cursor-pointer hover:bg-primary/90 transition-colors"
-                >
-                  {uploading ? (
-                    <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
-                  ) : (
-                    <Camera className="w-4 h-4" />
-                  )}
-                </label>
               </div>
             )}
           </div>
@@ -115,7 +146,27 @@ export default function ProfileHeader({ user, onUpdateProfile }) {
               )}
             </div>
             
-            <p className="text-muted-foreground mb-4">{user.email}</p>
+            <p className="text-muted-foreground mb-2">{user.email}</p>
+            
+            {/* Role Display */}
+            <div className="flex items-center gap-2 mb-4 justify-center md:justify-start">
+              <RoleBadge role={user.role} />
+              {/* Allow role change for own profile */}
+              {currentUser?.uid === user.uid && (
+                <RoleSelector
+                  currentRole={user.role}
+                  onRoleSelect={handleRoleUpdate}
+                  disabled={uploading}
+                  // Exclude admin role unless current user is admin
+                  excludeRoles={!isAdmin(currentUser) ? [USER_ROLES.ADMIN] : []}
+                  trigger={
+                    <Button variant="ghost" size="sm" className="text-xs">
+                      Change
+                    </Button>
+                  }
+                />
+              )}
+            </div>
             
             {/* Stats */}
             <div className="flex gap-6 justify-center md:justify-start">

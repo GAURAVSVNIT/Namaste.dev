@@ -79,7 +79,7 @@ export const createUser = async (email, password, userData) => {
   const profileToCreate = {
     ...userData,
     email: userCredential.user.email,
-    role: userData.role || "user",
+    role: userData.role || "member",
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   };
@@ -113,7 +113,7 @@ export const signInWithGoogle = async () => {
           last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
           photoURL: user.photoURL,
           avatar_url: user.photoURL, // Keep both for compatibility
-          role: "user",
+          role: "member",
           likedBlogs: [],
           activity: [],
           blogCount: 0,
@@ -165,10 +165,27 @@ export const logOut = async () => {
 export const createUserProfile = async (userId, data) => {
   const userRef = doc(db, "users", userId);
 
+  // Initialize with multiavatar if no photoURL provided
+  let avatarData = {};
+  if (!data.photoURL) {
+    try {
+      const { generateUserMultiavatar } = await import('./multiavatar');
+      const multiavatar = generateUserMultiavatar(data);
+      avatarData = {
+        photoURL: multiavatar.dataUrl,
+        avatarSeed: multiavatar.seed
+      };
+    } catch (error) {
+      console.error('Error generating initial multiavatar:', error);
+      // Continue without avatar if generation fails
+    }
+  }
+
   const profileDataToSet = {
     id: userId,
-    role: "user",
+    role: data.role || "member",
     ...data,
+    ...avatarData, // Add multiavatar data if generated
     created_at:
       data.created_at &&
       (data.created_at instanceof Timestamp ||
@@ -228,7 +245,7 @@ if (typeof window !== "undefined") {
             last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
             photoURL: user.photoURL,
             avatar_url: user.photoURL, // Keep both for compatibility
-            role: "user",
+            role: "member",
             likedBlogs: [],
             activity: [],
             blogCount: 0,

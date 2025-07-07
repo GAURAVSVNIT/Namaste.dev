@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label';
 import { createUser, signInWithGoogle, auth } from '@/lib/firebase';
 import { sendEmailVerification } from 'firebase/auth';
 import Image from 'next/image';
+import { getAvailableRoles, USER_ROLES } from '@/lib/roles';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export function SignupForm() {
   const router = useRouter();
@@ -20,8 +22,13 @@ export function SignupForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(USER_ROLES.MEMBER);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const availableRoles = getAvailableRoles().filter(
+    role => role.value !== USER_ROLES.ADMIN // Exclude admin role from signup
+  );
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -47,7 +54,8 @@ export function SignupForm() {
       await createUser(email, password, {
         first_name: firstName,
         last_name: lastName,
-        role: "user",
+        name: `${firstName} ${lastName}`.trim(),
+        role: selectedRole,
       });
 
       // Send verification email
@@ -380,6 +388,31 @@ export function SignupForm() {
                     />
                   </div>
                 </div>
+              </div>
+              
+              {/* Role Selection */}
+              <div className="space-y-2">
+                <Label htmlFor="role" className="text-sm font-medium">
+                  I am a...
+                </Label>
+                <Select value={selectedRole} onValueChange={setSelectedRole}>
+                  <SelectTrigger className="glass-input h-12">
+                    <SelectValue placeholder="Select your role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {availableRoles.map((role) => (
+                      <SelectItem key={role.value} value={role.value}>
+                        <div className="flex items-center gap-2">
+                          <span>{role.icon}</span>
+                          <div>
+                            <div className="font-medium">{role.label}</div>
+                            <div className="text-xs text-muted-foreground">{role.description}</div>
+                          </div>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               
               {/* Email Field */}

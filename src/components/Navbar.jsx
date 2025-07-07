@@ -9,6 +9,8 @@ import { getUserById } from '@/lib/user';
 import { logOut } from '@/lib/firebase';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
+import SmartAvatar from '@/components/ui/smart-avatar';
+import RoleBadge from '@/components/ui/role-badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,12 +94,11 @@ export default function Navbar() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="relative h-10 w-10 rounded-full hover:bg-gray-100">
-            <Avatar className="h-10 w-10">
-              <AvatarImage src={userProfile.photoURL} alt={userProfile.name || userProfile.email} />
-              <AvatarFallback className="bg-gray-200 text-gray-700">
-                {userProfile.name?.charAt(0) || userProfile.email?.charAt(0) || 'U'}
-              </AvatarFallback>
-            </Avatar>
+            <SmartAvatar 
+              user={userProfile} 
+              className="h-10 w-10" 
+              fallbackClassName="bg-gray-200 text-gray-700"
+            />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent 
@@ -108,12 +109,11 @@ export default function Navbar() {
           container={typeof window !== 'undefined' ? document.body : undefined}
         >
           <div className="flex items-center justify-start gap-2 p-3 border-b border-gray-100">
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={userProfile.photoURL} alt={userProfile.name || userProfile.email} />
-              <AvatarFallback className="bg-gray-200 text-gray-700 text-sm">
-                {userProfile.name?.charAt(0) || userProfile.email?.charAt(0) || 'U'}
-              </AvatarFallback>
-            </Avatar>
+            <SmartAvatar 
+              user={userProfile} 
+              className="h-8 w-8" 
+              fallbackClassName="bg-gray-200 text-gray-700 text-sm"
+            />
             <div className="flex flex-col space-y-1 leading-none flex-1 min-w-0">
               <p className="font-medium text-sm text-gray-900 truncate">
                 {userProfile.name || 'User'}
@@ -121,6 +121,9 @@ export default function Navbar() {
               <p className="text-xs text-gray-500 truncate">
                 {userProfile.email}
               </p>
+              <div className="mt-1">
+                <RoleBadge role={userProfile.role} size="sm" />
+              </div>
             </div>
           </div>
           

@@ -54,12 +54,51 @@ export const uploadAvatar = async (userId, file) => {
     const snapshot = await uploadBytes(storageRef, file);
     const downloadURL = await getDownloadURL(snapshot.ref);
     
-    // Update user's photoURL in Firestore
-    await updateUser(userId, { photoURL: downloadURL });
+    // Update user's photoURL in Firestore and clear any multiavatar seed
+    await updateUser(userId, { 
+      photoURL: downloadURL,
+      avatarSeed: null // Clear multiavatar seed when custom image is uploaded
+    });
     
     return downloadURL;
   } catch (error) {
     console.error('Error uploading avatar:', error);
+    throw error;
+  }
+};
+
+// Update user avatar with multiavatar
+export const updateMultiavatar = async (userId, avatarData) => {
+  try {
+    await updateUser(userId, {
+      photoURL: avatarData.dataUrl,
+      avatarSeed: avatarData.seed
+    });
+    return avatarData;
+  } catch (error) {
+    console.error('Error updating multiavatar:', error);
+    throw error;
+  }
+};
+
+// Initialize user with default multiavatar if no avatar exists
+export const initializeUserAvatar = async (userId, userData) => {
+  try {
+    // Only initialize if user doesn't have any avatar
+    if (!userData.photoURL && !userData.avatarSeed) {
+      const { generateUserMultiavatar } = await import('./multiavatar');
+      const avatarData = generateUserMultiavatar(userData);
+      
+      await updateUser(userId, {
+        photoURL: avatarData.dataUrl,
+        avatarSeed: avatarData.seed
+      });
+      
+      return avatarData;
+    }
+    return null;
+  } catch (error) {
+    console.error('Error initializing user avatar:', error);
     throw error;
   }
 };
