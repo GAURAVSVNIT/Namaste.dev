@@ -17,8 +17,8 @@ const Home = () => {
       <ScrollingCards />
       <BrandCarousel />
       <FeaturedVideos />
-      <TestimonialsSection />
       <QuizPromo />
+      <TestimonialsSection />
       <ServicesSection />
     </>
   )

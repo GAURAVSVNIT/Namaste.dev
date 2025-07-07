@@ -4,9 +4,9 @@ import React from 'react';
 import '../static/Footer.css';
 import { FaInstagram, FaTwitter, FaLinkedin, FaTshirt, FaCamera, FaUserGraduate } from 'react-icons/fa';
 
-const Footer = () => {
+const Footer = (fontFace) => {
   return (
-    <footer className="footer-glass">
+    <footer className={"footer-glass " + fontFace}>
       <div className="footer-wrapper">
         <div className="footer-grid">
 

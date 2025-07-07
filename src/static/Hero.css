@@ -6,12 +6,16 @@
     height: 80vh;
     position: relative;
     z-index: 2;
+    background-image: url('/images/hero-bg.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-clip:border-box;
+    background-position: center;
 }
 
 .hero-text {
     max-width: 45%; /* Adjusted for better spacing */
     color: white;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero-text h1 {
@@ -29,21 +33,22 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
-    max-width: 500px;
+    max-width: 560px;
     margin-top: 2rem;
+    border-radius: 50px;
 }
 
 .cta-button {
-    background-color: #ff4d6d;
+    background-color: #ff4df9;
+    background-image: linear-gradient(to top right, #ff4ded, #d746ff);
     color: white;
     padding: 0.8rem 1.2rem;
     border: none;
     border-radius: 50px;
-    font-size: 0.9rem;
+    font-size: 1rem;
     cursor: pointer;
     text-decoration: none;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     text-align: center;
     white-space: nowrap;
     font-weight: 600;
@@ -54,6 +59,51 @@
     transform: translateY(-3px) scale(1.05);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
+
+.cta-button-outlined {
+  position: relative;
+  padding: 0.8rem 1.2rem;
+  background-image: linear-gradient(to top right, #ff4ded, #d746ff); 
+  color: transparent;
+  background-clip: text;
+  border-radius: 50px;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  font-weight: 600;
+  text-align: center;
+  z-index: 1;
+  overflow: hidden;
+}
+.cta-button-outlined::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 3px; 
+  background: linear-gradient(to top right, #ff4ded, #d746ff);
+  border-radius: inherit;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: destination-out;
+          mask-composite: exclude;
+  z-index: -1;
+}
+
+.cta-button-outlined:hover {
+    background-color: #ff758f;
+    background-clip: initial;
+    color: white;
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
 
 .cta-button--up {
     transform: translateY(-10px);

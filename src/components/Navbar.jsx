@@ -5,7 +5,7 @@ import Head from 'next/head';
 import '../static/Navbar.css'
 import Link from 'next/link';
 
-export default function Navbar() {
+export default function Navbar(fontFace) {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -45,7 +45,7 @@ export default function Navbar() {
     <>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''} ` + fontFace}>
         <div className="navbar-container">
           <Link href="/" className="logo">
             <i className="fas fa-tshirt logo-icon"></i>
