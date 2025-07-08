@@ -34,6 +34,7 @@ export default function Navbar(fontFace) {
     { name: 'Social Media', route: "social" },
     { name: 'Market Place', route: "marketplace" },
     { name: 'Quiz', route: "quiz" },
+    { name: 'Virtual Try-On', route: "virtual-tryon" },
     { name: 'Upload Look', route: "/" },
   ];
 
@@ -68,7 +69,7 @@ export default function Navbar(fontFace) {
                 </ul>
                 <div className="mobile-auth-buttons">
                   <Link href="/auth/login" className="login-btn">Login</Link>
-                  <Link href="/auth/register" className="signup-btn">Sign Up</Link>
+                  <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
                 </div>
               </div>
             </>
