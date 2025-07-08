@@ -85,7 +85,7 @@ export default function Navbar(fontFace) {
               </ul>
               <div className="auth-buttons">
                 <Link href="/auth/login" className="login-btn">Login</Link>
-                <Link href="/auth/register" className="signup-btn">Sign Up</Link>
+                <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
               </div>
             </>
           )}
