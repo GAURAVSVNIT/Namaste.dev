@@ -1,17 +1,16 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
 
-@theme {
+:root {
   --color-cev-blue: #060136;
   --color-cev-green: #036209;
   --color-background: #fff2e0;
   --color-foreground: #000000;
   --font-sans: var(--font-inter), "Inter", sans-serif;
-  --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
 }
 
-@theme {
+:root {
   /* Custom Colors */
   --color-fashion-primary: #ff4d6d;
   --color-fashion-secondary: #ff758f;
@@ -57,7 +56,8 @@
   --backdrop-blur-lg: blur(16px);
   --backdrop-blur-md: blur(12px);
   --backdrop-blur-sm: blur(4px);
-} */ */
+} 
+/*---break---*/
 /*  
 @font-face {
   font-family: 'Cal-Sans';
@@ -101,7 +101,7 @@
   */
 /*  
 ---break---*/
-@theme inline {
+:root {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -213,27 +213,29 @@
 ---break---*/
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    border-color: var(--color-border);
+    outline-color: color-mix(in srgb, var(--color-ring) 50%, transparent);
   }
   body {
-    @apply bg-background text-foreground;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
 }
 
 /* Custom CSS for glass morphism and animations */
 .backdrop-blur-lg {
-  backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
 }
 
 .backdrop-blur-md {
-  backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
 }
 
 .backdrop-blur-sm {
-  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
 }
 
 .bg-white\/80 {
@@ -331,8 +333,8 @@
 /* Glass morphism card effect */
 .glass-card {
   background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
 }
