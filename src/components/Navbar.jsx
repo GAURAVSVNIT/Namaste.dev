@@ -20,9 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { User, LogOut, Settings } from 'lucide-react';
 
-export default function Navbar() {
-  const { user, loading: authLoading, isAuthenticated } = useAuth();
-  const [userProfile, setUserProfile] = useState(null);
+export default function Navbar(fontFace) {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -80,6 +78,7 @@ export default function Navbar() {
     { name: 'Social Media', route: "social" },
     { name: 'Market Place', route: "marketplace" },
     { name: 'Quiz', route: "quiz" },
+    { name: 'Virtual Try-On', route: "virtual-tryon" },
     { name: 'Upload Look', route: "/" },
   ];
 
@@ -159,7 +158,7 @@ export default function Navbar() {
     <>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-      <nav className={`navbar ${scrolled ? 'scrolled' : ''}`}>
+      <nav className={`navbar ${scrolled ? 'scrolled' : ''} ` + fontFace}>
         <div className="navbar-container">
           <Link href="/" className="logo">
             <i className="fas fa-tshirt logo-icon"></i>
@@ -181,21 +180,8 @@ export default function Navbar() {
                   ))}
                 </ul>
                 <div className="mobile-auth-buttons">
-                  {isAuthenticated && userProfile ? (
-                    <>
-                      <Link href="/profile" className="login-btn" onClick={() => setMenuOpen(false)}>
-                        <i className="fas fa-user"></i> Profile
-                      </Link>
-                      <button onClick={handleLogout} className="signup-btn">
-                        <i className="fas fa-sign-out-alt"></i> Logout
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link href="/auth/login" className="login-btn">Login</Link>
-                      <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
-                    </>
-                  )}
+                  <Link href="/auth/login" className="login-btn">Login</Link>
+                  <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
                 </div>
               </div>
             </>

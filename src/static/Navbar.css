@@ -3,7 +3,7 @@
 --primary: #ff4d6d;
 --secondary: #ff758f;
 --text: #2b2d42;
---bg: rgba(255, 255, 255, 0.8);
+--bg: rgba(255, 255, 255, 0.75);
 --blur: blur(10px);
 --shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
@@ -23,7 +23,7 @@ transform: translateX(-50%);
 width: calc(100% - 2rem);
 max-width: 1200px;
 background: var(--bg);
-backdrop-filter: var(--blur);
+backdrop-filter: var(--blur) !important;
 -webkit-backdrop-filter: var(--blur);
 border-radius: 2rem;
 box-shadow: var(--shadow);

@@ -144,13 +144,14 @@ export function LoginForm() {
             0 4px 8px rgba(0, 0, 0, 0.05),
             inset 0 0 0 1px rgba(255, 255, 255, 0.5);
           border-radius: 24px;
-          padding: 2.5rem;
+          padding: 2.5rem 2rem;
           width: 100%;
           max-width: 420px;
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
           overflow: hidden;
           transform-style: preserve-3d;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
+          margin: 1.5rem 0;
         }
 
         .glass-card:hover {
@@ -167,11 +168,13 @@ export function LoginForm() {
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           transition: all 0.3s ease !important;
-          height: 48px !important;
-          padding-left: 48px !important;
+          height: 52px !important;
+          padding: 0.75rem 1rem 0.75rem 48px !important;
           font-size: 0.95rem !important;
           letter-spacing: 0.025em !important;
           border-radius: 12px !important;
+          margin-bottom: 1.25rem;
+          width: 100%;
         }
         
         .glass-input:focus {
@@ -207,13 +210,16 @@ export function LoginForm() {
           border: none !important;
           transition: all 0.3s ease !important;
           color: white !important;
-          height: 48px !important;
+          height: 52px !important;
           font-size: 1rem !important;
           font-weight: 600 !important;
           letter-spacing: 0.025em !important;
           border-radius: 12px !important;
           position: relative;
           overflow: hidden;
+          width: 100%;
+          margin: 1.5rem 0 1rem 0;
+          padding: 0.75rem 1.5rem;
         }
         
         .gradient-button::before {
@@ -272,32 +278,42 @@ export function LoginForm() {
         
         .input-icon {
           position: absolute;
-          left: 12px;
+          left: 16px;
           top: 50%;
           transform: translateY(-50%);
-          color: #9ca3af;
+          color: #6b7280;
           z-index: 10;
+          width: 20px;
+          height: 20px;
         }
         
         .password-toggle {
           position: absolute;
-          right: 12px;
+          right: 16px;
           top: 50%;
           transform: translateY(-50%);
-          color: #9ca3af;
+          color: #6b7280;
           cursor: pointer;
           z-index: 10;
           transition: color 0.2s ease;
+          width: 20px;
+          height: 20px;
+          background: transparent;
+          border: none;
+          padding: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         
         .password-toggle:hover {
           color: #6b7280;
         }
       `}</style>
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-md px-4 sm:px-6">
         {/* Floating Login Card */}
-        <div className="glass-card p-8 rounded-2xl shadow-2xl">
-            <div className="text-center mb-8">
+        <div className="glass-card p-8 sm:p-10 rounded-2xl shadow-2xl">
+            <div className="text-center mb-10">
               <h1 id="login-title" className="text-3xl font-bold gradient-text mb-2">
                 Welcome Back
               </h1>

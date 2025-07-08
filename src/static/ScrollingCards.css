@@ -1,0 +1,90 @@
+.scrolling-cards-container {
+    position: relative;
+    height: 300vh; /* Adjust height based on the number of cards and desired scroll length */
+    background-color: #f8f4ff; /* Light background to complement the theme */
+}
+
+.sticky-container {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.cards-wrapper {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1000px; /* Add perspective for 3D effect */
+    transform-style: preserve-3d; /* This is important for 3D stacking */
+}
+
+.card {
+    position: absolute;
+    width: 90vw; /* Wider card */
+    height: 85vh; /* Shorter, more rectangular card */
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.7s ease;
+    display: flex; /* Changed to flex */
+    flex-direction: row; /* Arrange content side-by-side */
+    align-items: center; /* Center content vertically */
+    backface-visibility: hidden; /* Hide back of card during 3D transform */
+}
+
+/* Assigning solid background colors based on the website's theme */
+.card-1 {
+    background-color: #c07e2d; /* Primary color */
+}
+
+.card-2 {
+    background-color: #dde93f; /* Secondary color */
+}
+
+.card-3 {
+    background-color: #FF9F1C; /* Accent color */
+}
+
+.card.visible {
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    transform: translateZ(0) translateY(0) !important; /* Ensure visible card is at the front */
+}
+
+.card-image-container {
+    width: 55%; /* Image takes up more than half */
+    height: 100%;
+    overflow: hidden;
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.card:hover .card-image {
+    transform: scale(1.05);
+}
+
+.card-content {
+    width: 45%;
+    padding: 2rem 3rem;
+    text-align: left; /* Align text to the left */
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2b2d42; /* Dark text color from theme */
+    margin-bottom: 0.5rem;
+}
+
+.card-description {
+    font-size: 1rem;
+    color: #485264; /* Softer text color */
+}
