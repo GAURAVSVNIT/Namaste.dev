@@ -51,7 +51,7 @@ export default function Navbar(fontFace) {
     } else {
       setUserProfile(null);
     }
-  }, [user, authLoading]);
+  }, [User, authLoading]);
 
   const loadUserProfile = async () => {
     try {
