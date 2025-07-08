@@ -24,6 +24,10 @@ export default function Navbar(fontFace) {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  
+  // Use the auth hook
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const checkIfMobile = () => {
