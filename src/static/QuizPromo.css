@@ -70,8 +70,8 @@
     transform: translateY(-1px) scale(1.02);
 }
 
-/* Add some animated elements */
-.quiz-promo-container::after {
+/* Add some animated elements: Omitted for now */
+/* .quiz-promo-container::after {
     content: '🎁';
     position: absolute;
     top: 20%;
@@ -79,7 +79,7 @@
     font-size: 3rem;
     animation: float 3s ease-in-out infinite;
     z-index: 1;
-}
+} */
 
 @keyframes float {
     0%, 100% {

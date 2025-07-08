@@ -47,8 +47,8 @@ const Footer = (fontFace) => {
         </div>
 
         <div className="footer-cta">
-          <button className="cta-button"><FaCamera /> Upload Your Look</button>
-          <button className="cta-button secondary"><FaUserGraduate /> Join the Community</button>
+          <button className="cta-button-footer"><FaCamera /> Upload Your Look</button>
+          <button className="cta-button-footer secondary"><FaUserGraduate /> Join the Community</button>
         </div>
 
       </div>
@@ -59,7 +59,7 @@ const Footer = (fontFace) => {
           <a href="#"><FaTwitter /></a>
           <a href="#"><FaLinkedin /></a>
         </div>
-        <p>&copy; 2025 Campus Couture. All rights reserved.</p>
+        <p>&copy; 2025 Fashion Hub. All rights reserved.</p>
       </div>
       </div>
     </footer>

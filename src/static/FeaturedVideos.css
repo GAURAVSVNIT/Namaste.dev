@@ -1,6 +1,6 @@
 .featured-videos-container {
     background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-    padding: 12rem 2rem;
+    padding: 6rem 2rem;
     color: white;
 }
 
@@ -139,3 +139,4 @@
         grid-template-columns: 1fr;
     }
 }
+

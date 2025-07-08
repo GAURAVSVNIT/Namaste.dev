@@ -32,24 +32,23 @@
 }
 
 .brand-logo img {
-    max-width: 200px; /* Increased max-width */
-    max-height: 200px; /* Added max-height for square images */
+    max-width: 100px; /* Increased max-width */
+    max-height: 100px; /* Added max-height for square images */
     object-fit: contain; /* Ensure aspect ratio is maintained */
-    filter: grayscale(100%);
-    opacity: 0.6;
+    opacity: 1;
     transition: filter 0.3s ease, opacity 0.3s ease;
 }
 
 .brand-logo:hover img {
-    filter: grayscale(0%);
-    opacity: 1;
+    transform: scale(1.06);
+    transition: .2s;
 }
 
-@keyframes scroll {
+/* @keyframes scroll {
     0% {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(-50%); /* Move by the width of the original set of logos */
+        transform: translateX(-50%); 
     }
-}
+} */

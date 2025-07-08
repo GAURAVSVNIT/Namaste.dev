@@ -1,14 +1,17 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import '../static/BrandCarousel.css';
 
 const brands = [
-  { name: 'Vercel', logo: '/1.jpg' },
-  { name: 'Next.js', logo: '/2.jpg' },
-  { name: 'Globe', logo: '/3.jpg' },
-  { name: 'Window', logo: '/4.jpg' },
-  { name: 'File', logo: '/5.jpg' },
+  { name: 'Adidas', logo: '/brands/1.jpg', logoClass: 'invert mix-blend-multiply mt-3' },
+  { name: 'LouisVitton', logo: '/brands/2.png', logoClass: 'scale-150' },
+  { name: 'H&M', logo: '/brands/3.png' },
+  { name: 'Prada', logo: '/brands/4.jpg', logoClass: 'invert mix-blend-multiply scale-125' },
+  { name: 'RalphLauren', logo: '/brands/5.png', logoClass: 'brightness-0 invert-0' },
+  { name: 'Zara', logo: '/brands/6.png' },
+  { name: 'AllenSolly', logo: '/brands/7.webp' },
 ];
 
 const BrandCarousel = () => {
@@ -18,7 +21,7 @@ const BrandCarousel = () => {
       <div className="brand-carousel-track">
         {brands.map((brand, index) => (
           <div key={index} className="brand-logo">
-            <img src={brand.logo} alt={brand.name} />
+            <Image src={brand.logo} alt={brand.name} width={132} height={132} className={brand.logoClass ? brand.logoClass : ''} />
           </div>
         ))}
         {/* Duplicate for seamless scroll */}
