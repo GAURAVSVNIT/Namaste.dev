@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { createUser, signInWithGoogle, auth } from '@/lib/firebase';
 import { sendEmailVerification } from 'firebase/auth';
 import Image from 'next/image';
+import { USER_ROLES } from '@/lib/roles';
 
 export function SignupForm() {
   const router = useRouter();
@@ -22,6 +23,7 @@ export function SignupForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -47,7 +49,8 @@ export function SignupForm() {
       await createUser(email, password, {
         first_name: firstName,
         last_name: lastName,
-        role: "user",
+        name: `${firstName} ${lastName}`.trim(),
+        role: USER_ROLES.MEMBER,
       });
 
       // Send verification email
@@ -381,6 +384,7 @@ export function SignupForm() {
                   </div>
                 </div>
               </div>
+              
               
               {/* Email Field */}
               <div className="space-y-2">

@@ -8,14 +8,6 @@ importers:
 
   .:
     dependencies:
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
-      '@splinetool/react-spline':
-        specifier: ^4.0.0
-        version: 4.0.0(@splinetool/runtime@1.10.21)(next@15.3.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-=======
->>>>>>> 1be6baf2347e408583a0609bedf0636f55d1e783
       '@radix-ui/react-accordion':
         specifier: ^1.2.11
         version: 1.2.11(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -655,6 +647,9 @@ packages:
 
   '@js-sdsl/ordered-map@4.4.2':
     resolution: {integrity: sha512-iUKgm52T8HOE/makSxjqoWhe95ZJA1/G1sYsGev2JDKUSS14KAgg1LHb+Ba+IPow0xflbnSkOsZcO08C7w1gYw==}
+
+  '@multiavatar/multiavatar@1.0.7':
+    resolution: {integrity: sha512-Yg9Uw57bmlErsWL0CSv4d6D4ZqVBE00OZmYr9MRgygoXZdboNtsEI6FbBRw1AY8l88Sm1ARcyojtlm2uwUn0Zg==}
 
   '@napi-rs/wasm-runtime@0.2.11':
     resolution: {integrity: sha512-9DPkXtvHydrcOsopiYpUgPHpmj0HWZKMUnL2dZqpvC42lsratuBG06V5ipyno0fUek5VlFsNQ+AcFATSrJXgMA==}
@@ -4070,6 +4065,8 @@ snapshots:
 
   '@js-sdsl/ordered-map@4.4.2':
     optional: true
+
+  '@multiavatar/multiavatar@1.0.7': {}
 
   '@napi-rs/wasm-runtime@0.2.11':
     dependencies:

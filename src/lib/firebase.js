@@ -27,7 +27,16 @@ import {
   getDocs,
   arrayUnion,
   deleteDoc,
+  arrayRemove,
 } from "firebase/firestore";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 // Type imports removed for JavaScript conversion
 
 const firebaseConfig = {
@@ -55,6 +64,7 @@ if (!firebaseConfig.apiKey) {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 
 // ProfileUpdateData interface removed for JavaScript conversion
@@ -69,7 +79,7 @@ export const createUser = async (email, password, userData) => {
   const profileToCreate = {
     ...userData,
     email: userCredential.user.email,
-    role: userData.role || "user",
+    role: userData.role || "member",
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   };
@@ -98,10 +108,15 @@ export const signInWithGoogle = async () => {
       if (!userExists) {
         const profileData = {
           email: user.email,
+          name: user.displayName || "",
           first_name: user.displayName?.split(" ")[0] || "",
           last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
-          avatar_url: user.photoURL,
-          role: "user",
+          photoURL: user.photoURL,
+          avatar_url: user.photoURL, // Keep both for compatibility
+          role: "member",
+          likedBlogs: [],
+          activity: [],
+          blogCount: 0,
           created_at: serverTimestamp(),
           updated_at: serverTimestamp(),
           last_sign_in_at: serverTimestamp(),
@@ -150,10 +165,27 @@ export const logOut = async () => {
 export const createUserProfile = async (userId, data) => {
   const userRef = doc(db, "users", userId);
 
+  // Initialize with multiavatar if no photoURL provided
+  let avatarData = {};
+  if (!data.photoURL) {
+    try {
+      const { generateUserMultiavatar } = await import('./multiavatar');
+      const multiavatar = generateUserMultiavatar(data);
+      avatarData = {
+        photoURL: multiavatar.dataUrl,
+        avatarSeed: multiavatar.seed
+      };
+    } catch (error) {
+      console.error('Error generating initial multiavatar:', error);
+      // Continue without avatar if generation fails
+    }
+  }
+
   const profileDataToSet = {
     id: userId,
-    role: "user",
+    role: data.role || "member",
     ...data,
+    ...avatarData, // Add multiavatar data if generated
     created_at:
       data.created_at &&
       (data.created_at instanceof Timestamp ||
@@ -208,10 +240,15 @@ if (typeof window !== "undefined") {
         if (!exists) {
           const profileData = {
             email: user.email,
+            name: user.displayName || "",
             first_name: user.displayName?.split(" ")[0] || "",
             last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
-            avatar_url: user.photoURL,
-            role: "user",
+            photoURL: user.photoURL,
+            avatar_url: user.photoURL, // Keep both for compatibility
+            role: "member",
+            likedBlogs: [],
+            activity: [],
+            blogCount: 0,
             created_at: serverTimestamp(),
             updated_at: serverTimestamp(),
             last_sign_in_at: serverTimestamp(),
@@ -245,7 +282,7 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { app, auth, db };
+export { app, auth, db, storage };
 
 // FirestoreConversationData interface removed for JavaScript conversion
 
