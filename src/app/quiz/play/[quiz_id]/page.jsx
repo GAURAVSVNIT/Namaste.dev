@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { db, auth } from '@/lib/quiz';
+import '@/static/quiz/playQuiz.css'
 import {
   doc,
   getDoc,
@@ -18,12 +19,14 @@ export default function PlayQuizPage() {
 
   const [quiz, setQuiz] = useState(null);
   const [answers, setAnswers] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [startTime, setStartTime] = useState(null);
   const [user, setUser] = useState(null);
+  const [fade, setFade] = useState(true);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
-      if (!u) router.push('/'); // Redirect if not logged in
+      if (!u) router.push('/');
       else setUser(u);
     });
 
@@ -36,8 +39,9 @@ export default function PlayQuizPage() {
       const ref = doc(db, 'quizzes', quiz_id);
       const snap = await getDoc(ref);
       if (snap.exists()) {
-        setQuiz(snap.data());
-        setAnswers(new Array(snap.data().data.length).fill(null));
+        const data = snap.data();
+        setQuiz(data);
+        setAnswers(new Array(data.data.length).fill(null));
         setStartTime(Date.now());
       } else {
         alert('Quiz not found');
@@ -48,10 +52,23 @@ export default function PlayQuizPage() {
     fetchQuiz();
   }, [quiz_id]);
 
-  const handleOptionSelect = (qIndex, optIndex) => {
-    const newAnswers = [...answers];
-    newAnswers[qIndex] = optIndex;
-    setAnswers(newAnswers);
+  const handleOptionSelect = (optIndex) => {
+    const updated = [...answers];
+    updated[currentIndex] = optIndex;
+    setAnswers(updated);
+  };
+
+  const goToNext = () => {
+    if (answers[currentIndex] === null) {
+      alert('Please select an option to proceed');
+      return;
+    }
+
+    setFade(false);
+    setTimeout(() => {
+      setCurrentIndex(prev => prev + 1);
+      setFade(true);
+    }, 200); 
   };
 
   const handleSubmit = async () => {
@@ -80,53 +97,82 @@ export default function PlayQuizPage() {
     };
 
     const docRef = await addDoc(collection(db, 'quiz_responses'), response);
-
-    // generate response_id
-    await setDoc(doc(db, 'quiz_responses', docRef.id), {
-            response_id: docRef.id,
-            }, { merge: true });
+    await setDoc(doc(db, 'quiz_responses', docRef.id), { response_id: docRef.id }, { merge: true });
 
     router.push(`/quiz/results/${docRef.id}`);
   };
 
   if (!quiz || !user) return <p className="p-6">Loading quiz...</p>;
 
-  return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">{quiz.title}</h1>
-      <p className="text-gray-600">{quiz.description}</p>
+  const question = quiz.data[currentIndex];
+  const selected = answers[currentIndex];
 
-      {quiz.data.map((q, idx) => (
-        <div key={idx} className="border p-4 rounded space-y-2">
-          <h2 className="font-semibold">
-            {idx + 1}. {q.question}
-          </h2>
-          {q.questionImg && (
-            <img src={q.questionImg} alt="Q" className="w-64 mb-2" />
+  return (
+  <div className="quiz-bg">
+    <div className="quiz-header">
+      <h1>{quiz.title}</h1>
+      <p className="text-gray-600">{quiz.description}</p>
+    </div>
+
+    <div
+      key={currentIndex}
+      className={`quiz-card ${fade ? 'fade-enter-active' : 'fade-enter'}`}
+    >
+      <h2 className='question-number-text'>
+        Question {currentIndex + 1} of {quiz.data.length}
+      </h2>
+
+      <div className="quiz-topbar">
+      <div className="progress-container">
+        <div
+          className="progress-bar"
+          style={{ width: `${((currentIndex+1)/quiz.data.length)*100}%` }}
+        />
+        <div
+          className="progress-head"
+          style={{ left: `${((currentIndex+1)/quiz.data.length)*100}%` }}
+        />
+      </div>
+    </div>
+
+      <p className="question-text">{question.question}</p>
+
+      {question.questionImg && (
+        <img src={question.questionImg} alt="Question" className="quiz-image" />
+      )}
+
+      {question.options.map((opt, optIdx) => (
+        <label key={optIdx} className={`quiz-option ${selected===optIdx? 'selected':''}`}>
+          <input
+            type="radio"
+            name={`q-${currentIndex}`}
+            checked={selected === optIdx}
+            onChange={() => handleOptionSelect(optIdx)}
+          />
+          <span>{opt}</span>
+          {question.optionsImg && question.optionsImg[optIdx] && (
+            <img
+              src={question.optionsImg[optIdx]}
+              alt={`Option ${optIdx + 1}`}
+              className="w-16 h-10 rounded object-cover"
+            />
           )}
-          {q.options.map((opt, optIdx) => (
-            <div key={optIdx} className="flex items-center gap-2">
-              <input
-                type="radio"
-                name={`q-${idx}`}
-                checked={answers[idx] === optIdx}
-                onChange={() => handleOptionSelect(idx, optIdx)}
-              />
-              <span>{opt}</span>
-              {q.optionsImg && q.optionsImg[optIdx] && (
-                <img src={q.optionsImg[optIdx]} className="w-20 h-12" />
-              )}
-            </div>
-          ))}
-        </div>
+        </label>
       ))}
 
-      <button
-        className="bg-green-600 text-white px-6 py-3 rounded font-semibold"
-        onClick={handleSubmit}
-      >
-        Submit Quiz
-      </button>
+      <div className="flex justify-end mt-4">
+        {currentIndex === quiz.data.length - 1 ? (
+          <button className="quiz-submit-button" onClick={handleSubmit}>
+            Submit Quiz
+          </button>
+        ) : (
+          <button className="quiz-button" onClick={goToNext}>
+            Next
+          </button>
+        )}
+      </div>
     </div>
-  );
+  </div>
+);
+
 }

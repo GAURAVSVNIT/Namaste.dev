@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { db, auth } from '@/lib/quiz';
+import { ArrowUp, ArrowDown, Trash2 } from 'lucide-react';
 import {
   collection,
   addDoc,
@@ -9,8 +10,13 @@ import {
   serverTimestamp
 } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
+import '@/static/quiz/createQuiz.css';
+
 
 export default function CreateQuizPage() {
+
+  const [cutoff, setCutoff] = useState(3);
+
   const router = useRouter();
   const [quizInfo, setQuizInfo] = useState({
     title: '',
@@ -30,7 +36,19 @@ export default function CreateQuizPage() {
     }
   ]);
 
+  const isQuestionValid = (q) => {
+    if (!q.question.trim()) return false;
+    if (q.options.some((opt) => !opt.trim())) return false;
+    return true;
+  };
+
   const handleAddQuestion = () => {
+    const lastQ = questions[questions.length - 1];
+    if (!isQuestionValid(lastQ)) {
+      alert('Complete the current question before adding a new one.');
+      return;
+    }
+
     setQuestions([
       ...questions,
       {
@@ -45,31 +63,75 @@ export default function CreateQuizPage() {
     ]);
   };
 
+  const handleMoveUp = (index) => {
+    if (index === 0) return;
+    const reordered = [...questions];
+    [reordered[index], reordered[index - 1]] = [reordered[index - 1], reordered[index]];
+    setQuestions(reordered);
+  };
+
+  const handleMoveDown = (index) => {
+    if (index === questions.length - 1) return;
+    const reordered = [...questions];
+    [reordered[index], reordered[index + 1]] = [reordered[index + 1], reordered[index]];
+    setQuestions(reordered);
+  };
+
+  const handleDelete = (index) => {
+    if (questions.length <= 1) {
+      alert('At least one question is required.');
+      return;
+    }
+    const updated = [...questions];
+    updated.splice(index, 1);
+    setQuestions(updated);
+  };
+
   const handleSubmit = async () => {
+    if (!quizInfo.title.trim() || !quizInfo.description.trim()) {
+      alert('Quiz title and description are required.');
+      return;
+    }
+
+    if (questions.length < 5) {
+      alert('A quiz must contain at least 5 questions.');
+      return;
+    }
+    
+    try {
+      setCutoff(Number(e.target.value)); 
+    }
+    catch (err) {}
+
+    if (cutoff <= 0 || cutoff > questions.length) {
+      alert(`Cutoff must be between 1 and ${questions.length}`);
+      return;
+    }
+
+    for (let i = 0; i < questions.length; i++) {
+      const q = questions[i];
+      if (!isQuestionValid(q)) {
+        alert(`Please complete all fields in Question ${i + 1} (except explanation/image).`);
+        return;
+      }
+    }
+
     try {
       const quiz = {
         ...quizInfo,
         created_on: serverTimestamp(),
         created_by: auth.currentUser.uid,
-        prize: {}, // empty for now, tobe done after marketplace feature
-        data: questions
+        prize: { cutoff }, 
+        data: questions,
       };
 
-      const docRef = await addDoc(collection(db, 'quizzes'), {
-        ...quizInfo,
-        created_on: serverTimestamp(),
-        // created_by: auth.currentUser.displayName.toLowerCase().replace(/\s+/g, '_'),
-        prize: {},
-        data: questions,
-        });
+      const docRef = await addDoc(collection(db, 'quizzes'), quiz);
 
-        // the generated quiz_id
-        await setDoc(doc(db, 'quizzes', docRef.id), {
+      await setDoc(doc(db, 'quizzes', docRef.id), {
         quiz_id: docRef.id,
-        }, { merge: true });
+      }, { merge: true });
 
-        router.push(`/quiz/play/${docRef.id}`);
-
+      router.push(`/quiz/play/${docRef.id}`);
     } catch (error) {
       console.error("Error creating quiz:", error);
       alert("Failed to create quiz");
@@ -77,41 +139,66 @@ export default function CreateQuizPage() {
   };
 
   return (
-    <div className="p-6 space-y-6">
-      <h1 className="text-2xl font-bold">Create a New Quiz</h1>
+    <div className="create-quiz-container">
+      <h1 className="create-quiz-heading">Create a New Quiz</h1>
 
-      <div className="space-y-2">
+      <div className="quiz-info">
         <input
           type="text"
-          placeholder="Title"
-          className="border p-2 w-full"
+          placeholder="Quiz Title"
+          className="quiz-input"
           value={quizInfo.title}
           onChange={(e) => setQuizInfo({ ...quizInfo, title: e.target.value })}
         />
         <textarea
-          placeholder="Description"
-          className="border p-2 w-full"
+          placeholder="Quiz Description"
+          className="quiz-input"
           value={quizInfo.description}
           onChange={(e) => setQuizInfo({ ...quizInfo, description: e.target.value })}
         />
         <input
           type="text"
           placeholder="Cover Image URL (optional)"
-          className="border p-2 w-full"
+          className="quiz-input"
           value={quizInfo.coverImage}
           onChange={(e) => setQuizInfo({ ...quizInfo, coverImage: e.target.value })}
         />
+        <div className='flex align-items-center'>
+        <input
+          type="number"
+          min="1"
+          max={questions.length}
+          placeholder="Cutoff score to win coupon"
+          className="quiz-input"
+          onChange={(e) => setCutoff((e.target.value))}
+          name='cutoff'
+        />
+        </div>
       </div>
 
-      <hr />
+      <hr className="divider" />
 
       {questions.map((q, idx) => (
-        <div key={idx} className="border p-4 rounded space-y-2">
-          <h2 className="font-semibold">Question {idx + 1}</h2>
+        <div key={idx} className="question-card">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="question-title">Question {idx + 1}</h2>
+            <div className="question-controls">
+              <button onClick={() => handleMoveUp(idx)} className="btn-move" title="Move the Question Up">
+                <ArrowUp className="icon" />
+              </button>
+              <button onClick={() => handleMoveDown(idx)} className="btn-move" title="Move the Question Down">
+                <ArrowDown className="icon" />
+              </button>
+              <button onClick={() => handleDelete(idx)} className="btn-delete" title="Delete the Question">
+                <Trash2 className="icon" />
+              </button>
+            </div>
+          </div>
+
           <input
             type="text"
             placeholder="Question text"
-            className="border p-2 w-full"
+            className="quiz-input"
             value={q.question}
             onChange={(e) => {
               const newQ = [...questions];
@@ -121,8 +208,8 @@ export default function CreateQuizPage() {
           />
           <input
             type="text"
-            placeholder="Question image URL (optional)"
-            className="border p-2 w-full"
+            placeholder="Image URL (optional)"
+            className="quiz-input"
             value={q.questionImg}
             onChange={(e) => {
               const newQ = [...questions];
@@ -132,24 +219,20 @@ export default function CreateQuizPage() {
           />
           <select
             value={q.type}
-            className="border p-2"
+            className="quiz-input"
             onChange={(e) => {
               const newQ = [...questions];
               newQ[idx].type = e.target.value;
-              if (e.target.value === 'truefalse') {
-                newQ[idx].options = ['True', 'False'];
-              } else {
-                newQ[idx].options = ['', '', '', ''];
-              }
+              newQ[idx].options = e.target.value === 'truefalse' ? ['True', 'False'] : ['', '', '', ''];
               setQuestions(newQ);
             }}
           >
             <option value="mcq">Multiple Choice</option>
-            <option value="truefalse">True/False</option>
+            <option value="truefalse">True / False</option>
           </select>
 
           {q.options.map((opt, optIdx) => (
-            <div key={optIdx} className="flex items-center gap-2">
+            <div key={optIdx} className="option-row">
               <input
                 type="radio"
                 name={`correct-${idx}`}
@@ -160,11 +243,10 @@ export default function CreateQuizPage() {
                   setQuestions(newQ);
                 }}
               />
-              
               <input
                 type="text"
                 placeholder={`Option ${optIdx + 1}`}
-                className="border p-2 flex-1"
+                className="quiz-input flex-1"
                 value={opt}
                 onChange={(e) => {
                   const newQ = [...questions];
@@ -177,8 +259,8 @@ export default function CreateQuizPage() {
 
           <input
             type="text"
-            placeholder="Explanation"
-            className="border p-2 w-full"
+            placeholder="Explanation (optional)"
+            className="quiz-input"
             value={q.explanation}
             onChange={(e) => {
               const newQ = [...questions];
@@ -189,17 +271,13 @@ export default function CreateQuizPage() {
         </div>
       ))}
 
-      <button
-        className="bg-blue-600 text-white px-4 py-2 rounded"
-        onClick={handleAddQuestion}
-      >
-        + Add Question
-      </button>
+      {questions.length < 15 && (
+        <button className="btn-add" onClick={handleAddQuestion}>
+          + Add Question
+        </button>
+      )}
 
-      <button
-        className="bg-green-600 text-white px-6 py-3 rounded font-semibold"
-        onClick={handleSubmit}
-      >
+      <button className="btn-submit" onClick={handleSubmit}>
         Submit Quiz
       </button>
     </div>

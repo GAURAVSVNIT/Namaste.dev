@@ -24,32 +24,36 @@ export default function QuizPage() {
       : `/quiz/quiz_placeholder.png`;
 
   return (
-    <div className="mainQuizSection p-6 mt-5">
-      <h1 className="text-2xl font-bold mb-6">All Quizzes</h1>
+    <div className="quiz-landing-container">
+      <h1 className="quiz-heading">All Quizzes</h1>
+  {/* <div className="quiz-card-grid"> */}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
         {quizzes.map((quiz) => (
-          <Link
+         <Link
             href={`/quiz/play/${quiz.quiz_id}`}
             key={quiz.id}
-            className="bg-white rounded-xl overflow-hidden shadow hover:shadow-lg transition duration-300"
+            className="quiz-card-link"
           >
-            <div className="h-56 overflow-hidden">
+            <div className="quiz-card-image-container">
               <img
                 src={getCoverImage(quiz)}
                 alt={quiz.title}
-                className="w-full h-full object-cover"
+                className="quiz-card-image"
               />
             </div>
 
-            <div className="p-4 space-y-2">
-              <h2 className="text-lg font-bold text-gray-800">{quiz.title}</h2>
-              <p className="text-gray-600 text-sm">{quiz.description?.slice(0, 100)}...</p>
+            <div className="quiz-card-content">
+              <h2 className="quiz-card-title">{quiz.title}</h2>
+              <p className="quiz-card-description">
+                {quiz.description?.slice(0, 100)}...
+              </p>
               {quiz.created_by && (
-                <p className="text-xs text-gray-400">By: {quiz.created_by}</p>
+                <p className="quiz-card-creator">By: {quiz.created_by}</p>
               )}
             </div>
           </Link>
+
         ))}
       </div>
     </div>

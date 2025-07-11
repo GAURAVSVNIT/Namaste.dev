@@ -8,6 +8,7 @@ import {
   query,
   where
 } from 'firebase/firestore';
+import '@/static/quiz/leaderboard.css';
 
 export default function LeaderboardPage() {
   const { quiz_id } = useParams();
@@ -25,7 +26,6 @@ export default function LeaderboardPage() {
         const snapshot = await getDocs(q);
         const raw = snapshot.docs.map(doc => doc.data());
 
-        // Group by user_id and keep best performance
         const bestByUser = {};
         raw.forEach((res) => {
           const existing = bestByUser[res.user_id];
@@ -73,29 +73,35 @@ export default function LeaderboardPage() {
     fetchLeaderboard();
   }, [quiz_id]);
 
-  if (loading) return <p className="p-6">Loading leaderboard...</p>;
-  if (!entries.length) return <p className="p-6">No leaderboard entries yet.</p>;
+  if (loading) return <p className="leaderboard-container">Loading leaderboard...</p>;
+  if (!entries.length) return <p className="leaderboard-container">No leaderboard entries yet.</p>;
 
   return (
-    <div className="p-6"><br /><br /><br /><br />
-      <h1 className="text-2xl font-bold mb-4">Leaderboard</h1>
-      <div className="overflow-auto">
-        <table className="min-w-full border border-gray-300 rounded overflow-hidden shadow">
-          <thead className="bg-gray-100">
-            <tr className="text-left">
-              <th className="py-2 px-4 border-b">#</th>
-              <th className="py-2 px-4 border-b">Name</th>
-              <th className="py-2 px-4 border-b">Score (out of {entries[0].total})</th>
-              <th className="py-2 px-4 border-b">Time Taken (s)</th>
+    <div className="leaderboard-container">
+      <div className="leaderboard-header">
+        <h1>🏆 Leaderboard</h1>
+        <p className="subtle-text">Top performers in this quiz</p>
+      </div>
+
+      <div className="leaderboard-table-wrapper">
+        <table className="leaderboard-table">
+          <thead>
+            <tr className='header-row'>
+              <th>#</th>
+              <th>Name</th>
+              <th>Score</th>
+              <th>Time (s)</th>
             </tr>
           </thead>
           <tbody>
             {entries.map((entry, idx) => (
-              <tr key={entry.user_id} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b">{idx + 1}</td>
-                <td className="py-2 px-4 border-b">{entry.name}</td>
-                <td className="py-2 px-4 border-b text-green-700 font-semibold">{entry.score}</td>
-                <td className="py-2 px-4 border-b">{entry.timeTaken}</td>
+              <tr key={entry.user_id}>
+                <td>
+                  {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1}
+                </td>
+                <td>{entry.name}</td>
+                <td className="score-cell">{entry.score} / {entry.total}</td>
+                <td>{entry.timeTaken}</td>
               </tr>
             ))}
           </tbody>
