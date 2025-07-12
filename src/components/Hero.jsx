@@ -34,7 +34,7 @@ const Hero = () => {
 const ShoppingCart = () => {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M6 6h15l-1.5 9h-13L4 4H1" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" stroke-linejoin="round"/>
+      <path d="M6 6h15l-1.5 9h-13L4 4H1" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
       <circle cx="9" cy="20" r="1" fill="#ffffff"/>
       <circle cx="18" cy="20" r="1" fill="#ffffff"/>
     </svg>
