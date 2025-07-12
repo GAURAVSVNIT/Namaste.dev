@@ -15,6 +15,11 @@ module.exports = {
         'lavender': '#faf5ff',
         'peach': '#fefce8',
         'sage': '#f7fee7',
+        'misty_rose': { DEFAULT: '#ffe5ec', 300: '#ff245e', 500: '#ffe5ec' },
+        'pink': { DEFAULT: '#ffc2d1', 300: '#ff0e4a', 500: '#ffc2d1' },
+        'cherry_blossom_pink': { DEFAULT: '#ffb3c6', 300: '#ff0544', 500: '#ffb3c6' },
+        'baker-miller_pink': { DEFAULT: '#ff8fab', 300: '#ef003c', 500: '#ff8fab' },
+        'rose_pompadour': { DEFAULT: '#fb6f92', 300: '#d40539', 500: '#fb6f92' },
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',

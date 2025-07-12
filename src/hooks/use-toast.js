@@ -1,7 +1,5 @@
 import { useState, useEffect } from "react";
 
-import { useState } from "react";
-
 export function useToast() {
   const [toastMessage, setToastMessage] = useState(null);
 

@@ -123,9 +123,8 @@ export const signInWithGoogle = async () => {
         };
         await createUserProfile(user.uid, profileData);
         
-        // For consistency with email signup flow, we'll send users to the verify page
-        // Note: Most Google sign-ins already have a verified email, but we'll maintain the flow
-        window.location.href = `/auth/verify?email=${encodeURIComponent(user.email)}`;
+        // For new Google users, redirect to onboarding
+        window.location.href = `/onboarding`;
         return userCredential;
       }
       
