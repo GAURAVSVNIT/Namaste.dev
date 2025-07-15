@@ -54,7 +54,7 @@ export function useToast() {
  * @param {number} options.duration - Toast duration in ms
  */
 export const toast = (options) => {
-  // For now, we'll use browser alerts as a fallback
+  // For now, we'll use console logging as a fallback
   // In a real app, you'd want to use a global toast context
   const variant = options.variant || 'default';
   const title = options.title || '';
@@ -62,10 +62,24 @@ export const toast = (options) => {
   
   const message = title ? `${title}: ${description}` : description;
   
-  // Show browser alert for now
-  if (variant === 'destructive') {
-    alert(`Error: ${message}`);
-  } else {
-    alert(message);
+  switch (variant) {
+    case 'destructive':
+      console.error(`🚨 ${message}`);
+      break;
+    case 'success':
+      console.log(`✅ ${message}`);
+      break;
+    default:
+      console.info(`ℹ️ ${message}`);
+  }
+  
+  // Show browser notification if available
+  if (typeof window !== 'undefined' && window.Notification) {
+    if (Notification.permission === 'granted') {
+      new Notification(title, {
+        body: description,
+        icon: '/favicon.ico',
+      });
+    }
   }
 };

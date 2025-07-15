@@ -22,7 +22,7 @@ const BlogPage = () => {
           const profile = await getUserProfile(user.uid);
           setUserProfile(profile);
         } catch (error) {
-          console.error('Error fetching user profile:', error);
+          // Error fetching user profile - continue without profile
         }
       }
     };
@@ -39,10 +39,10 @@ const BlogPage = () => {
         const blogsData = await response.json();
         setBlogs(blogsData);
       } else {
-        console.error('Failed to fetch blogs');
+        // Failed to fetch blogs - will show empty state
       }
     } catch (error) {
-      console.error('Error fetching blogs:', error);
+      // Error fetching blogs - will show empty state
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +83,6 @@ const BlogPage = () => {
         alert(`Failed to create blog: ${error.error}`);
       }
     } catch (error) {
-      console.error('Error creating blog:', error);
       alert('Failed to create blog. Please try again.');
     }
   };
@@ -115,7 +114,6 @@ const BlogPage = () => {
         alert(`Failed to update blog: ${error.error}`);
       }
     } catch (error) {
-      console.error('Error updating blog:', error);
       alert('Failed to update blog. Please try again.');
     }
   };
@@ -141,7 +139,6 @@ const BlogPage = () => {
         alert(`Failed to delete blog: ${error.error}`);
       }
     } catch (error) {
-      console.error('Error deleting blog:', error);
       alert('Failed to delete blog. Please try again.');
     }
   };
@@ -160,14 +157,14 @@ const BlogPage = () => {
 
   if (authLoading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen" style={{ marginTop: '100px' }}>
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-gray-50 pb-8" style={{ marginTop: '100px' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
