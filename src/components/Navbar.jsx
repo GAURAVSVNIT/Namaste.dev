@@ -80,6 +80,7 @@ export default function Navbar(fontFace) {
     // { name: 'Home'},
     { name: 'Blog', route: "blog" },
     { name: 'Looks', route: "look" },
+    { name: 'Fashion TV', route: "fashiontv" },
     { name: 'Social Media', route: "social" },
     { name: 'Market Place', route: "marketplace" },
     { name: 'Quiz', route: "quiz" },
