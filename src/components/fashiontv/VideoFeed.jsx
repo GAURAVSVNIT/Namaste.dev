@@ -62,7 +62,7 @@ export default function VideoFeed({ onCommentsToggle }) {
             setCurrentVideoIndex(index);
             
             // Load more videos when approaching the end
-            if (index >= videos.length - 2) {
+            if (index >= videos.length - 2 && hasMore && !isLoading) {
               loadMoreVideos();
             }
           }
@@ -74,23 +74,13 @@ export default function VideoFeed({ onCommentsToggle }) {
       }
     );
 
-    observerRef.current = observer;
-    return () => observer.disconnect();
-  }, [videos.length, loadMoreVideos]);
-
-  // Observe video elements
-  useEffect(() => {
-    const observer = observerRef.current;
-    if (!observer) return;
-
     const videoElements = document.querySelectorAll('[data-video-container]');
     videoElements.forEach(el => observer.observe(el));
 
     return () => {
-      videoElements.forEach(el => observer.unobserve(el));
+      observer.disconnect();
     };
-  }, [videos]);
-
+  }, [videos, loadMoreVideos, hasMore, isLoading]);
   if (isLoading && videos.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -122,7 +112,7 @@ export default function VideoFeed({ onCommentsToggle }) {
       >
         {videos.map((video, index) => (
           <div 
-            key={video.id || video.displayId} 
+            key={video.id} 
             className="snap-start w-full h-screen flex items-center justify-center"
             data-video-container
             data-index={index}

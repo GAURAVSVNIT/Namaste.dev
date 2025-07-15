@@ -116,6 +116,7 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
       const comment = {
         id: Date.now(),
         text: newComment,
+        userId: user.uid,
         userName: user.displayName || 'Anonymous',
         timestamp: new Date().toISOString()
       };
@@ -330,7 +331,7 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
                           </span>
                         </div>
                         {/* Delete button - only show for current user's comments */}
-                        {(comment.userName === user?.displayName || comment.userName === 'Anonymous') && (
+        {comment.userId === user?.uid && (
                           <button
                             onClick={() => handleDeleteComment(comment.id)}
                             className="opacity-0 group-hover:opacity-100 text-xs text-gray-400 hover:text-red-500 transition-all duration-200 p-1"

@@ -47,6 +47,12 @@ export default function UploadForm({ onSuccess }) {
     // Check video duration
     const video = document.createElement('video');
     video.src = previewUrl;
+    video.onerror = () => {
+    setValidationError('Failed to load video for validation');
+    setSelectedFile(null);
+    setPreview(null);
+    URL.revokeObjectURL(previewUrl);
+    };
     video.onloadedmetadata = () => {
       if (video.duration > 60) {
         setValidationError('Video must be 60 seconds or less');

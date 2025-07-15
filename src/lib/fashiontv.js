@@ -38,8 +38,25 @@ export const uploadVideo = async (userId, file, videoData) => {
     throw new Error('Video file is required');
   }
   
-  if (!videoData.caption?.trim()) {
+    if (!videoData.caption?.trim()) {
     throw new Error('Caption is required');
+  }
+
+  // Validate file type
+  const allowedTypes = ['video/mp4', 'video/quicktime', 'video/webm'];
+  if (!allowedTypes.includes(file.type)) {
+    throw new Error('Invalid file type. Only MP4, MOV, and WebM are allowed');
+  }
+
+  // Validate file size (100MB limit)
+  const maxSize = 100 * 1024 * 1024; // 100MB in bytes
+  if (file.size > maxSize) {
+    throw new Error('File size exceeds 100MB limit');
+  }
+
+  // Validate duration (60 seconds limit)
+  if (videoData.duration && videoData.duration > 60) {
+    throw new Error('Video duration exceeds 60 seconds limit');
   }
 
   try {
@@ -92,7 +109,7 @@ export const getAllVideos = async (limitCount = 10, lastDoc = null) => {
       orderBy('createdAt', 'desc')
     );
 
-    if (limitCount) {
+    if (limitCount && limitCount > 0) {
       q = query(q, limit(limitCount));
     }
 
@@ -147,7 +164,10 @@ export const getVideoById = async (videoId) => {
       throw new Error('Video not found');
     }
   } catch (error) {
-    throw new Error('Failed to fetch video');
+    if (error.message === 'Video not found') {
+      throw error;
+    }
+    throw new Error(`Failed to fetch video: ${error.message || 'Unknown error'}`);
   }
 };
 
@@ -208,15 +228,12 @@ export const incrementViewCount = async (videoId) => {
     const videoRef = doc(db, 'fashiontv_videos', videoId);
     const videoSnap = await getDoc(videoRef);
 
-    if (videoSnap.exists()) {
-      const currentViews = videoSnap.data().views || 0;
-      await updateDoc(videoRef, {
-        views: currentViews + 1,
-        updatedAt: serverTimestamp()
-      });
-    }
+    await updateDoc(videoRef, {
+      views: increment(1),
+      updatedAt: serverTimestamp()
+    });
   } catch (error) {
-    // Silently fail for view count updates
+    console.warn('Failed to increment view count:', error);
   }
 };
 

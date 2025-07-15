@@ -10,7 +10,7 @@ export default function UploadPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" style={{ marginTop: '100px' }}>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center mt-[100px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
@@ -18,7 +18,7 @@ export default function UploadPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center" style={{ marginTop: '100px' }}>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center mt-[100px]">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-4">Please Login</h1>
           <p className="text-gray-600 mb-4">You need to be logged in to upload videos.</p>
