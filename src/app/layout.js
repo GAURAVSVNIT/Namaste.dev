@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +33,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LayoutWrapper>
-          <Navbar face={poppins.className} />
+          <ConditionalNavbar face={poppins.className} />
           {children}
           <Footer face={poppins.className} />
         </LayoutWrapper>
