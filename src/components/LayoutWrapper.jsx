@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import CartSidebar from '@/components/ui/cart-sidebar';
 
 export default function LayoutWrapper({ children }) {
   const pathname = usePathname();
@@ -14,6 +15,7 @@ export default function LayoutWrapper({ children }) {
     <>
       {!isAuthPage && !isMerchantDashboard && <Navbar />}
       {children}
+      <CartSidebar />
     </>
   );
 }

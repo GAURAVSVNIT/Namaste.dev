@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { getDocs, collection, db, query, orderBy, where } from '../../lib/firebase';
 import { Search, Filter, ShoppingCart, Star, Heart, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
@@ -9,8 +10,11 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Badge } from '../../components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
+import useCartStore from '../../store/cart-store';
+import { formatCurrency } from '../../lib/utils';
 
 const MarketPlacePage = () => {
+  const router = useRouter();
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [merchants, setMerchants] = useState([]);
@@ -19,6 +23,9 @@ const MarketPlacePage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedMerchant, setSelectedMerchant] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  
+  const { addToCart, openCart, getCartCount } = useCartStore();
+  const cartCount = getCartCount();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -99,12 +106,24 @@ const MarketPlacePage = () => {
 
   const categories = ['all', ...new Set(products.map(p => p.category).filter(Boolean))];
 
+
+  const handleAddToCart = (e, product) => {
+    e.stopPropagation();
+    addToCart(product);
+    openCart();
+  };
+
+  const handleViewProduct = (productId) => {
+    router.push(`/marketplace/product/${productId}`);
+  };
+
   const ProductCard = ({ product }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       whileHover={{ y: -5 }}
       className="group cursor-pointer"
+      onClick={() => handleViewProduct(product.id)}
     >
       <Card className="overflow-hidden transition-all duration-300 hover:shadow-lg">
         <div className="relative">
@@ -138,11 +157,11 @@ const MarketPlacePage = () => {
           <div className="flex justify-between items-center mb-3">
             <div>
               <span className="text-2xl font-bold text-green-600">
-                ${product.price || '0'}
+                {formatCurrency(product.price || 0)}
               </span>
               {product.originalPrice && (
                 <span className="text-sm text-gray-500 line-through ml-2">
-                  ${product.originalPrice}
+                  {formatCurrency(product.originalPrice)}
                 </span>
               )}
             </div>
@@ -157,11 +176,23 @@ const MarketPlacePage = () => {
             </span>
           </div>
           <div className="flex space-x-2">
-            <Button className="flex-1" size="sm">
+            <Button 
+              className="flex-1" 
+              size="sm"
+              onClick={(e) => handleAddToCart(e, product)}
+              disabled={!product.stock || product.stock === 0}
+            >
               <ShoppingCart className="w-4 h-4 mr-2" />
               Add to Cart
             </Button>
-            <Button variant="outline" size="sm">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleViewProduct(product.id);
+              }}
+            >
               <Eye className="w-4 h-4" />
             </Button>
           </div>
@@ -190,7 +221,23 @@ const MarketPlacePage = () => {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Marketplace</h1>
+          <div className="flex items-center justify-between mb-4">
+            <div></div>
+            <h1 className="text-4xl font-bold text-gray-900">Marketplace</h1>
+            <Button
+              variant="outline"
+              className="relative"
+              onClick={openCart}
+            >
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Cart
+              {cartCount > 0 && (
+                <Badge className="absolute -top-2 -right-2 bg-red-500 text-white text-xs min-w-[20px] h-5 flex items-center justify-center rounded-full">
+                  {cartCount}
+                </Badge>
+              )}
+            </Button>
+          </div>
           <p className="text-gray-600">Discover products from multiple merchants</p>
         </motion.div>
 
