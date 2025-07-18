@@ -57,7 +57,9 @@ const useCheckoutStore = create((set, get) => ({
   },
   
   setShippingAddress: (address) => {
-    set({ shippingAddress: { ...get().shippingAddress, ...address } });
+    set((state) => ({
+      shippingAddress: { ...state.shippingAddress, ...address }
+    }));
   },
   
   setPaymentMethod: (method) => {
@@ -65,7 +67,9 @@ const useCheckoutStore = create((set, get) => ({
   },
   
   setPaymentDetails: (details) => {
-    set({ paymentDetails: { ...get().paymentDetails, ...details } });
+    set((state) => ({
+      paymentDetails: { ...state.paymentDetails, ...details }
+    }));
   },
   
   setCurrentStep: (step) => {
