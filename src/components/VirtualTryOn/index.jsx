@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import styles from './VirtualTryOn.module.css';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, getDocs, orderBy, query, serverTimestamp } from 'firebase/firestore';
 
 const VirtualTryOn = () => {
   const [personImage, setPersonImage] = useState(null);
@@ -29,9 +31,38 @@ const VirtualTryOn = () => {
   
   const API_BASE_URL = process.env.NEXT_PUBLIC_VIRTUAL_TRYON_API_URL || 'http://localhost:8000';
 
+  // Firestore functions
+  const loadSavedTryOns = async () => {
+    try {
+      const tryOnsCollection = collection(db, 'virtualTryOns');
+      const tryOnsQuery = query(tryOnsCollection, orderBy('timestamp', 'desc'));
+      const snapshot = await getDocs(tryOnsQuery);
+      const tryOns = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setSavedTryOns(tryOns);
+    } catch (error) {
+      console.error('Error loading saved try-ons:', error);
+    }
+  };
+
+  const saveNewTryOn = async (imageData) => {
+    try {
+      const tryOnsCollection = collection(db, 'virtualTryOns');
+      const newTryOn = {
+        image: imageData,
+        timestamp: serverTimestamp(),
+        createdAt: new Date().toISOString()
+      };
+      const docRef = await addDoc(tryOnsCollection, newTryOn);
+      // Update local state with the new try-on
+      setSavedTryOns(prev => [{ id: docRef.id, ...newTryOn, timestamp: new Date().toISOString() }, ...prev]);
+    } catch (error) {
+      console.error('Error saving try-on:', error);
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
+    loadSavedTryOns(); // Load saved try-ons on mount
     return () => setIsMounted(false);
   }, []);
 
@@ -152,7 +183,8 @@ function handleFileUpload(file, type) {
           setGeneratedImage(newGeneratedImage);
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 3000);
-          setSavedTryOns(prev => [{ image: newGeneratedImage.src, timestamp: new Date().toISOString() }, ...prev]);
+          // Save to Firestore
+          await saveNewTryOn(newGeneratedImage.src);
 
 
           if (resultRef.current) {
@@ -175,7 +207,8 @@ function handleFileUpload(file, type) {
         setGeneratedImage(newGeneratedImage);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
-        setSavedTryOns(prev => [{ image: newGeneratedImage.src, timestamp: new Date().toISOString() }, ...prev]);
+        // Save to Firestore in demo mode too
+        await saveNewTryOn(newGeneratedImage.src);
 
 
         if (resultRef.current) {
