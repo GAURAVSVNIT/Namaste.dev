@@ -1,9 +1,5 @@
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 
-/**
- * Toast hook for displaying notifications
- * @returns {Object} Toast functions and state
- */
 export function useToast() {
   const [toasts, setToasts] = useState([]);
 

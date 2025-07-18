@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
-import { LoginForm } from "@/components/ui/login-form";
+import { LoginForm } from "@/components/auth/login-form";
 
 function LoginPageContent() {
   return <LoginForm />;
