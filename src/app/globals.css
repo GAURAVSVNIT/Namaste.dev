@@ -47,6 +47,27 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  
+  /* Additional Sidebar Variables */
+  --sidebar-bg: #ffffff;
+  --sidebar-text: #4b5563;
+  --sidebar-text-hover: #111827;
+  --sidebar-active-bg: #f0f9ff;
+  --sidebar-active-text: #0369a1;
+  --sidebar-active-border: #0ea5e9;
+  --sidebar-hover-bg: #f9fafb;
+  --sidebar-icon: #6b7280;
+  --sidebar-icon-active: #0ea5e9;
+  --sidebar-icon-hover: #1e40af;
+  --sidebar-header-text: #111827;
+  --sidebar-divider: #f3f4f6;
+  --sidebar-user-bg: #f8fafc;
+  --sidebar-user-hover: #f1f5f9;
+  --sidebar-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.06);
+  --transition-default: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --z-sidebar: 40;
+  --z-overlay: 30;
+  --z-mobile-menu: 50;
 
   /* Radius Utilities */
   --radius-sm: calc(var(--radius) - 4px);
