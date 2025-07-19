@@ -20,7 +20,7 @@ const VirtualTryOn = () => {
   const [progress, setProgress] = useState(0);
   
   // API configuration from environment variables
-  const API_BASE_URL = process.env.NEXT_PUBLIC_VIRTUAL_TRYON_API_URL || 'http://localhost:8000';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_VIRTUAL_TRYON_API_URL ;
 
   // Refs for file inputs
   const personInputRef = useRef(null);
