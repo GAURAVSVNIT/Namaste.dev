@@ -16,6 +16,15 @@ export default function FashionTVPage() {
 
   return (
     <div className="fixed inset-0 bg-black overflow-hidden">
+      {/* Top Left Live Button */}
+      <div className="absolute top-4 left-4 z-50">
+        <Link href="/fashiontv/live">
+          <button className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-all">
+            <span className="text-sm font-semibold">LIVE</span>
+          </button>
+        </Link>
+      </div>
+
       {/* Top Right Home Button */}
       <div className="absolute top-4 right-4 z-50">
         <Link href="/">

@@ -5,6 +5,7 @@ import {
   getDoc, 
   getDocs, 
   updateDoc, 
+  deleteDoc,
   query, 
   where, 
   orderBy, 
@@ -271,4 +272,233 @@ export const getUserVideos = async (userId) => {
   } catch (error) {
     throw new Error('Failed to fetch user videos');
   }
+};
+
+// LIVESTREAM FUNCTIONS
+
+/**
+ * Add a new livestream
+ * @param {string} userId - User ID
+ * @param {Object} streamData - Stream metadata
+ * @returns {Promise<Object>} Created stream object
+ */
+export const addLivestream = async (userId, streamData) => {
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
+  if (!streamData.title?.trim()) {
+    throw new Error('Stream title is required');
+  }
+
+  if (!streamData.url?.trim()) {
+    throw new Error('Stream URL is required');
+  }
+
+  if (!streamData.platform) {
+    throw new Error('Platform is required');
+  }
+
+  try {
+    // Get user data
+    const userData = await getUserById(userId);
+    const userName = userData.name || userData.email || 'Unknown User';
+
+    // Create stream metadata
+    const stream = {
+      userId,
+      userName,
+      userAvatar: userData.photoURL || null,
+      title: streamData.title.trim(),
+      description: streamData.description?.trim() || '',
+      platform: streamData.platform, // 'youtube' or 'twitch'
+      url: streamData.url.trim(),
+      thumbnail: streamData.thumbnail || null,
+      addedBy: userId,
+      approved: true, // Auto-approve all streams for now (change to false if you want manual approval)
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    // Save to Firestore
+    const docRef = await addDoc(collection(db, 'livestreams'), stream);
+    return { id: docRef.id, ...stream };
+  } catch (error) {
+    throw new Error('Failed to add livestream');
+  }
+};
+
+/**
+ * Get all approved livestreams
+ * @param {number} limitCount - Number of streams to fetch
+ * @returns {Promise<Array>} Array of stream objects
+ */
+export const getApprovedLivestreams = async (limitCount = 20) => {
+  try {
+    // First check if collection exists by trying to get all documents
+    const collectionRef = collection(db, 'livestreams');
+    
+    // Get all documents first, then filter and sort in memory
+    // This avoids the composite index requirement
+    const querySnapshot = await getDocs(collectionRef);
+    const streams = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      // Only include approved streams
+      if (data.approved === true) {
+        streams.push({
+          id: doc.id,
+          ...data,
+          createdAt: data.createdAt?.toDate() || new Date(),
+          updatedAt: data.updatedAt?.toDate() || new Date()
+        });
+      }
+    });
+
+    // Sort by createdAt in descending order
+    streams.sort((a, b) => b.createdAt - a.createdAt);
+
+    // Apply limit if specified
+    if (limitCount && limitCount > 0) {
+      return streams.slice(0, limitCount);
+    }
+
+    return streams;
+  } catch (error) {
+    console.error('Error fetching livestreams:', error);
+    // If collection doesn't exist or there's an error, return empty array
+    return [];
+  }
+};
+
+/**
+ * Get all livestreams (for admin)
+ * @param {number} limitCount - Number of streams to fetch
+ * @returns {Promise<Array>} Array of stream objects
+ */
+export const getAllLivestreams = async (limitCount = 50) => {
+  try {
+    const collectionRef = collection(db, 'livestreams');
+    
+    // Get all documents first, then sort in memory
+    const querySnapshot = await getDocs(collectionRef);
+    const streams = [];
+
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      streams.push({
+        id: doc.id,
+        ...data,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date()
+      });
+    });
+
+    // Sort by createdAt in descending order
+    streams.sort((a, b) => b.createdAt - a.createdAt);
+
+    // Apply limit if specified
+    if (limitCount && limitCount > 0) {
+      return streams.slice(0, limitCount);
+    }
+
+    return streams;
+  } catch (error) {
+    console.error('Error fetching all livestreams:', error);
+    // If collection doesn't exist or there's an error, return empty array
+    return [];
+  }
+};
+
+/**
+ * Update livestream approval status
+ * @param {string} streamId - Stream ID
+ * @param {boolean} approved - Approval status
+ * @returns {Promise<void>}
+ */
+export const updateStreamApproval = async (streamId, approved) => {
+  if (!streamId) {
+    throw new Error('Stream ID is required');
+  }
+
+  try {
+    const streamRef = doc(db, 'livestreams', streamId);
+    await updateDoc(streamRef, {
+      approved,
+      updatedAt: serverTimestamp()
+    });
+  } catch (error) {
+    throw new Error('Failed to update stream approval');
+  }
+};
+
+/**
+ * Delete a livestream
+ * @param {string} streamId - Stream ID
+ * @returns {Promise<void>}
+ */
+export const deleteLivestream = async (streamId) => {
+  if (!streamId) {
+    throw new Error('Stream ID is required');
+  }
+
+  try {
+    const streamRef = doc(db, 'livestreams', streamId);
+    await deleteDoc(streamRef);
+  } catch (error) {
+    throw new Error('Failed to delete livestream');
+  }
+};
+
+/**
+ * Parse and validate stream URLs
+ * @param {string} url - Stream URL
+ * @returns {Object} Parsed stream info
+ */
+export const parseStreamUrl = (url) => {
+  if (!url) {
+    throw new Error('URL is required');
+  }
+
+  const trimmedUrl = url.trim();
+
+  // YouTube patterns
+  const youtubePatterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/,
+    /youtube\.com\/channel\/([\w-]+)/,
+    /youtube\.com\/c\/([\w-]+)/,
+    /youtube\.com\/@([\w-]+)/
+  ];
+
+  // Twitch patterns
+  const twitchPatterns = [
+    /twitch\.tv\/([\w-]+)/
+  ];
+
+  // Check YouTube
+  for (const pattern of youtubePatterns) {
+    const match = trimmedUrl.match(pattern);
+    if (match) {
+      return {
+        platform: 'youtube',
+        channelId: match[1],
+        embedUrl: `https://www.youtube.com/embed/live_stream?channel=${match[1]}`
+      };
+    }
+  }
+
+  // Check Twitch
+  for (const pattern of twitchPatterns) {
+    const match = trimmedUrl.match(pattern);
+    if (match) {
+      return {
+        platform: 'twitch',
+        channelName: match[1],
+        embedUrl: trimmedUrl
+      };
+    }
+  }
+
+  throw new Error('Unsupported URL format. Please use YouTube or Twitch URLs.');
 };
