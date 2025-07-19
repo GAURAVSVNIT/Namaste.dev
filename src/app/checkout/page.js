@@ -27,6 +27,7 @@ import useCheckoutStore from '../../store/checkout-store';
 import useCartStore from '../../store/cart-store';
 import { formatCurrency } from '../../lib/utils';
 import ShippingForm from '../../components/checkout/ShippingForm';
+import PaymentInfo from '../../components/checkout/PaymentInfo';
 
 const CheckoutPage = () => {
   const router = useRouter();
@@ -102,103 +103,6 @@ const CheckoutPage = () => {
 
   const ShippingInfo = () => <ShippingForm />;
 
-  const PaymentInfo = useCallback(() => (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-2">
-        <CreditCard className="w-5 h-5" />
-        <h2 className="text-2xl font-semibold">Payment Information</h2>
-      </div>
-      
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label>Payment Method</Label>
-          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="card" id="card" />
-              <Label htmlFor="card">Credit/Debit Card</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="upi" id="upi" />
-              <Label htmlFor="upi">UPI</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="netbanking" id="netbanking" />
-              <Label htmlFor="netbanking">Net Banking</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="cod" id="cod" />
-              <Label htmlFor="cod">Cash on Delivery</Label>
-            </div>
-          </RadioGroup>
-        </div>
-        
-        {paymentMethod === 'card' && (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="cardNumber">Card Number</Label>
-              <Input
-                id="cardNumber"
-                placeholder="1234 5678 9012 3456"
-                value={paymentDetails.cardNumber}
-                onChange={(e) => handlePaymentDetailsChange('cardNumber', e.target.value)}
-                className={errors.cardNumber ? 'border-red-500' : ''}
-              />
-              {errors.cardNumber && <p className="text-sm text-red-500">{errors.cardNumber}</p>}
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="expiryDate">Expiry Date</Label>
-                <Input
-                  id="expiryDate"
-                  placeholder="MM/YY"
-                  value={paymentDetails.expiryDate}
-                  onChange={(e) => handlePaymentDetailsChange('expiryDate', e.target.value)}
-                  className={errors.expiryDate ? 'border-red-500' : ''}
-                />
-                {errors.expiryDate && <p className="text-sm text-red-500">{errors.expiryDate}</p>}
-              </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="cvv">CVV</Label>
-                <Input
-                  id="cvv"
-                  placeholder="123"
-                  value={paymentDetails.cvv}
-                  onChange={(e) => handlePaymentDetailsChange('cvv', e.target.value)}
-                  className={errors.cvv ? 'border-red-500' : ''}
-                />
-                {errors.cvv && <p className="text-sm text-red-500">{errors.cvv}</p>}
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="nameOnCard">Name on Card</Label>
-              <Input
-                id="nameOnCard"
-                value={paymentDetails.nameOnCard}
-                onChange={(e) => handlePaymentDetailsChange('nameOnCard', e.target.value)}
-                className={errors.nameOnCard ? 'border-red-500' : ''}
-              />
-              {errors.nameOnCard && <p className="text-sm text-red-500">{errors.nameOnCard}</p>}
-            </div>
-          </div>
-        )}
-        
-        {paymentMethod === 'upi' && (
-          <div className="space-y-2">
-            <Label htmlFor="upiId">UPI ID</Label>
-            <Input
-              id="upiId"
-              placeholder="yourname@upi"
-              value={paymentDetails.upiId || ''}
-              onChange={(e) => handlePaymentDetailsChange('upiId', e.target.value)}
-            />
-          </div>
-        )}
-      </div>
-    </div>
-  ), [paymentMethod, paymentDetails, errors, setPaymentMethod, handlePaymentDetailsChange]);
 
   const OrderConfirmation = useCallback(() => (
     <div className="text-center space-y-6">
@@ -316,12 +220,113 @@ const CheckoutPage = () => {
 
   const handlePlaceOrder = async () => {
     try {
-      const newOrder = await processOrder();
-      if (orderType === 'cart') {
-        clearCart();
+      // For COD orders, process directly without Razorpay
+      if (paymentMethod === 'cod') {
+        const newOrder = await processOrder();
+        if (orderType === 'cart') {
+          clearCart();
+        }
+        setCurrentStep(4);
+        return;
       }
+
+      // For online payments, create Razorpay order first
+      const orderResponse = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: total,
+          currency: 'INR',
+          orderItems,
+          shippingAddress,
+          paymentMethod,
+        }),
+      });
+
+      if (!orderResponse.ok) {
+        throw new Error('Failed to create order');
+      }
+
+      const { razorpayOrderId, amount } = await orderResponse.json();
+
+      // Initialize Razorpay checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: amount,
+        currency: 'INR',
+        name: 'Namaste.dev Marketplace',
+        description: `Order for ${orderItems.length} item(s)`,
+        order_id: razorpayOrderId,
+        handler: async function (response) {
+          // Payment successful, verify on backend
+          try {
+            const verifyResponse = await fetch('/api/verify-payment', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderDetails: {
+                  orderItems,
+                  shippingAddress,
+                  paymentMethod,
+                  total
+                }
+              }),
+            });
+
+            if (verifyResponse.ok) {
+              const verifiedOrder = await verifyResponse.json();
+              // Update checkout store with the verified order
+              useCheckoutStore.getState().setOrder(verifiedOrder);
+              
+              if (orderType === 'cart') {
+                clearCart();
+              }
+              setCurrentStep(4);
+            } else {
+              throw new Error('Payment verification failed');
+            }
+          } catch (error) {
+            console.error('Payment verification failed:', error);
+            alert('Payment verification failed. Please contact support.');
+          }
+        },
+        prefill: {
+          name: shippingAddress.name,
+          email: shippingAddress.email,
+          contact: shippingAddress.phone,
+        },
+        notes: {
+          address: `${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.pincode}`,
+        },
+        theme: {
+          color: '#3B82F6',
+        },
+        modal: {
+          ondismiss: function() {
+            // Payment cancelled by user
+            console.log('Payment cancelled by user');
+          }
+        }
+      };
+
+      // Check if Razorpay is loaded
+      if (typeof window !== 'undefined' && window.Razorpay) {
+        const rzp = new window.Razorpay(options);
+        rzp.open();
+      } else {
+        throw new Error('Razorpay SDK not loaded');
+      }
+
     } catch (error) {
       console.error('Order placement failed:', error);
+      alert('Failed to place order. Please try again.');
     }
   };
 
@@ -383,7 +388,13 @@ const CheckoutPage = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <PaymentInfo />
+                  <PaymentInfo
+                    paymentMethod={paymentMethod}
+                    setPaymentMethod={setPaymentMethod}
+                    paymentDetails={paymentDetails}
+                    handlePaymentDetailsChange={handlePaymentDetailsChange}
+                    errors={errors}
+                  />
                 </motion.div>
               )}
               {currentStep === 4 && (

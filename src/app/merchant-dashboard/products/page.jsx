@@ -7,8 +7,10 @@ import { useDashboard } from '@/context/DashboardContext';
 import styles from './Products.module.css';
 import { getDocs, collection, db, deleteDoc, doc } from '@/lib/firebase';
 import ProductModal from '@/components/merchant-dashboard/ProductModal';
+import RoleProtected from '@/components/auth/RoleProtected';
+import { USER_ROLES } from '@/lib/roles';
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   const { state, dispatch } = useDashboard();
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -222,5 +224,14 @@ export default function ProductsPage() {
         )}
       </AnimatePresence>
     </div>
+  );
+}
+
+// Main component with role protection
+export default function ProductsPage() {
+  return (
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
+      <ProductsPageContent />
+    </RoleProtected>
   );
 }

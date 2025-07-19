@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
@@ -21,6 +21,8 @@ import {
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 import profileStyles from './ProfileSection.module.css';
+import { useRole } from '@/hooks/useRole';
+import { logOut } from '@/lib/firebase';
 
 // Icons for sidebar items
 const menuItems = [
@@ -65,10 +67,42 @@ const overlayVariants = {
 
 export function Sidebar({ isCollapsed, onToggleCollapse, onNavigation }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, loading: userLoading } = useRole();
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const sidebarRef = useRef(null);
+
+  // Generate initials from user name
+  const getUserInitials = () => {
+    if (!user) return 'M'; // Default to 'M' for Merchant if no user
+    
+    const firstName = user.first_name || '';
+    const lastName = user.last_name || '';
+    const name = user.name || '';
+    
+    // If we have first and last name, use their initials
+    if (firstName && lastName) {
+      return `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+    }
+    
+    // If we have a full name, use first two letters or first and last word initials
+    if (name) {
+      const nameParts = name.trim().split(' ');
+      if (nameParts.length >= 2) {
+        return `${nameParts[0].charAt(0)}${nameParts[nameParts.length - 1].charAt(0)}`.toUpperCase();
+      }
+      return name.charAt(0).toUpperCase();
+    }
+    
+    // If we have email, use first letter
+    if (user.email) {
+      return user.email.charAt(0).toUpperCase();
+    }
+    
+    return 'M'; // Default fallback
+  };
 
   // Check if mobile
   useEffect(() => {
@@ -291,8 +325,21 @@ export function Sidebar({ isCollapsed, onToggleCollapse, onNavigation }) {
                   </div>
                   {!isCollapsed && (
                     <div className={profileStyles.profileInfo}>
-                      <span className={profileStyles.profileName}>John Doe</span>
-                      <span className={profileStyles.profileEmail}>john@example.com</span>
+                      {userLoading ? (
+                        <div className="animate-pulse">
+                          <div className="h-4 bg-gray-300 rounded w-20 mb-1"></div>
+                          <div className="h-3 bg-gray-300 rounded w-24"></div>
+                        </div>
+                      ) : (
+                        <>
+                          <span className={profileStyles.profileName}>
+                            {user?.name || user?.first_name ? `${user?.first_name || ''} ${user?.last_name || ''}`.trim() : 'User'}
+                          </span>
+                          <span className={profileStyles.profileEmail}>
+                            {user?.email || 'No email'}
+                          </span>
+                        </>
+                      )}
                     </div>
                   )}
                 </button>
@@ -317,11 +364,15 @@ export function Sidebar({ isCollapsed, onToggleCollapse, onNavigation }) {
                     className={profileStyles.signOutContainer}
                   >
                     <button
-                      onClick={(e) => {
+                      onClick={async (e) => {
                         e.stopPropagation();
-                        // Handle sign out
-                        handleNavigation();
-                        setIsProfileOpen(false);
+                        try {
+                        await logOut();
+                          setIsProfileOpen(false);
+                          router.push('/');
+                        } catch (error) {
+                          console.error('Error signing out:', error);
+                        }
                       }}
                       className={profileStyles.signOutButton}
                       aria-label="Sign out"

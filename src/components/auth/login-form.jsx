@@ -429,7 +429,7 @@ export function LoginForm() {
                 </Link>
               </div>
               <Button 
-                className="w-full h-11 bg-primary hover:bg-primary-dark focus:ring-4 focus:ring-primary/20 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2" 
+                className="w-full h-11 bg-gradient-to-r from-teal-600 to-purple-600 hover:from-teal-700 hover:to-purple-700 focus:ring-4 focus:ring-teal-200 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl" 
                 type="submit" 
                 disabled={loading}
               >

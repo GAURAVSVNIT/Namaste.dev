@@ -7,13 +7,15 @@ import { useDashboard } from '@/context/DashboardContext';
 // import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import styles from './Chat.module.css';
+import RoleProtected from '@/components/auth/RoleProtected';
+import { USER_ROLES } from '@/lib/roles';
 
 const formatTime = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 
-export default function ChatPage() {
+function ChatPageContent() {
   const { state, dispatch } = useDashboard();
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
@@ -176,5 +178,14 @@ export default function ChatPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+// Main component with role protection
+export default function ChatPage() {
+  return (
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
+      <ChatPageContent />
+    </RoleProtected>
   );
 }

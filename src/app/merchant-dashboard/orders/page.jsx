@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import styles from './Orders.module.css';
+import RoleProtected from '@/components/auth/RoleProtected';
+import { USER_ROLES } from '@/lib/roles';
 
 const statusOptions = [
   { value: 'all', label: 'All Orders' },
@@ -29,7 +31,7 @@ const getStatusClass = (status) => {
   }
 };
 
-export default function OrdersPage() {
+function OrdersPageContent() {
   const { state, dispatch } = useDashboard();
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -280,5 +282,14 @@ export default function OrdersPage() {
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+// Main component with role protection
+export default function OrdersPage() {
+  return (
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
+      <OrdersPageContent />
+    </RoleProtected>
   );
 }

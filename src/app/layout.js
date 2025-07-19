@@ -33,6 +33,7 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
+          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         </body>
       </html>
     );
@@ -49,6 +50,7 @@ export default function RootLayout({ children }) {
           {children}
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </body>
     </html>
   );
