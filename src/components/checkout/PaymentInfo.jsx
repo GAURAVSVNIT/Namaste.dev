@@ -31,64 +31,74 @@ const areEqual = (prevProps, nextProps) => {
 
 const PaymentInfo = memo(({ paymentMethod, setPaymentMethod, paymentDetails, handlePaymentDetailsChange, errors }) => {
   return (
-    <div className="space-y-6">
-      <div className="flex items-center space-x-2">
-        <CreditCard className="w-5 h-5" />
-        <h2 className="text-2xl font-semibold">Payment Information</h2>
-      </div>
-      
-      <div className="space-y-4">
-        <div className="space-y-2">
-          <Label>Payment Method</Label>
-          <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="cod" id="cod" />
-              <Label htmlFor="cod"><Truck className="w-4 h-4 inline-block mr-1" /> Cash on Delivery</Label>
+    <div className="payment-method-container">
+      <div className="payment-method-options">
+        <div 
+          className={`payment-method-option ${paymentMethod === 'cod' ? 'selected' : ''}`}
+          onClick={() => setPaymentMethod('cod')}
+        >
+          <div className="payment-method-radio"></div>
+          <div className="payment-method-content">
+            <div className="payment-method-icon">
+              <Truck className="w-5 h-5" />
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="online" id="online" />
-              <Label htmlFor="online"><Smartphone className="w-4 h-4 inline-block mr-1" /> Pay Online</Label>
+            <div className="payment-method-details">
+              <div className="payment-method-name">Cash on Delivery</div>
+              <div className="payment-method-description">Pay when delivered</div>
             </div>
-          </RadioGroup>
+          </div>
         </div>
         
-        {paymentMethod === 'online' && (
-          <Card className="bg-blue-50 border-blue-200">
-            <CardContent className="pt-6">
-              <div className="flex items-center space-x-2 text-blue-700">
-                <CreditCard className="w-5 h-5" />
-                <h3 className="font-semibold">Secure Online Payment</h3>
-              </div>
-              <p className="text-sm text-blue-600 mt-2">
-                You will be redirected to Razorpay's secure payment gateway where you can pay using:
-              </p>
-              <ul className="text-sm text-blue-600 mt-2 space-y-1">
-                <li>• Credit/Debit Cards</li>
-                <li>• UPI (Google Pay, PhonePe, Paytm, etc.)</li>
-                <li>• Net Banking</li>
-                <li>• Wallets</li>
-              </ul>
-            </CardContent>
-          </Card>
-        )}
-        
-        {paymentMethod === 'cod' && (
-          <Card className="bg-amber-50 border-amber-200">
-            <CardContent className="pt-6">
-              <div className="flex items-center space-x-2 text-amber-700">
-                <Truck className="w-5 h-5" />
-                <h3 className="font-semibold">Cash on Delivery</h3>
-              </div>
-              <p className="text-sm text-amber-600 mt-2">
-                Pay in cash when your order is delivered to your doorstep.
-              </p>
-              <p className="text-sm text-amber-600">
-                Additional ₹40 COD charges will be added to your order.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        <div 
+          className={`payment-method-option ${paymentMethod === 'online' ? 'selected' : ''}`}
+          onClick={() => setPaymentMethod('online')}
+        >
+          <div className="payment-method-radio"></div>
+          <div className="payment-method-content">
+            <div className="payment-method-icon">
+              <CreditCard className="w-5 h-5" />
+            </div>
+            <div className="payment-method-details">
+              <div className="payment-method-name">Pay Online</div>
+              <div className="payment-method-description">Secure payment gateway</div>
+            </div>
+          </div>
+        </div>
       </div>
+      
+      {paymentMethod === 'online' && (
+        <div className="payment-form-section">
+          <div className="payment-form-title">
+            <CreditCard className="w-5 h-5" />
+            Secure Online Payment
+          </div>
+          <p className="text-sm text-blue-600 mb-3">
+            You will be redirected to Razorpay's secure payment gateway where you can pay using:
+          </p>
+          <div className="grid grid-cols-2 gap-3 text-sm text-blue-600">
+            <div>• Credit/Debit Cards</div>
+            <div>• UPI Payments</div>
+            <div>• Net Banking</div>
+            <div>• Digital Wallets</div>
+          </div>
+          <div className="payment-security-info">
+            <CreditCard className="w-4 h-4" />
+            <span>256-bit SSL encryption ensures your payment is secure</span>
+          </div>
+        </div>
+      )}
+      
+      {paymentMethod === 'cod' && (
+        <div className="cod-info-box">
+          <div className="cod-info-title">
+            <Truck className="w-4 h-4" />
+            Cash on Delivery Information
+          </div>
+          <p className="cod-info-text">
+            Pay in cash when your order is delivered to your doorstep. Additional COD charges may apply based on your location and courier partner.
+          </p>
+        </div>
+      )}
     </div>
   );
 }, areEqual);
