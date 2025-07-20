@@ -155,7 +155,7 @@ function handleFileUpload(file, type) {
       const formData = new FormData();
       formData.append('person_image', personImage.file);
       formData.append('garment_image', garmentImage.file);
-      formData.append('garment_type', 'upper_body');
+      formData.append('garment_type', 'dress');
       formData.append('model_type', 'viton_hd');
       formData.append('steps', '30');
       formData.append('guidance_scale', '2.5');
