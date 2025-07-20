@@ -20,7 +20,7 @@ const useCheckoutStore = create((set, get) => ({
   },
   
   // Payment information
-  paymentMethod: 'card', // 'card', 'paypal', 'google-pay'
+  paymentMethod: 'cod', // 'cod', 'online'
   paymentDetails: {
     cardNumber: '',
     expiryDate: '',
@@ -84,6 +84,10 @@ const useCheckoutStore = create((set, get) => ({
     set({ errors });
   },
   
+  setOrder: (order) => {
+    set({ order });
+  },
+  
   // Validation
   validateShippingAddress: () => {
     const { shippingAddress } = get();
@@ -115,32 +119,13 @@ const useCheckoutStore = create((set, get) => ({
   },
   
   validatePaymentDetails: () => {
-    const { paymentDetails, paymentMethod } = get();
+    const { paymentMethod } = get();
     const errors = {};
     
-    if (paymentMethod === 'card') {
-      if (!paymentDetails.cardNumber.trim()) errors.cardNumber = 'Card number is required';
-      if (!paymentDetails.expiryDate.trim()) errors.expiryDate = 'Expiry date is required';
-      if (!paymentDetails.cvv.trim()) errors.cvv = 'CVV is required';
-      if (!paymentDetails.nameOnCard.trim()) errors.nameOnCard = 'Name on card is required';
-      
-      // Card number validation (basic)
-      const cardNumberRegex = /^\d{4}\s?\d{4}\s?\d{4}\s?\d{4}$/;
-      if (paymentDetails.cardNumber && !cardNumberRegex.test(paymentDetails.cardNumber.replace(/\s/g, ''))) {
-        errors.cardNumber = 'Please enter a valid card number';
-      }
-      
-      // Expiry date validation
-      const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
-      if (paymentDetails.expiryDate && !expiryRegex.test(paymentDetails.expiryDate)) {
-        errors.expiryDate = 'Please enter a valid expiry date (MM/YY)';
-      }
-      
-      // CVV validation
-      const cvvRegex = /^\d{3,4}$/;
-      if (paymentDetails.cvv && !cvvRegex.test(paymentDetails.cvv)) {
-        errors.cvv = 'Please enter a valid CVV';
-      }
+    // For simplified payment flow, no validation needed
+    // COD and online payment don't require field validation
+    if (!paymentMethod) {
+      errors.paymentMethod = 'Please select a payment method';
     }
     
     set({ errors });

@@ -239,17 +239,17 @@ const CheckoutPage = () => {
         body: JSON.stringify({
           amount: total,
           currency: 'INR',
-          orderItems,
-          shippingAddress,
-          paymentMethod,
+          receipt: `order_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         }),
       });
 
       if (!orderResponse.ok) {
-        throw new Error('Failed to create order');
+        const errorData = await orderResponse.json();
+        console.error('Order creation failed:', errorData);
+        throw new Error(errorData.error || 'Failed to create order');
       }
 
-      const { razorpayOrderId, amount } = await orderResponse.json();
+      const { orderId: razorpayOrderId, amount } = await orderResponse.json();
 
       // Initialize Razorpay checkout
       const options = {
@@ -281,9 +281,9 @@ const CheckoutPage = () => {
             });
 
             if (verifyResponse.ok) {
-              const verifiedOrder = await verifyResponse.json();
-              // Update checkout store with the verified order
-              useCheckoutStore.getState().setOrder(verifiedOrder);
+              const verificationResult = await verifyResponse.json();
+              // Payment verified successfully, now process the order
+              const newOrder = await processOrder();
               
               if (orderType === 'cart') {
                 clearCart();
@@ -298,12 +298,12 @@ const CheckoutPage = () => {
           }
         },
         prefill: {
-          name: shippingAddress.name,
+          name: `${shippingAddress.firstName} ${shippingAddress.lastName}`,
           email: shippingAddress.email,
           contact: shippingAddress.phone,
         },
         notes: {
-          address: `${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.pincode}`,
+          address: `${shippingAddress.address}, ${shippingAddress.city}, ${shippingAddress.state} - ${shippingAddress.zipCode}`,
         },
         theme: {
           color: '#3B82F6',

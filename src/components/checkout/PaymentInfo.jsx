@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import { CreditCard } from 'lucide-react';
+import { CreditCard, Truck, Smartphone } from 'lucide-react';
 import { Label } from '../ui/label';
-import { Input } from '../ui/input';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Card, CardContent } from '../ui/card';
 
 // Approach with custom comparator function
 const areEqual = (prevProps, nextProps) => {
@@ -10,11 +10,22 @@ const areEqual = (prevProps, nextProps) => {
   if (prevProps.paymentMethod !== nextProps.paymentMethod) {
     return false;
   }
+  // Check if paymentDetails have changed
+  if (JSON.stringify(prevProps.paymentDetails) !== JSON.stringify(nextProps.paymentDetails)) {
+    return false;
+  }
   // Check if errors have changed
   if (JSON.stringify(prevProps.errors) !== JSON.stringify(nextProps.errors)) {
     return false;
   }
-  // Other checks can be added here
+  // Check if handler function reference has changed
+  if (prevProps.handlePaymentDetailsChange !== nextProps.handlePaymentDetailsChange) {
+    return false;
+  }
+  // Check if setPaymentMethod has changed
+  if (prevProps.setPaymentMethod !== nextProps.setPaymentMethod) {
+    return false;
+  }
   return true;
 };
 
@@ -31,87 +42,51 @@ const PaymentInfo = memo(({ paymentMethod, setPaymentMethod, paymentDetails, han
           <Label>Payment Method</Label>
           <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod}>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="card" id="card" />
-              <Label htmlFor="card">Credit/Debit Card</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="upi" id="upi" />
-              <Label htmlFor="upi">UPI</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="netbanking" id="netbanking" />
-              <Label htmlFor="netbanking">Net Banking</Label>
-            </div>
-            <div className="flex items-center space-x-2">
               <RadioGroupItem value="cod" id="cod" />
-              <Label htmlFor="cod">Cash on Delivery</Label>
+              <Label htmlFor="cod"><Truck className="w-4 h-4 inline-block mr-1" /> Cash on Delivery</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="online" id="online" />
+              <Label htmlFor="online"><Smartphone className="w-4 h-4 inline-block mr-1" /> Pay Online</Label>
             </div>
           </RadioGroup>
         </div>
         
-        {paymentMethod === 'card' && (
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="cardNumber">Card Number</Label>
-              <Input
-                id="cardNumber"
-                placeholder="1234 5678 9012 3456"
-                value={paymentDetails.cardNumber}
-                onChange={(e) => handlePaymentDetailsChange('cardNumber', e.target.value)}
-                className={errors.cardNumber ? 'border-red-500' : ''}
-              />
-              {errors.cardNumber && <p className="text-sm text-red-500">{errors.cardNumber}</p>}
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="expiryDate">Expiry Date</Label>
-                <Input
-                  id="expiryDate"
-                  placeholder="MM/YY"
-                  value={paymentDetails.expiryDate}
-                  onChange={(e) => handlePaymentDetailsChange('expiryDate', e.target.value)}
-                  className={errors.expiryDate ? 'border-red-500' : ''}
-                />
-                {errors.expiryDate && <p className="text-sm text-red-500">{errors.expiryDate}</p>}
+        {paymentMethod === 'online' && (
+          <Card className="bg-blue-50 border-blue-200">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2 text-blue-700">
+                <CreditCard className="w-5 h-5" />
+                <h3 className="font-semibold">Secure Online Payment</h3>
               </div>
-              
-              <div className="space-y-2">
-                <Label htmlFor="cvv">CVV</Label>
-                <Input
-                  id="cvv"
-                  placeholder="123"
-                  value={paymentDetails.cvv}
-                  onChange={(e) => handlePaymentDetailsChange('cvv', e.target.value)}
-                  className={errors.cvv ? 'border-red-500' : ''}
-                />
-                {errors.cvv && <p className="text-sm text-red-500">{errors.cvv}</p>}
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="nameOnCard">Name on Card</Label>
-              <Input
-                id="nameOnCard"
-                value={paymentDetails.nameOnCard}
-                onChange={(e) => handlePaymentDetailsChange('nameOnCard', e.target.value)}
-                className={errors.nameOnCard ? 'border-red-500' : ''}
-              />
-              {errors.nameOnCard && <p className="text-sm text-red-500">{errors.nameOnCard}</p>}
-            </div>
-          </div>
+              <p className="text-sm text-blue-600 mt-2">
+                You will be redirected to Razorpay's secure payment gateway where you can pay using:
+              </p>
+              <ul className="text-sm text-blue-600 mt-2 space-y-1">
+                <li>• Credit/Debit Cards</li>
+                <li>• UPI (Google Pay, PhonePe, Paytm, etc.)</li>
+                <li>• Net Banking</li>
+                <li>• Wallets</li>
+              </ul>
+            </CardContent>
+          </Card>
         )}
         
-        {paymentMethod === 'upi' && (
-          <div className="space-y-2">
-            <Label htmlFor="upiId">UPI ID</Label>
-            <Input
-              id="upiId"
-              placeholder="yourname@upi"
-              value={paymentDetails.upiId || ''}
-              onChange={(e) => handlePaymentDetailsChange('upiId', e.target.value)}
-            />
-          </div>
+        {paymentMethod === 'cod' && (
+          <Card className="bg-amber-50 border-amber-200">
+            <CardContent className="pt-6">
+              <div className="flex items-center space-x-2 text-amber-700">
+                <Truck className="w-5 h-5" />
+                <h3 className="font-semibold">Cash on Delivery</h3>
+              </div>
+              <p className="text-sm text-amber-600 mt-2">
+                Pay in cash when your order is delivered to your doorstep.
+              </p>
+              <p className="text-sm text-amber-600">
+                Additional ₹40 COD charges will be added to your order.
+              </p>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>
