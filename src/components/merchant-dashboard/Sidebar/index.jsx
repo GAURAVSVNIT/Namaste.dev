@@ -15,6 +15,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  CreditCard,
   Menu,
   X,
   User
@@ -52,10 +53,15 @@ const menuItems = [
     href: '/merchant-dashboard/chat' 
   },
   { 
-    icon: <Users size={18} />, 
+    icon: <CreditCard size={18} />, 
     label: 'Payments', 
     href: '/merchant-dashboard/payments' 
   },
+  {
+    icon: <Settings size={18} />, 
+    label: 'Settings', 
+    href: '/merchant-dashboard/settings' 
+  }
  
 ];
 

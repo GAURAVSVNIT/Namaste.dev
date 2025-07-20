@@ -33,6 +33,7 @@ const useCheckoutStore = create((set, get) => ({
   shipping: 0,
   tax: 0,
   total: 0,
+  selectedShipping: null,
   
   // UI state
   currentStep: 1, // 1: Review, 2: Shipping, 3: Payment, 4: Confirmation
@@ -196,10 +197,22 @@ const useCheckoutStore = create((set, get) => ({
       shipping: 0,
       tax: 0,
       total: 0,
+      selectedShipping: null,
       currentStep: 1,
       isProcessing: false,
       errors: {},
       order: null
+    });
+  },
+  setSelectedShipping: (shipping) => {
+    set((state) => {
+      const shippingCharge = shipping ? shipping.total_charge : 0;
+      const total = calculateTotal(state.subtotal, shippingCharge, state.tax);
+      return {
+        selectedShipping: shipping,
+        shipping: shippingCharge,
+        total,
+      };
     });
   }
 }));

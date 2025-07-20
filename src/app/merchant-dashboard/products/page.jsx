@@ -8,7 +8,7 @@ import ProductModal from '@/components/merchant-dashboard/ProductModal';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   const [searchTerm, setSearchTerm] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
