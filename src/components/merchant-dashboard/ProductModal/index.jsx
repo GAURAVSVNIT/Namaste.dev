@@ -53,6 +53,81 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
     return downloadURL;
   };
 
+  const createProductInShiprocket = async (productData) => {
+    try {
+      // Generate unique SKU
+      const sku = `${productData.name?.toLowerCase().replace(/[^a-z0-9]/g, '')}_${Date.now()}`;
+      
+      // Map local product data to Shiprocket format
+      const shiprocketProduct = {
+        name: productData.name,
+        category_code: "default",
+        type: "Single",
+        qty: parseInt(productData.stock) || 0,
+        sku: sku,
+        description: productData.description || "",
+        cost_price: parseFloat(productData.price) || 0,
+        mrp: parseFloat(productData.price) || 0,
+        weight: 0.5, // Default weight in kg
+        length: 10, // Default dimensions in cm
+        width: 10,
+        height: 10,
+        image_url: productData.image || productData.imageUrl || "",
+        
+        // QC Details
+        qc_details: {
+          product_image: productData.image || productData.imageUrl || "",
+          brand: "Namaste.dev",
+          color: "",
+          size: "",
+          product_imei: "",
+          serial_no: sku,
+          ean_barcode: "",
+          check_damaged_product: true
+        }
+      };
+      
+      const response = await fetch('/api/merchant/shiprocket/create-product', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(shiprocketProduct),
+      });
+      
+      // Check if response is OK before trying to parse JSON
+      if (!response.ok) {
+        console.error('Shiprocket API request failed:', response.status, response.statusText);
+        return; // Exit early if request failed
+      }
+      
+      const responseText = await response.text();
+      if (!responseText) {
+        console.error('Empty response from Shiprocket API');
+        return;
+      }
+      
+      let result;
+      try {
+        result = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error('Failed to parse Shiprocket response:', parseError);
+        console.error('Response text:', responseText);
+        return;
+      }
+      
+      if (!result.success) {
+        console.error('Failed to create product in Shiprocket:', result.error);
+        // Don't throw error - let the product still be created locally
+      } else {
+        console.log('Product created successfully in Shiprocket:', result.data);
+      }
+    } catch (error) {
+      console.error('Error creating product in Shiprocket:', error);
+      // Don't throw error - let the product still be created locally
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -76,8 +151,11 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
         // Update existing product
         await updateProduct(product.id, productData);
       } else {
-        // Add new product
+        // Add new product to Firebase
         await addProduct(productData);
+        
+        // Also create product in Shiprocket
+        await createProductInShiprocket(productData);
       }
 
       onClose();
