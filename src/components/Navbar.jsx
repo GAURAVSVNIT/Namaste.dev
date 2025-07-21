@@ -89,7 +89,7 @@ export default function Navbar(fontFace) {
   ];
 
   const { openCart, getCartCount } = useCartStore();
-  const cartCount = getCartCount();
+  const { cartCount, setCardCount } = getCartCount();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
