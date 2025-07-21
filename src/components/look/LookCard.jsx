@@ -17,6 +17,25 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
+// Function to get gradient based on mood
+const getMoodGradient = (mood) => {
+  const gradients = {
+    'Casual': 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    'Formal': 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)',
+    'Sporty': 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)',
+    'Elegant': 'linear-gradient(135deg, #c94b4b 0%, #4b134f 100%)',
+    'Trendy': 'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)',
+    'Vintage': 'linear-gradient(135deg, #8360c3 0%, #2ebf91 100%)',
+    'Bohemian': 'linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%)',
+    'Classic': 'linear-gradient(135deg, #667db6 0%, #0082c8 100%)',
+    'Edgy': 'linear-gradient(135deg, #434343 0%, #000000 100%)',
+    'Romantic': 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    'Minimalist': 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+    'Chill': 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)'
+  };
+  return gradients[mood] || 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+};
+
 export default function LookCard({ look, onEdit, onDelete }) {
   const { user } = useAuth();
   const [author, setAuthor] = useState(null);
@@ -76,7 +95,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
       <div className="relative">
         {/* Main Image */}
         <div className="aspect-square relative overflow-hidden">
-          <Link href={`/look/${look.id}`}>
+          <Link href={`/social/look/${look.id}`}>
             <img
               src={look.images?.[0] || '/placeholder-image.jpg'}
               alt={look.caption}
@@ -88,39 +107,122 @@ export default function LookCard({ look, onEdit, onDelete }) {
           </Link>
           
           {/* Mood Badge */}
-          <div className="absolute top-2 left-2">
-            <Badge variant="secondary" className="bg-white/80 text-black">
+          <div style={{
+            position: 'absolute',
+            top: '12px',
+            left: '12px'
+          }}>
+            <div style={{
+              background: getMoodGradient(look.mood),
+              color: 'white',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '700',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              textShadow: '0 1px 2px rgba(0, 0, 0, 0.2)'
+            }}>
               {look.mood}
-            </Badge>
+            </div>
           </div>
 
-          {/* Multiple Images Indicator & Edit Menu */}
+          {/* Edit Menu */}
           <div className="absolute top-2 right-2 flex items-center space-x-2">
-            {look.images.length > 1 && (
-              <div className="bg-black bg-opacity-50 text-white px-2 py-1 rounded-full text-xs">
-                1/{look.images.length}
-              </div>
-            )}
             
             {/* Edit Menu */}
             {canEdit && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 bg-white/80 hover:bg-white">
-                    <MoreHorizontal className="h-4 w-4" />
-                  </Button>
+                  <button style={{
+                    width: '32px',
+                    height: '32px',
+                    padding: '0',
+                    background: 'rgba(255, 255, 255, 0.9)',
+                    border: 'none',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(8px)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 1)';
+                    e.target.style.transform = 'scale(1.05)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.9)';
+                    e.target.style.transform = 'scale(1)';
+                    e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                  }}>
+                    <MoreHorizontal style={{ width: '16px', height: '16px', color: '#374151' }} />
+                  </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-white border-gray-200 shadow-lg">
-                  <DropdownMenuItem onClick={() => onEdit(look)} className="hover:bg-gray-100 focus:bg-gray-100">
-                    <Edit className="h-4 w-4 mr-2" />
-                    Edit
+                <DropdownMenuContent align="end" style={{
+                  background: '#ffffff',
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0, 0, 0, 0.15)',
+                  padding: '8px',
+                  minWidth: '160px',
+                  backdropFilter: 'blur(20px)'
+                }}>
+                  <DropdownMenuItem 
+                    onClick={() => onEdit(look)} 
+                    style={{
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#374151',
+                      transition: 'all 0.2s ease',
+                      border: 'none',
+                      background: 'transparent'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#f3f4f6';
+                      e.target.style.color = '#1f2937';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = '#374151';
+                    }}>
+                    <Edit style={{ width: '16px', height: '16px', marginRight: '8px' }} />
+                    Edit Look
                   </DropdownMenuItem>
                   <DropdownMenuItem 
                     onClick={() => onDelete(look.id)}
-                    className="text-red-600 hover:bg-red-50 focus:bg-red-50 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Delete
+                    style={{
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#dc2626',
+                      transition: 'all 0.2s ease',
+                      border: 'none',
+                      background: 'transparent'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.background = '#fef2f2';
+                      e.target.style.color = '#b91c1c';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.background = 'transparent';
+                      e.target.style.color = '#dc2626';
+                    }}>
+                    <Trash2 style={{ width: '16px', height: '16px', marginRight: '8px' }} />
+                    Delete Look
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -155,7 +257,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
           {look.tags && look.tags.length > 0 && (
             <div className="flex flex-wrap gap-1 mb-3">
               {look.tags.slice(0, 3).map((tag, index) => (
-                <Badge key={index} variant="outline" className="text-xs">
+                <Badge key={index} variant="outline" className="text-xs px-2 py-1">
                   #{tag}
                 </Badge>
               ))}

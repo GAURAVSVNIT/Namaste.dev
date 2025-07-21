@@ -1,10 +1,10 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef, useCallback, memo, useMemo } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import { getApprovedLivestreams, addLivestream, parseStreamUrl, getAllLivestreams, deleteLivestream } from '@/lib/fashiontv';
-import { Home, Plus, ExternalLink, Calendar, User, Video, VideoOff, Mic, MicOff, Settings } from 'lucide-react';
+import { Home, Plus, ExternalLink, Calendar, User, Video, VideoOff, Mic, MicOff, Settings, MessageCircle } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import LiveStreamCard from '@/components/fashiontv/LiveStreamCard';
 import LiveFeedGrid from '@/components/fashiontv/LiveFeedGrid';
@@ -113,7 +113,8 @@ const OptimizedVideo = memo(({ videoRef, isVideoEnabled, onLoadedData, onCanPlay
         backgroundColor: '#1f2937',
         zIndex: 1,
         minWidth: '320px',
-        visibility: isVideoEnabled ? 'visible' : 'hidden'
+        visibility: isVideoEnabled ? 'visible' : 'hidden',
+        borderRadius: '16px'
       }}
       onLoadedData={onLoadedData}
       onCanPlay={onCanPlay}
@@ -935,40 +936,172 @@ export default function LivePage() {
   // Live streaming interface
   if (isLiveStreaming && currentLiveStream) {
     return (
-      <div className="h-screen flex flex-col bg-black overflow-hidden relative">
-        {/* Live Stream Header */}
-        <div className="bg-gradient-to-r from-red-600 to-pink-600 p-4 flex items-center justify-between flex-shrink-0">
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-              <span className="text-white font-semibold">LIVE</span>
+      <div style={{
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)',
+        overflow: 'hidden',
+        position: 'relative',
+        padding: '16px',
+        gap: '16px'
+      }}>
+        {/* Section 1: Top Strip - Live Stream Header */}
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.1)',
+          padding: '20px 24px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexShrink: 0,
+          boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
+          borderRadius: '20px',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              background: 'rgba(0, 0, 0, 0.2)',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              border: '1px solid rgba(255, 255, 255, 0.2)'
+            }}>
+              <div style={{
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center'
+              }}>
+                <div style={{
+                  width: '12px',
+                  height: '12px',
+                  background: '#ef4444',
+                  borderRadius: '50%',
+                  animation: 'pulse 2s infinite'
+                }}></div>
+                <div style={{
+                  position: 'absolute',
+                  width: '12px',
+                  height: '12px',
+                  background: '#ef4444',
+                  borderRadius: '50%',
+                  animation: 'ping 1s infinite',
+                  opacity: 0.75
+                }}></div>
+              </div>
+              <span style={{
+                color: 'white',
+                fontWeight: 'bold',
+                fontSize: '16px',
+                letterSpacing: '0.5px',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+              }}>LIVE</span>
             </div>
-            <div className="text-white">
-              <h1 className="text-lg font-bold">{currentLiveStream.title}</h1>
-              <p className="text-sm opacity-80">Started: {currentLiveStream.startTime.toLocaleTimeString()}</p>
+            <div style={{ color: 'white' }}>
+              <h1 style={{
+                fontSize: '24px',
+                fontWeight: 'bold',
+                margin: '0 0 4px 0',
+                textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+              }}>{currentLiveStream.title}</h1>
+              <p style={{
+                fontSize: '14px',
+                opacity: 0.9,
+                margin: 0,
+                color: '#f0f0f0'
+              }}>Started: {currentLiveStream.startTime.toLocaleTimeString()}</p>
             </div>
           </div>
           
-          <div className="flex items-center space-x-4">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
             <button
               onClick={() => setShowChat(!showChat)}
-              className="bg-gray-800 bg-opacity-80 hover:bg-opacity-100 text-white px-4 py-2 rounded-lg transition-all border border-gray-600 hover:border-gray-500"
+              style={{
+                background: 'rgba(0, 0, 0, 0.4)',
+                backdropFilter: 'blur(10px)',
+                color: 'white',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                transition: 'all 0.3s ease',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                fontWeight: '600',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'rgba(0, 0, 0, 0.6)';
+                e.target.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'rgba(0, 0, 0, 0.4)';
+                e.target.style.transform = 'translateY(0)';
+              }}
             >
-              <span className="text-white">{showChat ? 'Hide Chat' : 'Show Chat'}</span>
+              <MessageCircle style={{ width: '16px', height: '16px' }} />
+              <span>{showChat ? 'Hide Chat' : 'Show Chat'}</span>
             </button>
             <button
               onClick={endCurrentLiveStream}
-              className="bg-red-700 hover:bg-red-800 text-white px-6 py-2 rounded-lg font-semibold transition-all"
+              style={{
+                background: 'linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%)',
+                color: 'white',
+                padding: '10px 24px',
+                borderRadius: '10px',
+                fontWeight: 'bold',
+                transition: 'all 0.3s ease',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(185, 28, 28, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)';
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 8px 20px rgba(185, 28, 28, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%)';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 12px rgba(185, 28, 28, 0.3)';
+              }}
             >
               End Stream
             </button>
           </div>
         </div>
         
-        {/* Live Stream Content */}
-        <div className="flex-1 flex min-h-0">
-          {/* Video Area */}
-          <div className={`${showChat ? 'flex-1' : 'w-full'} bg-black flex flex-col relative`}>
+        {/* Section 2: Center Content - Horizontal Layout with Video and Chat */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          gap: '20px',
+          background: 'rgba(255, 255, 255, 0.05)',
+          borderRadius: '20px',
+          padding: '20px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          backdropFilter: 'blur(20px)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+          minHeight: 0
+        }}>
+          {/* Video Area - Direct */}
+          <div style={{
+            flex: showChat ? 1 : 'none',
+            width: showChat ? 'auto' : '100%',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column'
+          }}>
             <OptimizedVideo
               videoRef={liveVideoRef}
               isVideoEnabled={isVideoEnabled}
@@ -1103,44 +1236,175 @@ export default function LivePage() {
               </div>
             </div>
             
-            {/* Bottom Controls - Centered */}
-            <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex space-x-4 z-20">
+            {/* Modern Bottom Controls Panel */}
+            <div style={{
+              position: 'absolute',
+              bottom: '20px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              background: 'rgba(0, 0, 0, 0.8)',
+              backdropFilter: 'blur(20px)',
+              padding: '16px 24px',
+              borderRadius: '50px',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 20px 40px rgba(0, 0, 0, 0.5)',
+              zIndex: 20
+            }}>
+              {/* Video Toggle */}
               <button
                 onClick={toggleVideo}
                 disabled={isTogglingVideo}
-                className={`p-4 rounded-full transition-all shadow-lg ${isVideoEnabled ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'} ${isTogglingVideo ? 'opacity-50 cursor-not-allowed' : ''}`}
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  background: isVideoEnabled 
+                    ? 'linear-gradient(135deg, #10b981 0%, #047857 100%)' 
+                    : 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+                  color: 'white',
+                  cursor: isTogglingVideo ? 'not-allowed' : 'pointer',
+                  opacity: isTogglingVideo ? 0.6 : 1,
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                }}
                 title={isVideoEnabled ? 'Turn off camera' : 'Turn on camera'}
+                onMouseEnter={(e) => {
+                  if (!isTogglingVideo) {
+                    e.target.style.transform = 'scale(1.1)';
+                    e.target.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isTogglingVideo) {
+                    e.target.style.transform = 'scale(1)';
+                    e.target.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3)';
+                  }
+                }}
               >
                 {isTogglingVideo ? (
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
+                  <div style={{
+                    width: '20px',
+                    height: '20px',
+                    border: '2px solid transparent',
+                    borderTop: '2px solid white',
+                    borderRadius: '50%',
+                    animation: 'spin 1s linear infinite'
+                  }}></div>
                 ) : (
-                  isVideoEnabled ? <Video className="w-6 h-6 text-white" /> : <VideoOff className="w-6 h-6 text-white" />
+                  isVideoEnabled ? 
+                    <Video style={{ width: '24px', height: '24px' }} /> : 
+                    <VideoOff style={{ width: '24px', height: '24px' }} />
                 )}
               </button>
+
+              {/* Audio Toggle */}
               <button
                 onClick={toggleAudio}
-                className={`p-4 rounded-full transition-all shadow-lg ${isAudioEnabled ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'}`}
+                style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '50%',
+                  border: 'none',
+                  background: isAudioEnabled 
+                    ? 'linear-gradient(135deg, #10b981 0%, #047857 100%)' 
+                    : 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+                }}
                 title={isAudioEnabled ? 'Turn off microphone' : 'Turn on microphone'}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'scale(1.1)';
+                  e.target.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'scale(1)';
+                  e.target.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3)';
+                }}
               >
-                {isAudioEnabled ? <Mic className="w-6 h-6 text-white" /> : <MicOff className="w-6 h-6 text-white" />}
+                {isAudioEnabled ? 
+                  <Mic style={{ width: '24px', height: '24px' }} /> : 
+                  <MicOff style={{ width: '24px', height: '24px' }} />
+                }
               </button>
-            </div>
 
-            {/* Chat Input */}
-            <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-3/4 max-w-md z-20">
-              <div className="flex space-x-2">
+              {/* Chat Input Container */}
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginLeft: '8px'
+              }}>
                 <input
                   type="text"
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyPress={handleChatKeyPress}
                   placeholder="Message your audience..."
-                  className="flex-1 bg-gray-800 bg-opacity-90 text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 border border-gray-600 backdrop-blur-sm placeholder-gray-400"
+                  style={{
+                    minWidth: '300px',
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: 'white',
+                    padding: '12px 20px',
+                    borderRadius: '25px',
+                    border: 'none',
+                    outline: 'none',
+                    fontSize: '15px',
+                    fontWeight: '500',
+                    transition: 'all 0.3s ease',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                    e.target.style.boxShadow = '0 0 0 2px rgba(239, 68, 68, 0.4)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
                 <button
                   onClick={sendChatMessage}
                   disabled={!chatInput.trim()}
-                  className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 disabled:from-gray-500 disabled:to-gray-600 disabled:cursor-not-allowed text-white px-6 py-2 rounded-lg transition-all font-medium shadow-lg"
+                  style={{
+                    background: chatInput.trim() 
+                      ? 'linear-gradient(135deg, #dc2626 0%, #ec4899 100%)' 
+                      : 'rgba(107, 114, 128, 0.5)',
+                    color: 'white',
+                    padding: '12px 24px',
+                    borderRadius: '25px',
+                    border: 'none',
+                    fontWeight: '600',
+                    cursor: chatInput.trim() ? 'pointer' : 'not-allowed',
+                    transition: 'all 0.3s ease',
+                    fontSize: '15px',
+                    boxShadow: chatInput.trim() ? '0 8px 32px rgba(220, 38, 38, 0.3)' : 'none'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (chatInput.trim()) {
+                      e.target.style.background = 'linear-gradient(135deg, #b91c1c 0%, #be185d 100%)';
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 12px 40px rgba(220, 38, 38, 0.4)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (chatInput.trim()) {
+                      e.target.style.background = 'linear-gradient(135deg, #dc2626 0%, #ec4899 100%)';
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 8px 32px rgba(220, 38, 38, 0.3)';
+                    }
+                  }}
                 >
                   Send
                 </button>
@@ -1150,39 +1414,121 @@ export default function LivePage() {
           
           {/* Chat Panel */}
           {showChat && (
-            <div className="w-80 bg-gray-900 flex flex-col flex-shrink-0">
+            <div style={{
+            width: '350px',
+              background: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)',
+              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.2)',
+              borderRadius: '16px',
+              padding: '16px',
+              margin: '20px 0',
+              marginLeft: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              fontFamily: 'Inter, system-ui, sans-serif'
+            }}>
               {/* Chat Header */}
-              <div className="p-4 border-b border-gray-700 flex-shrink-0">
-                <h3 className="text-white font-semibold">Live Chat</h3>
-                <p className="text-gray-400 text-sm">Chat with your audience</p>
+              <div style={{
+                padding: '20px',
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                flexShrink: 0,
+                background: 'linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%)'
+              }}>
+                <h3 style={{
+                  color: 'white',
+                  fontWeight: '700',
+                  fontSize: '18px',
+                  margin: '0 0 4px 0'
+                }}>Live Chat</h3>
+                <p style={{
+                  color: '#9ca3af',
+                  fontSize: '14px',
+                  margin: 0
+                }}>Chat with your audience</p>
               </div>
               
               {/* Chat Messages */}
-              <div className="flex-1 overflow-y-auto p-2 space-y-2 min-h-0">
+              <div style={{
+                flex: 1,
+                overflowY: 'auto',
+                padding: '16px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '12px',
+                minHeight: 0
+              }}>
                 {chatMessages.map((msg) => {
                   const isStreamer = msg.user === (user?.displayName || user?.email);
                   return (
-                    <div key={msg.id} className={`${msg.isSystem ? 'text-center' : ''}`}>
+                    <div key={msg.id} style={{
+                      textAlign: msg.isSystem ? 'center' : 'left'
+                    }}>
                       {msg.isSystem ? (
-                        <div className="text-gray-400 text-xs italic">
+                        <div style={{
+                          color: '#9ca3af',
+                          fontSize: '12px',
+                          fontStyle: 'italic',
+                          padding: '8px 0'
+                        }}>
                           {msg.message}
                         </div>
                       ) : (
-                        <div className={`rounded-lg p-3 ${isStreamer ? 'bg-gradient-to-r from-red-600 to-pink-600 border-2 border-red-400' : 'bg-gray-800'}`}>
-                          <div className="flex items-center space-x-2 mb-1">
+                        <div style={{
+                          borderRadius: '12px',
+                          padding: '12px 16px',
+                          background: isStreamer 
+                            ? 'linear-gradient(135deg, #dc2626 0%, #ec4899 100%)'
+                            : 'rgba(31, 41, 55, 0.8)',
+                          border: isStreamer 
+                            ? '1px solid rgba(239, 68, 68, 0.5)' 
+                            : '1px solid rgba(55, 65, 81, 0.3)',
+                          backdropFilter: 'blur(10px)',
+                          boxShadow: isStreamer 
+                            ? '0 4px 12px rgba(220, 38, 38, 0.3)'
+                            : '0 2px 8px rgba(0, 0, 0, 0.1)'
+                        }}>
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            marginBottom: '6px',
+                            flexWrap: 'wrap'
+                          }}>
                             {isStreamer && (
-                              <span className="bg-yellow-500 text-black px-2 py-0.5 rounded text-xs font-bold">
+                              <span style={{
+                                background: '#fbbf24',
+                                color: '#000000',
+                                padding: '2px 8px',
+                                borderRadius: '6px',
+                                fontSize: '10px',
+                                fontWeight: 'bold',
+                                letterSpacing: '0.5px'
+                              }}>
                                 STREAMER
                               </span>
                             )}
-                            <span className={`font-medium text-sm ${isStreamer ? 'text-white' : 'text-blue-400'}`}>
+                            <span style={{
+                              fontWeight: '600',
+                              fontSize: '14px',
+                              color: isStreamer ? '#ffffff' : '#60a5fa'
+                            }}>
                               {msg.user}
                             </span>
-                            <span className={`text-xs ${isStreamer ? 'text-gray-200' : 'text-gray-500'}`}>
+                            <span style={{
+                              fontSize: '11px',
+                              color: isStreamer ? '#e5e7eb' : '#9ca3af',
+                              opacity: 0.8
+                            }}>
                               {msg.timestamp.toLocaleTimeString()}
                             </span>
                           </div>
-                          <p className={`text-sm ${isStreamer ? 'text-white font-medium' : 'text-white'}`}>
+                          <p style={{
+                            fontSize: '14px',
+                            color: '#ffffff',
+                            fontWeight: isStreamer ? '500' : '400',
+                            margin: 0,
+                            lineHeight: '1.4'
+                          }}>
                             {msg.message}
                           </p>
                         </div>
@@ -1191,76 +1537,169 @@ export default function LivePage() {
                   );
                 })}
               </div>
-            </div>
-          )}
+            </div>  
+        )}
         </div>
       </div>
     );
   }
   
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-black to-pink-900">
-      {/* Header */}
-      <div className="relative z-10 p-6">
-        <div className="flex items-center justify-between mb-4">
-          <Link href="/fashiontv">
-            <button className="flex items-center space-x-2 bg-black bg-opacity-50 text-white px-4 py-2 rounded-full hover:bg-opacity-70 transition-all backdrop-blur-sm">
-              <span className="text-sm font-semibold">← Back to TV</span>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #7c3aed 0%, #000 50%, #ec4899 100%)' }}>
+      {/* Professional Header */}
+      <div style={{ position: 'relative', zIndex: 10, padding: '32px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
+          <Link href="/social/fashiontv">
+            <button style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              background: 'rgba(0, 0, 0, 0.6)',
+              color: 'white',
+              padding: '12px 20px',
+              borderRadius: '50px',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              fontSize: '14px',
+              fontWeight: '600'
+            }}>
+              <span>← Back to TV</span>
             </button>
           </Link>
 
-          <Link href="/">
-            <button className="bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all backdrop-blur-sm">
-              <Home className="w-6 h-6" />
+          <Link href="/social">
+            <button style={{
+              background: 'rgba(0, 0, 0, 0.6)',
+              color: 'white',
+              padding: '12px',
+              borderRadius: '50%',
+              border: '1px solid rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}>
+              <Home style={{ width: '24px', height: '24px' }} />
             </button>
           </Link>
         </div>
         
-        <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-2">
+        <div style={{ textAlign: 'center', padding: '0 20px' }}>
+          <h1 style={{ 
+            fontSize: '48px', 
+            fontWeight: '800', 
+            color: 'white', 
+            marginBottom: '16px',
+            margin: '0 0 16px 0'
+          }}>
             Live Fashion Streams
           </h1>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+          <p style={{ 
+            color: '#d1d5db', 
+            fontSize: '20px', 
+            maxWidth: '600px', 
+            margin: '0 auto',
+            lineHeight: 1.6
+          }}>
             Discover and share live fashion content from around the world
           </p>
         </div>
       </div>
 
-      {/* Action Buttons */}
+      {/* Professional Action Buttons */}
       {user ? (
-        <div className="flex justify-center mb-8 space-x-4">
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '48px', gap: '20px', padding: '0 32px', flexWrap: 'wrap' }}>
           <button
             onClick={() => setShowGoLiveModal(true)}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 rounded-full font-semibold transition-all flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+            style={{
+              background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+              color: 'white',
+              padding: '16px 32px',
+              borderRadius: '50px',
+              border: 'none',
+              fontWeight: '600',
+              fontSize: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 8px 25px rgba(124, 58, 237, 0.3)'
+            }}
           >
-            <span className="w-5 h-5 text-red-500">🔴</span>
+            <span style={{ fontSize: '18px' }}>🔴</span>
             <span>Go Live</span>
           </button>
           
           <button
             onClick={() => setShowSubmitForm(!showSubmitForm)}
-            className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-8 py-3 rounded-full font-semibold transition-all flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+            style={{
+              background: 'linear-gradient(135deg, #dc2626, #ec4899)',
+              color: 'white',
+              padding: '16px 32px',
+              borderRadius: '50px',
+              border: 'none',
+              fontWeight: '600',
+              fontSize: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 8px 25px rgba(220, 38, 38, 0.3)'
+            }}
           >
-            <Plus className="w-5 h-5" />
+            <Plus style={{ width: '20px', height: '20px' }} />
             <span>Add Stream URL</span>
           </button>
           
-          {/* Admin: Clear All Streams Button - Only show when there are demo streams */}
+          {/* Admin: Clear All Streams Button */}
           {streams.some(stream => stream.userId?.startsWith('sample-user')) && (
             <button
               onClick={handleDeleteAllSampleStreams}
-              className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-full font-semibold transition-all flex items-center space-x-2 shadow-lg hover:shadow-xl transform hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #ea580c, #f97316)',
+                color: 'white',
+                padding: '16px 24px',
+                borderRadius: '50px',
+                border: 'none',
+                fontWeight: '600',
+                fontSize: '16px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 8px 25px rgba(234, 88, 12, 0.3)'
+              }}
             >
               <span>Clear Demo Streams</span>
             </button>
           )}
         </div>
       ) : (
-        <div className="flex justify-center mb-6">
-          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 text-center text-white max-w-md">
-            <p className="text-sm mb-2">Want to share your live fashion content?</p>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '48px', padding: '0 32px' }}>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.1)',
+            backdropFilter: 'blur(20px)',
+            borderRadius: '20px',
+            padding: '24px',
+            textAlign: 'center',
+            color: 'white',
+            maxWidth: '400px',
+            border: '1px solid rgba(255, 255, 255, 0.2)'
+          }}>
+            <p style={{ fontSize: '16px', marginBottom: '16px', margin: '0 0 16px 0' }}>Want to share your live fashion content?</p>
             <Link href="/login">
-              <button className="bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 text-white px-6 py-2 rounded-full font-semibold transition-all text-sm">
+              <button style={{
+                background: 'linear-gradient(135deg, #dc2626, #ec4899)',
+                color: 'white',
+                padding: '12px 24px',
+                borderRadius: '50px',
+                border: 'none',
+                fontWeight: '600',
+                fontSize: '14px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease'
+              }}>
                 Sign In to Add Streams
               </button>
             </Link>
@@ -1268,92 +1707,175 @@ export default function LivePage() {
         </div>
       )}
 
-      {/* Submit Form */}
+      {/* Professional Submit Form */}
       {showSubmitForm && (
-        <div className="max-w-lg mx-auto mb-8 bg-white rounded-xl shadow-xl border border-gray-100 p-8">
-          <div className="text-center mb-6">
-            <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Plus className="w-6 h-6 text-white" />
+        <div style={{ display: 'flex', justifyContent: 'center', padding: '0 32px', marginBottom: '48px' }}>
+          <div style={{
+            maxWidth: '600px',
+            width: '100%',
+            background: 'rgba(255, 255, 255, 0.95)',
+            borderRadius: '24px',
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            padding: '40px',
+            backdropFilter: 'blur(20px)'
+          }}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              background: 'linear-gradient(135deg, #dc2626, #ec4899)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 20px auto'
+            }}>
+              <Plus style={{ width: '28px', height: '28px', color: 'white' }} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800">Add Live Stream</h2>
-            <p className="text-gray-600 mt-2">Share your live fashion content with the community</p>
+            <h2 style={{ fontSize: '32px', fontWeight: '800', color: '#1f2937', margin: '0 0 12px 0' }}>Add Live Stream</h2>
+            <p style={{ color: '#6b7280', fontSize: '16px', margin: 0 }}>Share your live fashion content with the community</p>
           </div>
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
                 Stream Title *
               </label>
               <input
                 type="text"
                 value={formData.title}
                 onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                style={{
+                  width: '100%',
+                  padding: '16px 20px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '16px',
+                  outline: 'none',
+                  transition: 'all 0.3s ease',
+                  fontSize: '16px',
+                  backgroundColor: 'white'
+                }}
                 placeholder="e.g., Milan Fashion Week 2025 - Live Runway Show"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
                 Stream Description
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all resize-none"
+                style={{
+                  width: '100%',
+                  padding: '16px 20px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '16px',
+                  outline: 'none',
+                  transition: 'all 0.3s ease',
+                  fontSize: '16px',
+                  backgroundColor: 'white',
+                  resize: 'none',
+                  minHeight: '100px'
+                }}
                 placeholder="Brief description of your live stream content..."
                 rows="3"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: '600', color: '#374151', marginBottom: '8px' }}>
                 Stream URL *
               </label>
               <input
                 type="url"
                 value={formData.url}
                 onChange={handleUrlChange}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                style={{
+                  width: '100%',
+                  padding: '16px 20px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '16px',
+                  outline: 'none',
+                  transition: 'all 0.3s ease',
+                  fontSize: '16px',
+                  backgroundColor: 'white'
+                }}
                 placeholder="https://youtube.com/watch?v=... or https://twitch.tv/channel"
                 required
               />
               {formData.platform && (
-                <div className="mt-2 p-2 bg-green-50 border border-green-200 rounded-md">
-                  <p className="text-sm text-green-800">
-                    ✓ Platform detected: <span className="font-semibold capitalize">{formData.platform}</span>
+                <div style={{ marginTop: '12px', padding: '12px 16px', backgroundColor: '#d1fae5', border: '1px solid #a7f3d0', borderRadius: '12px' }}>
+                  <p style={{ fontSize: '14px', color: '#065f46', margin: 0 }}>
+                    ✓ Platform detected: <span style={{ fontWeight: '600', textTransform: 'capitalize' }}>{formData.platform}</span>
                   </p>
                 </div>
               )}
             </div>
 
-            <div className="flex space-x-4 pt-4">
+            <div style={{ display: 'flex', gap: '16px', paddingTop: '24px' }}>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-1 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 disabled:bg-gray-400 text-white py-3 px-6 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:hover:scale-100"
+                style={{
+                  flex: 1,
+                  background: isSubmitting ? 'rgba(156, 163, 175, 0.8)' : 'linear-gradient(135deg, #dc2626, #ec4899)',
+                  color: 'white',
+                  padding: '16px 24px',
+                  borderRadius: '16px',
+                  border: 'none',
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 8px 25px rgba(220, 38, 38, 0.3)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
               >
                 {isSubmitting ? (
-                  <span className="flex items-center justify-center space-x-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid white',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
                     <span>Adding Stream...</span>
-                  </span>
+                  </>
                 ) : (
-                  <span className="flex items-center justify-center space-x-2">
-                    <Plus className="w-4 h-4" />
+                  <>
+                    <Plus style={{ width: '16px', height: '16px' }} />
                     <span>Add Stream</span>
-                  </span>
+                  </>
                 )}
               </button>
               <button
                 type="button"
                 onClick={() => setShowSubmitForm(false)}
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold transition-all border border-gray-300"
+                style={{
+                  flex: 1,
+                  background: 'rgba(243, 244, 246, 0.8)',
+                  color: '#374151',
+                  padding: '16px 24px',
+                  borderRadius: '16px',
+                  border: '2px solid rgba(209, 213, 219, 0.8)',
+                  fontWeight: '600',
+                  fontSize: '16px',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease'
+                }}
               >
                 Cancel
               </button>
             </div>
           </form>
+          </div>
         </div>
       )}
 
@@ -1377,31 +1899,64 @@ export default function LivePage() {
                         video.srcObject = stream.stream;
                       }
                     }}
-                    className="w-full h-full object-cover"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
-                  <div className="absolute bottom-2 left-2 flex space-x-2">
+                  <div style={{ 
+                    position: 'absolute', 
+                    bottom: '8px', 
+                    left: '8px', 
+                    display: 'flex', 
+                    gap: '8px' 
+                  }}>
                     <button
                       onClick={() => stopGoLive(stream.id)}
-                      className="bg-red-600 hover:bg-red-700 text-white p-2 rounded-full transition-all"
+                      style={{
+                        backgroundColor: '#dc2626',
+                        color: 'white',
+                        padding: '8px',
+                        borderRadius: '9999px',
+                        transition: 'all 0.3s ease'
+                      }}
                     >
-                      <VideoOff className="w-4 h-4" />
+                      <VideoOff style={{ width: '16px', height: '16px' }} />
                     </button>
                   </div>
-                  <span className="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded text-xs font-semibold animate-pulse">
+                  <span style={{ 
+                    position: 'absolute', 
+                    top: '8px', 
+                    left: '8px', 
+                    backgroundColor: '#ef4444',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    animation: 'pulse 2s infinite'
+                  }}>
                     🔴 LIVE
                   </span>
-                  <span className="absolute top-2 right-2 bg-blue-500 text-white px-2 py-1 rounded text-xs font-semibold">
+                  <span style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '8px',
+                    fontSize: '12px',
+                    fontWeight: '600'
+                  }}>
                     Your Stream
                   </span>
                 </div>
-                <div className="p-4">
-                  <h3 className="font-bold text-gray-900 mb-2">{stream.title}</h3>
+                <div style={{ padding: '16px' }}>
+                  <h3 style={{ fontWeight: '700', color: '#1f2937', marginBottom: '8px' }}>{stream.title}</h3>
                   {stream.description && (
-                    <p className="text-sm text-gray-600 mb-3">{stream.description}</p>
+                    <p style={{ fontSize: '14px', color: '#4b5563', marginBottom: '12px' }}>{stream.description}</p>
                   )}
-                  <div className="flex items-center justify-between text-sm text-gray-500">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', color: '#6b7280' }}>
                     <span>Started: {stream.startTime.toLocaleTimeString()}</span>
-                    <span className="text-green-600 font-semibold">Live Now</span>
+                    <span style={{ color: '#10b981', fontWeight: '600' }}>Live Now</span>
                   </div>
                 </div>
               </div>
@@ -1411,11 +1966,11 @@ export default function LivePage() {
       )}
 
       {/* External Streams Grid */}
-      <div className="container mx-auto px-4 pb-8">
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 32px 48px 32px' }}>
         {userLiveStreams.length > 0 && (
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-white mb-2">External Live Streams</h2>
-            <p className="text-gray-300">Discover streams from around the world</p>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <h2 style={{ fontSize: '36px', fontWeight: '800', color: 'white', marginBottom: '12px', margin: '0 0 12px 0' }}>External Live Streams</h2>
+            <p style={{ color: '#d1d5db', fontSize: '18px', margin: 0 }}>Discover streams from around the world</p>
           </div>
         )}
         {isLoading ? (
@@ -1448,125 +2003,279 @@ export default function LivePage() {
         )}
       </div>
       
-      {/* Go Live Modal */}
+      {/* Professional Go Live Modal */}
       {showGoLiveModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-lg w-full p-6">
-            <div className="text-center mb-6">
-              <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-3">
-                <span className="text-white text-lg">🔴</span>
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50,
+          padding: '20px',
+          backdropFilter: 'blur(10px)'
+        }}>
+          <div style={{
+            background: 'rgba(255, 255, 255, 0.98)',
+            borderRadius: '20px',
+            maxWidth: '420px',
+            width: '100%',
+            padding: '20px',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25)',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)'
+          }}>
+            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+              <div style={{
+                width: '60px',
+                height: '60px',
+                background: 'linear-gradient(135deg, #7c3aed, #ec4899)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 12px auto',
+                boxShadow: '0 8px 25px rgba(124, 58, 237, 0.3)'
+              }}>
+                <span style={{ color: 'white', fontSize: '24px' }}>🔴</span>
               </div>
-              <h2 className="text-2xl font-bold text-gray-900">Go Live</h2>
-              <p className="text-gray-600 mt-2">Start broadcasting live to your audience</p>
+              <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#1f2937', margin: '0 0 8px 0' }}>Go Live</h2>
+              <p style={{ color: '#6b7280', fontSize: '14px', margin: 0 }}>Start broadcasting live to your audience</p>
             </div>
             
-            {/* Camera Preview */}
-            <div className="mb-6">
-              <div className="aspect-video bg-gray-900 rounded-lg overflow-hidden relative">
+            {/* Professional Camera Preview */}
+            <div style={{ marginBottom: '20px' }}>
+              <div style={{
+                aspectRatio: '16/9',
+                backgroundColor: '#111827',
+                borderRadius: '12px',
+                overflow: 'hidden',
+                position: 'relative',
+                border: '1px solid rgba(124, 58, 237, 0.2)'
+              }}>
                 <video
                   ref={previewVideoRef}
                   autoPlay
                   playsInline
                   muted
-                  className="w-full h-full object-cover"
-                  style={{ display: previewStream ? 'block' : 'none' }}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    display: previewStream ? 'block' : 'none'
+                  }}
                 />
                 
                 {!previewStream && (
-                  <div className="flex items-center justify-center h-full absolute inset-0">
-                    <div className="text-center text-gray-400">
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '100%',
+                    position: 'absolute',
+                    inset: 0
+                  }}>
+                    <div style={{ textAlign: 'center', color: '#9ca3af' }}>
                       {isLoadingPreview ? (
                         <>
-                          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-2"></div>
-                          <p className="text-sm">Connecting to camera...</p>
+                          <div style={{
+                            width: '48px',
+                            height: '48px',
+                            border: '3px solid #7c3aed',
+                            borderTop: '3px solid transparent',
+                            borderRadius: '50%',
+                            animation: 'spin 1s linear infinite',
+                            margin: '0 auto 12px auto'
+                          }}></div>
+                          <p style={{ fontSize: '14px', margin: 0 }}>Connecting to camera...</p>
                         </>
                       ) : (
                         <>
-                          <Video className="w-12 h-12 mx-auto mb-2" />
-                          <p className="text-sm">Camera Preview</p>
+                          <Video style={{ width: '48px', height: '48px', margin: '0 auto 12px auto' }} />
+                          <p style={{ fontSize: '14px', margin: 0 }}>Camera Preview</p>
                         </>
                       )}
                     </div>
                   </div>
                 )}
                 
-                {/* Video/Audio indicators */}
-                <div className="absolute bottom-2 left-2 flex space-x-2">
-                  <div className={`p-1 rounded-full ${isVideoEnabled ? 'bg-green-600' : 'bg-red-600'}`}>
-                    {isVideoEnabled ? <Video className="w-4 h-4 text-white" /> : <VideoOff className="w-4 h-4 text-white" />}
+                {/* Professional Video/Audio indicators */}
+                <div style={{
+                  position: 'absolute',
+                  bottom: '12px',
+                  left: '12px',
+                  display: 'flex',
+                  gap: '8px'
+                }}>
+                  <div style={{
+                    padding: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: isVideoEnabled ? '#10b981' : '#ef4444',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    {isVideoEnabled ? 
+                      <Video style={{ width: '16px', height: '16px', color: 'white' }} /> : 
+                      <VideoOff style={{ width: '16px', height: '16px', color: 'white' }} />
+                    }
                   </div>
-                  <div className={`p-1 rounded-full ${isAudioEnabled ? 'bg-green-600' : 'bg-red-600'}`}>
-                    {isAudioEnabled ? <Mic className="w-4 h-4 text-white" /> : <MicOff className="w-4 h-4 text-white" />}
+                  <div style={{
+                    padding: '8px',
+                    borderRadius: '50%',
+                    backgroundColor: isAudioEnabled ? '#10b981' : '#ef4444',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    {isAudioEnabled ? 
+                      <Mic style={{ width: '16px', height: '16px', color: 'white' }} /> : 
+                      <MicOff style={{ width: '16px', height: '16px', color: 'white' }} />
+                    }
                   </div>
                 </div>
               </div>
             </div>
             
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Stream Title *</label>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#374151', marginBottom: '6px' }}>Stream Title *</label>
                 <input
                   type="text"
                   value={liveStreamData.title}
                   onChange={(e) => setLiveStreamData({ ...liveStreamData, title: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    outline: 'none',
+                    transition: 'all 0.3s ease',
+                    fontSize: '14px',
+                    backgroundColor: 'white'
+                  }}
                   placeholder="e.g., My Fashion Live Stream"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Stream Description</label>
+                <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: '#374151', marginBottom: '6px' }}>Stream Description</label>
                 <textarea
                   value={liveStreamData.description}
                   onChange={(e) => setLiveStreamData({ ...liveStreamData, description: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all resize-none"
+                  style={{
+                    width: '100%',
+                    padding: '12px 16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    outline: 'none',
+                    transition: 'all 0.3s ease',
+                    fontSize: '14px',
+                    backgroundColor: 'white',
+                    resize: 'none',
+                    minHeight: '70px'
+                  }}
                   placeholder="Tell your audience what you'll be streaming..."
-                  rows="3"
+                  rows="2"
                 />
               </div>
 
-              <div className="flex items-center justify-between space-x-2">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <button
                   onClick={toggleVideo}
-                  className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center space-x-2 ${
-                    isVideoEnabled 
-                      ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                      : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                  }`}
+                  style={{
+                    flex: 1,
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    background: isVideoEnabled 
+                      ? 'linear-gradient(135deg, #7c3aed, #8b5cf6)'
+                      : 'rgba(243, 244, 246, 0.8)',
+                    color: isVideoEnabled ? 'white' : '#374151',
+                    border: isVideoEnabled ? 'none' : '2px solid rgba(209, 213, 219, 0.5)',
+                    boxShadow: isVideoEnabled ? '0 4px 12px rgba(124, 58, 237, 0.3)' : 'none',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
                 >
-                  {isVideoEnabled ? <Video className="w-4 h-4" /> : <VideoOff className="w-4 h-4" />}
+                  {isVideoEnabled ? 
+                    <Video style={{ width: '14px', height: '14px' }} /> : 
+                    <VideoOff style={{ width: '14px', height: '14px' }} />
+                  }
                   <span>{isVideoEnabled ? 'Video On' : 'Video Off'}</span>
                 </button>
                 <button
                   onClick={toggleAudio}
-                  className={`flex-1 py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center space-x-2 ${
-                    isAudioEnabled 
-                      ? 'bg-purple-600 hover:bg-purple-700 text-white' 
-                      : 'bg-gray-200 hover:bg-gray-300 text-gray-700'
-                  }`}
+                  style={{
+                    flex: 1,
+                    padding: '12px 16px',
+                    borderRadius: '12px',
+                    fontWeight: '600',
+                    transition: 'all 0.3s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px',
+                    background: isAudioEnabled 
+                      ? 'linear-gradient(135deg, #7c3aed, #8b5cf6)'
+                      : 'rgba(243, 244, 246, 0.8)',
+                    color: isAudioEnabled ? 'white' : '#374151',
+                    border: isAudioEnabled ? 'none' : '2px solid rgba(209, 213, 219, 0.5)',
+                    boxShadow: isAudioEnabled ? '0 4px 12px rgba(124, 58, 237, 0.3)' : 'none',
+                    cursor: 'pointer',
+                    fontSize: '14px'
+                  }}
                 >
-                  {isAudioEnabled ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+                  {isAudioEnabled ? 
+                    <Mic style={{ width: '14px', height: '14px' }} /> : 
+                    <MicOff style={{ width: '14px', height: '14px' }} />
+                  }
                   <span>{isAudioEnabled ? 'Audio On' : 'Audio Off'}</span>
                 </button>
               </div>
 
-              <div className="flex space-x-3 pt-4">
+              <div style={{ display: 'flex', gap: '12px', paddingTop: '16px' }}>
                 <button
                   onClick={startGoLive}
                   disabled={isGoingLive}
-                  className="flex-1 bg-gradient-to-r from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 disabled:bg-gray-400 text-white py-3 px-6 rounded-lg font-semibold transition-all shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none disabled:hover:scale-100"
+                  style={{
+                    flex: 1,
+                    background: isGoingLive ? 'rgba(156, 163, 175, 0.8)' : 'linear-gradient(135deg, #dc2626, #ec4899)',
+                    color: 'white',
+                    padding: '14px 20px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    cursor: isGoingLive ? 'not-allowed' : 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: isGoingLive ? 'none' : '0 8px 25px rgba(220, 38, 38, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '6px'
+                  }}
                 >
                   {isGoingLive ? (
-                    <span className="flex items-center justify-center space-x-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <>
+                      <div style={{
+                        width: '14px',
+                        height: '14px',
+                        border: '2px solid white',
+                        borderTop: '2px solid transparent',
+                        borderRadius: '50%',
+                        animation: 'spin 1s linear infinite'
+                      }}></div>
                       <span>Starting...</span>
-                    </span>
+                    </>
                   ) : (
-                    <span className="flex items-center justify-center space-x-2">
-                      <span>🔴</span>
+                    <>
+                      <span style={{ fontSize: '16px' }}>🔴</span>
                       <span>Go Live</span>
-                    </span>
+                    </>
                   )}
                 </button>
                 <button
@@ -1575,7 +2284,18 @@ export default function LivePage() {
                     setLiveStreamData({ title: '', description: '' });
                     setIsGoingLive(false);
                   }}
-                  className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-6 rounded-lg font-semibold transition-all border border-gray-300"
+                  style={{
+                    flex: 1,
+                    background: 'rgba(243, 244, 246, 0.8)',
+                    color: '#374151',
+                    padding: '14px 20px',
+                    borderRadius: '12px',
+                    border: '2px solid rgba(209, 213, 219, 0.8)',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease'
+                  }}
                 >
                   Cancel
                 </button>
@@ -1587,7 +2307,3 @@ export default function LivePage() {
     </div>
   );
 }
-
-
-
-

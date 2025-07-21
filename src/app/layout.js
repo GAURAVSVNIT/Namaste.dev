@@ -25,7 +25,7 @@ const poppins = Poppins({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
-  const isFashionTV = pathname?.startsWith('/fashiontv');
+  const isFashionTV = pathname?.startsWith('/social/fashiontv');
 
   if (isFashionTV) {
     // Fashion TV gets full-screen experience without navbar/footer
@@ -45,9 +45,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LayoutWrapper>
-          <Navbar face={poppins.className} />
           {children}
-          <Footer face={poppins.className} />
         </LayoutWrapper>
       </body>
     </html>

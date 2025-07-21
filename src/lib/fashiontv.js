@@ -434,6 +434,39 @@ export const updateStreamApproval = async (streamId, approved) => {
 };
 
 /**
+ * Get livestream by ID
+ * @param {string} streamId - Stream ID
+ * @returns {Promise<Object>} Stream object
+ */
+export const getLivestreamById = async (streamId) => {
+  if (!streamId) {
+    throw new Error('Stream ID is required');
+  }
+
+  try {
+    const docRef = doc(db, 'livestreams', streamId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        ...data,
+        createdAt: data.createdAt?.toDate() || new Date(),
+        updatedAt: data.updatedAt?.toDate() || new Date()
+      };
+    } else {
+      throw new Error('Livestream not found');
+    }
+  } catch (error) {
+    if (error.message === 'Livestream not found') {
+      throw error;
+    }
+    throw new Error(`Failed to fetch livestream: ${error.message || 'Unknown error'}`);
+  }
+};
+
+/**
  * Delete a livestream
  * @param {string} streamId - Stream ID
  * @returns {Promise<void>}

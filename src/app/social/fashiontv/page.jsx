@@ -18,16 +18,16 @@ export default function FashionTVPage() {
     <div className="fixed inset-0 bg-black overflow-hidden">
       {/* Top Left Live Button */}
       <div className="absolute top-4 left-4 z-50">
-        <Link href="/fashiontv/live">
-          <button className="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-all">
+        <Link href="/social/fashiontv/live">
+          <button className="bg-red-600 text-white rounded-full hover:bg-red-700 transition-all" style={{ paddingLeft: '1.5rem', paddingRight: '1.5rem', paddingTop: '0.75rem', paddingBottom: '0.75rem' }}>
             <span className="text-sm font-semibold">LIVE</span>
           </button>
         </Link>
       </div>
 
-      {/* Top Right Home Button */}
+      {/* Top Right Back Button */}
       <div className="absolute top-4 right-4 z-50">
-        <Link href="/">
+        <Link href="/social">
           <button className="bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all">
             <Home className="w-6 h-6" />
           </button>
@@ -39,7 +39,7 @@ export default function FashionTVPage() {
         <div className={`absolute bottom-24 left-1/2 transform -translate-x-1/2 z-50 transition-opacity duration-300 ${
           isCommentsOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}>
-          <Link href="/fashiontv/upload">
+          <Link href="/social/fashiontv/upload">
             <button className="bg-white text-black p-4 rounded-full shadow-lg hover:scale-110 transition-all duration-200">
               <Plus className="w-8 h-8" />
             </button>

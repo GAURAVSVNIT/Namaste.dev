@@ -7,7 +7,7 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [cartCount, setCartCount] = useState(3);
 
-  const navItems = ['New In', 'Women', 'Men', 'Accessories', 'Sale'];
+  const navItems = ['Explore Look', 'New In', 'Women', 'Men', 'Accessories', 'Sale'];
 
   return (
     <header className="sticky top-0 z-50 glass-card border-0 shadow-lg">
@@ -19,7 +19,15 @@ const Header = () => {
 
           <nav className="hidden md:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a key={item} href="#" className="relative text-sm font-medium text-foreground/80 hover:text-foreground transition-colors duration-300 group">
+              <a 
+                key={item} 
+                href={item === 'Explore Look' ? '/social/look' : '#'} 
+                className={`relative text-sm font-medium transition-colors duration-300 group ${
+                  item === 'Explore Look' 
+                    ? 'bg-gradient-to-r from-pink-400 to-purple-500 bg-clip-text text-transparent font-semibold' 
+                    : 'text-foreground/80 hover:text-foreground'
+                }`}
+              >
                 {item}
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-pink-400 to-purple-500 transition-all duration-300 group-hover:w-full" />
               </a>

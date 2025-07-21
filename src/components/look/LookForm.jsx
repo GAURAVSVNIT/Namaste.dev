@@ -230,146 +230,534 @@ export default function LookForm({ onSubmit, onCancel, initialData = null }) {
   };
 
   return (
-    <Card className="w-full max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>{initialData ? 'Edit Look' : 'Upload New Look'}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Image Upload */}
-          <div className="space-y-2">
-            <Label>Images (1-4 photos)</Label>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {imagePreview.map((preview, index) => (
-                <div key={index} className="relative aspect-square">
-                  <img 
-                    src={preview} 
-                    alt={`Preview ${index + 1}`} 
-                    className="w-full h-full object-cover rounded-lg"
+    <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+      <div style={{ width: '85%', maxWidth: '1000px' }}>
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '16px', 
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)', 
+          border: '1px solid #e5e7eb',
+          overflow: 'hidden'
+        }}>
+          {/* Header */}
+          <div style={{ 
+            padding: '32px 40px', 
+            borderBottom: '1px solid #e5e7eb',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)'
+          }}>
+            <h2 style={{ 
+              fontSize: '28px', 
+              fontWeight: 'bold', 
+              textAlign: 'center', 
+              color: '#1f2937',
+              margin: '0 0 8px 0'
+            }}>
+              {initialData ? '✨ Edit Your Look' : '🎨 Create Your Look'}
+            </h2>
+            <p style={{ 
+              textAlign: 'center', 
+              color: '#6b7280',
+              fontSize: '16px',
+              margin: '0',
+              lineHeight: '1.5'
+            }}>
+              {initialData ? 'Update and perfect your style showcase' : 'Share your unique fashion sense with our creative community'}
+            </p>
+          </div>
+          
+          {/* Form Content */}
+          <div style={{ padding: '32px' }}>
+            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+              {/* Image Upload */}
+              <div style={{ marginBottom: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '16px' }}>
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    backgroundColor: '#3b82f6', 
+                    borderRadius: '12px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(59, 130, 246, 0.25)'
+                  }}>
+                    <ImageIcon style={{ width: '24px', height: '24px', color: 'white' }} />
+                  </div>
+                  <div>
+                    <h3 style={{ 
+                      fontSize: '20px', 
+                      fontWeight: '600', 
+                      color: '#1f2937', 
+                      margin: '0 0 4px 0' 
+                    }}>Photos</h3>
+                    <p style={{ 
+                      fontSize: '14px', 
+                      color: '#6b7280', 
+                      margin: '0' 
+                    }}>Upload 1-4 high-quality images of your look</p>
+                  </div>
+                </div>
+                
+                <div style={{ 
+                  display: 'flex', 
+                  flexWrap: 'wrap',
+                  gap: '16px',
+                  marginTop: '16px',
+                  justifyContent: imagePreview.length === 0 ? 'center' : 'flex-start'
+                }}>
+                  {imagePreview.map((preview, index) => (
+                    <div key={index} style={{ position: 'relative', width: '150px' }}>
+                      <div style={{ 
+                        aspectRatio: '1', 
+                        borderRadius: '12px', 
+                        overflow: 'hidden', 
+                        border: '2px solid #e5e7eb',
+                        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.07)'
+                      }}>
+                        <img 
+                          src={preview} 
+                          alt={`Preview ${index + 1}`} 
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeImage(index)}
+                        style={{
+                          position: 'absolute',
+                          top: '-8px',
+                          right: '-8px',
+                          width: '28px',
+                          height: '28px',
+                          backgroundColor: '#ef4444',
+                          color: 'white',
+                          borderRadius: '50%',
+                          border: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          cursor: 'pointer',
+                          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                          fontSize: '12px'
+                        }}
+                      >
+                        <X style={{ width: '12px', height: '12px' }} />
+                      </button>
+                    </div>
+                  ))}
+                  
+                  {imagePreview.length < 4 && (
+                    <label style={{ 
+                      width: '120px',
+                      height: '120px',
+                      border: '2px dashed #d1d5db', 
+                      borderRadius: '12px', 
+                      display: 'flex', 
+                      flexDirection: 'column', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      cursor: 'pointer',
+                      backgroundColor: '#f9fafb',
+                      transition: 'all 0.3s ease',
+                      padding: '12px'
+                    }}>
+                      <Upload style={{ width: '20px', height: '20px', color: '#9ca3af', marginBottom: '4px' }} />
+                      <span style={{ fontSize: '11px', color: '#6b7280', textAlign: 'center', fontWeight: '500' }}>Add Photo</span>
+                      <span style={{ fontSize: '9px', color: '#9ca3af' }}>Up to 5MB</span>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        style={{ display: 'none' }}
+                      />
+                    </label>
+                  )}
+                </div>
+              </div>
+              
+              {/* Caption */}
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    backgroundColor: '#10b981', 
+                    borderRadius: '12px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(16, 185, 129, 0.25)'
+                  }}>
+                    <span style={{ fontSize: '20px', color: 'white' }}>✍️</span>
+                  </div>
+                  <div>
+                    <h3 style={{ 
+                      fontSize: '20px', 
+                      fontWeight: '600', 
+                      color: '#1f2937', 
+                      margin: '0 0 4px 0' 
+                    }}>Caption</h3>
+                    <p style={{ 
+                      fontSize: '14px', 
+                      color: '#6b7280', 
+                      margin: '0' 
+                    }}>Describe your look and inspiration</p>
+                  </div>
+                </div>
+                <Textarea
+                  id="caption"
+                  placeholder="Tell us about your look... What inspired this style? How does it make you feel?"
+                  value={formData.caption}
+                  onChange={(e) => setFormData(prev => ({ ...prev, caption: e.target.value }))}
+                  style={{
+                    width: '100%',
+                    minHeight: '120px',
+                    padding: '16px',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    resize: 'none',
+                    fontSize: '15px',
+                    lineHeight: '1.6',
+                    fontFamily: 'inherit',
+                    transition: 'border-color 0.2s ease',
+                    ':focus': {
+                      borderColor: '#3b82f6',
+                      outline: 'none'
+                    }
+                  }}
+                  required
+                />
+              </div>
+
+              {/* Mood */}
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    backgroundColor: '#f97316', 
+                    borderRadius: '12px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(249, 115, 22, 0.25)'
+                  }}>
+                    <span style={{ fontSize: '20px', color: 'white' }}>😊</span>
+                  </div>
+                  <div>
+                    <h3 style={{ 
+                      fontSize: '20px', 
+                      fontWeight: '600', 
+                      color: '#1f2937', 
+                      margin: '0 0 4px 0' 
+                    }}>Mood & Vibe</h3>
+                    <p style={{ 
+                      fontSize: '14px', 
+                      color: '#6b7280', 
+                      margin: '0' 
+                    }}>Select the feeling your look conveys</p>
+                  </div>
+                </div>
+                <Select value={formData.mood} onValueChange={(value) => setFormData(prev => ({ ...prev, mood: value }))}>
+                  <SelectTrigger style={{
+                    height: '48px',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    fontSize: '15px',
+                    transition: 'border-color 0.2s ease'
+                  }}>
+                    <SelectValue placeholder="Choose your look's mood and vibe..." />
+                  </SelectTrigger>
+                  <SelectContent style={{
+                    borderRadius: '12px',
+                    border: '1px solid #e5e7eb',
+                    boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1)'
+                  }}>
+                    {MOODS.map(mood => (
+                      <SelectItem key={mood} value={mood} style={{
+                        padding: '12px 16px',
+                        fontSize: '15px'
+                      }}>
+                        {mood}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Tags */}
+              <div style={{ marginBottom: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    backgroundColor: '#8b5cf6', 
+                    borderRadius: '12px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(139, 92, 246, 0.25)'
+                  }}>
+                    <span style={{ fontSize: '20px', color: 'white', fontWeight: 'bold' }}>#</span>
+                  </div>
+                  <div>
+                    <h3 style={{ 
+                      fontSize: '20px', 
+                      fontWeight: '600', 
+                      color: '#1f2937', 
+                      margin: '0 0 4px 0' 
+                    }}>Tags</h3>
+                    <p style={{ 
+                      fontSize: '14px', 
+                      color: '#6b7280', 
+                      margin: '0' 
+                    }}>Add relevant style tags to help others discover your look</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+                  <Input
+                    placeholder="Add a tag (e.g., vintage, streetwear, casual)"
+                    value={tagInput}
+                    onChange={(e) => setTagInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                    style={{
+                      flex: 1,
+                      height: '48px',
+                      padding: '0 16px',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      transition: 'border-color 0.2s ease'
+                    }}
                   />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    className="absolute top-1 right-1 h-6 w-6 p-0"
-                    onClick={() => removeImage(index)}
+                  <Button 
+                    type="button" 
+                    onClick={addTag} 
+                    style={{
+                      height: '48px',
+                      padding: '0 20px',
+                      backgroundColor: '#8b5cf6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'background-color 0.2s ease'
+                    }}
                   >
-                    <X className="h-3 w-3" />
+                    <Plus style={{ width: '16px', height: '16px' }} />Add
                   </Button>
                 </div>
-              ))}
-              
-              {imagePreview.length < 4 && (
-                <label className="aspect-square border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors">
-                  <Upload className="h-8 w-8 text-gray-400 mb-2" />
-                  <span className="text-sm text-gray-500">Upload Image</span>
-                  <input
-                    type="file"
-                    multiple
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="hidden"
-                  />
-                </label>
-              )}
-            </div>
-          </div>
-
-          {/* Caption */}
-          <div className="space-y-2">
-            <Label htmlFor="caption">Caption</Label>
-            <Textarea
-              id="caption"
-              placeholder="Describe your look..."
-              value={formData.caption}
-              onChange={(e) => setFormData(prev => ({ ...prev, caption: e.target.value }))}
-              className="min-h-[100px]"
-              required
-            />
-          </div>
-
-          {/* Mood */}
-          <div className="space-y-2">
-            <Label>Mood</Label>
-            <Select value={formData.mood} onValueChange={(value) => setFormData(prev => ({ ...prev, mood: value }))}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a mood" />
-              </SelectTrigger>
-              <SelectContent>
-                {MOODS.map(mood => (
-                  <SelectItem key={mood} value={mood}>{mood}</SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Tags */}
-          <div className="space-y-2">
-            <Label>Tags</Label>
-            <div className="flex gap-2">
-              <Input
-                placeholder="Add a tag (e.g., streetwear, casual)"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
-              />
-              <Button type="button" onClick={addTag} variant="outline">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-            {formData.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {formData.tags.map((tag, index) => (
-                  <Badge key={index} variant="secondary" className="cursor-pointer" onClick={() => removeTag(tag)}>
-                    #{tag}
-                    <X className="h-3 w-3 ml-1" />
-                  </Badge>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Color Palette (Optional) */}
-          <div className="space-y-2">
-            <Label>Color Palette (Optional)</Label>
-            <div className="flex gap-2">
-              <Input
-                type="color"
-                value={colorInput}
-                onChange={(e) => setColorInput(e.target.value)}
-                className="w-20"
-              />
-              <Button type="button" onClick={addColor} variant="outline">
-                <Plus className="h-4 w-4" />
-              </Button>
-            </div>
-            {formData.colorPalette.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {formData.colorPalette.map((color, index) => (
-                  <div 
-                    key={index} 
-                    className="w-8 h-8 rounded-full cursor-pointer border-2 border-gray-300 relative"
-                    style={{ backgroundColor: color }}
-                    onClick={() => removeColor(color)}
-                  >
-                    <X className="h-3 w-3 absolute top-0 right-0 text-white bg-red-500 rounded-full" />
+                {formData.tags.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                    {formData.tags.map((tag, index) => (
+                      <Badge 
+                        key={index} 
+                        onClick={() => removeTag(tag)}
+                        style={{
+                          backgroundColor: '#ddd6fe',
+                          color: '#7c3aed',
+                          padding: '8px 12px',
+                          borderRadius: '8px',
+                          fontSize: '13px',
+                          fontWeight: '500',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          border: 'none',
+                          transition: 'background-color 0.2s ease'
+                        }}
+                      >
+                        #{tag}
+                        <X style={{ width: '12px', height: '12px' }} />
+                      </Badge>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>
 
-          {/* Submit Buttons */}
-          <div className="flex gap-4 pt-4">
-            <Button type="submit" disabled={isSubmitting} className="flex-1">
-              {isSubmitting ? 'Uploading...' : initialData ? 'Update Look' : 'Upload Look'}
-            </Button>
-            <Button type="button" variant="outline" onClick={onCancel}>
-              Cancel
-            </Button>
+              {/* Color Palette */}
+              <div style={{ marginBottom: '32px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '20px' }}>
+                  <div style={{ 
+                    width: '48px', 
+                    height: '48px', 
+                    backgroundColor: '#ec4899', 
+                    borderRadius: '12px', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    boxShadow: '0 2px 8px rgba(236, 72, 153, 0.25)'
+                  }}>
+                    <span style={{ fontSize: '20px', color: 'white' }}>🎨</span>
+                  </div>
+                  <div>
+                    <h3 style={{ 
+                      fontSize: '20px', 
+                      fontWeight: '600', 
+                      color: '#1f2937', 
+                      margin: '0 0 4px 0' 
+                    }}>Color Palette</h3>
+                    <p style={{ 
+                      fontSize: '14px', 
+                      color: '#6b7280', 
+                      margin: '0' 
+                    }}>Add colors that represent your look (optional)</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+                  <Input
+                    type="color"
+                    value={colorInput}
+                    onChange={(e) => setColorInput(e.target.value)}
+                    style={{
+                      width: '48px',
+                      height: '48px',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '12px',
+                      cursor: 'pointer',
+                      padding: '4px'
+                    }}
+                  />
+                  <Button 
+                    type="button" 
+                    onClick={addColor}
+                    style={{
+                      height: '48px',
+                      padding: '0 20px',
+                      backgroundColor: '#ec4899',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '15px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '8px',
+                      transition: 'background-color 0.2s ease'
+                    }}
+                  >
+                    <Plus style={{ width: '16px', height: '16px' }} />Add Color
+                  </Button>
+                </div>
+                {formData.colorPalette.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px' }}>
+                    {formData.colorPalette.map((color, index) => (
+                      <div 
+                        key={index} 
+                        onClick={() => removeColor(color)}
+                        style={{
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '12px',
+                          cursor: 'pointer',
+                          border: '2px solid #e5e7eb',
+                          position: 'relative',
+                          backgroundColor: color,
+                          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                          transition: 'transform 0.2s ease'
+                        }}
+                      >
+                        <div style={{
+                          position: 'absolute',
+                          top: '-4px',
+                          right: '-4px',
+                          width: '20px',
+                          height: '20px',
+                          backgroundColor: '#ef4444',
+                          borderRadius: '50%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)'
+                        }}>
+                          <X style={{ width: '10px', height: '10px', color: 'white' }} />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Submit Buttons */}
+              <div style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '12px', 
+                paddingTop: '32px',
+                borderTop: '1px solid #e5e7eb'
+              }}>
+                <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <Button 
+                    type="submit" 
+                    disabled={isSubmitting}
+                    style={{
+                      flex: 1,
+                      minHeight: '52px',
+                      padding: '16px 24px',
+                      backgroundColor: isSubmitting ? '#93c5fd' : '#3b82f6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div style={{
+                          width: '20px',
+                          height: '20px',
+                          border: '2px solid white',
+                          borderTop: '2px solid transparent',
+                          borderRadius: '50%',
+                          animation: 'spin 1s linear infinite'
+                        }}></div>
+                        <span>Publishing Your Look...</span>
+                      </>
+                    ) : (
+                      <span>{initialData ? '✨ Update Look' : '🚀 Publish Look'}</span>
+                    )}
+                  </Button>
+                  <Button 
+                    type="button" 
+                    onClick={onCancel}
+                    style={{
+                      flex: 1,
+                      minHeight: '52px',
+                      padding: '16px 24px',
+                      backgroundColor: 'white',
+                      color: '#6b7280',
+                      border: '2px solid #e5e7eb',
+                      borderRadius: '12px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </form>
           </div>
-        </form>
-      </CardContent>
-    </Card>
+        </div>
+      </div>
+    </div>
   );
 }

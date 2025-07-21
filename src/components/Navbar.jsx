@@ -78,13 +78,11 @@ export default function Navbar(fontFace) {
 
   const navItems = [
     // { name: 'Home'},
-    { name: 'Blog', route: "blog" },
-    { name: 'Looks', route: "look" },
-    { name: 'Fashion TV', route: "fashiontv" },
     { name: 'Social Media', route: "social" },
     { name: 'Market Place', route: "marketplace" },
-    { name: 'Quiz', route: "quiz" },
+{ name: 'Quiz', route: "quiz" },
     { name: 'Virtual Try-On', route: "virtual-tryon" },
+    { name: 'Blog', route: "blog" }
   ];
 
   const toggleMenu = () => {
