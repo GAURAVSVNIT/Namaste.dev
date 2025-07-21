@@ -1,0 +1,20 @@
+.bubble {
+  padding: 10px;
+  margin: 8px;
+  border-radius: 20px;
+  max-width: 75%;
+  display: flex;
+  align-items: center;
+}
+
+.bubble.user {
+  background-color: #DCF8C6;
+  align-self: flex-end;
+  justify-content: flex-end;
+}
+
+.bubble.assistant {
+  background-color: #F0F0F0;
+  align-self: flex-start;
+  justify-content: flex-start;
+}
