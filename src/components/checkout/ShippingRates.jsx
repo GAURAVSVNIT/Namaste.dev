@@ -95,52 +95,52 @@ const ShippingRates = ({ orderItems = [], onShippingSelect, selectedShipping }) 
 
   if (!shippingAddress.zipCode || shippingAddress.zipCode.length < 6) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Truck className="w-5 h-5" />
+      <div className="checkout-card">
+        <div className="checkout-card-header">
+          <h3 className="checkout-card-title">
+            <Truck className="checkout-card-title-icon" />
             Shipping Options
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="checkout-card-content">
           <div className="text-center py-8 text-gray-500">
             <Truck className="w-12 h-12 mx-auto mb-4 opacity-50" />
             <p>Enter your PIN code to see shipping options</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Truck className="w-5 h-5" />
+      <div className="checkout-card">
+        <div className="checkout-card-header">
+          <h3 className="checkout-card-title">
+            <Truck className="checkout-card-title-icon" />
             Shipping Options
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="checkout-card-content">
           <div className="text-center py-8">
             <Loader className="w-8 h-8 animate-spin mx-auto mb-4 text-blue-600" />
             <p className="text-gray-600">Fetching shipping rates...</p>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   if (error || !serviceable) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Truck className="w-5 h-5" />
+      <div className="checkout-card">
+        <div className="checkout-card-header">
+          <h3 className="checkout-card-title">
+            <Truck className="checkout-card-title-icon" />
             Shipping Options
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+          </h3>
+        </div>
+        <div className="checkout-card-content">
           <div className="text-center py-8">
             <AlertCircle className="w-12 h-12 mx-auto mb-4 text-red-500" />
             <p className="text-red-600 mb-4">
@@ -150,122 +150,106 @@ const ShippingRates = ({ orderItems = [], onShippingSelect, selectedShipping }) 
               Try Again
             </Button>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Truck className="w-5 h-5" />
+    <div className="checkout-card">
+      <div className="checkout-card-header">
+        <h3 className="checkout-card-title">
+          <Truck className="checkout-card-title-icon" />
           Shipping Options
-          <Badge variant="secondary" className="ml-auto">
+          <div className="checkout-badge ml-auto">
             {shippingOptions.length} available
-          </Badge>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <RadioGroup 
-          value={selectedShipping?.id} 
-          onValueChange={handleShippingSelect}
-          className="space-y-3"
-        >
+          </div>
+        </h3>
+      </div>
+      <div className="checkout-card-content">
+        <div className="shipping-options-container">
           {shippingOptions.map((option) => (
             <motion.div
               key={option.id}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`border rounded-lg p-4 transition-all cursor-pointer ${
-                selectedShipping?.id === option.id 
-                  ? 'border-blue-500 bg-blue-50' 
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`shipping-option ${selectedShipping?.id === option.id ? 'selected' : ''}`}
               onClick={() => handleShippingSelect(option.id)}
             >
-              <div className="flex items-start gap-3">
-                <RadioGroupItem value={option.id} className="mt-1" />
-                
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold text-sm">{option.courier_name}</h3>
+              <div className="shipping-option-radio"></div>
+              
+              <div className="shipping-option-content">
+                <div className="shipping-option-details">
+                  <div className="shipping-option-name">
+                    {option.courier_name}
                     {option.recommend && (
-                      <Badge variant="default" className="text-xs">
+                      <div className="shipping-option-badge recommended">
                         Recommended
-                      </Badge>
+                      </div>
                     )}
                     {option.service_type === 'Express' && (
-                      <Badge variant="secondary" className="text-xs">
+                      <div className="shipping-option-badge fastest">
                         Express
-                      </Badge>
-                    )}
-                  </div>
-                  
-                  <div className="flex items-center gap-4 text-sm text-gray-600 mb-2">
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{getDeliveryEstimate(option.estimated_delivery_days)}</span>
-                    </div>
-                    
-                    {option.rating > 0 && (
-                      <div className="flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                        <span>{option.rating.toFixed(1)}</span>
-                      </div>
-                    )}
-                    
-                    {option.tracking_available && (
-                      <div className="flex items-center gap-1">
-                        <Shield className="w-3 h-3 text-green-600" />
-                        <span className="text-green-600">Tracking</span>
                       </div>
                     )}
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-lg">
-                          {formatCurrency(option.total_charge)}
-                        </span>
-                        {option.cod_charges > 0 && paymentMethod === 'cod' && (
-                          <span className="text-xs text-gray-500">
-                            (incl. COD ₹{option.cod_charges})
-                          </span>
-                        )}
-                      </div>
-                      
+                  <div className="shipping-option-courier">
+                    {option.service_type || 'Standard Service'}
+                  </div>
+                  
+                  <div className="shipping-option-delivery">
+                    <Clock className="w-3 h-3" />
+                    <span>{getDeliveryEstimate(option.estimated_delivery_days)}</span>
+                  </div>
+                  
+                  {option.rating > 0 && (
+                    <div className="shipping-option-rating">
+                      <Star className="w-3 h-3 fill-current text-yellow-400" />
+                      <span>{option.rating.toFixed(1)} rating</span>
                       {option.delivery_performance > 0 && (
-                        <div className="text-xs text-gray-500">
-                          {option.delivery_performance}% on-time delivery
-                        </div>
+                        <span>• {option.delivery_performance}% on-time</span>
                       )}
                     </div>
-                    
-                    {selectedShipping?.id === option.id && (
-                      <CheckCircle className="w-5 h-5 text-blue-600" />
-                    )}
+                  )}
+                </div>
+                
+                <div className="shipping-option-price">
+                  <div className={`shipping-option-cost ${option.total_charge === 0 ? 'free' : ''}`}>
+                    {option.total_charge === 0 ? 'FREE' : formatCurrency(option.total_charge)}
                   </div>
+                  {option.cod_charges > 0 && paymentMethod === 'cod' && (
+                    <div className="shipping-option-rating">
+                      COD: +₹{option.cod_charges}
+                    </div>
+                  )}
                 </div>
               </div>
+              
+              {selectedShipping?.id === option.id && (
+                <CheckCircle className="w-5 h-5 text-blue-600 absolute top-4 right-4" />
+              )}
             </motion.div>
           ))}
-        </RadioGroup>
-        
-        <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <Shield className="w-4 h-4" />
-            <span>All shipments are insured and tracked</span>
-          </div>
-          {paymentMethod === 'cod' && (
-            <div className="mt-1 text-xs text-gray-500">
-              COD charges may apply based on courier partner
-            </div>
-          )}
         </div>
-      </CardContent>
-    </Card>
+        
+        <div className="checkout-security-notice mt-4">
+          <Shield className="w-4 h-4" />
+          <span>All shipments are insured and tracked for your security</span>
+        </div>
+        {paymentMethod === 'cod' && (
+          <div className="cod-info-box">
+            <div className="cod-info-title">
+              <AlertCircle className="w-4 h-4" />
+              Cash on Delivery Info
+            </div>
+            <p className="cod-info-text">
+              Additional COD charges may apply based on courier partner and delivery location.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

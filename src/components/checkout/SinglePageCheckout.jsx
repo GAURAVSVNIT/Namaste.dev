@@ -32,6 +32,7 @@ import { formatCurrency } from '../../lib/utils';
 import ShippingRates from './ShippingRates';
 import PaymentInfo from './PaymentInfo';
 import Image from 'next/image';
+import './Checkout.css';
 
 const SinglePageCheckout = ({ onBack }) => {
   const [mounted, setMounted] = useState(false);
@@ -274,43 +275,49 @@ const SinglePageCheckout = ({ onBack }) => {
 
   // Order confirmation component
   const OrderConfirmation = () => (
-    <div className="text-center space-y-6">
-      <div className="flex justify-center">
-        <CheckCircle className="w-16 h-16 text-green-500" />
+    <div className="checkout-order-confirmation">
+      <div className="checkout-confirmation-icon">
+        <CheckCircle />
       </div>
       
       <div>
-        <h2 className="text-2xl font-semibold text-green-600 mb-2">Order Confirmed!</h2>
-        <p className="text-gray-600">Your order has been placed successfully.</p>
+        <h2 className="checkout-confirmation-title">Order Confirmed!</h2>
+        <p className="checkout-confirmation-subtitle">Your order has been placed successfully.</p>
       </div>
       
-      <div className="bg-green-50 p-4 rounded-lg">
-        <p className="text-sm text-green-800">
+      <div className="checkout-confirmation-details">
+        <p className="checkout-confirmation-detail">
           <strong>Order ID:</strong> {order?.id}
         </p>
-        <p className="text-sm text-green-800">
+        <p className="checkout-confirmation-detail">
           <strong>Total:</strong> {formatCurrency(order?.total || 0)}
         </p>
-        <p className="text-sm text-green-800">
+        <p className="checkout-confirmation-detail">
           <strong>Estimated Delivery:</strong> {order?.estimatedDelivery ? new Date(order.estimatedDelivery).toLocaleDateString() : 'N/A'}
         </p>
       </div>
       
-      <div className="space-y-2">
-        <Button onClick={() => window.location.href = '/marketplace'} className="w-full">
+      <div className="checkout-confirmation-actions">
+        <button 
+          onClick={() => window.location.href = '/marketplace'} 
+          className="checkout-confirmation-button primary"
+        >
           Continue Shopping
-        </Button>
-        <Button variant="outline" onClick={() => window.location.href = '/profile'} className="w-full">
+        </button>
+        <button 
+          onClick={() => window.location.href = '/profile'} 
+          className="checkout-confirmation-button secondary"
+        >
           View Orders
-        </Button>
+        </button>
       </div>
     </div>
   );
 
   if (order) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="checkout-container">
+        <div className="checkout-wrapper">
           <OrderConfirmation />
         </div>
       </div>
@@ -318,154 +325,159 @@ const SinglePageCheckout = ({ onBack }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="checkout-container">
+      <div className="checkout-wrapper">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <Button
-            variant="ghost"
+        <div className="checkout-header">
+          <button
             onClick={onBack}
-            className="flex items-center space-x-2"
+            className="checkout-back-button"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>Back to Cart</span>
-          </Button>
+          </button>
           
-          <div className="flex items-center space-x-2">
-            <ShoppingCart className="w-5 h-5" />
-            <h1 className="text-2xl font-bold">Checkout</h1>
+          <div className="checkout-title">
+            <ShoppingCart className="checkout-title-icon" />
+            <h1>Secure Checkout</h1>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="checkout-grid">
           {/* Left Side - Customer Information */}
-          <div className="space-y-6">
+          <div className="checkout-section">
             {/* Customer Details */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
+            <div className="checkout-card">
+              <div className="checkout-card-header">
+                <h3 className="checkout-card-title">
+                  <User className="checkout-card-title-icon" />
                   Customer Information
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input
-                      id="firstName"
-                      value={shippingAddress.firstName}
-                      onChange={(e) => handleShippingAddressChange('firstName', e.target.value)}
-                      className={errors.firstName ? 'border-red-500' : ''}
-                    />
-                    {errors.firstName && <p className="text-sm text-red-500">{errors.firstName}</p>}
+                </h3>
+              </div>
+              <div className="checkout-card-content">
+                <div className="checkout-form-grid">
+                  <div className="checkout-form-row">
+                    <div className="checkout-form-group">
+                      <label htmlFor="firstName" className="checkout-label">First Name</label>
+                      <input
+                        id="firstName"
+                        className={`checkout-input ${errors.firstName ? 'error' : ''}`}
+                        value={shippingAddress.firstName}
+                        onChange={(e) => handleShippingAddressChange('firstName', e.target.value)}
+                      />
+                      {errors.firstName && <p className="checkout-input-error">{errors.firstName}</p>}
+                    </div>
+                    
+                    <div className="checkout-form-group">
+                      <label htmlFor="lastName" className="checkout-label">Last Name</label>
+                      <input
+                        id="lastName"
+                        className={`checkout-input ${errors.lastName ? 'error' : ''}`}
+                        value={shippingAddress.lastName}
+                        onChange={(e) => handleShippingAddressChange('lastName', e.target.value)}
+                      />
+                      {errors.lastName && <p className="checkout-input-error">{errors.lastName}</p>}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input
-                      id="lastName"
-                      value={shippingAddress.lastName}
-                      onChange={(e) => handleShippingAddressChange('lastName', e.target.value)}
-                      className={errors.lastName ? 'border-red-500' : ''}
-                    />
-                    {errors.lastName && <p className="text-sm text-red-500">{errors.lastName}</p>}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={shippingAddress.email}
-                      onChange={(e) => handleShippingAddressChange('email', e.target.value)}
-                      className={errors.email ? 'border-red-500' : ''}
-                    />
-                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input
-                      id="phone"
-                      value={shippingAddress.phone}
-                      onChange={(e) => handleShippingAddressChange('phone', e.target.value)}
-                      className={errors.phone ? 'border-red-500' : ''}
-                    />
-                    {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
+                  <div className="checkout-form-row">
+                    <div className="checkout-form-group">
+                      <label htmlFor="email" className="checkout-label">Email</label>
+                      <input
+                        id="email"
+                        type="email"
+                        className={`checkout-input ${errors.email ? 'error' : ''}`}
+                        value={shippingAddress.email}
+                        onChange={(e) => handleShippingAddressChange('email', e.target.value)}
+                      />
+                      {errors.email && <p className="checkout-input-error">{errors.email}</p>}
+                    </div>
+                    
+                    <div className="checkout-form-group">
+                      <label htmlFor="phone" className="checkout-label">Phone</label>
+                      <input
+                        id="phone"
+                        className={`checkout-input ${errors.phone ? 'error' : ''}`}
+                        value={shippingAddress.phone}
+                        onChange={(e) => handleShippingAddressChange('phone', e.target.value)}
+                      />
+                      {errors.phone && <p className="checkout-input-error">{errors.phone}</p>}
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Shipping Address */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
+            <div className="checkout-card">
+              <div className="checkout-card-header">
+                <h3 className="checkout-card-title">
+                  <MapPin className="checkout-card-title-icon" />
                   Shipping Address
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Textarea
-                    id="address"
-                    placeholder="Enter your full address"
-                    value={shippingAddress.address}
-                    onChange={(e) => handleShippingAddressChange('address', e.target.value)}
-                    className={errors.address ? 'border-red-500' : ''}
-                    rows={3}
-                  />
-                  {errors.address && <p className="text-sm text-red-500">{errors.address}</p>}
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="city">City</Label>
-                    <Input
-                      id="city"
-                      value={shippingAddress.city}
-                      onChange={(e) => handleShippingAddressChange('city', e.target.value)}
-                      className={errors.city ? 'border-red-500' : ''}
+                </h3>
+              </div>
+              <div className="checkout-card-content">
+                <div className="checkout-form-grid">
+                  <div className="checkout-form-group">
+                    <label htmlFor="address" className="checkout-label">Address</label>
+                    <textarea
+                      id="address"
+                      className={`checkout-textarea ${errors.address ? 'error' : ''}`}
+                      placeholder="Enter your full address"
+                      value={shippingAddress.address}
+                      onChange={(e) => handleShippingAddressChange('address', e.target.value)}
+                      rows={3}
                     />
-                    {errors.city && <p className="text-sm text-red-500">{errors.city}</p>}
+                    {errors.address && <p className="checkout-input-error">{errors.address}</p>}
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="state">State</Label>
-                    <Input
-                      id="state"
-                      value={shippingAddress.state}
-                      onChange={(e) => handleShippingAddressChange('state', e.target.value)}
-                      className={errors.state ? 'border-red-500' : ''}
-                    />
-                    {errors.state && <p className="text-sm text-red-500">{errors.state}</p>}
+                  <div className="checkout-form-row">
+                    <div className="checkout-form-group">
+                      <label htmlFor="city" className="checkout-label">City</label>
+                      <input
+                        id="city"
+                        className={`checkout-input ${errors.city ? 'error' : ''}`}
+                        value={shippingAddress.city}
+                        onChange={(e) => handleShippingAddressChange('city', e.target.value)}
+                      />
+                      {errors.city && <p className="checkout-input-error">{errors.city}</p>}
+                    </div>
+                    
+                    <div className="checkout-form-group">
+                      <label htmlFor="state" className="checkout-label">State</label>
+                      <input
+                        id="state"
+                        className={`checkout-input ${errors.state ? 'error' : ''}`}
+                        value={shippingAddress.state}
+                        onChange={(e) => handleShippingAddressChange('state', e.target.value)}
+                      />
+                      {errors.state && <p className="checkout-input-error">{errors.state}</p>}
+                    </div>
                   </div>
                   
-                  <div className="space-y-2">
-                    <Label htmlFor="zipCode">PIN Code</Label>
-                    <Input
+                  <div className="checkout-form-group">
+                    <label htmlFor="zipCode" className="checkout-label">PIN Code</label>
+                    <input
                       id="zipCode"
+                      className={`checkout-input ${errors.zipCode ? 'error' : ''}`}
                       value={shippingAddress.zipCode}
                       onChange={(e) => handleShippingAddressChange('zipCode', e.target.value)}
-                      className={errors.zipCode ? 'border-red-500' : ''}
                     />
-                    {errors.zipCode && <p className="text-sm text-red-500">{errors.zipCode}</p>}
+                    {errors.zipCode && <p className="checkout-input-error">{errors.zipCode}</p>}
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Payment Information */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5" />
+            <div className="checkout-card">
+              <div className="checkout-card-header">
+                <h3 className="checkout-card-title">
+                  <CreditCard className="checkout-card-title-icon" />
                   Payment Method
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
+                </h3>
+              </div>
+              <div className="checkout-card-content">
                 <PaymentInfo
                   paymentMethod={paymentMethod}
                   setPaymentMethod={setPaymentMethod}
@@ -473,49 +485,46 @@ const SinglePageCheckout = ({ onBack }) => {
                   handlePaymentDetailsChange={handlePaymentDetailsChange}
                   errors={errors}
                 />
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
 
           {/* Right Side - Order Summary and Shipping */}
-          <div className="space-y-6">
+          <div className="checkout-section">
             {/* Order Items */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Package className="w-5 h-5" />
+            <div className="checkout-card">
+              <div className="checkout-card-header">
+                <h3 className="checkout-card-title">
+                  <Package className="checkout-card-title-icon" />
                   Order Items
-                  <Badge variant="secondary" className="ml-auto">
+                  <div className="checkout-badge ml-auto">
                     {orderItems.length} items
-                  </Badge>
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4 max-h-64 overflow-y-auto">
+                  </div>
+                </h3>
+              </div>
+              <div className="checkout-card-content">
+                <div className="checkout-items-scroll">
                   {orderItems.map((item) => (
-                    <div key={item.id} className="flex items-center space-x-4 p-3 border rounded-lg">
-                      <div className="relative w-16 h-16">
-                        <Image
-                          src={item.image || '/api/placeholder/64/64'}
-                          alt={item.name}
-                          fill
-                          className="object-cover rounded"
-                        />
+                    <div key={item.id} className="checkout-order-item">
+                      <img
+                        src={item.image || '/api/placeholder/64/64'}
+                        alt={item.name}
+                        className="checkout-order-item-image"
+                      />
+                      <div className="checkout-order-item-details">
+                        <h4 className="checkout-order-item-name">{item.name}</h4>
+                        <p className="checkout-order-item-meta">{item.category}</p>
+                        <p className="checkout-order-item-meta">Qty: {item.quantity}</p>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-sm">{item.name}</h3>
-                        <p className="text-xs text-gray-600">{item.category}</p>
-                        <p className="text-xs text-gray-600">Qty: {item.quantity}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-semibold">{formatCurrency(item.price * item.quantity)}</p>
-                        <p className="text-xs text-gray-600">{formatCurrency(item.price)} each</p>
+                      <div className="checkout-order-item-price">
+                        <p className="checkout-order-item-total">{formatCurrency(item.price * item.quantity)}</p>
+                        <p className="checkout-order-item-unit">{formatCurrency(item.price)} each</p>
                       </div>
                     </div>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
 
             {/* Shipping Options */}
             <ShippingRates
@@ -525,69 +534,67 @@ const SinglePageCheckout = ({ onBack }) => {
             />
 
             {/* Order Summary */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calculator className="w-5 h-5" />
+            <div className="checkout-card">
+              <div className="checkout-card-header">
+                <h3 className="checkout-card-title">
+                  <Calculator className="checkout-card-title-icon" />
                   Order Summary
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>{formatCurrency(subtotal)}</span>
+                </h3>
+              </div>
+              <div className="checkout-card-content">
+                <div className="checkout-summary">
+                  <div className="checkout-summary-row">
+                    <span className="checkout-summary-label">Subtotal</span>
+                    <span className="checkout-summary-value">{formatCurrency(subtotal)}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Shipping</span>
-                    <span>{shipping > 0 ? formatCurrency(shipping) : 'Free'}</span>
+                  <div className="checkout-summary-row">
+                    <span className="checkout-summary-label">Shipping</span>
+                    <span className="checkout-summary-value">{shipping > 0 ? formatCurrency(shipping) : 'Free'}</span>
                   </div>
                   {selectedShipping && paymentMethod === 'cod' && selectedShipping.cod_charges > 0 && (
-                    <div className="flex justify-between text-sm text-gray-600">
-                      <span>COD Charges</span>
-                      <span>+{formatCurrency(selectedShipping.cod_charges)}</span>
+                    <div className="checkout-summary-row">
+                      <span className="checkout-summary-label">COD Charges</span>
+                      <span className="checkout-summary-value">+{formatCurrency(selectedShipping.cod_charges)}</span>
                     </div>
                   )}
-                  <div className="flex justify-between">
-                    <span>GST (18%)</span>
-                    <span>{formatCurrency(tax)}</span>
+                  <div className="checkout-summary-row">
+                    <span className="checkout-summary-label">GST (18%)</span>
+                    <span className="checkout-summary-value">{formatCurrency(tax)}</span>
                   </div>
-                  <Separator />
-                  <div className="flex justify-between font-semibold text-lg">
+                  <div className="checkout-summary-row total">
                     <span>Total</span>
                     <span>{formatCurrency(total)}</span>
                   </div>
                 </div>
                 
                 {subtotal < 500 && (
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-sm text-blue-800">
+                  <div className="checkout-shipping-notice">
+                    <p className="checkout-shipping-notice-text">
                       Add {formatCurrency(500 - subtotal)} more for free shipping!
                     </p>
                   </div>
                 )}
                 
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <div className="checkout-security-notice">
                   <Shield className="w-4 h-4" />
                   <span>Secure checkout with SSL encryption</span>
                 </div>
 
-                <Button 
+                <button 
                   onClick={handlePlaceOrder}
                   disabled={isProcessing || !selectedShipping}
-                  className="w-full flex items-center justify-center gap-2"
-                  size="lg"
+                  className="checkout-place-order-button"
                 >
-                  {isProcessing && <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full" />}
+                  {isProcessing && <div className="spinner" />}
                   <Lock className="w-4 h-4" />
                   <span>
                     {isProcessing ? 'Processing...' : `Place Order - ${formatCurrency(total)}`}
                   </span>
-                </Button>
+                </button>
 
                 {selectedShipping && (
-                  <div className="mt-3 p-3 bg-green-50 rounded-lg">
-                    <div className="flex items-center gap-2 text-sm text-green-800">
+                  <div className="checkout-delivery-info">
+                    <div className="checkout-delivery-text">
                       <Clock className="w-4 h-4" />
                       <span>
                         Estimated delivery in {selectedShipping.estimated_delivery_days} {
@@ -598,8 +605,8 @@ const SinglePageCheckout = ({ onBack }) => {
                     </div>
                   </div>
                 )}
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </div>
         </div>
       </div>
