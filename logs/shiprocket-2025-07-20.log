@@ -1,0 +1,4457 @@
+{
+  "timestamp": "2025-07-20T08:17:35.763Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket pickup locations"
+}
+{
+  "timestamp": "2025-07-20T08:17:36.086Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T08:17:36.320Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket pickup locations",
+  "data": {
+    "totalLocations": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T08:17:36.392Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket pickup locations"
+}
+{
+  "timestamp": "2025-07-20T08:17:36.486Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T08:17:36.546Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket pickup locations",
+  "data": {
+    "totalLocations": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T08:18:50.110Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket pickup locations"
+}
+{
+  "timestamp": "2025-07-20T08:18:50.181Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T08:18:50.558Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket pickup locations",
+  "data": {
+    "totalLocations": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T08:21:31.413Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Adding new Shiprocket pickup location",
+  "data": {
+    "pickupName": "B-23,Sardar Estate"
+  }
+}
+{
+  "timestamp": "2025-07-20T08:21:31.505Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T08:21:31.942Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully added Shiprocket pickup location",
+  "data": {
+    "pickupName": "B-23,Sardar Estate",
+    "response": {
+      "success": true,
+      "address": {
+        "company_id": 7016522,
+        "pickup_code": "B-23,Sardar Estate",
+        "updated_at": "2025-07-20T08:21:32.000000Z",
+        "created_at": "2025-07-20T08:21:32.000000Z",
+        "id": 8890061,
+        "address": "23, Vallabh Villa, Nr Sai Nagar , Khodiyar Nagar, New Vip Road, Vadodara",
+        "address_2": "",
+        "address_type": null,
+        "city": "VADODARA",
+        "state": "Gujarat",
+        "country": "India",
+        "gstin": null,
+        "pin_code": "390018",
+        "phone": "9429361453",
+        "email": "gauravdamor20@gmail.com",
+        "name": "Gaurav Damor",
+        "alternate_phone": null,
+        "lat": null,
+        "long": null,
+        "status": 2,
+        "rto_address_id": 8890061,
+        "extra_info": "{\"source\":3}",
+        "phone_verified": 0
+      },
+      "pickup_id": 8890061,
+      "company_name": "Gaurav Damor",
+      "full_name": "API"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T08:21:32.025Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket pickup locations"
+}
+{
+  "timestamp": "2025-07-20T08:21:32.143Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T08:21:32.201Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket pickup locations",
+  "data": {
+    "totalLocations": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T14:18:13.341Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null
+  }
+}
+{
+  "timestamp": "2025-07-20T14:18:13.814Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T14:18:14.215Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10"
+  }
+}
+{
+  "timestamp": "2025-07-20T14:18:14.303Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null
+  }
+}
+{
+  "timestamp": "2025-07-20T14:18:14.414Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T14:18:14.620Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10"
+  }
+}
+{
+  "timestamp": "2025-07-20T14:26:20.440Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T14:26:20.571Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:07:26.506Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching shipping rates",
+  "data": {
+    "pincode": "390018",
+    "weight": 0.5,
+    "codAmount": 522
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.038Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:07:27.039Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching pickup location from Shiprocket API"
+}
+{
+  "timestamp": "2025-07-20T15:07:27.229Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.232Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location data received",
+  "data": {
+    "hasData": true,
+    "addressCount": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.233Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Primary pickup location found",
+  "data": {
+    "pickupPincode": "390018",
+    "locationName": "B-23,Sardar Estate",
+    "city": "VADODARA",
+    "state": "Gujarat"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.234Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket rate request",
+  "data": {
+    "pickup_postcode": "390018",
+    "delivery_postcode": "390018",
+    "weight": "0.5",
+    "cod": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.235Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making serviceability API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=390018&delivery_postcode=390018&weight=0.5&cod=1&length=10&breadth=10&height=10",
+    "params": {
+      "pickup_postcode": "390018",
+      "delivery_postcode": "390018",
+      "weight": "0.5",
+      "cod": 1,
+      "length": "10",
+      "breadth": "10",
+      "height": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.633Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Serviceability API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.636Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched shipping rates",
+  "data": {
+    "availableCouriers": 8,
+    "currency": "INR",
+    "companyInsurance": false
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.639Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Available couriers",
+  "data": {
+    "couriers": [
+      {
+        "id": 10,
+        "name": "Delhivery Air",
+        "rate": 105.15,
+        "codCharges": 52.9,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 51,
+        "name": "Xpressbees Surface",
+        "rate": 93.6,
+        "codCharges": 48.4,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 637,
+        "name": "Shiprocket Surface",
+        "rate": 84.7,
+        "codCharges": 48.2,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 43,
+        "name": "Delhivery Surface",
+        "rate": 104.45,
+        "codCharges": 52,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 196,
+        "name": "DTDC Air 500gm",
+        "rate": 92.4,
+        "codCharges": 38.2,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 6,
+        "name": "DTDC Surface",
+        "rate": 98,
+        "codCharges": 48.4,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 195,
+        "name": "Amazon COD Surface 500gm",
+        "rate": 67,
+        "codCharges": 26,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 58,
+        "name": "Shadowfax Surface",
+        "rate": 100.8,
+        "codCharges": 53.1,
+        "estimatedDays": "2",
+        "codAvailable": true
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.642Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Processed shipping options",
+  "data": {
+    "optionsCount": 16,
+    "options": [
+      {
+        "id": "195_standard",
+        "courier": "Amazon COD Surface 500gm",
+        "totalCharge": 93,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "195_express",
+        "courier": "Amazon COD Surface 500gm",
+        "totalCharge": 126.5,
+        "deliveryDays": 2,
+        "recommended": false
+      },
+      {
+        "id": "196_standard",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 130.60000000000002,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "637_standard",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 132.9,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "51_standard",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 142,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "6_standard",
+        "courier": "DTDC Surface",
+        "totalCharge": 146.4,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "58_standard",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 153.9,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "43_standard",
+        "courier": "Delhivery Surface",
+        "totalCharge": 156.45,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "10_standard",
+        "courier": "Delhivery Air",
+        "totalCharge": 158.05,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "637_express",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 175.25,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "196_express",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 176.8,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "51_express",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 188.79999999999998,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "6_express",
+        "courier": "DTDC Surface",
+        "totalCharge": 195.4,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "58_express",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 204.29999999999998,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "43_express",
+        "courier": "Delhivery Surface",
+        "totalCharge": 208.675,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "10_express",
+        "courier": "Delhivery Air",
+        "totalCharge": 210.62500000000003,
+        "deliveryDays": 2,
+        "recommended": false
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:07:27.644Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shipping rates API response",
+  "data": {
+    "success": true,
+    "optionsCount": 16,
+    "serviceable": true,
+    "pickupPincode": "390018",
+    "deliveryPincode": "390018"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.084Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching shipping rates",
+  "data": {
+    "pincode": "390018",
+    "weight": 0.5,
+    "codAmount": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.218Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:09:05.219Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching pickup location from Shiprocket API"
+}
+{
+  "timestamp": "2025-07-20T15:09:05.426Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.427Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location data received",
+  "data": {
+    "hasData": true,
+    "addressCount": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.428Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Primary pickup location found",
+  "data": {
+    "pickupPincode": "390018",
+    "locationName": "B-23,Sardar Estate",
+    "city": "VADODARA",
+    "state": "Gujarat"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.429Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket rate request",
+  "data": {
+    "pickup_postcode": "390018",
+    "delivery_postcode": "390018",
+    "weight": "0.5",
+    "cod": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.430Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making serviceability API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=390018&delivery_postcode=390018&weight=0.5&cod=0&length=10&breadth=10&height=10",
+    "params": {
+      "pickup_postcode": "390018",
+      "delivery_postcode": "390018",
+      "weight": "0.5",
+      "cod": 0,
+      "length": "10",
+      "breadth": "10",
+      "height": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.741Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Serviceability API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.745Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched shipping rates",
+  "data": {
+    "availableCouriers": 10,
+    "currency": "INR",
+    "companyInsurance": false
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.745Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Available couriers",
+  "data": {
+    "couriers": [
+      {
+        "id": 10,
+        "name": "Delhivery Air",
+        "rate": 52.25,
+        "codCharges": 0,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 51,
+        "name": "Xpressbees Surface",
+        "rate": 45.2,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 637,
+        "name": "Shiprocket Surface",
+        "rate": 36.5,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 43,
+        "name": "Delhivery Surface",
+        "rate": 52.45,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 196,
+        "name": "DTDC Air 500gm",
+        "rate": 54.2,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 6,
+        "name": "DTDC Surface",
+        "rate": 49.6,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 142,
+        "name": "Amazon Prepaid Surface 500g",
+        "rate": 41,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 217,
+        "name": "India Post-Speed Post Air Prepaid",
+        "rate": 35.4,
+        "codCharges": 0,
+        "estimatedDays": "4",
+        "codAvailable": false
+      },
+      {
+        "id": 225,
+        "name": "India Post-Business Parcel Surface Prepaid",
+        "rate": 53.1,
+        "codCharges": 0,
+        "estimatedDays": "4",
+        "codAvailable": false
+      },
+      {
+        "id": 58,
+        "name": "Shadowfax Surface",
+        "rate": 47.7,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.746Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Processed shipping options",
+  "data": {
+    "optionsCount": 20,
+    "options": [
+      {
+        "id": "217_standard",
+        "courier": "India Post-Speed Post Air Prepaid",
+        "totalCharge": 35.4,
+        "deliveryDays": "4",
+        "recommended": false
+      },
+      {
+        "id": "637_standard",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 36.5,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "142_standard",
+        "courier": "Amazon Prepaid Surface 500g",
+        "totalCharge": 41,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "51_standard",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 45.2,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "58_standard",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 47.7,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "6_standard",
+        "courier": "DTDC Surface",
+        "totalCharge": 49.6,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "10_standard",
+        "courier": "Delhivery Air",
+        "totalCharge": 52.25,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "43_standard",
+        "courier": "Delhivery Surface",
+        "totalCharge": 52.45,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "217_express",
+        "courier": "India Post-Speed Post Air Prepaid",
+        "totalCharge": 53.099999999999994,
+        "deliveryDays": 3,
+        "recommended": false
+      },
+      {
+        "id": "225_standard",
+        "courier": "India Post-Business Parcel Surface Prepaid",
+        "totalCharge": 53.1,
+        "deliveryDays": "4",
+        "recommended": false
+      },
+      {
+        "id": "196_standard",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 54.2,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "637_express",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 54.75,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "142_express",
+        "courier": "Amazon Prepaid Surface 500g",
+        "totalCharge": 61.5,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "51_express",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 67.80000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "58_express",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 71.55000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "6_express",
+        "courier": "DTDC Surface",
+        "totalCharge": 74.4,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "10_express",
+        "courier": "Delhivery Air",
+        "totalCharge": 78.375,
+        "deliveryDays": 2,
+        "recommended": false
+      },
+      {
+        "id": "43_express",
+        "courier": "Delhivery Surface",
+        "totalCharge": 78.67500000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "225_express",
+        "courier": "India Post-Business Parcel Surface Prepaid",
+        "totalCharge": 79.65,
+        "deliveryDays": 3,
+        "recommended": false
+      },
+      {
+        "id": "196_express",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 81.30000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:09:05.748Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shipping rates API response",
+  "data": {
+    "success": true,
+    "optionsCount": 20,
+    "serviceable": true,
+    "pickupPincode": "390018",
+    "deliveryPincode": "390018"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:10:12.861Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Creating Shiprocket order",
+  "data": {
+    "orderId": "ORD-1753024212003-8244VZD4X"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:10:13.008Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:10:13.010Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket order data",
+  "data": {
+    "orderId": "ORD-1753024212003-8244VZD4X",
+    "pickup_location": "Primary",
+    "payment_method": "Prepaid"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:10:13.391Z",
+  "level": "ERROR",
+  "logger": "shiprocket",
+  "message": "Shiprocket order creation failed",
+  "data": {
+    "orderId": "ORD-1753024212003-8244VZD4X",
+    "status": 422,
+    "response": {
+      "message": "Oops! Invalid Data.",
+      "errors": {
+        "channel_id": [
+          "The channel id field is required."
+        ]
+      },
+      "status_code": 422
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:32.436Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:32.542Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:11:32.817Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:32.899Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:32.970Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:11:33.290Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:36.129Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:36.260Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:11:36.470Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:36.557Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null
+  }
+}
+{
+  "timestamp": "2025-07-20T15:11:36.668Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:11:36.978Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.003Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.261Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:17:28.261Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:17:28.262Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.535Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 0,
+    "pagination": {
+      "total": 0,
+      "count": 0,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.536Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 0,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.536Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.536Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 0,
+    "transformedCount": 0,
+    "statusCodes": []
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.537Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 0,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 0,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.648Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.737Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:17:28.738Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:17:28.739Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.897Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 0,
+    "pagination": {
+      "total": 0,
+      "count": 0,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.897Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 0,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.898Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.898Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 0,
+    "transformedCount": 0,
+    "statusCodes": []
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:28.899Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 0,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 0,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:47.702Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:47.775Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:17:47.777Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:17:47.778Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.178Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 0,
+    "pagination": {
+      "total": 0,
+      "count": 0,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.179Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 0,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.179Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.180Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 0,
+    "transformedCount": 0,
+    "statusCodes": []
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.180Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 0,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 0,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.262Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.381Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:17:48.382Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:17:48.383Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.586Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 0,
+    "pagination": {
+      "total": 0,
+      "count": 0,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.587Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 0,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 0,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.587Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.588Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 0,
+    "transformedCount": 0,
+    "statusCodes": []
+  }
+}
+{
+  "timestamp": "2025-07-20T15:17:48.589Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 0,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 0,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:17.666Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching shipping rates",
+  "data": {
+    "pincode": "390018",
+    "weight": 0.5,
+    "codAmount": 2000
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:17.750Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:21:17.752Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching pickup location from Shiprocket API"
+}
+{
+  "timestamp": "2025-07-20T15:21:17.917Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:17.930Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location data received",
+  "data": {
+    "hasData": true,
+    "addressCount": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:17.930Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Primary pickup location found",
+  "data": {
+    "pickupPincode": "390018",
+    "locationName": "B-23,Sardar Estate",
+    "city": "VADODARA",
+    "state": "Gujarat"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:17.931Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket rate request",
+  "data": {
+    "pickup_postcode": "390018",
+    "delivery_postcode": "390018",
+    "weight": "0.5",
+    "cod": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:17.931Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making serviceability API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=390018&delivery_postcode=390018&weight=0.5&cod=1&length=10&breadth=10&height=10",
+    "params": {
+      "pickup_postcode": "390018",
+      "delivery_postcode": "390018",
+      "weight": "0.5",
+      "cod": 1,
+      "length": "10",
+      "breadth": "10",
+      "height": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:18.102Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Serviceability API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:18.104Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched shipping rates",
+  "data": {
+    "availableCouriers": 8,
+    "currency": "INR",
+    "companyInsurance": false
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:18.104Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Available couriers",
+  "data": {
+    "couriers": [
+      {
+        "id": 10,
+        "name": "Delhivery Air",
+        "rate": 105.15,
+        "codCharges": 52.9,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 51,
+        "name": "Xpressbees Surface",
+        "rate": 93.6,
+        "codCharges": 48.4,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 637,
+        "name": "Shiprocket Surface",
+        "rate": 84.7,
+        "codCharges": 48.2,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 43,
+        "name": "Delhivery Surface",
+        "rate": 104.45,
+        "codCharges": 52,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 196,
+        "name": "DTDC Air 500gm",
+        "rate": 92.4,
+        "codCharges": 38.2,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 6,
+        "name": "DTDC Surface",
+        "rate": 98,
+        "codCharges": 48.4,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 195,
+        "name": "Amazon COD Surface 500gm",
+        "rate": 67,
+        "codCharges": 26,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 58,
+        "name": "Shadowfax Surface",
+        "rate": 100.8,
+        "codCharges": 53.1,
+        "estimatedDays": "2",
+        "codAvailable": true
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:18.106Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Processed shipping options",
+  "data": {
+    "optionsCount": 16,
+    "options": [
+      {
+        "id": "195_standard",
+        "courier": "Amazon COD Surface 500gm",
+        "totalCharge": 93,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "195_express",
+        "courier": "Amazon COD Surface 500gm",
+        "totalCharge": 126.5,
+        "deliveryDays": 2,
+        "recommended": false
+      },
+      {
+        "id": "196_standard",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 130.60000000000002,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "637_standard",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 132.9,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "51_standard",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 142,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "6_standard",
+        "courier": "DTDC Surface",
+        "totalCharge": 146.4,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "58_standard",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 153.9,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "43_standard",
+        "courier": "Delhivery Surface",
+        "totalCharge": 156.45,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "10_standard",
+        "courier": "Delhivery Air",
+        "totalCharge": 158.05,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "637_express",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 175.25,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "196_express",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 176.8,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "51_express",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 188.79999999999998,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "6_express",
+        "courier": "DTDC Surface",
+        "totalCharge": 195.4,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "58_express",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 204.29999999999998,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "43_express",
+        "courier": "Delhivery Surface",
+        "totalCharge": 208.675,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "10_express",
+        "courier": "Delhivery Air",
+        "totalCharge": 210.62500000000003,
+        "deliveryDays": 2,
+        "recommended": false
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:21:18.107Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shipping rates API response",
+  "data": {
+    "success": true,
+    "optionsCount": 16,
+    "serviceable": true,
+    "pickupPincode": "390018",
+    "deliveryPincode": "390018"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:17.512Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:17.888Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:41:17.888Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:41:17.889Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:18.437Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 1,
+    "pagination": {
+      "total": 1,
+      "count": 1,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:18.437Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 1,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 1,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:18.438Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:18.439Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 1,
+    "transformedCount": 1,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:18.440Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 1,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:18.505Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:18.636Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:41:18.637Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:41:18.637Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:19.229Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 1,
+    "pagination": {
+      "total": 1,
+      "count": 1,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:19.230Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 1,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 1,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:19.233Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:19.234Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 1,
+    "transformedCount": 1,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:19.234Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 1,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:28.998Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching specific Shiprocket order",
+  "data": {
+    "orderId": "901285052"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:41:29.081Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:41:29.287Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched specific Shiprocket order",
+  "data": {
+    "orderId": "901285052"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:21.381Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching shipping rates",
+  "data": {
+    "pincode": "390018",
+    "weight": 0.5,
+    "codAmount": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:21.509Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:42:21.510Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching pickup location from Shiprocket API"
+}
+{
+  "timestamp": "2025-07-20T15:42:21.815Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:21.819Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location data received",
+  "data": {
+    "hasData": true,
+    "addressCount": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:21.819Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Primary pickup location found",
+  "data": {
+    "pickupPincode": "390018",
+    "locationName": "B-23,Sardar Estate",
+    "city": "VADODARA",
+    "state": "Gujarat"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:21.823Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket rate request",
+  "data": {
+    "pickup_postcode": "390018",
+    "delivery_postcode": "390018",
+    "weight": "0.5",
+    "cod": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:21.823Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making serviceability API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=390018&delivery_postcode=390018&weight=0.5&cod=0&length=10&breadth=10&height=10",
+    "params": {
+      "pickup_postcode": "390018",
+      "delivery_postcode": "390018",
+      "weight": "0.5",
+      "cod": 0,
+      "length": "10",
+      "breadth": "10",
+      "height": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:22.226Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Serviceability API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:22.228Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched shipping rates",
+  "data": {
+    "availableCouriers": 10,
+    "currency": "INR",
+    "companyInsurance": false
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:22.229Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Available couriers",
+  "data": {
+    "couriers": [
+      {
+        "id": 10,
+        "name": "Delhivery Air",
+        "rate": 52.25,
+        "codCharges": 0,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 51,
+        "name": "Xpressbees Surface",
+        "rate": 45.2,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 637,
+        "name": "Shiprocket Surface",
+        "rate": 36.5,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 43,
+        "name": "Delhivery Surface",
+        "rate": 52.45,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 196,
+        "name": "DTDC Air 500gm",
+        "rate": 54.2,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 6,
+        "name": "DTDC Surface",
+        "rate": 49.6,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 142,
+        "name": "Amazon Prepaid Surface 500g",
+        "rate": 41,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 217,
+        "name": "India Post-Speed Post Air Prepaid",
+        "rate": 35.4,
+        "codCharges": 0,
+        "estimatedDays": "4",
+        "codAvailable": false
+      },
+      {
+        "id": 225,
+        "name": "India Post-Business Parcel Surface Prepaid",
+        "rate": 53.1,
+        "codCharges": 0,
+        "estimatedDays": "4",
+        "codAvailable": false
+      },
+      {
+        "id": 58,
+        "name": "Shadowfax Surface",
+        "rate": 47.7,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:22.229Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Processed shipping options",
+  "data": {
+    "optionsCount": 20,
+    "options": [
+      {
+        "id": "217_standard",
+        "courier": "India Post-Speed Post Air Prepaid",
+        "totalCharge": 35.4,
+        "deliveryDays": "4",
+        "recommended": false
+      },
+      {
+        "id": "637_standard",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 36.5,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "142_standard",
+        "courier": "Amazon Prepaid Surface 500g",
+        "totalCharge": 41,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "51_standard",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 45.2,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "58_standard",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 47.7,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "6_standard",
+        "courier": "DTDC Surface",
+        "totalCharge": 49.6,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "10_standard",
+        "courier": "Delhivery Air",
+        "totalCharge": 52.25,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "43_standard",
+        "courier": "Delhivery Surface",
+        "totalCharge": 52.45,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "217_express",
+        "courier": "India Post-Speed Post Air Prepaid",
+        "totalCharge": 53.099999999999994,
+        "deliveryDays": 3,
+        "recommended": false
+      },
+      {
+        "id": "225_standard",
+        "courier": "India Post-Business Parcel Surface Prepaid",
+        "totalCharge": 53.1,
+        "deliveryDays": "4",
+        "recommended": false
+      },
+      {
+        "id": "196_standard",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 54.2,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "637_express",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 54.75,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "142_express",
+        "courier": "Amazon Prepaid Surface 500g",
+        "totalCharge": 61.5,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "51_express",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 67.80000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "58_express",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 71.55000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "6_express",
+        "courier": "DTDC Surface",
+        "totalCharge": 74.4,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "10_express",
+        "courier": "Delhivery Air",
+        "totalCharge": 78.375,
+        "deliveryDays": 2,
+        "recommended": false
+      },
+      {
+        "id": "43_express",
+        "courier": "Delhivery Surface",
+        "totalCharge": 78.67500000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "225_express",
+        "courier": "India Post-Business Parcel Surface Prepaid",
+        "totalCharge": 79.65,
+        "deliveryDays": 3,
+        "recommended": false
+      },
+      {
+        "id": "196_express",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 81.30000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:42:22.230Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shipping rates API response",
+  "data": {
+    "success": true,
+    "optionsCount": 20,
+    "serviceable": true,
+    "pickupPincode": "390018",
+    "deliveryPincode": "390018"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:30.696Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Creating Shiprocket order",
+  "data": {
+    "orderId": "ORD-1753026210598-NEMGVHV2B"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:30.768Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:43:30.769Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket order data",
+  "data": {
+    "orderId": "ORD-1753026210598-NEMGVHV2B",
+    "pickup_location": "Primary",
+    "payment_method": "Prepaid"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:31.044Z",
+  "level": "ERROR",
+  "logger": "shiprocket",
+  "message": "Shiprocket order creation failed",
+  "data": {
+    "orderId": "ORD-1753026210598-NEMGVHV2B",
+    "status": 422,
+    "response": {
+      "message": "Oops! Invalid Data.",
+      "errors": {
+        "channel_id": [
+          "The channel id field is required."
+        ]
+      },
+      "status_code": 422
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.062Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.128Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:43:43.129Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:43:43.130Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.497Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 1,
+    "pagination": {
+      "total": 1,
+      "count": 1,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.498Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 1,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 1,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.499Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.500Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 1,
+    "transformedCount": 1,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.501Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 1,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.578Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:43.641Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:43:43.642Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:43:43.643Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:44.044Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 1,
+    "pagination": {
+      "total": 1,
+      "count": 1,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:44.045Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 1,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 1,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:44.045Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:44.046Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 1,
+    "transformedCount": 1,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:43:44.047Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 1,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:34.301Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:34.538Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:50:34.539Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:50:34.540Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:34.938Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 1,
+    "pagination": {
+      "total": 1,
+      "count": 1,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:34.939Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 1,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 1,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:34.939Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:34.941Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 1,
+    "transformedCount": 1,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:34.941Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 1,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:35.017Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:35.094Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:50:35.095Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T15:50:35.096Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:35.407Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 1,
+    "pagination": {
+      "total": 1,
+      "count": 1,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:35.408Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 1,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 1,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:35.409Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:35.409Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 1,
+    "transformedCount": 1,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:50:35.410Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 1,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 1,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:17.726Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching shipping rates",
+  "data": {
+    "pincode": "390018",
+    "weight": 0.5,
+    "codAmount": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:17.806Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:51:17.807Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching pickup location from Shiprocket API"
+}
+{
+  "timestamp": "2025-07-20T15:51:18.088Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.090Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location data received",
+  "data": {
+    "hasData": true,
+    "addressCount": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.091Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Primary pickup location found",
+  "data": {
+    "pickupPincode": "390018",
+    "locationName": "B-23,Sardar Estate",
+    "city": "VADODARA",
+    "state": "Gujarat"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.092Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket rate request",
+  "data": {
+    "pickup_postcode": "390018",
+    "delivery_postcode": "390018",
+    "weight": "0.5",
+    "cod": 0
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.093Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making serviceability API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=390018&delivery_postcode=390018&weight=0.5&cod=0&length=10&breadth=10&height=10",
+    "params": {
+      "pickup_postcode": "390018",
+      "delivery_postcode": "390018",
+      "weight": "0.5",
+      "cod": 0,
+      "length": "10",
+      "breadth": "10",
+      "height": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.292Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Serviceability API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.294Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched shipping rates",
+  "data": {
+    "availableCouriers": 10,
+    "currency": "INR",
+    "companyInsurance": false
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.295Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Available couriers",
+  "data": {
+    "couriers": [
+      {
+        "id": 10,
+        "name": "Delhivery Air",
+        "rate": 52.25,
+        "codCharges": 0,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 51,
+        "name": "Xpressbees Surface",
+        "rate": 45.2,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 637,
+        "name": "Shiprocket Surface",
+        "rate": 36.5,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 43,
+        "name": "Delhivery Surface",
+        "rate": 52.45,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 196,
+        "name": "DTDC Air 500gm",
+        "rate": 54.2,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 6,
+        "name": "DTDC Surface",
+        "rate": 49.6,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 142,
+        "name": "Amazon Prepaid Surface 500g",
+        "rate": 41,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 217,
+        "name": "India Post-Speed Post Air Prepaid",
+        "rate": 35.4,
+        "codCharges": 0,
+        "estimatedDays": "4",
+        "codAvailable": false
+      },
+      {
+        "id": 225,
+        "name": "India Post-Business Parcel Surface Prepaid",
+        "rate": 53.1,
+        "codCharges": 0,
+        "estimatedDays": "4",
+        "codAvailable": false
+      },
+      {
+        "id": 58,
+        "name": "Shadowfax Surface",
+        "rate": 47.7,
+        "codCharges": 0,
+        "estimatedDays": "2",
+        "codAvailable": true
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.296Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Processed shipping options",
+  "data": {
+    "optionsCount": 20,
+    "options": [
+      {
+        "id": "217_standard",
+        "courier": "India Post-Speed Post Air Prepaid",
+        "totalCharge": 35.4,
+        "deliveryDays": "4",
+        "recommended": false
+      },
+      {
+        "id": "637_standard",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 36.5,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "142_standard",
+        "courier": "Amazon Prepaid Surface 500g",
+        "totalCharge": 41,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "51_standard",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 45.2,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "58_standard",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 47.7,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "6_standard",
+        "courier": "DTDC Surface",
+        "totalCharge": 49.6,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "10_standard",
+        "courier": "Delhivery Air",
+        "totalCharge": 52.25,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "43_standard",
+        "courier": "Delhivery Surface",
+        "totalCharge": 52.45,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "217_express",
+        "courier": "India Post-Speed Post Air Prepaid",
+        "totalCharge": 53.099999999999994,
+        "deliveryDays": 3,
+        "recommended": false
+      },
+      {
+        "id": "225_standard",
+        "courier": "India Post-Business Parcel Surface Prepaid",
+        "totalCharge": 53.1,
+        "deliveryDays": "4",
+        "recommended": false
+      },
+      {
+        "id": "196_standard",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 54.2,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "637_express",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 54.75,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "142_express",
+        "courier": "Amazon Prepaid Surface 500g",
+        "totalCharge": 61.5,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "51_express",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 67.80000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "58_express",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 71.55000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "6_express",
+        "courier": "DTDC Surface",
+        "totalCharge": 74.4,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "10_express",
+        "courier": "Delhivery Air",
+        "totalCharge": 78.375,
+        "deliveryDays": 2,
+        "recommended": false
+      },
+      {
+        "id": "43_express",
+        "courier": "Delhivery Surface",
+        "totalCharge": 78.67500000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "225_express",
+        "courier": "India Post-Business Parcel Surface Prepaid",
+        "totalCharge": 79.65,
+        "deliveryDays": 3,
+        "recommended": false
+      },
+      {
+        "id": "196_express",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 81.30000000000001,
+        "deliveryDays": 1,
+        "recommended": false
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T15:51:18.297Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shipping rates API response",
+  "data": {
+    "success": true,
+    "optionsCount": 20,
+    "serviceable": true,
+    "pickupPincode": "390018",
+    "deliveryPincode": "390018"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:52:13.542Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Creating Shiprocket order",
+  "data": {
+    "orderId": "ORD-1753026733426-LWJQ1U45I"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:52:13.619Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T15:52:13.620Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket order data",
+  "data": {
+    "orderId": "ORD-1753026733426-LWJQ1U45I",
+    "channel_id": "7631926",
+    "pickup_location": "Primary",
+    "payment_method": "Prepaid"
+  }
+}
+{
+  "timestamp": "2025-07-20T15:52:13.965Z",
+  "level": "ERROR",
+  "logger": "shiprocket",
+  "message": "Shiprocket order creation failed",
+  "data": {
+    "orderId": "ORD-1753026733426-LWJQ1U45I",
+    "status": 400,
+    "response": {
+      "message": "Inventory sync is turned off. Please add a manual order!",
+      "status_code": 400
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:09:09.455Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:09:09.597Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:10:02.289Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Starting product creation in Shiprocket"
+}
+{
+  "timestamp": "2025-07-20T16:10:02.386Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:10:02.388Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Token obtained successfully"
+}
+{
+  "timestamp": "2025-07-20T16:10:02.390Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Product data received",
+  "data": {
+    "productData": {
+      "name": "Balu T-shirt",
+      "category_code": "default",
+      "type": "Single",
+      "qty": 69,
+      "sku": "balutshirt_1753027801765",
+      "description": "",
+      "cost_price": 69,
+      "mrp": 69,
+      "weight": 0.5,
+      "length": 10,
+      "width": 10,
+      "height": 10,
+      "image_url": "https://firebasestorage.googleapis.com/v0/b/fashion-hub-31bce.firebasestorage.app/o/products%2F1753027798765_fashionWOMENSweatersid00003951_047additional.jpg?alt=media&token=1ca6302a-4ea2-4632-abbc-7ecfcaf785ec",
+      "qc_details": {
+        "product_image": "https://firebasestorage.googleapis.com/v0/b/fashion-hub-31bce.firebasestorage.app/o/products%2F1753027798765_fashionWOMENSweatersid00003951_047additional.jpg?alt=media&token=1ca6302a-4ea2-4632-abbc-7ecfcaf785ec",
+        "brand": "Namaste.dev",
+        "color": "",
+        "size": "",
+        "product_imei": "",
+        "serial_no": "balutshirt_1753027801765",
+        "ean_barcode": "",
+        "check_damaged_product": true
+      }
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:02.737Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 201,
+    "statusText": "Created",
+    "headers": {
+      "cache-control": "no-cache, private",
+      "connection": "keep-alive",
+      "content-type": "text/html; charset=UTF-8",
+      "date": "Sun, 20 Jul 2025 16:10:03 GMT",
+      "etag": "\"da39a3ee5e6b4b0d3255bfef95601890afd80709\"",
+      "server": "istio-envoy",
+      "strict-transport-security": "max-age=31536000; includeSubdomains; preload",
+      "transfer-encoding": "chunked",
+      "x-envoy-upstream-service-time": "189",
+      "x-frame-options": "SAMEORIGIN",
+      "x-ratelimit-limit": "360",
+      "x-ratelimit-remaining": "357"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:02.738Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Raw response text",
+  "data": {
+    "responseText": ""
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:02.739Z",
+  "level": "ERROR",
+  "logger": "shiprocket",
+  "message": "Empty response from Shiprocket"
+}
+{
+  "timestamp": "2025-07-20T16:10:02.740Z",
+  "level": "ERROR",
+  "logger": "shiprocket",
+  "message": "Failed to parse Shiprocket response",
+  "data": {
+    "error": "Empty response from Shiprocket",
+    "status": 201,
+    "statusText": "Created"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:02.740Z",
+  "level": "ERROR",
+  "logger": "shiprocket",
+  "message": "Error creating product in Shiprocket",
+  "data": {
+    "error": "Invalid response from Shiprocket API",
+    "stack": "Error: Invalid response from Shiprocket API\n    at POST (D:\\Namaste.dev\\.next\\server\\chunks\\[root-of-the-server]__055a8272._.js:393:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:105:5)\n    at async AppRouteRouteModule.do (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:34112)\n    at async AppRouteRouteModule.handle (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\compiled\\next-server\\app-route-turbo.runtime.dev.js:26:41338)\n    at async doRender (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\base-server.js:1518:42)\n    at async DevServer.renderToResponseWithComponentsImpl (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\base-server.js:1920:28)\n    at async DevServer.renderPageComponent (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\base-server.js:2408:24)\n    at async DevServer.renderToResponseImpl (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\base-server.js:2445:32)\n    at async DevServer.pipeImpl (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\base-server.js:1008:25)\n    at async NextNodeServer.handleCatchallRenderRequest (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\next-server.js:305:17)\n    at async DevServer.handleRequestImpl (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\base-server.js:900:17)\n    at async D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:371:20\n    at async Span.traceAsyncFn (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\trace\\trace.js:157:20)\n    at async DevServer.handleRequest (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\dev\\next-dev-server.js:368:24)\n    at async invokeRender (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\lib\\router-server.js:237:21)\n    at async handleRequest (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\lib\\router-server.js:428:24)\n    at async requestHandlerImpl (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\lib\\router-server.js:452:13)\n    at async Server.requestListener (D:\\Namaste.dev\\node_modules\\.pnpm\\next@15.3.4_@opentelemetry+_a5ccb42d9c087c31a40769108a5a7730\\node_modules\\next\\dist\\server\\lib\\start-server.js:158:13)"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:02.889Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:10:18.874Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching shipping rates",
+  "data": {
+    "pincode": "390018",
+    "weight": 0.5,
+    "codAmount": 69
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:18.947Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:10:18.948Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching pickup location from Shiprocket API"
+}
+{
+  "timestamp": "2025-07-20T16:10:19.064Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.066Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Pickup location data received",
+  "data": {
+    "hasData": true,
+    "addressCount": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.066Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Primary pickup location found",
+  "data": {
+    "pickupPincode": "390018",
+    "locationName": "B-23,Sardar Estate",
+    "city": "VADODARA",
+    "state": "Gujarat"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.067Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket rate request",
+  "data": {
+    "pickup_postcode": "390018",
+    "delivery_postcode": "390018",
+    "weight": "0.5",
+    "cod": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.068Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making serviceability API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/courier/serviceability/?pickup_postcode=390018&delivery_postcode=390018&weight=0.5&cod=1&length=10&breadth=10&height=10",
+    "params": {
+      "pickup_postcode": "390018",
+      "delivery_postcode": "390018",
+      "weight": "0.5",
+      "cod": 1,
+      "length": "10",
+      "breadth": "10",
+      "height": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.389Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Serviceability API response",
+  "data": {
+    "status": 200,
+    "statusText": "OK",
+    "ok": true
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.392Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched shipping rates",
+  "data": {
+    "availableCouriers": 8,
+    "currency": "INR",
+    "companyInsurance": false
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.393Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Available couriers",
+  "data": {
+    "couriers": [
+      {
+        "id": 10,
+        "name": "Delhivery Air",
+        "rate": 105.15,
+        "codCharges": 52.9,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 51,
+        "name": "Xpressbees Surface",
+        "rate": 93.6,
+        "codCharges": 48.4,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 637,
+        "name": "Shiprocket Surface",
+        "rate": 84.7,
+        "codCharges": 48.2,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 43,
+        "name": "Delhivery Surface",
+        "rate": 104.45,
+        "codCharges": 52,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 196,
+        "name": "DTDC Air 500gm",
+        "rate": 92.4,
+        "codCharges": 38.2,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 6,
+        "name": "DTDC Surface",
+        "rate": 98,
+        "codCharges": 48.4,
+        "estimatedDays": "2",
+        "codAvailable": true
+      },
+      {
+        "id": 195,
+        "name": "Amazon COD Surface 500gm",
+        "rate": 67,
+        "codCharges": 26,
+        "estimatedDays": "3",
+        "codAvailable": true
+      },
+      {
+        "id": 58,
+        "name": "Shadowfax Surface",
+        "rate": 100.8,
+        "codCharges": 53.1,
+        "estimatedDays": "2",
+        "codAvailable": true
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.395Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Processed shipping options",
+  "data": {
+    "optionsCount": 16,
+    "options": [
+      {
+        "id": "195_standard",
+        "courier": "Amazon COD Surface 500gm",
+        "totalCharge": 93,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "195_express",
+        "courier": "Amazon COD Surface 500gm",
+        "totalCharge": 126.5,
+        "deliveryDays": 2,
+        "recommended": false
+      },
+      {
+        "id": "196_standard",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 130.60000000000002,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "637_standard",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 132.9,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "51_standard",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 142,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "6_standard",
+        "courier": "DTDC Surface",
+        "totalCharge": 146.4,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "58_standard",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 153.9,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "43_standard",
+        "courier": "Delhivery Surface",
+        "totalCharge": 156.45,
+        "deliveryDays": "2",
+        "recommended": false
+      },
+      {
+        "id": "10_standard",
+        "courier": "Delhivery Air",
+        "totalCharge": 158.05,
+        "deliveryDays": "3",
+        "recommended": false
+      },
+      {
+        "id": "637_express",
+        "courier": "Shiprocket Surface",
+        "totalCharge": 175.25,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "196_express",
+        "courier": "DTDC Air 500gm",
+        "totalCharge": 176.8,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "51_express",
+        "courier": "Xpressbees Surface",
+        "totalCharge": 188.79999999999998,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "6_express",
+        "courier": "DTDC Surface",
+        "totalCharge": 195.4,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "58_express",
+        "courier": "Shadowfax Surface",
+        "totalCharge": 204.29999999999998,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "43_express",
+        "courier": "Delhivery Surface",
+        "totalCharge": 208.675,
+        "deliveryDays": 1,
+        "recommended": false
+      },
+      {
+        "id": "10_express",
+        "courier": "Delhivery Air",
+        "totalCharge": 210.62500000000003,
+        "deliveryDays": 2,
+        "recommended": false
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:19.396Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shipping rates API response",
+  "data": {
+    "success": true,
+    "optionsCount": 16,
+    "serviceable": true,
+    "pickupPincode": "390018",
+    "deliveryPincode": "390018"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:24.536Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Creating Shiprocket order",
+  "data": {
+    "orderId": "ORD-1753027824148-47CCN5YQQ"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:24.660Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:10:24.660Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket order data",
+  "data": {
+    "orderId": "ORD-1753027824148-47CCN5YQQ",
+    "channel_id": "",
+    "pickup_location": "B-23,Sardar Estate",
+    "payment_method": "COD"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:10:25.380Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket order created successfully",
+  "data": {
+    "orderId": "ORD-1753027824148-47CCN5YQQ",
+    "shipment_id": 897622577,
+    "status": "NEW"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:22.368Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:22.877Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:11:22.878Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T16:11:22.878Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:23.441Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 2,
+    "pagination": {
+      "total": 2,
+      "count": 2,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:23.442Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 2,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 2,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:23.443Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 2
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:23.444Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 2,
+    "transformedCount": 2,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      },
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:23.446Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 2,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 2,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:23.509Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:23.642Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:11:23.643Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T16:11:23.644Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:24.055Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 2,
+    "pagination": {
+      "total": 2,
+      "count": 2,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:24.055Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 2,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 2,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:24.056Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 2
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:24.057Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 2,
+    "transformedCount": 2,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      },
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:24.057Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 2,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 2,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:35.021Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching specific Shiprocket order",
+  "data": {
+    "orderId": "901312528"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:35.109Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:11:35.425Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched specific Shiprocket order",
+  "data": {
+    "orderId": "901312528"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:40.600Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:40.742Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T16:11:40.743Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T16:11:40.744Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:41.361Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 2,
+    "pagination": {
+      "total": 2,
+      "count": 2,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:41.362Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 2,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 2,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:41.363Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 2
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:41.364Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 2,
+    "transformedCount": 2,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      },
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T16:11:41.365Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 2,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 2,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:27.157Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket pickup locations"
+}
+{
+  "timestamp": "2025-07-20T19:04:27.870Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T19:04:28.273Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket pickup locations",
+  "data": {
+    "totalLocations": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:28.345Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket pickup locations"
+}
+{
+  "timestamp": "2025-07-20T19:04:28.470Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T19:04:28.593Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket pickup locations",
+  "data": {
+    "totalLocations": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.162Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.254Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T19:04:36.255Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T19:04:36.256Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.768Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 2,
+    "pagination": {
+      "total": 2,
+      "count": 2,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.770Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 2,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 2,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.770Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 2
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.771Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 2,
+    "transformedCount": 2,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      },
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.772Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 2,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 2,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.854Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Fetching Shiprocket orders",
+  "data": {
+    "page": "1",
+    "limit": "10",
+    "status": null,
+    "requestUrl": "http://localhost:3000/api/shiprocket/orders?page=1&limit=10"
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:36.969Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}
+{
+  "timestamp": "2025-07-20T19:04:36.969Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Retrieved Shiprocket token successfully"
+}
+{
+  "timestamp": "2025-07-20T19:04:36.970Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Making Shiprocket API request",
+  "data": {
+    "url": "https://apiv2.shiprocket.in/v1/external/orders?page=1&limit=10",
+    "params": {
+      "page": "1",
+      "limit": "10"
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:37.383Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Shiprocket API response received",
+  "data": {
+    "status": 200,
+    "ok": true,
+    "hasData": true,
+    "dataLength": 2,
+    "pagination": {
+      "total": 2,
+      "count": 2,
+      "per_page": 15,
+      "current_page": 1,
+      "total_pages": 1,
+      "links": {}
+    }
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:37.384Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Successfully fetched Shiprocket orders",
+  "data": {
+    "totalOrders": 2,
+    "page": "1",
+    "limit": "10",
+    "totalFromAPI": 2,
+    "currentPage": 1,
+    "totalPages": 1
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:37.389Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Transforming Shiprocket orders data",
+  "data": {
+    "ordersToTransform": 2
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:37.389Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders transformation complete",
+  "data": {
+    "originalCount": 2,
+    "transformedCount": 2,
+    "statusCodes": [
+      {
+        "status": "new",
+        "statusCode": 1
+      },
+      {
+        "status": "new",
+        "statusCode": 1
+      }
+    ]
+  }
+}
+{
+  "timestamp": "2025-07-20T19:04:37.390Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Orders API response prepared",
+  "data": {
+    "success": true,
+    "dataCount": 2,
+    "pagination": {
+      "page": 1,
+      "limit": 10,
+      "total": 2,
+      "totalPages": 1,
+      "currentPage": 1,
+      "hasMore": false
+    }
+  }
+}
