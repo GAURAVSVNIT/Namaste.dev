@@ -41,6 +41,12 @@ export function LoginForm() {
         return;
       }
       
+      // Check if user has completed onboarding
+      if (!profile.onboardingCompleted && !profile.role) {
+        router.push("/onboarding");
+        return;
+      }
+      
       if (profile.role === 'admin') {
         router.push("/admin/users");
         return;
@@ -71,7 +77,25 @@ export function LoginForm() {
     setError(null);
     
     try {
-      await signInWithGoogle();
+      const userCredential = await signInWithGoogle();
+      
+      // Check if this was handled by the signInWithGoogle redirect
+      if (userCredential) {
+        const profile = await getUserProfile(userCredential.user.uid);
+        
+        // Check if user has completed onboarding
+        if (!profile?.onboardingCompleted && !profile?.role) {
+          router.push("/onboarding");
+          return;
+        }
+        
+        if (profile?.role === 'admin') {
+          router.push("/admin/users");
+          return;
+        }
+        
+        router.push("/");
+      }
     } catch (error) {
       const authError = error;
       setError(authError.message || "An error occurred with Google sign in");
@@ -405,7 +429,7 @@ export function LoginForm() {
                 </Link>
               </div>
               <Button 
-                className="w-full h-11 bg-primary hover:bg-primary-dark focus:ring-4 focus:ring-primary/20 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2" 
+                className="w-full h-11 bg-gradient-to-r from-teal-600 to-purple-600 hover:from-teal-700 hover:to-purple-700 focus:ring-4 focus:ring-teal-200 text-white font-medium rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl" 
                 type="submit" 
                 disabled={loading}
               >

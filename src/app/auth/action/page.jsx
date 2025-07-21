@@ -98,12 +98,31 @@ function AuthActionPageContent() {
     } else if (mode === "verifyEmail" && oobCode) {
       console.log("Handling verifyEmail action with code:", oobCode);
       applyActionCode(auth, oobCode)
-        .then(() => {
+        .then(async () => {
           console.log("Email verification successful");
           setMessage(
-            "Your email address has been verified successfully! You can now log in."
+            "Your email address has been verified successfully! Setting up your profile..."
           );
           setIsVerifying(false);
+          
+          // Check if user has completed onboarding
+          try {
+            const { getUserById } = await import('@/lib/user');
+            const user = auth.currentUser;
+            
+            if (user) {
+              const userProfile = await getUserById(user.uid);
+              
+              // If user doesn't have a role (new user), redirect to onboarding
+              if (!userProfile?.role) {
+                setTimeout(() => router.push("/onboarding"), 2000);
+                return;
+              }
+            }
+          } catch (error) {
+            console.error('Error checking user profile:', error);
+          }
+          
           setTimeout(() => router.push("/"), 3000);
         })
         .catch((err) => {

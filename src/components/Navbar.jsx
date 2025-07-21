@@ -18,7 +18,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings } from 'lucide-react';
+import { User, LogOut, Settings, ShoppingCart } from 'lucide-react';
+import useCartStore from '@/store/cart-store';
 
 export default function Navbar(fontFace) {
   const [isMobile, setIsMobile] = useState(false);
@@ -84,6 +85,9 @@ export default function Navbar(fontFace) {
     { name: 'Virtual Try-On', route: "virtual-tryon" },
     { name: 'Blog', route: "blog" }
   ];
+
+  const { openCart, getCartCount } = useCartStore();
+  const cartCount = getCartCount();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -200,6 +204,41 @@ export default function Navbar(fontFace) {
                 ))}
               </ul>
               <div className="auth-buttons">
+                <button 
+                  className="cart-icon-btn" 
+                  onClick={openCart}
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    position: 'relative', 
+                    cursor: 'pointer',
+                    marginRight: '1rem',
+                    padding: '0.5rem'
+                  }}
+                >
+                  <ShoppingCart className="h-6 w-6" style={{ color: '#333' }} />
+                  {cartCount > 0 && (
+                    <span 
+                      style={{
+                        position: 'absolute',
+                        top: '-5px',
+                        right: '-5px',
+                        backgroundColor: '#ef4444',
+                        color: 'white',
+                        borderRadius: '50%',
+                        width: '20px',
+                        height: '20px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
+                      }}
+                    >
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
                 {isAuthenticated && userProfile ? (
                   <ProfileMenu />
                 ) : (

@@ -3,9 +3,9 @@
 import { usePathname } from 'next/navigation';
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import LayoutWrapper from "@/components/LayoutWrapper";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
+import ConditionalFooter from "@/components/ConditionalFooter";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +33,7 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
+          <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
         </body>
       </html>
     );
@@ -45,8 +46,11 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <LayoutWrapper>
+          <ConditionalNavbar face={poppins.className} />
           {children}
+          <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
       </body>
     </html>
   );

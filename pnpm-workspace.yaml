@@ -1,6 +1,8 @@
 onlyBuiltDependencies:
   - '@firebase/util'
+  - '@parcel/watcher'
   - '@tailwindcss/oxide'
+  - napi-postinstall
   - protobufjs
   - sharp
   - unrs-resolver

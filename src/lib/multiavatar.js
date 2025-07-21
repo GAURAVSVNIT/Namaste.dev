@@ -1,4 +1,4 @@
-import multiavatar from '@multiavatar/multiavatar/esm';
+import multiavatar from '@multiavatar/multiavatar';
 
 // Generate a random string for multiavatar
 export const generateRandomAvatarId = () => {

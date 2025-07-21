@@ -7,8 +7,6 @@ export const metadata = {
 
 export default function VirtualTryOnPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blush via-mint to-lavender">
-      <VirtualTryOn />
-    </div>
+    <VirtualTryOn />
   );
 }

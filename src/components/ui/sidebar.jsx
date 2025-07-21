@@ -327,7 +327,7 @@ const SidebarHeader = React.forwardRef(
       <div
         ref={ref}
         data-sidebar="header"
-        className={cn("flex flex-col gap-2 p-2", className)}
+        className={cn("flex flex-col gap-2 p-2 px-6 pt-6 pb-4 border-b border-gray-200", className)}
         {...props}
       />
     )
@@ -341,7 +341,7 @@ const SidebarFooter = React.forwardRef(
       <div
         ref={ref}
         data-sidebar="footer"
-        className={cn("flex flex-col gap-2 p-2", className)}
+        className={cn("flex flex-col gap-2 p-2 mt-auto px-4 py-4 border-t border-gray-200 bg-white", className)}
         {...props}
       />
     )
@@ -366,11 +366,11 @@ SidebarSeparator.displayName = "SidebarSeparator"
 const SidebarContent = React.forwardRef(
   ({ className, ...props }, ref) => {
     return (
-      <div
+      <diva
         ref={ref}
         data-sidebar="content"
         className={cn(
-          "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
+          "flex min-h-0 flex-1 flex-col gap-4 overflow-auto px-4 py-6 group-data-[collapsible=icon]:overflow-hidden",
           className
         )}
         {...props}

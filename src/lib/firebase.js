@@ -28,6 +28,7 @@ import {
   arrayUnion,
   deleteDoc,
   arrayRemove,
+  onSnapshot,
 } from "firebase/firestore";
 
 import {
@@ -123,9 +124,8 @@ export const signInWithGoogle = async () => {
         };
         await createUserProfile(user.uid, profileData);
         
-        // For consistency with email signup flow, we'll send users to the verify page
-        // Note: Most Google sign-ins already have a verified email, but we'll maintain the flow
-        window.location.href = `/auth/verify?email=${encodeURIComponent(user.email)}`;
+        // For new Google users, redirect to onboarding
+        window.location.href = `/onboarding`;
         return userCredential;
       }
       
@@ -282,7 +282,76 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { app, auth, db, storage };
+export async function addProduct(product) {
+  const productData = {
+    ...product,
+    price: parseFloat(product.price),
+    stock: parseInt(product.stock, 10),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+  const docRef = await addDoc(collection(db, 'products'), productData);
+  return docRef.id;
+}
+
+export async function updateProduct(productId, product) {
+  const productRef = doc(db, 'products', productId);
+  const productData = {
+    ...product,
+    price: parseFloat(product.price),
+    stock: parseInt(product.stock, 10),
+    updatedAt: serverTimestamp(),
+  };
+  await updateDoc(productRef, productData);
+}
+
+export async function deleteProduct(productId) {
+  await deleteDoc(doc(db, 'products', productId));
+}
+
+export function subscribeToRealtimeStats(update) {
+  return onSnapshot(collection(db, 'stats'), snapshot => {
+    const stats = [];
+    snapshot.forEach(doc => {
+      stats.push({ id: doc.id, ...doc.data() });
+    });
+    update(stats);
+  });
+}
+
+export function subscribeToRealtimeOrders(update) {
+  const orderQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+  return onSnapshot(orderQuery, snapshot => {
+    const orders = [];
+    snapshot.forEach(doc => {
+      orders.push({ id: doc.id, ...doc.data() });
+    });
+    update(orders);
+  });
+}
+
+export { 
+  app, 
+  auth, 
+  db, 
+  storage,
+  // Firestore functions
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  setDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  serverTimestamp,
+  onSnapshot,
+  Timestamp
+};
 
 // FirestoreConversationData interface removed for JavaScript conversion
 
