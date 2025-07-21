@@ -99,6 +99,19 @@ export const getUserVideos = async (userId) => {
 };
 
 
+
+export const saveMessageToFirestore = async (userId, { role, type, content, mediaUrl, fileName }) => {
+  await addDoc(collection(db, "chatbot", userId, "messages"), {
+    role,
+    type,
+    content,
+    mediaUrl: mediaUrl || null,
+    fileName: fileName || null,
+    timestamp: serverTimestamp()
+  });
+};
+
+
 // import { db } from "./firebase";
 // import { collection, doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
 

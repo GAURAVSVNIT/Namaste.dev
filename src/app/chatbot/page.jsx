@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { getUserLooks, getUserVideos } from "@/lib/chatbot-utils";
+import { getUserLooks, getUserVideos, saveMessageToFirestore } from "@/lib/chatbot-utils";
 import {
   chatWithFashionBot,
   analyzeLookImage,
@@ -28,18 +28,31 @@ export default function ChatBotClient() {
   const [showCommandMenu, setShowCommandMenu] = useState(false);
   const [looks, setLooks] = useState([]);
   const [videos, setVideos] = useState([]);
+
   const fileInputRef = useRef(null);
   const scrollRef = useRef(null);
+  const messagesEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
-    setShowCommandMenu(input.startsWith("/"));
+    inputRef.current?.focus();
+  }, []);
+
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest', });
+  }, [messages, loading, looks, videos]);
+
+
+  useEffect(() => {
+    setShowCommandMenu(input.startsWith("/") && document.activeElement === inputRef.current);
   }, [input]);
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const addMessage = (role, text) => {
+  const addMessage = async (role, text) => {
     setMessages((prev) => [...prev, { role, text }]);
   };
 
@@ -85,9 +98,20 @@ export default function ChatBotClient() {
     if (!file) return;
 
     setLoading(true);
-    addMessage("user", "[Uploaded Image]");
+
     try {
-      const imageUrl = URL.createObjectURL(file); // placeholder
+      const imageUrl = URL.createObjectURL(file);
+      addMessage("user", `<img
+                              src="${imageUrl}"
+                              alt="${imageUrl}"
+                            />`);
+    }
+    catch (err) {
+      addMessage("user", "[Uploaded Image]");
+    }
+    
+    try {
+      const imageUrl = URL.createObjectURL(file); 
       const feedback = await analyzeLookImage(imageUrl);
       addMessage("bot", feedback);
     } catch (err) {
@@ -105,6 +129,7 @@ export default function ChatBotClient() {
       addMessage("bot", err.message);
     }
     setLoading(false);
+    setLooks([]);
   };
 
   const handleVideoSelect = async (url) => {
@@ -116,136 +141,109 @@ export default function ChatBotClient() {
       addMessage("bot", err.message);
     }
     setLoading(false);
+    setLooks([]);
   };
 
   return (
-    <div
-      className={`relative max-w-2xl mx-auto mt-[6rem] flex flex-col h-[90vh] border shadow-xl rounded-3xl bg-gradient-to-b from-white to-gray-100 ${poppins.variable}`}
-    >
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
-        {messages.map((msg, idx) => (
-          <div
-            key={idx}
-            className={`flex ${
-              msg.role === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            <div
-              className={`px-4 py-2 max-w-xs md:max-w-sm text-sm leading-snug rounded-2xl shadow-md ${
-                msg.role === "user"
-                  ? "bg-pink-500 text-white"
-                  : "bg-white border text-gray-800"
-              }`}
-              dangerouslySetInnerHTML={{ __html: marked(msg.text) }}
+  <div className="chatbot-container">
+    <div className="chatbot-messages">
+      {messages.map((msg, idx) => (
+        <div key={idx} className={`chatbot-message ${msg.role}`}>
+          <span dangerouslySetInnerHTML={{ __html: marked(msg.text) }} />
+        </div>
+      ))}
+
+
+      {looks.length > 0 && (
+        <>
+        <h3>Choose a Look: </h3>
+        <div className="chatbot-media-preview"> 
+          {looks.map((l, i) => (
+            <img
+              key={i}
+              src={l.imageUrl}
+              alt={`Look ${i}`}
+              onClick={() => handleLookSelect(l.imageUrl)}
             />
-          </div>
-        ))}
-        {loading && (
-          <div className="text-center text-gray-400 text-sm">Glamina is typing...</div>
-        )}
+          ))}
+        </div>
+        </>
+      )}
 
-        {looks.length > 0 && (
-          <div className="flex flex-wrap gap-3">
-            {looks.map((l, i) => (
-              <img
-                key={i}
-                src={l.imageUrl}
-                alt={`Look ${i}`}
-                onClick={() => handleLookSelect(l.imageUrl)}
-                className="w-24 h-24 object-cover rounded-xl cursor-pointer border border-gray-300 hover:ring-2 hover:ring-pink-400 transition"
-              />
-            ))}
-          </div>
-        )}
+      {videos.length > 0 && (
+        <>
+        <h3>Choose a Video: </h3>
+        <div className="chatbot-media-preview">
+          {videos.map((v, i) => (
+            <video
+              key={i}
+              src={v.videoUrl}
+              onClick={() => handleVideoSelect(v.videoUrl)}
+              autoPlay
+              loop
+              muted
+              playsInline
+            />
+          ))}
+        </div>
+        </>
+      )}
 
-        {videos.length > 0 && (
-          <div className="flex flex-wrap gap-3">
-            {videos.map((v, i) => (
-              <video
-                key={i}
-                src={v.videoUrl}
-                onClick={() => handleVideoSelect(v.videoUrl)}
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-28 h-28 object-cover rounded-xl cursor-pointer border border-gray-300 hover:scale-105 hover:border-pink-400 transition-transform"
-              />
-            ))}
-          </div>
-        )}
-
-        <div ref={scrollRef} />
-      </div>
-
-      {showCommandMenu && (
-        <div className="absolute bottom-24 left-4 right-4 bg-white border rounded-xl shadow-lg p-3 text-sm z-20">
-          <div
-            onClick={() => setInput("/look")}
-            className="cursor-pointer px-2 py-1 rounded hover:bg-gray-100"
-          >
-            /look – Review uploaded looks
-          </div>
-          <div
-            onClick={() => setInput("/video")}
-            className="cursor-pointer px-2 py-1 rounded hover:bg-gray-100"
-          >
-            /video – Analyze fashion video
-          </div>
-          <div
-            onClick={() => fileInputRef.current?.click()}
-            className="cursor-pointer px-2 py-1 rounded hover:bg-gray-100"
-          >
-            Upload image – Custom style
-          </div>
+       {/* {loading && <div className="chatbot-message bot">Glamina is typing...</div>} */}
+      {loading && (
+        <div className="chatbot-message bot">
+          Glamina is typing<span className="typing-dots">
+            <span>.</span><span>.</span><span>.</span>
+          </span>
         </div>
       )}
 
-      <div className="p-4 border-t bg-white sticky bottom-0 flex flex-col gap-3">
-        <div className="flex gap-2">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            className="flex-1 border rounded-full px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pink-300"
-            placeholder="Type a message or /command"
-          />
-          <button
-            onClick={handleSend}
-            className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-full transition"
-          >
-            Send
-          </button>
-          <input
-            type="file"
-            accept="image/*"
-            hidden
-            ref={fileInputRef}
-            onChange={handleImageUpload}
-          />
-        </div>
+      <div ref={messagesEndRef} />
+    </div>
 
-        <div className="flex gap-2 text-sm">
-          <button
-            onClick={() => setInput("/look")}
-            className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full hover:bg-pink-200 transition"
-          >
-            /look
-          </button>
-          <button
-            onClick={() => setInput("/video")}
-            className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full hover:bg-pink-200 transition"
-          >
-            /video
-          </button>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full hover:bg-pink-200 transition"
-          >
-            Upload Image
-          </button>
+    {showCommandMenu && (
+      <div className="chatbot-command-menu">
+        <div onClick={() => setInput('/help')} className="chatbot-command-option">
+          /help - See the set of Instructions
+        </div>
+        <div onClick={() => setInput('/look')} className="chatbot-command-option">
+          /look - Review uploaded looks
+        </div>
+        <div onClick={() => setInput('/video')} className="chatbot-command-option">
+          /video - Analyze fashion video
+        </div>
+        <div onClick={() => {setInput(''); fileInputRef.current?.click()} } className="chatbot-command-option">
+          Upload Image - Custom style
         </div>
       </div>
+    )}
+
+    <div className="chatbot-input-area">
+      <input
+        ref={inputRef}
+        value={input}
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+        className="chatbot-input"
+        placeholder="Ask Glamina..."
+      />
+      <button onClick={handleSend} className="chatbot-send-btn">Send</button>
+      <input
+        type="file"
+        accept="image/*"
+        hidden
+        ref={fileInputRef}
+        onChange={handleImageUpload}
+      />
     </div>
-  );
+
+    <div className="chatbot-actions">
+      <button onClick={() => {setInput('/help'); setShowCommandMenu(false); } } className="chatbot-action-btn">/help</button>
+      <button onClick={() => {setInput('/look'); setShowCommandMenu(false); } } className="chatbot-action-btn">/look</button>
+      <button onClick={() => {setInput('/video'); setShowCommandMenu(false)} } className="chatbot-action-btn">/video</button>
+      <button onClick={() => {setInput(''); fileInputRef.current?.click(); setShowCommandMenu(false)} } className="chatbot-action-btn">Upload Image</button>
+    </div>
+  </div>
+);
+
 }
