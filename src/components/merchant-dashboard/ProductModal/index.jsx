@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { X, Upload, Loader } from 'lucide-react';
+import { useState, useRef, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { X, Upload, Loader, Image as ImageIcon, Plus, Trash2 } from 'lucide-react';
+import styles from './ProductModal.module.css';
 import { 
   storage,
   addProduct,
@@ -23,6 +24,48 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(product?.imageUrl || '');
   const [loading, setLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback(() => {
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+      handleImageFile(file);
+    }
+  }, []);
+
+  const handleImageFile = (file) => {
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImagePreview(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
+  const removeImage = (e) => {
+    e.stopPropagation();
+    setImageFile(null);
+    setImagePreview('');
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -35,12 +78,7 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
+      handleImageFile(file);
     }
   };
 
@@ -183,171 +221,242 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
   if (!isOpen) return null;
 
   return (
-    <>
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-50"
-        onClick={onClose}
-      />
+    <AnimatePresence>
       <motion.div
-        variants={modalVariants}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl bg-white  rounded-xl shadow-xl z-50 max-h-[90vh] overflow-y-auto"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className={styles.overlay}
+        onClick={onClose}
       >
-        <div className="sticky top-0 bg-white  p-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900 ">
-            {product ? 'Edit Product' : 'Add New Product'}
-          </h2>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100  rounded-lg transition-colors"
-          >
-            <X size={20} />
-          </button>
-        </div>
+        <motion.div
+          variants={modalVariants}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          onClick={(e) => e.stopPropagation()}
+          className={styles.modal}
+        >
+          <div className={styles.header}>
+            <h2 className={styles.title}>
+              {product ? 'Edit Product' : 'Add New Product'}
+            </h2>
+            <button
+              onClick={onClose}
+              className={styles.closeButton}
+              aria-label="Close modal"
+            >
+              <X size={20} />
+            </button>
+          </div>
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className={styles.form}>
           {/* Image Upload */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
               Product Image
+              <span className={styles.required}>*</span>
             </label>
-            <div className="flex items-center gap-4">
-              {imagePreview ? (
-                <div className="relative w-32 h-32">
-                  <Image
-                    src={imagePreview}
-                    alt="Product preview"
-                    fill
-                    className="object-cover rounded-lg"
-                  />
-                </div>
-              ) : (
-                <div className="w-32 h-32 bg-gray-200  rounded-lg flex items-center justify-center">
-                  <Upload size={32} className="text-gray-400" />
-                </div>
-              )}
+            <div 
+              className={`${styles.imageUpload} ${isDragging ? styles.imageUploadDragging : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+              onClick={triggerFileInput}
+            >
+              <div className={styles.imageUploadContent}>
+                {imagePreview ? (
+                  <div className={styles.imagePreview}>
+                    <Image
+                      src={imagePreview}
+                      alt="Product preview"
+                      fill
+                      className={styles.image}
+                    />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className={styles.removeButton}
+                      aria-label="Remove image"
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <div className={styles.uploadIcon}>
+                      <ImageIcon className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <p className={styles.uploadText}>
+                        Drag & drop an image, or click to browse
+                      </p>
+                      <p className={styles.uploadHint}>
+                        Supports JPG, PNG up to 5MB
+                      </p>
+                    </div>
+                  </>
+                )}
+              </div>
               <input
+                ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 onChange={handleImageChange}
-                className="flex-1"
+                className="hidden"
               />
             </div>
           </div>
 
           {/* Product Name */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
               Product Name
+              <span className={styles.required}>*</span>
             </label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-              className="w-full px-4 py-2 border rounded-lg bg-white "
-            />
+            <div className={styles.inputContainer}>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleInputChange}
+                required
+                className={styles.input}
+                placeholder="Enter product name"
+              />
+            </div>
           </div>
 
           {/* Description */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700  mb-2">
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
               Description
+              <span className={styles.optional}>(optional)</span>
             </label>
-            <textarea
-              name="description"
-              value={formData.description}
-              onChange={handleInputChange}
-              rows={3}
-              className="w-full px-4 py-2 border rounded-lg bg-white "
-            />
+            <div className={styles.inputContainer}>
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleInputChange}
+                rows={3}
+                className={styles.textarea}
+                placeholder="Enter product description"
+              />
+            </div>
           </div>
 
           {/* Price & Stock */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className={`${styles.grid} ${styles.formGroup}`}>
             <div>
-              <label className="block text-sm font-medium text-gray-700  mb-2">
+              <label className={styles.label}>
                 Price
+                <span className={styles.required}>*</span>
               </label>
-              <input
-                type="number"
-                name="price"
-                value={formData.price}
-                onChange={handleInputChange}
-                step="0.01"
-                required
-                className="w-full px-4 py-2 border rounded-lg bg-white  "
-              />
+              <div className={styles.inputContainer}>
+                <span className={styles.currencySymbol}>$</span>
+                <input
+                  type="number"
+                  name="price"
+                  value={formData.price}
+                  onChange={handleInputChange}
+                  step="0.01"
+                  min="0"
+                  required
+                  className={`${styles.input} ${styles.priceInput}`}
+                  placeholder="0.00"
+                />
+              </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700  mb-2">
+              <label className={styles.label}>
                 Stock
+                <span className={styles.required}>*</span>
               </label>
-              <input
-                type="number"
-                name="stock"
-                value={formData.stock}
-                onChange={handleInputChange}
-                required
-                className="w-full px-4 py-2 border rounded-lg bg-white "
-              />
+              <div className={styles.inputContainer}>
+                <input
+                  type="number"
+                  name="stock"
+                  value={formData.stock}
+                  onChange={handleInputChange}
+                  min="0"
+                  required
+                  className={styles.input}
+                  placeholder="Available quantity"
+                />
+              </div>
             </div>
           </div>
 
           {/* Category */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
               Category
+              <span className={styles.required}>*</span>
             </label>
-            <select
-              name="category"
-              value={formData.category}
-              onChange={handleInputChange}
-              className="w-full px-4 py-2 border rounded-lg bg-white "
-            >
-              <option value="">Select a category</option>
-              <option value="Mens Clothing">Mens Clothing</option>
-              <option value="Womens Clothing">Womens Clothing</option>
-              <option value="Footwear">Footwear</option>
-              <option value="Accessories">Accessories</option>
-              <option value="Denim">Denim</option>
-              <option value="Activewear">Activewear</option>
-              <option value="Jewelry">Jewelry</option>
-              <option value="Bags">Bags</option>
-            </select>
+            <div className={styles.inputContainer}>
+              <select
+                name="category"
+                value={formData.category}
+                onChange={handleInputChange}
+                required
+                className={styles.select}
+              >
+                <option value="">Select a category</option>
+                <option value="Mens Clothing">Men's Clothing</option>
+                <option value="Womens Clothing">Women's Clothing</option>
+                <option value="Footwear">Footwear</option>
+                <option value="Accessories">Accessories</option>
+                <option value="Denim">Denim</option>
+                <option value="Activewear">Activewear</option>
+                <option value="Jewelry">Jewelry</option>
+                <option value="Bags">Bags & Backpacks</option>
+              </select>
+            </div>
           </div>
 
           {/* Actions */}
-          <div className="flex items-center gap-4 pt-4">
+          <div className={styles.actions}>
             <motion.button
               type="submit"
               disabled={loading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.99 }}
+              className={styles.submitButton}
             >
               {loading ? (
                 <>
-                  <Loader className="animate-spin" size={20} />
-                  Saving...
+                  <Loader className={styles.spinner} size={20} />
+                  <span>Saving...</span>
                 </>
               ) : (
-                product ? 'Update Product' : 'Add Product'
+                <>
+                  {product ? (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      <span>Update Product</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={20} />
+                      <span>Add Product</span>
+                    </>
+                  )}
+                </>
               )}
             </motion.button>
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+              className={styles.cancelButton}
             >
               Cancel
             </button>
           </div>
         </form>
       </motion.div>
-    </>
+    </motion.div>
+  </AnimatePresence>
   );
 }
