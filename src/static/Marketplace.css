@@ -1252,6 +1252,19 @@ body {
     padding-left: 1rem;
     padding-right: 1rem;
   }
+
+  .product-card-add-to-cart {
+    transform: translateY(0);
+  }
+
+  .product-card:hover .product-card-image {
+    transform: none;
+  }
+
+  .product-card-actions {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @media (max-width: 768px) {
