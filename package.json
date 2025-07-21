@@ -52,6 +52,8 @@
     "firebase-admin": "^13.4.0",
     "framer-motion": "^12.23.6",
     "lucide-react": "^0.525.0",
+    "markdown-it": "^14.1.0",
+    "marked": "^16.1.1",
     "next": "15.3.4",
     "ogl": "^1.0.11",
     "postcss": "^8.5.6",

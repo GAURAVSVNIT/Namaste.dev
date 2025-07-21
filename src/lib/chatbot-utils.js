@@ -85,7 +85,7 @@ export const getUserVideos = async (userId) => {
       if (data.videoUrl) {
         videos.push({
           id: doc.id,
-          videoUrl: data.videoUrl.split('?')[0],
+          videoUrl: data.videoUrl,
           createdAt: data.createdAt?.toDate() || new Date(),
         });
       }

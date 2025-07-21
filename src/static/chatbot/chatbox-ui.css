@@ -1,0 +1,137 @@
+/* Overall container */
+.chatbot-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1rem;
+  font-family: var(--font-poppins);
+  display: flex;
+  flex-direction: column;
+  height: 90vh;
+}
+
+/* Chat area */
+.chatbot-messages {
+  flex: 1;
+  overflow-y: auto;
+  background: #fff;
+  border-radius: 1rem;
+  padding: 1.2rem;
+  box-shadow: 0 0 10px rgba(0,0,0,0.07);
+}
+
+/* Individual message */
+.chatbot-message {
+  max-width: 75%;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  border-radius: 1rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.chatbot-message.user {
+  align-self: flex-end;
+  background: #ffe0eb;
+  border-bottom-right-radius: 0;
+  text-align: right;
+}
+
+.chatbot-message.bot {
+  align-self: flex-start;
+  background: #f3f4f6;
+  border-bottom-left-radius: 0;
+  text-align: left;
+}
+
+/* Input & Buttons */
+.chatbot-input-area {
+  margin-top: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.chatbot-input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.chatbot-send-btn {
+  background: #000;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.chatbot-send-btn:hover {
+  opacity: 0.9;
+}
+
+/* Action buttons */
+.chatbot-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+.chatbot-action-btn {
+  background: #ffeef5;
+  color: #d6336c;
+  font-weight: 500;
+  font-size: 0.85rem;
+  border-radius: 0.75rem;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border: 1px solid #ffd6e6;
+  transition: all 0.2s;
+}
+.chatbot-action-btn:hover {
+  background: #fff0f5;
+  border-color: #ffbad2;
+}
+
+/* Menu */
+.chatbot-command-menu {
+  background: #f9fafb;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  margin-top: 0.75rem;
+  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+}
+.chatbot-command-option {
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: 0.2s;
+}
+.chatbot-command-option:hover {
+  background: #edf2f7;
+}
+
+/* Media previews */
+.chatbot-media-preview {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.chatbot-media-preview img,
+.chatbot-media-preview video {
+  width: 96px;
+  height: 96px;
+  object-fit: cover;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: 0.2s ease;
+}
+.chatbot-media-preview img:hover,
+.chatbot-media-preview video:hover {
+  border-color: #d6336c;
+  transform: scale(1.05);
+}
