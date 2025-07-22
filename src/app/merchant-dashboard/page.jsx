@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import { ShoppingCart, DollarSign, Package, TrendingUp, MessageSquare, Users } from 'lucide-react';
 import { auth } from '@/lib/firebase';
 import { Line, Doughnut } from 'react-chartjs-2';
+import RoleProtected from '@/components/auth/RoleProtected';
+import { USER_ROLES } from '@/lib/roles';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -66,7 +68,7 @@ ChartJS.register(
   Filler
 );
 
-export default function DashboardPage() {
+function MerchantDashboardContent() {
   const [timeRange, setTimeRange] = useState('week');
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState({
@@ -549,5 +551,14 @@ export default function DashboardPage() {
         </Card>
       </motion.div>
     </div>
+  );
+}
+
+// Main component with role protection
+export default function MerchantDashboardPage() {
+  return (
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT]}>
+      <MerchantDashboardContent />
+    </RoleProtected>
   );
 }

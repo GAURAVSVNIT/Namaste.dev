@@ -1,13 +1,14 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Eye, Truck, Calendar, Clock, Package, CreditCard, User, X, Loader2 } from 'lucide-react';
-import { useDashboard } from '@/context/DashboardContext';
+import { Search, Filter, Eye, Truck, Calendar, Clock, Package, CreditCard, User, X, Loader2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import styles from './Orders.module.css';
+import RoleProtected from '@/components/auth/RoleProtected';
+import { USER_ROLES } from '@/lib/roles';
 
 const statusOptions = [
   { value: 'all', label: 'All Orders' },
@@ -29,38 +30,90 @@ const getStatusClass = (status) => {
   }
 };
 
-export default function OrdersPage() {
-  const { state, dispatch } = useDashboard();
+function OrdersPageContent() {
+  const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, hasMore: false });
 
-  // Simulate loading state
-  const handleStatusChange = async (orderId, newStatus) => {
+  // Fetch orders from Shiprocket API
+  const fetchOrders = async (page = 1, status = 'all', search = '') => {
     setIsLoading(true);
-    await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call
-    dispatch({ 
-      type: 'UPDATE_ORDER_STATUS', 
-      payload: { id: orderId, status: newStatus } 
-    });
-    setIsLoading(false);
+    try {
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: '10'
+      });
+      
+      if (status && status !== 'all') {
+        queryParams.append('status', status);
+      }
+
+      const response = await fetch(`/api/shiprocket/orders?${queryParams}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setOrders(result.data);
+        setPagination(result.pagination);
+      } else {
+        console.error('Failed to fetch orders:', result.error);
+      }
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const filteredOrders = state.orders.filter(order => {
-    const matchesSearch = order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customer.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.products.some(product => 
-                           product.product.name.toLowerCase().includes(searchTerm.toLowerCase())
-                         );
+  // Fetch order details
+  const fetchOrderDetails = async (orderId) => {
+    try {
+      const response = await fetch(`/api/shiprocket/orders/${orderId}`);
+      const result = await response.json();
+
+      if (result.success) {
+        setSelectedOrder(result.data);
+      } else {
+        console.error('Failed to fetch order details:', result.error);
+      }
+    } catch (error) {
+      console.error('Error fetching order details:', error);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  // Filter orders based on search and status
+  const filteredOrders = orders.filter(order => {
+    const matchesSearch = !searchTerm || 
+      order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.items.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    
     const matchesStatus = statusFilter === 'all' || order.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
-  const getOrderTotal = (products) => {
-    return products.reduce((total, item) => total + (item.product.price * item.quantity), 0).toFixed(2);
+  const getOrderTotal = (items) => {
+    return items.reduce((total, item) => total + item.total, 0);
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      minimumFractionDigits: 2
+    }).format(amount);
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
@@ -68,6 +121,15 @@ export default function OrdersPage() {
   const clearFilters = () => {
     setSearchTerm('');
     setStatusFilter('all');
+    fetchOrders(1, 'all');
+  };
+
+  const handleRefresh = () => {
+    fetchOrders(currentPage, statusFilter, searchTerm);
+  };
+
+  const handleViewOrder = (orderId) => {
+    fetchOrderDetails(orderId);
   };
 
   return (
@@ -170,10 +232,10 @@ export default function OrdersPage() {
               >
                 <div className={styles.orderHeader}>
                   <div>
-                    <h3 className={styles.orderId}>Order #{order.id}</h3>
+                    <h3 className={styles.orderId}>Order #{order.orderId}</h3>
                     <p className={styles.customerName}>
                       <User className="inline w-3.5 h-3.5 mr-1 text-gray-400" />
-                      {order.customer}
+                      {order.customerName}
                     </p>
                   </div>
                   <span className={`${styles.statusBadge} ${getStatusClass(order.status)}`}>
@@ -187,14 +249,14 @@ export default function OrdersPage() {
                       <Calendar className="w-3.5 h-3.5 mr-1.5" />
                       Order Date
                     </p>
-                    <p className="font-medium">{formatDate(order.date)}</p>
+                    <p className="font-medium">{formatDate(order.orderDate)}</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-500 flex items-center">
                       <Package className="w-3.5 h-3.5 mr-1.5" />
                       Items
                     </p>
-                    <p className="font-medium">{order.products.length} items</p>
+                    <p className="font-medium">{order.items.length} items</p>
                   </div>
                   <div className="space-y-1">
                     <p className="text-xs text-gray-500 flex items-center">
@@ -202,7 +264,7 @@ export default function OrdersPage() {
                       Total Amount
                     </p>
                     <p className="font-medium text-lg text-gray-900">
-                      ${getOrderTotal(order.products)}
+                      {formatCurrency(order.total)}
                     </p>
                   </div>
                 </div>
@@ -213,40 +275,39 @@ export default function OrdersPage() {
                       <Clock className="w-3.5 h-3.5 mr-1.5" />
                       {order.updatedAt ? `Updated ${formatDate(order.updatedAt)}` : 'Just now'}
                     </span>
-                    {order.tracking && (
+                    {order.awbCode && (
                       <span className="inline-flex items-center text-blue-600">
                         <Truck className="w-3.5 h-3.5 mr-1.5" />
-                        Tracking: {order.tracking}
+                        AWB: {order.awbCode}
+                      </span>
+                    )}
+                    {order.courierName && (
+                      <span className="inline-flex items-center text-green-600">
+                        <Truck className="w-3.5 h-3.5 mr-1.5" />
+                        {order.courierName}
                       </span>
                     )}
                   </div>
                   
                   <div className={styles.actions}>
-                    <Select
-                      value={order.status}
-                      onValueChange={(value) => handleStatusChange(order.id, value)}
-                      disabled={isLoading}
-                    >
-                      <SelectTrigger className={styles.selectTrigger}>
-                        <SelectValue placeholder="Update Status" />
-                      </SelectTrigger>
-                      <SelectContent className={styles.selectContent}>
-                        <SelectItem value="pending" className={styles.selectItem}>Pending</SelectItem>
-                        <SelectItem value="processing" className={styles.selectItem}>Processing</SelectItem>
-                        <SelectItem value="shipped" className={styles.selectItem}>Shipped</SelectItem>
-                        <SelectItem value="delivered" className={styles.selectItem}>Delivered</SelectItem>
-                        <SelectItem value="cancelled" className={styles.selectItem}>Cancelled</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    
                     <Button 
                       variant="outline" 
                       size="sm" 
                       className={styles.viewButton}
+                      onClick={() => handleViewOrder(order.id)}
                       disabled={isLoading}
                     >
                       <Eye className={styles.viewButtonIcon} />
                       View Details
+                    </Button>
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      onClick={handleRefresh}
+                      disabled={isLoading}
+                      title="Refresh orders"
+                    >
+                      <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
                     </Button>
                   </div>
                 </div>
@@ -280,5 +341,14 @@ export default function OrdersPage() {
         </AnimatePresence>
       </div>
     </div>
+  );
+}
+
+// Main component with role protection
+export default function OrdersPage() {
+  return (
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
+      <OrdersPageContent />
+    </RoleProtected>
   );
 }

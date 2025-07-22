@@ -1,0 +1,6 @@
+{
+  "timestamp": "2025-07-18T21:49:57.348Z",
+  "level": "INFO",
+  "logger": "shiprocket",
+  "message": "Using cached Shiprocket token"
+}

@@ -3,10 +3,32 @@
 import React, { useState } from 'react';
 import { Bell, Search, Settings, Menu } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useRole } from '@/hooks/useRole';
 import styles from './Header.module.css';
+
+// Helper function to get user initials
+const getUserInitials = (user) => {
+  if (!user) return 'U';
+  
+  if (user.first_name && user.last_name) {
+    return `${user.first_name.charAt(0)}${user.last_name.charAt(0)}`.toUpperCase();
+  }
+  
+  if (user.email) {
+    const [localPart] = user.email.split('@');
+    const parts = localPart.split('.');
+    if (parts.length >= 2) {
+      return `${parts[0].charAt(0)}${parts[1].charAt(0)}`.toUpperCase();
+    }
+    return localPart.slice(0, 2).toUpperCase();
+  }
+  
+  return 'U';
+};
 
 export function Header({ onMenuClick, isCollapsed }) {
   const [hasNotifications] = useState(true);
+  const { user, loading } = useRole();
 
   return (
     <header className={`${styles.header} ${isCollapsed ? styles.collapsed : ''}`}>
@@ -54,7 +76,7 @@ export function Header({ onMenuClick, isCollapsed }) {
             whileTap={{ scale: 0.95 }}
             aria-label="User menu"
           >
-            <span>JD</span>
+            <span>{loading ? 'U' : getUserInitials(user)}</span>
           </motion.div>
         </div>
       </div>

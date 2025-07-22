@@ -38,6 +38,8 @@ import {
   Area
 } from 'recharts';
 import styles from './Analytics.module.css';
+import RoleProtected from '@/components/auth/RoleProtected';
+import { USER_ROLES } from '@/lib/roles';
 
 const salesData = [
   { name: 'Jan', sales: 4200, orders: 240, visitors: 1200 },
@@ -144,7 +146,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export default function AnalyticsPage() {
+function AnalyticsPageContent() {
   const [timeRange, setTimeRange] = useState('monthly');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
@@ -640,5 +642,14 @@ export default function AnalyticsPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+// Main component with role protection
+export default function AnalyticsPage() {
+  return (
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
+      <AnalyticsPageContent />
+    </RoleProtected>
   );
 }

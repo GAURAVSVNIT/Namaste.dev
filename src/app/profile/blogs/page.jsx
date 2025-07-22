@@ -109,7 +109,7 @@ export default function ProfileBlogsPage() {
           </div>
           
           <Link href="/blog/new">
-            <Button>
+            <Button className="px-6">
               <Plus className="w-4 h-4 mr-2" />
               Write New Blog
             </Button>

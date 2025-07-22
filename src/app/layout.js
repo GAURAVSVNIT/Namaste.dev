@@ -1,6 +1,7 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
+import Script from 'next/script';
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
@@ -25,7 +26,7 @@ const poppins = Poppins({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
-  const isFashionTV = pathname?.startsWith('/fashiontv');
+  const isFashionTV = pathname?.startsWith('/social/fashiontv');
 
   if (isFashionTV) {
     // Fashion TV gets full-screen experience without navbar/footer
@@ -33,6 +34,10 @@ export default function RootLayout({ children }) {
       <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
+          <Script 
+            src="https://checkout.razorpay.com/v1/checkout.js"
+            strategy="afterInteractive"
+          />
         </body>
       </html>
     );
@@ -49,6 +54,10 @@ export default function RootLayout({ children }) {
           {children}
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
+        <Script 
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

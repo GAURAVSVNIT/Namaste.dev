@@ -9,6 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import styles from './VirtualTryOn.module.css';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, getDocs, orderBy, query, serverTimestamp } from 'firebase/firestore';
 
 const VirtualTryOn = () => {
   const [personImage, setPersonImage] = useState(null);
@@ -17,20 +19,50 @@ const VirtualTryOn = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState(null);
-  const [activeTab, setActiveTab] = useState('upload');
+  const [activeTab, setActiveTab] = useState('upload'); // State for active tab
   const [showSuccess, setShowSuccess] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [dragStates, setDragStates] = useState({ person: false, garment: false });
-  const [savedTryOns, setSavedTryOns] = useState([]);
+  const [savedTryOns, setSavedTryOns] = useState([]); // Placeholder for saved try-ons
   
   const personInputRef = useRef(null);
   const garmentInputRef = useRef(null);
   const resultRef = useRef(null);
   
-  const API_BASE_URL = 'http://localhost:8000';
+  const API_BASE_URL = process.env.NEXT_PUBLIC_VIRTUAL_TRYON_API_URL || 'http://localhost:8000';
+
+  // Firestore functions
+  const loadSavedTryOns = async () => {
+    try {
+      const tryOnsCollection = collection(db, 'virtualTryOns');
+      const tryOnsQuery = query(tryOnsCollection, orderBy('timestamp', 'desc'));
+      const snapshot = await getDocs(tryOnsQuery);
+      const tryOns = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setSavedTryOns(tryOns);
+    } catch (error) {
+      console.error('Error loading saved try-ons:', error);
+    }
+  };
+
+  const saveNewTryOn = async (imageData) => {
+    try {
+      const tryOnsCollection = collection(db, 'virtualTryOns');
+      const newTryOn = {
+        image: imageData,
+        timestamp: serverTimestamp(),
+        createdAt: new Date().toISOString()
+      };
+      const docRef = await addDoc(tryOnsCollection, newTryOn);
+      // Update local state with the new try-on
+      setSavedTryOns(prev => [{ id: docRef.id, ...newTryOn, timestamp: new Date().toISOString() }, ...prev]);
+    } catch (error) {
+      console.error('Error saving try-on:', error);
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
+    loadSavedTryOns(); // Load saved try-ons on mount
     return () => setIsMounted(false);
   }, []);
 
@@ -44,7 +76,7 @@ const VirtualTryOn = () => {
             clearInterval(interval);
             return prev;
           }
-          return prev + Math.random() * 15;
+          return prev + Math.random() * 10; // Slower, more realistic progress
         });
       }, 500);
     }
@@ -77,11 +109,17 @@ const VirtualTryOn = () => {
     if (files.length > 0) {
       handleFileUpload(files[0], type);
     }
-  }, []);
+  }, []); // Removed handleFileUpload from dependencies since it's now a regular function
 
-  const handleFileUpload = useCallback((file, type) => {
+function handleFileUpload(file, type) {
     if (!file.type.startsWith('image/')) {
-      console.error('Please select a valid image file');
+      setError('Please select a valid image file (PNG, JPG, WEBP).');
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      setError('File size exceeds 5MB limit.');
+      setTimeout(() => setError(null), 3000);
       return;
     }
 
@@ -100,9 +138,10 @@ const VirtualTryOn = () => {
       } else {
         setGarmentImage(imageData);
       }
+      setError(null); // Clear any previous errors on successful upload
     };
     reader.readAsDataURL(file);
-  }, []);
+  }
 
   const handleGenerate = async () => {
     if (!personImage || !garmentImage || isProcessing) return;
@@ -116,7 +155,7 @@ const VirtualTryOn = () => {
       const formData = new FormData();
       formData.append('person_image', personImage.file);
       formData.append('garment_image', garmentImage.file);
-      formData.append('garment_type', 'upper_body');
+      formData.append('garment_type', 'dress');
       formData.append('model_type', 'viton_hd');
       formData.append('steps', '30');
       formData.append('guidance_scale', '2.5');
@@ -135,14 +174,18 @@ const VirtualTryOn = () => {
         const result = await response.json();
 
         if (result.success) {
-          setGeneratedImage({
+          const newGeneratedImage = {
             src: `data:image/png;base64,${result.result_image}`,
             name: 'virtual-tryon-result.png',
             size: 0,
             type: 'image/png'
-          });
+          };
+          setGeneratedImage(newGeneratedImage);
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 3000);
+          // Save to Firestore
+          await saveNewTryOn(newGeneratedImage.src);
+
 
           if (resultRef.current) {
             resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -155,14 +198,18 @@ const VirtualTryOn = () => {
         
         await new Promise(resolve => setTimeout(resolve, 3000));
         
-        setGeneratedImage({
-          src: personImage.src,
+        const newGeneratedImage = {
+          src: personImage.src, // Use the person image as demo result
           name: 'virtual-tryon-result.png',
           size: 0,
           type: 'image/png'
-        });
+        };
+        setGeneratedImage(newGeneratedImage);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
+        // Save to Firestore in demo mode too
+        await saveNewTryOn(newGeneratedImage.src);
+
 
         if (resultRef.current) {
           resultRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -194,17 +241,18 @@ const VirtualTryOn = () => {
   };
 
   const handleShare = (imageUrl) => {
+    const urlToShare = imageUrl || (generatedImage ? generatedImage.src : '');
     if (navigator.share) {
       navigator.share({
         title: 'Virtual Try-On Result',
         text: 'Check out my virtual try-on result!',
-        url: imageUrl || (generatedImage ? generatedImage.src : '')
-      });
+        url: urlToShare
+      }).catch((error) => console.error('Error sharing:', error));
     } else {
-      const url = imageUrl || (generatedImage ? generatedImage.src : '');
-      if (url) {
-        navigator.clipboard.writeText(url);
-        alert('Image URL copied to clipboard!');
+      if (urlToShare) {
+        navigator.clipboard.writeText(urlToShare)
+          .then(() => alert('Image URL copied to clipboard!'))
+          .catch((error) => console.error('Error copying to clipboard:', error));
       }
     }
   };
@@ -212,7 +260,7 @@ const VirtualTryOn = () => {
   const handleDownloadGallery = (imageUrl) => {
     const link = document.createElement('a');
     link.href = imageUrl;
-    link.download = 'virtual-tryon-result.png';
+    link.download = `virtual-tryon-gallery-${new Date().toISOString()}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -277,16 +325,13 @@ const VirtualTryOn = () => {
               initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="relative w-full h-full min-h-[500px] bg-white rounded-xl"
+              className={styles.uploadedImageContainer}
             >
-              <div className="absolute inset-0 flex items-center justify-center p-4">
-                <img 
-                  src={image.src} 
-                  alt={type === 'person' ? 'Person preview' : 'Garment preview'}
-                  className="h-full w-auto max-w-full object-contain"
-                  style={{ maxHeight: '100%' }}
-                />
-              </div>
+              <img 
+                src={image.src} 
+                alt={type === 'person' ? 'Person preview' : 'Garment preview'}
+                className={styles.uploadedImage}
+              />
               
               <div className="absolute inset-0 bg-black/60 opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-xl flex items-center justify-center">
                 <Button 
@@ -333,7 +378,7 @@ const VirtualTryOn = () => {
                 </p>
                 <div className="pt-2">
                   <div className="inline-flex items-center px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-medium">
-                    {type === 'person' ? 'PNG, JPG, WEBP' : 'Max 5MB'}
+                    {type === 'person' ? 'PNG, JPG, WEBP (Max 5MB)' : 'PNG, JPG, WEBP (Max 5MB)'}
                   </div>
                 </div>
               </div>
@@ -357,7 +402,7 @@ const VirtualTryOn = () => {
   return (
     <div className={`${styles.container} ${styles.globalBody}`}>
       <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <header className="text-center mb-10">
+        <header className={styles.header}>
           <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -378,222 +423,298 @@ const VirtualTryOn = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="text-gray-600"
+            className="text-gray-600 max-w-2xl mx-auto text-center" // Added text-center
           >
-            Experience the future of online shopping with our AI-powered virtual fitting room
+            Experience the future of online shopping with our AI-powered virtual fitting room. Upload your photo and a garment to see the magic happen!
           </motion.p>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg max-w-md mx-auto text-red-700 text-sm"
+            >
+              {error}
+            </motion.div>
+          )}
         </header>
 
         <Tabs 
           defaultValue="upload" 
-          className="w-full"
+          className={styles.tabsContainer}
+          onValueChange={setActiveTab}
         >
-          <TabsList className="grid w-full max-w-md grid-cols-2 mx-auto mb-8">
-            <TabsTrigger value="upload" className="flex items-center gap-2">
+          <TabsList className={styles.tabsList}>
+            <TabsTrigger value="upload" className={styles.tabTrigger}>
               <Upload className="h-4 w-4" />
               Upload
             </TabsTrigger>
-            <TabsTrigger value="gallery" className="flex items-center gap-2">
+            <TabsTrigger value="gallery" className={styles.tabTrigger}>
               <ImageIcon className="h-4 w-4" />
               Gallery
             </TabsTrigger>
+            <TabsTrigger value="webcam" className={styles.tabTrigger}>
+              <Camera className="h-4 w-4" />
+              Webcam (Coming Soon)
+            </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="upload" className="w-full">
+          <TabsContent value="upload" className={styles.tabContent}>
             <AnimatePresence>
               <motion.div
                 key="upload-cards"
                 variants={containerVariants}
                 initial="hidden"
                 animate="visible"
-                className="flex flex-col items-center w-full"
+                className={styles.gridContainer}
               >
-                <div className="flex flex-col lg:flex-row gap-6 w-full max-w-7xl mx-auto px-4 justify-center items-center lg:items-stretch">
-                  <Card className="flex-1">
-                    <CardHeader className="bg-gradient-to-r from-blue-50 to-purple-50 p-6">
-                      <div className="flex items-center space-x-3">
+                  <Card className={styles.card}>
+                    <CardHeader className={styles.cardHeader}>
+                      <div className="flex flex-col items-center space-y-2">
                         <User className="h-6 w-6 text-blue-500" />
                         <CardTitle className="text-lg">Your Photo</CardTitle>
                       </div>
-                      <CardDescription className="mt-1 text-gray-600 text-sm">
+                      <CardDescription className="mt-1 text-gray-600 text-sm text-center">
                         {!personImage ? "Upload a full-body photo with a clear background" : "Click to change or drag a new photo"}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="p-6 flex-1">
+                    <CardContent className={styles.cardContent}>
                       <UploadBox 
                         type="person" 
                         image={personImage} 
                         setImage={setPersonImage} 
                         handleFileUpload={handleFileUpload}
+                        isDragging={dragStates.person}
                       />
                     </CardContent>
                   </Card>
 
-                  <Card className="flex-1">
-                    <CardHeader className="bg-gradient-to-r from-purple-50 to-pink-50 p-6">
-                      <div className="flex items-center space-x-3">
+                  <Card className={styles.card}>
+                    <CardHeader className={styles.cardHeader}>
+                      <div className="flex flex-col items-center space-y-2">
                         <Shirt className="h-6 w-6 text-purple-500" />
                         <CardTitle className="text-lg">Garment</CardTitle>
                       </div>
-                      <CardDescription className="mt-1 text-gray-600 text-sm">
+                      <CardDescription className="mt-1 text-gray-600 text-sm text-center">
                         {!garmentImage ? "Upload a photo of the garment you want to try on" : "Click to change or drag a new garment"}
                       </CardDescription>
                     </CardHeader>
-                    <CardContent className="p-6 flex-1">
+                    <CardContent className={styles.cardContent}>
                       <UploadBox 
                         type="garment" 
                         image={garmentImage} 
                         setImage={setGarmentImage} 
                         handleFileUpload={handleFileUpload}
+                        isDragging={dragStates.garment}
                       />
                     </CardContent>
                   </Card>
                   
-                  <Card className="flex-1 border-2 border-gray-200 overflow-hidden transition-all hover:shadow-lg">
-                    <CardHeader className="bg-gradient-to-r from-emerald-50 to-teal-50 p-6">
-                      <div className="flex items-center space-x-3">
+                  <Card className={clsx(styles.card, "border-2 border-gray-200 overflow-hidden")}>
+                    <CardHeader className={styles.cardHeader}>
+                      <div className="flex flex-col items-center space-y-2">
                         <Sparkles className="h-6 w-6 text-emerald-600" />
                         <div>
                           <CardTitle className="text-lg">Your Virtual Try-On</CardTitle>
-                          <CardDescription className="text-gray-600">
+                          <CardDescription className="text-gray-600 text-center">
                             {generatedImage ? "Here's your result" : "Your virtual try-on will appear here"}
                           </CardDescription>
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="p-6">
-                      <div className="flex flex-col items-center justify-center min-h-[400px] bg-gray-50/50 rounded-lg">
+                    <CardContent className={styles.cardContent}>
+                      <div ref={resultRef} className={clsx(styles.resultImageContainer, "flex-1")}>
                         {isProcessing ? (
-                          <div className="flex flex-col items-center space-y-4">
+                          <div className="flex flex-col items-center space-y-4 p-4">
                             <Loader2 className="h-12 w-12 animate-spin text-emerald-500" />
                             <p className="text-gray-600">Generating your virtual try-on...</p>
+                            <div className={styles.progressBarContainer}>
+                              <div 
+                                className={styles.progressBar} 
+                                style={{ width: `${progress}%` }}
+                              />
+                            </div>
+                            <p className="text-sm text-gray-500">{Math.round(progress)}% Complete</p>
                           </div>
                         ) : generatedImage ? (
-                          <div className="relative w-full max-w-md">
-                            <img 
-                              src={generatedImage.src} 
-                              alt="Virtual try-on result" 
-                              className="w-full h-auto rounded-lg shadow-md"
-                            />
-                            <div className="mt-4 flex gap-3 justify-center">
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={handleDownload}
-                                className="gap-2"
-                              >
-                                <Download className="h-4 w-4" />
-                                Download
-                              </Button>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
-                                onClick={handleShare}
-                                className="gap-2"
-                              >
-                                <Share2 className="h-4 w-4" />
-                                Share
-                              </Button>
-                            </div>
-                          </div>
+                          <motion.img 
+                            key="generated-img"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 0.5 }}
+                            src={generatedImage.src} 
+                            alt="Virtual try-on result" 
+                            className="w-full h-full object-contain p-4"
+                          />
                         ) : (
                           <div className="text-center p-8 max-w-md">
                             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 mb-4">
                               <ImageIcon className="h-8 w-8 text-gray-400" />
                             </div>
                             <h3 className="text-lg font-medium text-gray-900 mb-1">No try-on generated yet</h3>
-                            <p className="text-sm text-gray-500 mb-6">
+                            <p className={clsx(styles.resultPlaceholderText, "mb-6")}>
                               Upload your photo and a garment to see the magic happen!
                             </p>
-                            <Button 
-                              onClick={handleGenerate} 
-                              disabled={!personImage || !garmentImage || isProcessing}
-                              className="gap-2"
-                            >
-                              <Sparkles className="h-4 w-4" />
-                              Generate Virtual Try-On
-                            </Button>
                           </div>
+                        )}
+                      </div>
+                      
+                      <div className="mt-6 flex flex-col items-center w-full">
+                        {generatedImage && !isProcessing && (
+                           <motion.div 
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.2 }}
+                              className="w-full flex flex-col sm:flex-row gap-3 justify-center mb-4"
+                           >
+                              <Button 
+                                variant="outline" 
+                                size="lg" // Larger buttons
+                                onClick={handleDownload}
+                                className="w-full sm:w-auto gap-2"
+                              >
+                                <Download className="h-5 w-5" />
+                                Download Result
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="lg" // Larger buttons
+                                onClick={() => handleShare(generatedImage.src)}
+                                className="w-full sm:w-auto gap-2"
+                              >
+                                <Share2 className="h-5 w-5" />
+                                Share Try-On
+                              </Button>
+                           </motion.div>
+                        )}
+
+                        <Button 
+                          onClick={handleGenerate} 
+                          disabled={!personImage || !garmentImage || isProcessing}
+                          className={styles.generateButton}
+                        >
+                          {isProcessing ? (
+                            <>
+                              <Loader2 className="h-5 w-5 mr-2 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="h-5 w-5 mr-2" />
+                              Generate Virtual Try-On
+                            </>
+                          )}
+                        </Button>
+                        {showSuccess && !isProcessing && (
+                            <motion.p 
+                               initial={{ opacity: 0, y: -10 }}
+                               animate={{ opacity: 1, y: 0 }}
+                               className="mt-3 text-sm font-medium text-green-600 flex items-center gap-1"
+                            >
+                                <CheckCircle className="h-4 w-4" />
+                                Try-on generated successfully!
+                            </motion.p>
                         )}
                       </div>
                     </CardContent>
                   </Card>
-                </div>
               </motion.div>
             </AnimatePresence>
           </TabsContent>
 
-          <TabsContent value="gallery" className="w-full">
+          <TabsContent value="gallery" className={styles.tabContent}>
             <div className="w-full max-w-6xl mx-auto px-4">
-              <h2 className="text-xl font-semibold mb-6">Your Previous Try-Ons</h2>
+              <h2 className="text-2xl font-bold text-gray-800 mb-8 text-center">Your Previous Try-Ons</h2>
               {savedTryOns.length > 0 ? (
-                <div className="flex flex-col gap-6 w-full max-w-6xl mx-auto px-4">
+                <motion.div 
+                  className={styles.galleryGrid}
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
                   {savedTryOns.map((tryOn, index) => (
-                    <Card key={index} className="overflow-hidden">
-                      <div className="relative aspect-square">
+                    <motion.div 
+                      key={index} 
+                      className={styles.galleryCard}
+                      variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 20 } }}
+                    >
+                      <div className={styles.galleryImageWrapper}>
                         <img 
                           src={tryOn.image} 
                           alt={`Try-on ${index + 1}`} 
-                          className="w-full h-full object-cover"
+                          className={styles.galleryImage}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end p-4">
-                          <div className="flex gap-2 w-full">
+                        <div className={styles.galleryActionsOverlay}>
+                          <div className="flex gap-3">
                             <Button 
-                              variant="outline" 
+                              variant="secondary" 
                               size="sm" 
-                              className="flex-1 bg-white/90 hover:bg-white"
+                              className="bg-white/90 hover:bg-white text-gray-800 shadow-md gap-2"
                               onClick={() => handleDownloadGallery(tryOn.image)}
                             >
-                              <Download className="h-4 w-4 mr-2" />
+                              <Download className="h-4 w-4" />
                               Download
                             </Button>
                             <Button 
-                              variant="outline" 
+                              variant="secondary" 
                               size="sm" 
-                              className="flex-1 bg-white/90 hover:bg-white"
+                              className="bg-white/90 hover:bg-white text-gray-800 shadow-md gap-2"
                               onClick={() => handleShare(tryOn.image)}
                             >
-                              <Share2 className="h-4 w-4 mr-2" />
+                              <Share2 className="h-4 w-4" />
                               Share
                             </Button>
                           </div>
                         </div>
                       </div>
-                      <div className="p-4">
-                        <p className="text-sm text-gray-600">
+                      <div className="p-4 text-center">
+                        <p className="text-sm text-gray-500">
                           {new Date(tryOn.timestamp).toLocaleString()}
                         </p>
                       </div>
-                    </Card>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               ) : (
-                <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-xl">
-                  <ImageIcon className="mx-auto h-12 w-12 text-gray-400" />
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No saved try-ons yet</h3>
-                  <p className="mt-1 text-sm text-gray-500">Your generated try-ons will appear here</p>
+                <div className={clsx(styles.emptyGallery, "text-center")}>
+                  <ImageIcon className="mx-auto h-16 w-16 text-gray-400 mb-4" />
+                  <h3 className="mt-2 text-xl font-semibold text-gray-900">No saved try-ons yet</h3>
+                  <p className="mt-1 text-base text-gray-600 max-w-md mx-auto">
+                    Your generated virtual try-ons will be saved here automatically. Start by generating one on the "Upload" tab!
+                  </p>
+                  <Button 
+                    onClick={() => setActiveTab('upload')}
+                    className="mt-6 flex items-center gap-2 mx-auto"
+                  >
+                    <Upload className="h-4 w-4" />
+                    Go to Upload
+                  </Button>
                 </div>
               )}
             </div>
           </TabsContent>
           
-          <TabsContent value="webcam" className="w-full">
-            <div className="flex flex-col items-center space-y-6 p-8">
-              <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center">
-                <Camera className="h-8 w-8 text-gray-400" />
+          <TabsContent value="webcam" className={styles.tabContent}>
+            <div className="flex flex-col items-center space-y-6 p-8 bg-white rounded-xl shadow-md max-w-2xl mx-auto my-10">
+              <div className="w-24 h-24 bg-blue-50 rounded-full flex items-center justify-center shadow-inner">
+                <Camera className="h-12 w-12 text-blue-500" />
               </div>
-              <div className="space-y-2 text-center">
-                <h3 className="text-xl font-semibold text-gray-800">Webcam Try-On</h3>
-                <p className="text-gray-500 max-w-md mx-auto">Coming soon! Use your webcam for instant virtual try-ons.</p>
+              <div className="space-y-3 text-center">
+                <h3 className="text-2xl font-bold text-gray-800">Webcam Try-On Feature</h3>
+                <p className="text-lg text-gray-600 max-w-md mx-auto">
+                  Get ready for real-time virtual try-ons! This exciting feature is currently under development.
+                </p>
+                <p className="text-sm text-gray-500">
+                  Stay tuned for updates. We'll notify you when it's live!
+                </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <div className="flex flex-col sm:flex-row gap-4 mt-4">
                 <Button disabled variant="outline" className="flex items-center gap-2">
                   <Bell className="h-4 w-4" />
                   Notify Me
                 </Button>
                 <Button 
                   onClick={() => setActiveTab('upload')}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700 shadow-md"
                 >
                   <Upload className="h-4 w-4" />
                   Upload Images Instead
