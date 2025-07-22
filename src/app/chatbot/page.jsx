@@ -17,6 +17,7 @@ import { marked } from "marked";
 import { Poppins } from "next/font/google";
 import "@/static/chatbot/markupStyle.css";
 import "@/static/chatbot/chatbot-ui.css";
+import DOMPurify from 'dompurify';
 
 const renderer = new marked.Renderer();
 
@@ -149,6 +150,7 @@ export default function ChatBot() {
       await addMessage("bot", "text", feedback);
     } catch (err) {
       await addMessage("bot", "text", "Upload failed: " + err.message);
+    } finally { + URL.revokeObjectURL(imageUrl);
     }
 
     setLoading(false);
@@ -185,7 +187,8 @@ export default function ChatBot() {
       <div className="chatbot-messages">
         {messages.map((msg, idx) => (
           <div key={idx} className={`chatbot-message ${msg.role}`}>
-            <span dangerouslySetInnerHTML={{ __html: marked(msg.content) }} />
+{/*             - <span dangerouslySetInnerHTML={{ __html: marked(msg.content) }} /> */}
+                <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked(msg.content))}} />
             {msg.fileName && <div className="file-meta">📎 {msg.fileName.split('.')[0].slice(0,10) + msg.fileName.split('.')[1]}</div>}
           </div>
         ))}
