@@ -18,13 +18,36 @@ import { Poppins } from "next/font/google";
 import "@/static/chatbot/markupStyle.css";
 import "@/static/chatbot/chatbot-ui.css";
 
+const renderer = new marked.Renderer();
+
+renderer.link = (linkData, title, text) => {
+  const href = linkData.href;
+  if (href.includes('.mp4') || href.includes('.webm') || href.includes('.ogg') || href.includes('.m4a')) {
+    return `<video controls style="max-width: 100%;"><source src="${href}" type="video/mp4">Your browser does not support the video tag.</video>`;
+  }
+
+  // deafault markup link tag for other formats
+  return `<a href="${href}" title="${title}">${text}</a>`;
+};
+
+marked.setOptions({
+  renderer,
+  gfm: true,
+  breaks: true,
+  pedantic: false,
+  smartLists: true,
+  smartypants: false,
+  highlight: function(code) { return code; }
+});
+
+
 const poppins = Poppins({
   subsets: ["latin"],
   variable: "--font-poppins",
   weight: ["400", "600"],
 });
 
-export default function ChatBotClient() {
+export default function ChatBot() {
   const { user } = useAuth();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -80,22 +103,30 @@ export default function ChatBotClient() {
         await addMessage("bot", "text",
           "Menu:\n1. Type /look to review your uploaded style\n2. Type /video to analyze your FashionTV video\n3. Upload a custom image.\n4. Or ask anything for fashion advice!"
         );
-      } else if (input === "/look") {
+      } 
+      
+      else if (input === "/look") {
         const looks = await getUserLooks(user.uid);
         setLooks(looks);
         if (looks.length === 0) throw new Error("No looks found.");
         await addMessage("bot", "text", `Select a look to analyze:`);
-      } else if (input === "/video") {
+      } 
+      
+      else if (input === "/video") {
         const videos = await getUserVideos(user.uid);
         setVideos(videos);
-        if (videos.length === 0) throw new Error("No videos found.");
-        await addMessage("bot", "text", `Select a video to analyze:`);
-      } else {
+        if (videos.length === 0) throw new Error("No videos found. Please upload a video on fashion TV to use this feature.");
+        await addMessage("bot", "text", `Select one of your fashionTV video${videos.length > 1 ? 's' : ''} to analyze:`);
+      } 
+      
+      else {
         const allMessages = [...messages, { role: "user", content: input }];
         const response = await chatWithFashionBot(allMessages.map((m) => m.content), user?.displayName);
         await addMessage("bot", "text", marked(response));
       }
-    } catch (err) {
+    } 
+    
+    catch (err) {
       await addMessage("bot", "text", "Oops! " + err.message);
     }
 
@@ -111,7 +142,7 @@ export default function ChatBotClient() {
 
     setLoading(true);
 
-    await addMessage("user", "upload", `Uploaded Image: ${fileName}`, imageUrl, fileName);
+    await addMessage("user", "upload", `Uploaded Image:\n![UploadedImage](${fileName})`, imageUrl, fileName);
 
     try {
       const feedback = await analyzeLookImage(imageUrl, user?.displayName);
@@ -138,7 +169,7 @@ export default function ChatBotClient() {
 
   const handleVideoSelect = async (url) => {
     setLoading(true);
-    await addMessage("user", "video", `Analyze this video:\n${url}`, url);
+    await addMessage("user", "video", `Analyze this video:\n[video](${url})`, url);
     try {
       const feedback = await analyzeFashionVideo(url, user?.displayName);
       await addMessage("bot", "text", feedback);
@@ -155,7 +186,7 @@ export default function ChatBotClient() {
         {messages.map((msg, idx) => (
           <div key={idx} className={`chatbot-message ${msg.role}`}>
             <span dangerouslySetInnerHTML={{ __html: marked(msg.content) }} />
-            {msg.fileName && <div className="file-meta">📎 {msg.fileName}</div>}
+            {msg.fileName && <div className="file-meta">📎 {msg.fileName.split('.')[0].slice(0,10) + msg.fileName.split('.')[1]}</div>}
           </div>
         ))}
 

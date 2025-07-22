@@ -48,12 +48,15 @@ export const getUserLooks = async (userId) => {
 
     snapshot.forEach(doc => {
       const data = doc.data();
+
       if (data.images?.length > 0) {
-        looks.push({
-          id: doc.id,
-          imageUrl: data.images[0], // only first image
-          createdAt: data.createdAt?.toDate() || new Date(),
-        });
+        data.images.forEach((image) => {
+          looks.push({
+            id: doc.id,
+            imageUrl: image, // only first image
+            createdAt: data.createdAt?.toDate() || new Date(),
+          });
+        })        
       }
     });
 
@@ -99,7 +102,11 @@ export const getUserVideos = async (userId) => {
 };
 
 
-
+/**
+ * Save all the msgs to firestore
+ * @param {string} userId
+ * @returns {Messeges<Array>} Array of chat msgs
+ */
 export async function saveMessageToFirestore(userId, message) {
   const ref = collection(db, "chatbot", userId, "messages");
   await addDoc(ref, {
@@ -108,34 +115,14 @@ export async function saveMessageToFirestore(userId, message) {
   });
 }
 
+/**
+ * Get all the msgs to firestore
+ * @param {string} userId
+ * @returns {Messeges<Array>} Array of chat msgs
+ */
 export async function getMessagesFromFirestore(userId) {
   const ref = collection(db, "chatbot", userId, "messages");
   const q = query(ref, orderBy("timestamp", "asc"));
   const snap = await getDocs(q);
   return snap.docs.map(doc => doc.data());
-}
-
-
-// import { db } from "./firebase";
-// import { collection, doc, getDoc, setDoc, updateDoc, arrayUnion } from "firebase/firestore";
-
-export async function saveChatHistory(userId, userMsg, botMsg) {
-  const ref = doc(db, "chatHistory", userId);
-  const docSnap = await getDoc(ref);
-  if (docSnap.exists()) {
-    await updateDoc(ref, {
-      messages: arrayUnion(userMsg, botMsg),
-    });
-  } else {
-    await setDoc(ref, {
-      messages: [userMsg, botMsg],
-      createdAt: Date.now(),
-    });
-  }
-}
-
-export async function getChatHistory(userId) {
-  const ref = doc(db, "chatHistory", userId);
-  const docSnap = await getDoc(ref);
-  return docSnap.exists() ? docSnap.data().messages : [];
 }
