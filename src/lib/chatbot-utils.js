@@ -100,16 +100,20 @@ export const getUserVideos = async (userId) => {
 
 
 
-export const saveMessageToFirestore = async (userId, { role, type, content, mediaUrl, fileName }) => {
-  await addDoc(collection(db, "chatbot", userId, "messages"), {
-    role,
-    type,
-    content,
-    mediaUrl: mediaUrl || null,
-    fileName: fileName || null,
-    timestamp: serverTimestamp()
+export async function saveMessageToFirestore(userId, message) {
+  const ref = collection(db, "chatbot", userId, "messages");
+  await addDoc(ref, {
+    ...message,
+    timestamp: new Date()
   });
-};
+}
+
+export async function getMessagesFromFirestore(userId) {
+  const ref = collection(db, "chatbot", userId, "messages");
+  const q = query(ref, orderBy("timestamp", "asc"));
+  const snap = await getDocs(q);
+  return snap.docs.map(doc => doc.data());
+}
 
 
 // import { db } from "./firebase";
