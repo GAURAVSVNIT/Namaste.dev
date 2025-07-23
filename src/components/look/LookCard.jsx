@@ -231,17 +231,16 @@ export default function LookCard({ look, onEdit, onDelete }) {
         </div>
 
         {/* Author Info */}
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
+        <div style={{ padding: '20px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <SmartAvatar 
                 user={author} 
-                className="w-8 h-8"
-                fallbackClassName="text-xs"
+                style={{ width: '40px', height: '40px' }}
               />
               <div>
-                <p className="font-medium text-sm">{author?.name || 'Unknown User'}</p>
-                <p className="text-xs text-muted-foreground">{formatDate(look.createdAt)}</p>
+                <p style={{ fontWeight: '600', fontSize: '1rem', color: '#1f2937' }}>{author?.name || 'Unknown User'}</p>
+                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>{formatDate(look.createdAt)}</p>
               </div>
             </div>
           </div>

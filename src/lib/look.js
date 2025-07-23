@@ -117,6 +117,17 @@ export const createLook = async (userId, lookData) => {
     };
 
     const docRef = await addDoc(collection(db, 'looks'), look);
+    
+    // Log activity for creating a look
+    await addDoc(collection(db, 'user_activities'), {
+      userId,
+      type: 'created',
+      contentType: 'look',
+      lookTitle: lookData.caption.trim(),
+      lookId: docRef.id,
+      timestamp: serverTimestamp()
+    });
+    
     return { id: docRef.id, ...look };
   } catch (error) {
     throw new Error('Failed to create look');
@@ -329,18 +340,55 @@ export const toggleLikeLook = async (lookId, userId) => {
     const isLiked = currentLikes.includes(userId);
 
     if (isLiked) {
-      // Remove like
+      // Remove like from looks collection
       await updateDoc(lookRef, {
         likes: arrayRemove(userId),
         updatedAt: serverTimestamp()
       });
+
+      // Remove from user_likes collection
+      const userLikesQuery = query(
+        collection(db, 'user_likes'),
+        where('userId', '==', userId),
+        where('contentId', '==', lookId)
+      );
+      const userLikesSnapshot = await getDocs(userLikesQuery);
+      
+      if (!userLikesSnapshot.empty) {
+        const likeDoc = userLikesSnapshot.docs[0];
+        await deleteDoc(doc(db, 'user_likes', likeDoc.id));
+      }
+      
       return { liked: false, likesCount: currentLikes.length - 1 };
     } else {
-      // Add like
+      // Add like to looks collection
       await updateDoc(lookRef, {
         likes: arrayUnion(userId),
         updatedAt: serverTimestamp()
       });
+      
+      // Add to user_likes collection for profile tracking
+      await addDoc(collection(db, 'user_likes'), {
+        userId,
+        contentId: lookId,
+        contentType: 'look',
+        title: lookData.caption || 'Untitled Look',
+        thumbnail: lookData.images?.[0] || null,
+        author: lookData.userId || 'Unknown',
+        type: 'Look',
+        likedAt: serverTimestamp()
+      });
+      
+      // Log activity for liking a look
+      await addDoc(collection(db, 'user_activities'), {
+        userId,
+        type: 'liked',
+        contentType: 'look',
+        lookTitle: lookData.caption || 'Untitled Look',
+        lookId: lookId,
+        timestamp: serverTimestamp()
+      });
+      
       return { liked: true, likesCount: currentLikes.length + 1 };
     }
   } catch (error) {
