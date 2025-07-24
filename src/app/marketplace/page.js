@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { getDocs, collection, db, query, orderBy } from '../../lib/firebase';
@@ -15,6 +15,40 @@ import '../../static/Marketplace.css';
 
 const brands = ["U.S. POLO ASSN.", "Majestic Man", "CHKOKKO", "London Hills", "EIO", "Hopscotch"];
 const categories = ["Fashion", "Women", "Men", "Girls", "Boys"];
+
+// Move promoCards outside component to prevent recreation
+const promoCards = [
+  {
+    id: 1,
+    image: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&h=400&fit=crop",
+    title: "Men's Collection",
+    description: "Discover our latest men's fashion trends"
+  },
+  {
+    id: 2,
+    image: "https://images.unsplash.com/photo-1581044777550-4cfa6ce6702e?w=600&h=400&fit=crop",
+    title: "Women's Style",
+    description: "Elegant and modern women's clothing"
+  },
+  {
+    id: 3,
+    image: "https://images.unsplash.com/photo-1519241977459-1f03635f10c2?w=600&h=400&fit=crop",
+    title: "Accessories",
+    description: "Complete your look with perfect accessories"
+  },
+  {
+    id: 4,
+    image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&h=400&fit=crop",
+    title: "Kids Collection",
+    description: "Comfortable and stylish clothing for kids"
+  },
+  {
+    id: 5,
+    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&h=400&fit=crop",
+    title: "Summer Essentials",
+    description: "Beat the heat with our summer collection"
+  }
+];
 
 const MarketPlacePage = () => {
   const router = useRouter();
@@ -33,39 +67,6 @@ const MarketPlacePage = () => {
   // Promo carousel state
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
-
-  const promoCards = [
-    {
-      id: 1,
-      image: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&h=400&fit=crop",
-      title: "Men's Collection",
-      description: "Discover our latest men's fashion trends"
-    },
-    {
-      id: 2,
-      image: "https://images.unsplash.com/photo-1581044777550-4cfa6ce6702e?w=600&h=400&fit=crop",
-      title: "Women's Style",
-      description: "Elegant and modern women's clothing"
-    },
-    {
-      id: 3,
-      image: "https://images.unsplash.com/photo-1519241977459-1f03635f10c2?w=600&h=400&fit=crop",
-      title: "Accessories",
-      description: "Complete your look with perfect accessories"
-    },
-    {
-      id: 4,
-      image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&h=400&fit=crop",
-      title: "Kids Collection",
-      description: "Comfortable and stylish clothing for kids"
-    },
-    {
-      id: 5,
-      image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&h=400&fit=crop",
-      title: "Summer Essentials",
-      description: "Beat the heat with our summer collection"
-    }
-  ];
   
   const { addToCart, openCart } = useCartStore();
 
@@ -78,19 +79,19 @@ const MarketPlacePage = () => {
     }, 4000);
 
     return () => clearInterval(interval);
-  }, [isAutoRotating, promoCards.length]);
+  }, [isAutoRotating]);
 
   const nextPromo = useCallback(() => {
     setCurrentPromoIndex((prev) => (prev + 1) % promoCards.length);
     setIsAutoRotating(false);
     setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
-  }, [promoCards.length]);
+  }, []);
 
   const prevPromo = useCallback(() => {
     setCurrentPromoIndex((prev) => (prev - 1 + promoCards.length) % promoCards.length);
     setIsAutoRotating(false);
     setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
-  }, [promoCards.length]);
+  }, []);
 
   const goToPromo = useCallback((index) => {
     setCurrentPromoIndex(index);
@@ -149,28 +150,30 @@ const MarketPlacePage = () => {
     setFilteredProducts(tempProducts);
   }, [products, searchTerm, selectedCategory, selectedBrands, sortBy]);
 
-  const handleBrandChange = (brand, checked) => {
+  // Memoized handlers to prevent recreation
+  const handleBrandChange = useCallback((brand, checked) => {
     setSelectedBrands(prev => 
       checked ? [...prev, brand] : prev.filter(b => b !== brand)
     );
-  };
+  }, []);
 
-  const handleAddToCart = (e, product) => {
+  const handleViewProductMemo = useCallback((productId) => {
+    router.push(`/marketplace/product/${productId}`);
+  }, [router]);
+
+  const handleAddToCartMemo = useCallback((e, product) => {
     e.stopPropagation();
     addToCart(product);
     openCart();
-  };
+  }, [addToCart, openCart]);
 
-  const handleViewProduct = (productId) => {
-    router.push(`/marketplace/product/${productId}`);
-  };
-
-  const ProductCard = ({ product }) => (
+  // Memoized ProductCard component
+  const ProductCard = memo(({ product }) => (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="product-card"
-      onClick={() => handleViewProduct(product.id)}
+      onClick={() => handleViewProductMemo(product.id)}
     >
       <div className="product-card-image-container">
         <img src={product.image || '/api/placeholder/300/400'} alt={product.name} className="product-card-image" />
@@ -179,7 +182,7 @@ const MarketPlacePage = () => {
             <Heart className="w-5 h-5 text-gray-600" />
           </button>
         </div>
-        <button className="product-card-add-to-cart" onClick={(e) => handleAddToCart(e, product)}>
+        <button className="product-card-add-to-cart" onClick={(e) => handleAddToCartMemo(e, product)}>
           Add to Cart
         </button>
       </div>
@@ -193,9 +196,10 @@ const MarketPlacePage = () => {
         <p className="product-card-price">{formatCurrency(product.price || 0)}</p>
       </div>
     </motion.div>
-  );
+  ));
 
-  const FilterSidebar = () => (
+  // Memoized FilterSidebar component
+  const FilterSidebar = memo(() => (
     <aside className="filter-sidebar">
       <div className="filter-section">
         <h3>Category</h3>
@@ -229,20 +233,21 @@ const MarketPlacePage = () => {
         <a href="#" className="text-sm text-blue-600 mt-3 inline-block">See more</a>
       </div>
     </aside>
-  );
+  ));
 
-  const PromoSection = () => (
+  // Memoized PromoSection to prevent re-renders
+  const PromoSection = memo(({ currentPromoIndex, isAutoRotating, onPrev, onNext, onGoTo }) => (
     <div className="promo-section-wrapper relative">
       {/* Navigation Buttons */}
       <button 
-        onClick={prevPromo}
+        onClick={onPrev}
         className="absolute left-6 top-1/2 transform -translate-y-1/2 z-30 bg-white/95 hover:bg-white border border-gray-300 rounded-full p-3 shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm"
       >
         <ChevronLeft className="w-6 h-6 text-gray-800" />
       </button>
       
       <button 
-        onClick={nextPromo}
+        onClick={onNext}
         className="absolute right-6 top-1/2 transform -translate-y-1/2 z-30 bg-white/95 hover:bg-white border border-gray-300 rounded-full p-3 shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm"
       >
         <ChevronRight className="w-6 h-6 text-gray-800" />
@@ -298,20 +303,26 @@ const MarketPlacePage = () => {
         {promoCards.map((_, index) => (
           <button
             key={index}
-            onClick={() => goToPromo(index)}
+            onClick={() => onGoTo(index)}
             className={`promo-dot ${index === currentPromoIndex ? 'active' : ''}`}
           />
         ))}
       </div>
     </div>
-  );
+  ));
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
 
   return (
     <div className="marketplace-container">
       <div className="marketplace-content-wrapper">
-        <PromoSection />
+        <PromoSection 
+          currentPromoIndex={currentPromoIndex}
+          isAutoRotating={isAutoRotating}
+          onPrev={prevPromo}
+          onNext={nextPromo}
+          onGoTo={goToPromo}
+        />
         <div className="marketplace-body">
           <FilterSidebar />
           <main className="main-content">
