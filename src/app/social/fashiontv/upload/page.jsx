@@ -45,14 +45,47 @@ export default function FashionTVUploadPage() {
       {/* Header */}
       <div className="p-4 flex items-center justify-between">
         <Link href="/social/fashiontv">
-          <button className="flex items-center space-x-2 text-white hover:text-gray-300 transition-colors">
+          <button style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+            color: 'white',
+            backgroundColor: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            padding: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.color = '#f3f4f6';
+            e.target.style.transform = 'scale(1.05)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.color = 'white';
+            e.target.style.transform = 'scale(1)';
+          }}>
             <ArrowLeft className="w-6 h-6" />
             <span>Back to Fashion TV</span>
           </button>
         </Link>
         
         <Link href="/social">
-          <button className="text-white hover:text-gray-300 transition-colors">
+          <button style={{
+            color: 'white',
+            backgroundColor: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            padding: '8px'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.color = '#f3f4f6';
+            e.target.style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.color = 'white';
+            e.target.style.transform = 'scale(1)';
+          }}>
             <Home className="w-6 h-6" />
           </button>
         </Link>

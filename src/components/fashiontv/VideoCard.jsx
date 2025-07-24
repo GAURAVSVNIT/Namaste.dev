@@ -6,12 +6,11 @@ import { toggleLikeVideo } from '@/lib/fashiontv';
 import { Heart, MessageCircle, Play, Volume2, VolumeX } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-function VideoCard({ video, isActive, onCommentsToggle }) {
+function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGlobalMuteToggle }) {
   const { user } = useAuth();
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLiked, setIsLiked] = useState(video.likes?.includes(user?.uid) || false);
   const [likesCount, setLikesCount] = useState(video.likes?.length || 0);
-  const [isMuted, setIsMuted] = useState(true);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState('');
   const [comments, setComments] = useState(video.comments || []);
@@ -40,12 +39,12 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
     }
   }, [isActive]);
 
-  // Sync muted state with video element
+  // Sync global muted state with video element
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.muted = isMuted;
+      videoRef.current.muted = isGloballyMuted;
     }
-  }, [isMuted]);
+  }, [isGloballyMuted]);
 
   const handleLike = async (e) => {
     e.stopPropagation();
@@ -89,10 +88,13 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
 
   const handleMute = (e) => {
     e.stopPropagation();
+    // Toggle global mute state for all videos
+    const newMutedState = !isGloballyMuted;
+    onGlobalMuteToggle(newMutedState);
+    
+    // Apply immediately to current video
     if (videoRef.current) {
-      const newMutedState = !isMuted;
       videoRef.current.muted = newMutedState;
-      setIsMuted(newMutedState);
     }
   };
 
@@ -153,7 +155,7 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
           ref={videoRef}
           src={video.videoUrl}
           className="w-full h-full object-cover cursor-pointer"
-          muted={isMuted}
+          muted={isGloballyMuted}
           loop
           playsInline
           preload={isActive ? "auto" : "none"}
@@ -171,9 +173,9 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
             if (isActive) {
               handleVideoLoad(e);
             }
-            // Ensure muted state is applied on load
+            // Ensure global muted state is applied on load
             if (videoRef.current) {
-              videoRef.current.muted = isMuted;
+              videoRef.current.muted = isGloballyMuted;
             }
           }}
           onError={(e) => console.log('Video error:', e)}
@@ -203,9 +205,24 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
         }`}>
           <button
             onClick={handleMute}
-            className="p-2 rounded-full hover:bg-black hover:bg-opacity-10 transition-all"
+            style={{
+              padding: '8px',
+              borderRadius: '50%',
+              border: 'none',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+              e.target.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.transform = 'scale(1)';
+            }}
           >
-            {isMuted ? (
+            {isGloballyMuted ? (
               <VolumeX className="w-6 h-6 text-white drop-shadow-lg" />
             ) : (
               <Volume2 className="w-6 h-6 text-white drop-shadow-lg" />
@@ -214,20 +231,57 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
         </div>
 
         {/* Right Side Action Buttons */}
-        <div className={`absolute right-4 bottom-32 flex flex-col items-center space-y-6 z-20 transition-opacity duration-300 ${
+        <div className={`absolute right-4 bottom-32 flex flex-col items-center space-y-8 z-20 transition-opacity duration-300 ${
           showComments ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}>
           {/* Like Button */}
           <button
             onClick={handleLike}
-            className="flex flex-col items-center space-y-1 group"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '1px',
+              border: 'none',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              padding: '6px',
+              minHeight: '68px',
+              width: '64px'
+            }}
           >
-            <div className="p-2 group-hover:bg-black group-hover:bg-opacity-10 rounded-full transition-all">
+            <div style={{
+              padding: '10px',
+              borderRadius: '50%',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '48px',
+              height: '48px',
+              marginBottom: '2px'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+              e.target.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.transform = 'scale(1)';
+            }}>
               <Heart 
-                className={`w-8 h-8 ${isLiked ? 'text-red-500 fill-current' : 'text-white'} drop-shadow-lg`} 
+                className={`w-6 h-6 ${isLiked ? 'text-red-500 fill-current' : 'text-white'} drop-shadow-lg`} 
               />
             </div>
-            <span className="text-white text-xs font-medium drop-shadow-md">
+            <span className="text-white text-xs font-bold drop-shadow-md text-center" style={{
+              minHeight: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              lineHeight: '1',
+              marginTop: '1px',
+              letterSpacing: '0.5px'
+            }}>
               {likesCount > 0 ? likesCount : ''}
             </span>
           </button>
@@ -235,12 +289,45 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
           {/* Comment Button */}
           <button
             onClick={handleComment}
-            className="flex flex-col items-center space-y-1 group"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '8px',
+              border: 'none',
+              backgroundColor: 'transparent',
+              cursor: 'pointer',
+              padding: '4px',
+              minHeight: '80px',
+              width: '60px'
+            }}
           >
-            <div className="p-2 group-hover:bg-black group-hover:bg-opacity-10 rounded-full transition-all">
-              <MessageCircle className="w-8 h-8 text-white drop-shadow-lg" />
+            <div style={{
+              padding: '12px',
+              borderRadius: '50%',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: '52px',
+              height: '52px'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+              e.target.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'transparent';
+              e.target.style.transform = 'scale(1)';
+            }}>
+              <MessageCircle className="w-7 h-7 text-white drop-shadow-lg" />
             </div>
-            <span className="text-white text-xs font-medium drop-shadow-md">
+            <span className="text-white text-sm font-semibold drop-shadow-md text-center" style={{
+              minHeight: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
               {comments.length > 0 ? comments.length : ''}
             </span>
           </button>
@@ -288,100 +375,414 @@ function VideoCard({ video, isActive, onCommentsToggle }) {
         </div>
       </div>
 
-      {/* Comments Modal */}
+      {/* Comments Modal - Enhanced with Inline CSS */}
       {showComments && (
-        <div className="absolute inset-0 bg-black bg-opacity-40 z-30 flex items-end">
-          <div className="w-full bg-white rounded-t-3xl max-h-[75vh] overflow-hidden shadow-2xl">
-            {/* Comments Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h3 className="text-lg font-semibold text-gray-900">Comments</h3>
-              <button
+        <div style={{
+          position: 'absolute',
+          inset: '0',
+          zIndex: 30,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex',
+          alignItems: 'flex-end',
+          animation: 'fadeIn 0.3s ease-out'
+        }}>
+          <div style={{
+            width: '100%',
+            backgroundColor: '#ffffff',
+            borderTopLeftRadius: '24px',
+            borderTopRightRadius: '24px',
+            maxHeight: '85vh',
+            display: 'flex',
+            flexDirection: 'column',
+            boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(0)',
+            animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}>
+            
+            {/* Header */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '20px 24px 16px 24px',
+              borderBottom: '1px solid #f1f5f9',
+              background: 'linear-gradient(135deg, #fafbfc 0%, #ffffff 100%)'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px'
+              }}>
+                <h2 style={{
+                  fontSize: '20px',
+                  fontWeight: '600',
+                  color: '#1f2937',
+                  margin: '0',
+                  letterSpacing: '-0.025em'
+                }}>Comments</h2>
+                {comments.length > 0 && (
+                  <span style={{
+                    fontSize: '13px',
+                    color: '#6b7280',
+                    backgroundColor: '#f3f4f6',
+                    padding: '4px 10px',
+                    borderRadius: '12px',
+                    fontWeight: '500',
+                    border: '1px solid #e5e7eb'
+                  }}>
+                    {comments.length}
+                  </span>
+                )}
+              </div>
+              <button 
                 onClick={() => {
                   setShowComments(false);
                   onCommentsToggle?.(false);
                 }}
-                className="text-gray-400 hover:text-gray-600 text-2xl font-light w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '50%',
+                  backgroundColor: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  fontSize: '18px',
+                  color: '#6b7280'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#f3f4f6';
+                  e.target.style.transform = 'scale(1.05)';
+                  e.target.style.color = '#374151';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = '#f9fafb';
+                  e.target.style.transform = 'scale(1)';
+                  e.target.style.color = '#6b7280';
+                }}
               >
                 ×
               </button>
             </div>
 
-            {/* Comments List */}
-            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 max-h-96">
+            {/* Comments Content */}
+            <div style={{
+              flex: '1',
+              overflowY: 'auto',
+              background: 'linear-gradient(180deg, #ffffff 0%, #fafbfc 100%)'
+            }}>
               {comments.length === 0 ? (
-                <div className="text-center py-12 text-gray-500">
-                  <MessageCircle className="w-16 h-16 mx-auto mb-4 text-gray-300" />
-                  <p className="text-gray-600">No comments yet.</p>
-                  <p className="text-sm text-gray-400 mt-1">Be the first to comment!</p>
+                <div style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '60px 20px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{
+                    width: '64px',
+                    height: '64px',
+                    backgroundColor: '#f3f4f6',
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '20px',
+                    border: '2px solid #e5e7eb',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
+                  }}>
+                    <MessageCircle style={{ width: '28px', height: '28px', color: '#9ca3af' }} />
+                  </div>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    color: '#1f2937',
+                    marginBottom: '8px',
+                    margin: '0 0 8px 0'
+                  }}>No comments yet</h3>
+                  <p style={{
+                    color: '#6b7280',
+                    fontSize: '15px',
+                    margin: '0',
+                    lineHeight: '1.5'
+                  }}>Be the first to share your thoughts!</p>
                 </div>
               ) : (
-                comments.map((comment) => (
-                  <div key={comment.id} className="flex space-x-3 py-2 group">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
-                      <span className="text-xs font-bold text-white">
-                        {comment.userName?.charAt(0)?.toUpperCase() || 'U'}
-                      </span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start justify-between">
-                        <div className="flex items-start space-x-2">
-                          <span className="font-semibold text-gray-900 text-sm">{comment.userName}</span>
-                          <span className="text-xs text-gray-500 mt-0.5">
-                            {new Date(comment.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                <div style={{
+                  padding: '20px 24px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px'
+                }}>
+                  {comments.map((comment) => (
+                    <div key={comment.id} style={{
+                      display: 'flex',
+                      gap: '12px',
+                      position: 'relative',
+                      padding: '12px',
+                      borderRadius: '16px',
+                      backgroundColor: '#ffffff',
+                      border: '1px solid #f1f5f9',
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
+                      e.currentTarget.style.borderColor = '#e2e8f0';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.04)';
+                      e.currentTarget.style.borderColor = '#f1f5f9';
+                    }}>
+                      {/* Avatar */}
+                      <div style={{
+                        width: '40px',
+                        height: '40px',
+                        background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                        borderRadius: '50%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: '0',
+                        boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                        border: '2px solid #ffffff'
+                      }}>
+                        <span style={{
+                          color: '#ffffff',
+                          fontSize: '14px',
+                          fontWeight: '600'
+                        }}>
+                          {comment.userName?.charAt(0)?.toUpperCase() || 'U'}
+                        </span>
+                      </div>
+                      
+                      {/* Comment Content */}
+                      <div style={{
+                        flex: '1',
+                        minWidth: '0'
+                      }}>
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          marginBottom: '6px',
+                          flexWrap: 'wrap'
+                        }}>
+                          <span style={{
+                            fontWeight: '600',
+                            color: '#1f2937',
+                            fontSize: '14px'
+                          }}>
+                            {comment.userName}
                           </span>
+                          {comment.userId === user?.uid && (
+                            <span style={{
+                              fontSize: '11px',
+                              backgroundColor: '#dbeafe',
+                              color: '#1d4ed8',
+                              padding: '2px 8px',
+                              borderRadius: '8px',
+                              fontWeight: '500',
+                              border: '1px solid #bfdbfe'
+                            }}>
+                              You
+                            </span>
+                          )}
+                          <span style={{
+                            fontSize: '12px',
+                            color: '#9ca3af'
+                          }}>
+                            {new Date(comment.timestamp).toLocaleTimeString([], { 
+                              hour: '2-digit', 
+                              minute: '2-digit' 
+                            })}
+                          </span>
+                          
+                          {/* Delete button for own comments */}
+                          {comment.userId === user?.uid && (
+                            <button
+                              onClick={() => handleDeleteComment(comment.id)}
+                              style={{
+                                marginLeft: 'auto',
+                                color: '#9ca3af',
+                                padding: '4px',
+                                borderRadius: '6px',
+                                border: 'none',
+                                backgroundColor: 'transparent',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s ease',
+                                fontSize: '14px',
+                                opacity: '0'
+                              }}
+                              onMouseEnter={(e) => {
+                                e.target.style.color = '#ef4444';
+                                e.target.style.backgroundColor = '#fef2f2';
+                              }}
+                              onMouseLeave={(e) => {
+                                e.target.style.color = '#9ca3af';
+                                e.target.style.backgroundColor = 'transparent';
+                              }}
+                              className="group-hover:opacity-100"
+                            >
+                              ×
+                            </button>
+                          )}
                         </div>
-                        {/* Delete button - only show for current user's comments */}
-        {comment.userId === user?.uid && (
-                          <button
-                            onClick={() => handleDeleteComment(comment.id)}
-                            className="opacity-0 group-hover:opacity-100 text-xs text-gray-400 hover:text-red-500 transition-all duration-200 p-1"
-                          >
-                            ×
-                          </button>
-                        )}
-                      </div>
-                      <p className="text-sm text-gray-800 mt-1 leading-relaxed">{comment.text}</p>
-                      <div className="flex items-center space-x-4 mt-2">
-                        <button className="text-xs text-gray-500 hover:text-gray-700 font-medium">Reply</button>
-                        <button className="text-xs text-gray-500 hover:text-red-500 font-medium">♥</button>
+                        
+                        <p style={{
+                          color: '#374151',
+                          fontSize: '14px',
+                          lineHeight: '1.5',
+                          margin: '0'
+                        }}>
+                          {comment.text}
+                        </p>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))}
+                </div>
               )}
             </div>
 
-            {/* Add Comment */}
-            <div className="px-6 py-4 border-t border-gray-100 bg-white">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
-                  <span className="text-xs font-bold text-white">
+            {/* Comment Input */}
+            <div style={{
+              borderTop: '1px solid #f1f5f9',
+              padding: '20px 24px',
+              backgroundColor: '#ffffff',
+              borderBottomLeftRadius: '24px',
+              borderBottomRightRadius: '24px'
+            }}>
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                alignItems: 'flex-start'
+              }}>
+                {/* User Avatar */}
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  background: 'linear-gradient(135deg, #6b7280, #374151)',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: '0',
+                  boxShadow: '0 4px 12px rgba(107, 114, 128, 0.3)',
+                  border: '2px solid #ffffff'
+                }}>
+                  <span style={{
+                    color: '#ffffff',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>
                     {user?.displayName?.charAt(0)?.toUpperCase() || 'Y'}
                   </span>
                 </div>
-                <div className="flex-1 flex items-center space-x-2">
+                
+                {/* Input Area */}
+                <div style={{
+                  flex: '1',
+                  display: 'flex',
+                  gap: '12px',
+                  alignItems: 'center'
+                }}>
                   <input
                     type="text"
                     value={newComment}
                     onChange={(e) => setNewComment(e.target.value)}
-                    placeholder="Add a comment..."
-                    className="flex-1 px-0 py-2 border-0 bg-transparent text-sm placeholder-gray-500 focus:outline-none focus:ring-0"
+                    placeholder="Write a comment..."
+                    style={{
+                      flex: '1',
+                      padding: '12px 16px',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '20px',
+                      fontSize: '14px',
+                      outline: 'none',
+                      transition: 'all 0.2s ease',
+                      backgroundColor: '#fafbfc',
+                      color: '#1f2937'
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3b82f6';
+                      e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                      e.target.style.backgroundColor = '#ffffff';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e5e7eb';
+                      e.target.style.boxShadow = 'none';
+                      e.target.style.backgroundColor = '#fafbfc';
+                    }}
                     onKeyPress={(e) => e.key === 'Enter' && handleAddComment()}
                   />
+                  
                   <button
                     onClick={handleAddComment}
                     disabled={!newComment.trim()}
-                    className="text-blue-500 hover:text-blue-700 disabled:text-gray-400 disabled:cursor-not-allowed transition-colors font-semibold text-sm"
+                    style={{
+                      padding: '12px 20px',
+                      borderRadius: '20px',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      border: 'none',
+                      cursor: newComment.trim() ? 'pointer' : 'not-allowed',
+                      transition: 'all 0.2s ease',
+                      backgroundColor: newComment.trim() ? '#3b82f6' : '#f3f4f6',
+                      color: newComment.trim() ? '#ffffff' : '#9ca3af',
+                      boxShadow: newComment.trim() ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none',
+                      transform: 'translateY(0)'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (newComment.trim()) {
+                        e.target.style.backgroundColor = '#2563eb';
+                        e.target.style.transform = 'translateY(-1px)';
+                        e.target.style.boxShadow = '0 6px 16px rgba(59, 130, 246, 0.4)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (newComment.trim()) {
+                        e.target.style.backgroundColor = '#3b82f6';
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                      }
+                    }}
                   >
                     Post
                   </button>
                 </div>
               </div>
-              <div className="mt-2 ml-11 h-px bg-gray-200"></div>
             </div>
+            
           </div>
         </div>
       )}
+      
+      {/* CSS Animations */}
+      <style jsx>{`
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+          from { 
+            transform: translateY(100%);
+            opacity: 0;
+          }
+          to { 
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        
+        .group:hover .group-hover\:opacity-100 {
+          opacity: 1 !important;
+        }
+      `}</style>
     </div>
   );
 }
@@ -391,6 +792,8 @@ export default memo(VideoCard, (prevProps, nextProps) => {
   return (
     prevProps.isActive === nextProps.isActive && 
     prevProps.video.id === nextProps.video.id &&
-    prevProps.onCommentsToggle === nextProps.onCommentsToggle
+    prevProps.onCommentsToggle === nextProps.onCommentsToggle &&
+    prevProps.isGloballyMuted === nextProps.isGloballyMuted &&
+    prevProps.onGlobalMuteToggle === nextProps.onGlobalMuteToggle
   );
 });

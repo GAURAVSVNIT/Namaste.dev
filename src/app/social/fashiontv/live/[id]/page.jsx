@@ -747,6 +747,14 @@ export default function IndividualLiveStreamPage({ params }) {
                     cursor: 'pointer',
                     transition: 'all 0.3s ease'
                   }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.transform = 'scale(1)';
+                  }}
                 >
                   <Share2 style={{ width: '16px', height: '16px' }} />
                   <span>Share</span>

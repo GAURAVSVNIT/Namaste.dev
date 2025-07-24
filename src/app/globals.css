@@ -203,6 +203,16 @@
   --backdrop-blur-sm: blur(4px);
 }
 
+/* Navigation tabs mobile scrollbar styling */
+.nav-tabs-mobile {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.nav-tabs-mobile::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 @layer base {
   * {
     border-color: var(--border);

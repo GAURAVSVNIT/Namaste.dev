@@ -1,19 +1,14 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useAuth } from '@/hooks/useAuth';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { getUserSocialData } from '@/lib/social';
 import { Camera, Grid3X3, Heart, MessageCircle, Eye, User, Upload, Video, Settings, Play, Link2, Activity as ActivityIcon } from 'lucide-react';
 import Link from 'next/link';
 
 const ProfileHeader = ({ profileData }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isMobile = useIsMobile();
+  const [hoveredStat, setHoveredStat] = useState(null);
 
   return (
     <div style={{
@@ -114,16 +109,12 @@ const ProfileHeader = ({ profileData }) => {
               borderRadius: '16px',
               border: '1px solid rgba(255,255,255,0.3)',
               transition: 'all 0.3s ease',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transform: hoveredStat === 'activities' ? 'translateY(-4px)' : 'translateY(0)',
+              boxShadow: hoveredStat === 'activities' ? '0 12px 28px rgba(0, 0, 0, 0.15)' : 'none'
             }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-4px)';
-              e.target.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}>
+            onMouseEnter={() => setHoveredStat('activities')}
+            onMouseLeave={() => setHoveredStat(null)}>
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
@@ -148,16 +139,12 @@ const ProfileHeader = ({ profileData }) => {
               borderRadius: '16px',
               border: '1px solid rgba(255,255,255,0.3)',
               transition: 'all 0.3s ease',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transform: hoveredStat === 'likes' ? 'translateY(-4px)' : 'translateY(0)',
+              boxShadow: hoveredStat === 'likes' ? '0 12px 28px rgba(0, 0, 0, 0.15)' : 'none'
             }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-4px)';
-              e.target.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}>
+            onMouseEnter={() => setHoveredStat('likes')}
+            onMouseLeave={() => setHoveredStat(null)}>
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
@@ -182,16 +169,12 @@ const ProfileHeader = ({ profileData }) => {
               borderRadius: '16px',
               border: '1px solid rgba(255,255,255,0.3)',
               transition: 'all 0.3s ease',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transform: hoveredStat === 'content' ? 'translateY(-4px)' : 'translateY(0)',
+              boxShadow: hoveredStat === 'content' ? '0 12px 28px rgba(0, 0, 0, 0.15)' : 'none'
             }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-4px)';
-              e.target.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}>
+            onMouseEnter={() => setHoveredStat('content')}
+            onMouseLeave={() => setHoveredStat(null)}>
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
@@ -216,14 +199,8 @@ const ProfileHeader = ({ profileData }) => {
 };
 
 const NavigationTabs = ({ activeTab = 'activity' }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isMobile = useIsMobile();
+  const [hoveredTab, setHoveredTab] = useState(null);
 
   const tabs = [
     { id: 'looks', label: 'Looks', icon: Grid3X3, href: '/social/profile/looks' },
@@ -234,28 +211,23 @@ const NavigationTabs = ({ activeTab = 'activity' }) => {
   ];
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      gap: isMobile ? '4px' : '8px',
-      marginBottom: '32px',
-      background: 'rgba(255,255,255,0.8)',
-      padding: isMobile ? '6px' : '8px',
-      borderRadius: '16px',
-      backdropFilter: 'blur(20px)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-      border: '1px solid rgba(255,255,255,0.3)',
-      overflowX: 'auto',
-      scrollBehavior: 'smooth',
-      WebkitOverflowScrolling: 'touch',
-      ...(isMobile ? {
-        '&::-webkit-scrollbar': {
-          display: 'none'
-        },
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none'
-      } : {})
-    }}>
+    <div 
+      className={isMobile ? 'nav-tabs-mobile' : ''}
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: isMobile ? '4px' : '8px',
+        marginBottom: '32px',
+        background: 'rgba(255,255,255,0.8)',
+        padding: isMobile ? '6px' : '8px',
+        borderRadius: '16px',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255,255,255,0.3)',
+        overflowX: 'auto',
+        scrollBehavior: 'smooth',
+        WebkitOverflowScrolling: 'touch'
+      }}>
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -272,25 +244,25 @@ const NavigationTabs = ({ activeTab = 'activity' }) => {
               fontWeight: '600',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
-              background: isActive ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'transparent',
-              color: isActive ? 'white' : '#6b7280',
+              background: isActive 
+                ? 'linear-gradient(135deg, #667eea, #764ba2)' 
+                : hoveredTab === tab.id 
+                  ? 'rgba(102, 126, 234, 0.1)' 
+                  : 'transparent',
+              color: isActive 
+                ? 'white' 
+                : hoveredTab === tab.id 
+                  ? '#667eea' 
+                  : '#6b7280',
               boxShadow: isActive ? '0 8px 20px rgba(102, 126, 234, 0.4)' : 'none',
-              transform: isActive ? 'translateY(-2px)' : 'none'
+              transform: isActive 
+                ? 'translateY(-2px)' 
+                : hoveredTab === tab.id 
+                  ? 'translateY(-1px)' 
+                  : 'translateY(0)'
             }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                e.target.style.background = 'rgba(102, 126, 234, 0.1)';
-                e.target.style.color = '#667eea';
-                e.target.style.transform = 'translateY(-1px)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                e.target.style.background = 'transparent';
-                e.target.style.color = '#6b7280';
-                e.target.style.transform = 'translateY(0)';
-              }
-            }}>
+            onMouseEnter={() => !isActive && setHoveredTab(tab.id)}
+            onMouseLeave={() => !isActive && setHoveredTab(null)}>
               <Icon size={16} />
               <span>{tab.label}</span>
             </div>
@@ -424,22 +396,18 @@ const ActivityPage = () => {
           textAlign: 'center',
           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
         }}>
-          <div style={{
-            width: '60px',
-            height: '60px',
-            border: '4px solid #8b5cf6',
-            borderTop: '4px solid transparent',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 20px'
-          }}></div>
+          <div 
+            className="animate-spin"
+            style={{
+              width: '60px',
+              height: '60px',
+              border: '4px solid #8b5cf6',
+              borderTop: '4px solid transparent',
+              borderRadius: '50%',
+              margin: '0 auto 20px'
+            }}>
+          </div>
           <p style={{ color: '#6b7280', fontSize: '1.1rem', fontWeight: '500' }}>Loading your activity...</p>
-          <style jsx>{`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}</style>
         </div>
       </div>
     );

@@ -141,17 +141,21 @@ export default function LiveFeedGrid({ streams, currentUser, onStreamDeleted }) 
             border: '1px solid rgba(255, 255, 255, 0.2)',
             backdropFilter: 'blur(20px)'
           }}>
-            {/* Stream Preview */}
+{/* Stream Preview */}
             <div style={{ position: 'relative', aspectRatio: '16/9', backgroundColor: '#111827' }}>
               {stream.platform === 'youtube' ? (
-                <iframe
-                  src={getEmbedUrl(stream)}
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                  style={{ width: '100%', height: '100%', borderRadius: '16px 16px 0 0' }}
-                  title={stream.title}
-                />
+                (() => {
+                  const videoIdMatch = stream.url.match(/(?:youtu.be\/|youtube.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})/);
+                  const videoId = videoIdMatch ? videoIdMatch[1] : null;
+                  const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
+                  return videoId ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt={stream.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px 16px 0 0' }}
+                    />
+                  ) : null;
+                })()
               ) : stream.platform === 'twitch' ? (
                 <div style={{ 
                   width: '100%', 

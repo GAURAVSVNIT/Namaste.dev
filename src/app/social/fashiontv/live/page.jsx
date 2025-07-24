@@ -1707,9 +1707,26 @@ export default function LivePage() {
         </div>
       )}
 
-      {/* Professional Submit Form */}
+      {/* Professional Submit Form Modal */}
       {showSubmitForm && (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '0 32px', marginBottom: '48px' }}>
+        <div 
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(10px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 50,
+            padding: '20px'
+          }}
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setShowSubmitForm(false);
+            }
+          }}
+        >
           <div style={{
             maxWidth: '600px',
             width: '100%',

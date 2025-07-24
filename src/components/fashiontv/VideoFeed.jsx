@@ -12,6 +12,8 @@ export default function VideoFeed({ onCommentsToggle }) {
   const scrollRef = useRef(null);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const observerRef = useRef(null);
+  // Global mute state - applies to all videos
+  const [isGloballyMuted, setIsGloballyMuted] = useState(true);
 
   useEffect(() => {
     fetchInitialVideos();
@@ -121,6 +123,8 @@ export default function VideoFeed({ onCommentsToggle }) {
               video={video} 
               isActive={index === currentVideoIndex}
               onCommentsToggle={onCommentsToggle}
+              isGloballyMuted={isGloballyMuted}
+              onGlobalMuteToggle={setIsGloballyMuted}
             />
           </div>
         ))}
