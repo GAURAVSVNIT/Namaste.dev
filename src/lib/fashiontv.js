@@ -13,7 +13,8 @@ import {
   startAfter,
   serverTimestamp, 
   arrayUnion, 
-  arrayRemove 
+  arrayRemove,
+  increment
 } from 'firebase/firestore';
 import { 
   ref, 
@@ -91,6 +92,17 @@ export const uploadVideo = async (userId, file, videoData) => {
 
     // Save to Firestore
     const docRef = await addDoc(collection(db, 'fashiontv_videos'), video);
+    
+    // Log activity for creating a reel/video
+    await addDoc(collection(db, 'user_activities'), {
+      userId,
+      type: 'created',
+      contentType: 'reel',
+      reelTitle: videoData.caption.trim(),
+      reelId: docRef.id,
+      timestamp: serverTimestamp()
+    });
+    
     return { id: docRef.id, ...video };
   } catch (error) {
     throw new Error('Failed to upload video');
@@ -201,6 +213,20 @@ export const toggleLikeVideo = async (videoId, userId) => {
         likes: arrayRemove(userId),
         updatedAt: serverTimestamp()
       });
+
+      // Remove from user_likes
+      const likeQuery = query(
+        collection(db, 'user_likes'),
+        where('userId', '==', userId),
+        where('contentId', '==', videoId)
+      );
+
+      const likeSnapshot = await getDocs(likeQuery);
+      if (!likeSnapshot.empty) {
+        const likeDoc = likeSnapshot.docs[0];
+        await deleteDoc(doc(db, 'user_likes', likeDoc.id));
+      }
+
       return { liked: false, likesCount: currentLikes.length - 1 };
     } else {
       // Add like
@@ -208,6 +234,26 @@ export const toggleLikeVideo = async (videoId, userId) => {
         likes: arrayUnion(userId),
         updatedAt: serverTimestamp()
       });
+
+      // Add to user_likes
+      await addDoc(collection(db, 'user_likes'), {
+        userId,
+        contentId: videoId,
+        contentType: 'reel',
+        caption: videoData.caption || 'Untitled Reel',
+        likedAt: serverTimestamp()
+      });
+
+      // Log activity for liking a reel/video
+      await addDoc(collection(db, 'user_activities'), {
+        userId,
+        type: 'liked',
+        contentType: 'reel',
+        reelTitle: videoData.caption || 'Untitled Reel',
+        reelId: videoId,
+        timestamp: serverTimestamp()
+      });
+
       return { liked: true, likesCount: currentLikes.length + 1 };
     }
   } catch (error) {

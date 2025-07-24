@@ -184,49 +184,75 @@ const SocialFeedPage = () => {
           </div>
         )}
 
-        {/* Bottom overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <Heart className="w-4 h-4" />
-                <span className="text-sm">{item.likes?.length || Math.floor(Math.random() * 100)}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <MessageCircle className="w-4 h-4" />
-                <span className="text-sm">{item.comments?.length || Math.floor(Math.random() * 50)}</span>
-              </div>
-              {type === 'reel' && (
-                <div className="flex items-center space-x-1">
-                  <Eye className="w-4 h-4" />
-                  <span className="text-sm">{item.views || Math.floor(Math.random() * 1000)}</span>
-                </div>
-              )}
-            </div>
-            <button className="bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors">
-              <Share2 className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Card content */}
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2 text-sm">
+      <div style={{ padding: '20px 24px' }}>
+        <h3 style={{
+          fontSize: '1rem',
+          fontWeight: '600',
+          color: '#1f2937',
+          marginBottom: '16px',
+          lineHeight: '1.4',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical'
+        }}>
           {item.title || item.caption || `Fashion ${type} #${Math.floor(Math.random() * 100)}`}
         </h3>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3 text-xs text-gray-500">
-            <span className="flex items-center">
-              <Heart className="w-3 h-3 mr-1" />
-              {item.likes?.length || Math.floor(Math.random() * 100)}
-            </span>
-            <span className="flex items-center">
-              <MessageCircle className="w-3 h-3 mr-1" />
-              {item.comments?.length || Math.floor(Math.random() * 50)}
-            </span>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: '12px',
+          paddingTop: '12px',
+          borderTop: '1px solid rgba(229, 231, 235, 0.5)'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '4px 8px',
+              borderRadius: '8px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              transition: 'all 0.2s ease'
+            }}>
+              <Heart style={{ width: '14px', height: '14px', color: '#ef4444' }} />
+              <span style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#ef4444'
+              }}>{item.likes?.length || Math.floor(Math.random() * 100)}</span>
+            </div>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              padding: '4px 8px',
+              borderRadius: '8px',
+              background: 'rgba(59, 130, 246, 0.1)',
+              transition: 'all 0.2s ease'
+            }}>
+              <MessageCircle style={{ width: '14px', height: '14px', color: '#3b82f6' }} />
+              <span style={{
+                fontSize: '12px',
+                fontWeight: '600',
+                color: '#3b82f6'
+              }}>{item.comments?.length || Math.floor(Math.random() * 50)}</span>
+            </div>
           </div>
-          <span className="text-xs text-gray-400">{Math.floor(Math.random() * 24)}h</span>
+          <span style={{
+            fontSize: '11px',
+            color: '#9ca3af',
+            fontWeight: '500'
+          }}>{Math.floor(Math.random() * 24)}h</span>
         </div>
       </div>
     </div>
@@ -564,28 +590,28 @@ const SocialFeedPage = () => {
               icon={Camera}
               title="Explore Looks"
               subtitle="Browse fashion styles"
-              gradient="from-pink-500 to-rose-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/look"
             />
             <QuickActionCard
               icon={Play}
               title="Create Reel"
               subtitle="Make fashion videos"
-              gradient="from-purple-500 to-indigo-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/fashiontv"
             />
             <QuickActionCard
               icon={Tv}
               title="Go Live"
               subtitle="Stream fashion shows"
-              gradient="from-red-500 to-orange-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/fashiontv/live"
             />
             <QuickActionCard
               icon={Zap}
               title="Trending"
               subtitle="What's hot now"
-              gradient="from-yellow-500 to-amber-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/trending"
             />
           </div>
@@ -596,10 +622,10 @@ const SocialFeedPage = () => {
           <div className="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg" style={{ padding: '8px' }}>
             <div className="flex" style={{ gap: '4px' }}>
             {[
-              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-orange-500 to-red-500' },
+              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-pink-500 to-purple-500' },
               { id: 'looks', label: 'Looks', icon: Camera, color: 'from-pink-500 to-purple-500' },
-              { id: 'reels', label: 'Reels', icon: Play, color: 'from-purple-500 to-indigo-500' },
-              { id: 'live', label: 'Live', icon: Tv, color: 'from-red-500 to-orange-500' }
+              { id: 'reels', label: 'Reels', icon: Play, color: 'from-pink-500 to-purple-500' },
+              { id: 'live', label: 'Live', icon: Tv, color: 'from-pink-500 to-purple-500' }
             ].map((tab) => {
               const Icon = tab.icon;
               return (
