@@ -9,7 +9,7 @@ import ProfileHeader from '@/components/profile/ProfileHeader';
 import ProfileTabs from '@/components/profile/ProfileTabs';
 import BlogGrid from '@/components/profile/BlogGrid';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, FileText } from 'lucide-react';
 import Link from 'next/link';
 
 export default function ProfileBlogsPage() {
@@ -89,8 +89,17 @@ export default function ProfileBlogsPage() {
   }
   
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="space-y-6">
+    <div style={{
+      maxWidth: '1200px',
+      margin: '0 auto',
+      padding: '32px 16px',
+      marginTop: '80px'
+    }}>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '24px'
+      }}>
         {/* Profile Header */}
         {user && (
           <ProfileHeader user={user} onUpdateProfile={handleUpdateProfile} />
@@ -100,28 +109,102 @@ export default function ProfileBlogsPage() {
         <ProfileTabs />
         
         {/* Page Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">My Blogs</h1>
-            <p className="text-muted-foreground">
-              {blogs.length} {blogs.length === 1 ? 'blog' : 'blogs'} published
-            </p>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.2)',
+          borderRadius: '20px',
+          padding: '24px 32px',
+          boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
+          flexWrap: 'wrap',
+          gap: '16px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}>
+            <div style={{
+              padding: '12px',
+              background: 'linear-gradient(135deg, #22C55E, #10B981)',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 25px rgba(34, 197, 94, 0.3)'
+            }}>
+              <FileText style={{ width: '24px', height: '24px', color: 'white' }} />
+            </div>
+            <div>
+              <h1 style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                color: '#111827',
+                margin: '0 0 4px 0',
+                background: 'linear-gradient(135deg, #374151, #111827)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>My Blogs</h1>
+              <p style={{
+                fontSize: '16px',
+                color: '#6B7280',
+                margin: '0',
+                fontWeight: '500'
+              }}>
+                {blogs.length} {blogs.length === 1 ? 'blog' : 'blogs'} published
+              </p>
+            </div>
           </div>
           
-          <Link href="/blog/new">
-            <Button className="px-6">
-              <Plus className="w-4 h-4 mr-2" />
+          <Link href="/blog/new" style={{ textDecoration: 'none' }}>
+            <button style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '12px 24px',
+              background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 8px 25px rgba(59, 130, 246, 0.3)'
+            }} onMouseEnter={(e) => {
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 15px 35px rgba(59, 130, 246, 0.4)';
+            }} onMouseLeave={(e) => {
+              e.target.style.transform = 'translateY(0px)';
+              e.target.style.boxShadow = '0 8px 25px rgba(59, 130, 246, 0.3)';
+            }}>
+              <Plus style={{ width: '16px', height: '16px' }} />
               Write New Blog
-            </Button>
+            </button>
           </Link>
         </div>
         
         {/* Blogs Grid */}
-        <BlogGrid 
-          blogs={blogs}
-          loading={blogsLoading}
-          emptyMessage="You haven't written any blogs yet. Start sharing your thoughts with the world!"
-        />
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
+          backdropFilter: 'blur(20px)',
+          WebkitBackdropFilter: 'blur(20px)',
+          border: '1px solid rgba(255,255,255,0.2)',
+          borderRadius: '20px',
+          padding: '32px',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          minHeight: '400px'
+        }}>
+          <BlogGrid 
+            blogs={blogs}
+            loading={blogsLoading}
+            emptyMessage="You haven't written any blogs yet. Start sharing your thoughts with the world!"
+          />
+        </div>
       </div>
     </div>
   );

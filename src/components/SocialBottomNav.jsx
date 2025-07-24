@@ -3,10 +3,26 @@ import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Camera, Tv, Search, User, Home } from "lucide-react";
 
+// New import for styled-components if needed
+// import styled from 'styled-components';
+
 const SocialBottomNav = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false); // Start hidden
+
+  const professionalStyles = {
+    gradientBackground: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    buttonText: {
+      color: '#F3F4F6',
+      fontWeight: 'bold',
+      fontSize: '14px'
+    },
+    boxShadows: {
+      default: '0 4px 8px rgba(0,0,0,0.2)',
+      active: '0 6px 12px rgba(0,0,0,0.3)'
+    }
+  };
 
   const navigateTo = (path) => {
     router.push(path);
@@ -94,6 +110,7 @@ const SocialBottomNav = () => {
           background: `linear-gradient(135deg, ${colors.glow})`,
           borderRadius: '14px',
           opacity: '0.3',
+          border: `2px solid ${professionalStyles.gradientBackground}`,
           animation: 'pulse 2s infinite'
         }} />
       )}

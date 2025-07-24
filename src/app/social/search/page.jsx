@@ -1,24 +1,131 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 import SocialBottomNav from "@/components/SocialBottomNav";
+import { searchUsers, toggleFollow } from "@/lib/social";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 const SearchPage = () => {
+  const router = useRouter();
+  const { user: currentUser } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedCategory, setSelectedCategory] = useState("people");
   const [hoveredCard, setHoveredCard] = useState(null);
   const [hoveredButton, setHoveredButton] = useState(null);
   const [hoveredTab, setHoveredTab] = useState(null);
+  const [searchResults, setSearchResults] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [followingUsers, setFollowingUsers] = useState(new Set()); // Track which users we're following
+  const [followLoading, setFollowLoading] = useState(new Set()); // Track follow button loading states
+
+  // Handle follow/unfollow action
+  const handleFollowToggle = async (userId, userName) => {
+    // Comprehensive validation
+    if (!currentUser) {
+      console.error('No current user available');
+      return;
+    }
+    
+    if (!currentUser.uid) {
+      console.error('Current user ID is not available');
+      return;
+    }
+    
+    if (!userId) {
+      console.error('Target user ID is not available');
+      return;
+    }
+    
+    if (followLoading.has(userId)) {
+      return; // Already processing this user
+    }
+    
+    // Don't allow following yourself
+    if (currentUser.uid === userId) {
+      console.log('Cannot follow yourself');
+      return;
+    }
+    
+    setFollowLoading(prev => new Set([...prev, userId]));
+    
+    try {
+      const isCurrentlyFollowing = followingUsers.has(userId);
+      await toggleFollow(currentUser.uid, userId);
+      
+      // Update following state
+      setFollowingUsers(prev => {
+        const newSet = new Set(prev);
+        if (isCurrentlyFollowing) {
+          newSet.delete(userId);
+        } else {
+          newSet.add(userId);
+        }
+        return newSet;
+      });
+    } catch (error) {
+      console.error('Error toggling follow:', error);
+    } finally {
+      setFollowLoading(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(userId);
+        return newSet;
+      });
+    }
+  };
 
   const categories = [
-    { id: "all", label: "All" },
     { id: "people", label: "People" },
-    { id: "looks", label: "Looks" },
-    { id: "hashtags", label: "Hashtags" },
   ];
 
-  // No hardcoded search results - will be empty by default
-  const filteredResults = [];
+  // Search function
+  const performSearch = async (query, category) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      let results = [];
+      
+      // Only search for people since that's the only category now
+      const users = await searchUsers(query);
+      const userResults = users.map(user => ({
+        id: `user-${user.id}`,
+        userId: user.id, // Keep the original user ID for follow functionality
+        type: "person",
+        name: user.name || user.email?.split('@')[0] || 'User',
+        avatar: user.avatar, // Use the avatar field that's already properly mapped in searchUsers
+        bio: user.bio,
+        location: user.location,
+        followers: user.followersCount || 0,
+        looks: user.looks || [],
+        reels: user.reels || [],
+        looksCount: user.looksCount || 0,
+        reelsCount: user.reelsCount || 0
+      }));
+      results = [...results, ...userResults];
+      
+      setSearchResults(results);
+    } catch (error) {
+      console.error("Search error:", error);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Effect to trigger search when query or category changes
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      performSearch(searchQuery, selectedCategory);
+    }, 300); // Debounce search
+
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, selectedCategory]);
+
+  const filteredResults = searchResults;
 
   return (
     <div style={{
@@ -63,7 +170,7 @@ const SearchPage = () => {
             />
             <input
               type="text"
-              placeholder="Search people, looks, hashtags..."
+              placeholder="Search people..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               style={{
@@ -179,7 +286,39 @@ const SearchPage = () => {
         margin: '0 auto'
       }}>
         {searchQuery ? (
-          filteredResults.length > 0 ? (
+          isLoading ? (
+            <div style={{
+              textAlign: 'center',
+              padding: '60px 20px',
+              background: 'rgba(255, 255, 255, 0.5)',
+              borderRadius: '20px',
+              border: '2px solid rgba(59, 130, 246, 0.1)'
+            }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                border: '3px solid rgba(59, 130, 246, 0.3)',
+                borderTop: '3px solid #3b82f6',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite',
+                margin: '0 auto 16px'
+              }}></div>
+              <p style={{
+                color: '#6b7280',
+                fontSize: '16px',
+                margin: 0,
+                fontWeight: '500'
+              }}>
+                Searching...
+              </p>
+              <style jsx>{`
+                @keyframes spin {
+                  0% { transform: rotate(0deg); }
+                  100% { transform: rotate(360deg); }
+                }
+              `}</style>
+            </div>
+          ) : filteredResults.length > 0 ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {filteredResults.map((result) => (
                 <div 
@@ -198,63 +337,193 @@ const SearchPage = () => {
                   }}
                   onMouseEnter={() => setHoveredCard(result.id)}
                   onMouseLeave={() => setHoveredCard(null)}
+                  onClick={() => {
+                    if (result.type === "person") {
+                      const username = result.name.toLowerCase().replace(/\s+/g, '');
+                      router.push(`/social/user/${username}`);
+                    }
+                  }}
                 >
                   {result.type === "person" && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                       <div style={{
-                        fontSize: '32px',
-                        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
-                        borderRadius: '50%',
                         width: '52px',
                         height: '52px',
+                        borderRadius: '50%',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        border: '2px solid rgba(59, 130, 246, 0.1)'
+                        border: '2px solid rgba(59, 130, 246, 0.1)',
+                        overflow: 'hidden',
+                        background: result.avatar && (result.avatar.startsWith('http') || result.avatar.startsWith('data:') || result.avatar.startsWith('/')) 
+                          ? 'transparent' 
+                          : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
                       }}>
-                        {result.avatar}
-                      </div>
-                      <div style={{ flex: 1 }}>
-                        <h3 style={{
-                          fontWeight: '600',
-                          fontSize: '16px',
-                          color: '#1e293b',
-                          margin: '0 0 4px 0',
-                          lineHeight: '1.4'
+                        {result.avatar && (result.avatar.startsWith('http') || result.avatar.startsWith('data:') || result.avatar.startsWith('/')) ? (
+                          <img 
+                            src={result.avatar} 
+                            alt={result.name}
+                            style={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover',
+                              borderRadius: '50%'
+                            }}
+                            onError={(e) => {
+                              e.target.style.display = 'none';
+                              e.target.nextSibling.style.display = 'flex';
+                            }}
+                          />
+                        ) : null}
+                        <div style={{
+                          fontSize: '32px',
+                          display: result.avatar && (result.avatar.startsWith('http') || result.avatar.startsWith('data:') || result.avatar.startsWith('/')) ? 'none' : 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: '100%',
+                          height: '100%'
                         }}>
-                          {result.name}
-                        </h3>
-                        <p style={{
-                          color: '#64748b',
-                          fontSize: '14px',
-                          margin: 0,
-                          fontWeight: '400'
-                        }}>
-                          {result.followers} followers
-                        </p>
+                          {result.avatar && !result.avatar.startsWith('http') && !result.avatar.startsWith('data:') && !result.avatar.startsWith('/') ? result.avatar : '👤'}
+                        </div>
                       </div>
-                      <button 
-                        style={{
-                          padding: '8px 20px',
-                          background: hoveredButton === `follow-${result.id}` 
-                            ? 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)'
-                            : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                          color: '#ffffff',
-                          border: 'none',
-                          borderRadius: '20px',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 8px rgba(59, 130, 246, 0.3)',
-                          transform: hoveredButton === `follow-${result.id}` ? 'scale(1.05)' : 'scale(1)'
-                        }}
-                        onMouseEnter={() => setHoveredButton(`follow-${result.id}`)}
-                        onMouseLeave={() => setHoveredButton(null)}
-                      >
-                        Follow
-                      </button>
-                    </div>
+                        <div style={{ flex: 1 }}>
+                          <h3 style={{
+                            fontWeight: '600',
+                            fontSize: '16px',
+                            color: '#1e293b',
+                            margin: '0 0 4px 0',
+                            lineHeight: '1.4'
+                          }}>
+                            {result.name}
+                          </h3>
+                          {result.bio && (
+                            <p style={{
+                              color: '#64748b',
+                              fontSize: '13px',
+                              margin: '0 0 4px 0',
+                              fontWeight: '400',
+                              lineHeight: '1.3',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                              maxWidth: '200px'
+                            }}>
+                              {result.bio}
+                            </p>
+                          )}
+                          <div style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            flexWrap: 'wrap'
+                          }}>
+                            <p style={{
+                              color: '#64748b',
+                              fontSize: '14px',
+                              margin: 0,
+                              fontWeight: '400'
+                            }}>
+                              {result.followers} followers
+                            </p>
+                            {result.location && (
+                              <p style={{
+                                color: '#64748b',
+                                fontSize: '13px',
+                                margin: 0,
+                                fontWeight: '400',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '4px'
+                              }}>
+                                📍 {result.location}
+                              </p>
+                            )}
+                          </div>
+                          
+                          {/* Content Stats */}
+                          {(result.looksCount > 0 || result.reelsCount > 0) && (
+                            <div style={{
+                              display: 'flex',
+                              gap: '16px',
+                              marginTop: '8px'
+                            }}>
+                              {result.looksCount > 0 && (
+                                <span style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  fontSize: '12px',
+                                  color: '#8b5cf6',
+                                  background: 'rgba(139, 92, 246, 0.1)',
+                                  padding: '4px 8px',
+                                  borderRadius: '12px',
+                                  fontWeight: '500'
+                                }}>
+                                  📸 {result.looksCount} looks
+                                </span>
+                              )}
+                              {result.reelsCount > 0 && (
+                                <span style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '4px',
+                                  fontSize: '12px',
+                                  color: '#06b6d4',
+                                  background: 'rgba(6, 182, 212, 0.1)',
+                                  padding: '4px 8px',
+                                  borderRadius: '12px',
+                                  fontWeight: '500'
+                                }}>
+                                  🎥 {result.reelsCount} reels
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                        {/* Only show follow button if not the current user */}
+                        {currentUser && currentUser.uid !== result.userId && (
+                          <button 
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent navigation when clicking follow button
+                              handleFollowToggle(result.userId, result.name);
+                            }}
+                            disabled={followLoading.has(result.userId)}
+                            style={{
+                              padding: '8px 20px',
+                              background: followingUsers.has(result.userId)
+                                ? hoveredButton === `follow-${result.userId}` 
+                                  ? 'rgba(239, 68, 68, 0.9)'
+                                  : 'rgba(107, 114, 128, 0.8)'
+                                : hoveredButton === `follow-${result.userId}` 
+                                  ? 'linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)'
+                                  : 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                              color: '#ffffff',
+                              border: 'none',
+                              borderRadius: '20px',
+                              fontSize: '13px',
+                              fontWeight: '600',
+                              cursor: followLoading.has(result.userId) ? 'not-allowed' : 'pointer',
+                              transition: 'all 0.3s ease',
+                              boxShadow: followingUsers.has(result.userId)
+                                ? '0 2px 8px rgba(107, 114, 128, 0.3)'
+                                : '0 2px 8px rgba(59, 130, 246, 0.3)',
+                              transform: hoveredButton === `follow-${result.userId}` ? 'scale(1.05)' : 'scale(1)',
+                              opacity: followLoading.has(result.userId) ? 0.7 : 1
+                            }}
+                            onMouseEnter={() => setHoveredButton(`follow-${result.userId}`)}
+                            onMouseLeave={() => setHoveredButton(null)}
+                          >
+                            {followLoading.has(result.userId) 
+                              ? '...' 
+                              : followingUsers.has(result.userId) 
+                                ? 'Unfollow' 
+                                : 'Follow'
+                            }
+                          </button>
+                        )}
+                      </div>
+                    </>
                   )}
                   {result.type === "look" && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
