@@ -22,7 +22,6 @@ export default function App() {
     userRef.current = user;
   }, [user]);
 
-//   console.table(userRef.current)
 //   console.table(user)
 
   const handleOnAvatarExported = async (event) => {

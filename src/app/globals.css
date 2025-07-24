@@ -297,3 +297,45 @@
     animation: shimmer 2s infinite; 
   }
 }
+
+/* for custom avatar builder header  */
+
+.header-section {
+  @apply w-full rounded-[2rem] text-center px-6 py-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 text-white shadow-xl;
+}
+
+.badge {
+  @apply inline-block px-4 py-1 mb-4 rounded-full bg-white/10 text-white text-sm font-medium backdrop-blur;
+}
+
+.headline {
+  @apply text-5xl font-extrabold mb-4;
+}
+
+.subtext {
+  @apply max-w-2xl mx-auto text-base md:text-lg text-white/90 mb-8;
+}
+
+.search-bar {
+  @apply flex items-center gap-2 max-w-md mx-auto bg-white rounded-full px-4 py-2 mb-6 shadow-md;
+}
+
+.search-input {
+  @apply flex-1 outline-none bg-transparent text-gray-800 placeholder-gray-400;
+}
+
+.search-btn {
+  @apply bg-gradient-to-br from-blue-500 to-purple-600 text-white p-2 rounded-full shadow-md;
+}
+
+.actions {
+  @apply flex justify-center gap-4 mt-4;
+}
+
+.btn-create-look {
+  @apply flex items-center gap-2 px-6 py-3 rounded-full font-semibold bg-gradient-to-r from-orange-400 to-pink-500 text-white shadow-md hover:scale-105 transition;
+}
+
+.btn-create-reel {
+  @apply flex items-center gap-2 px-6 py-3 rounded-full font-semibold border border-white/30 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm transition;
+}
