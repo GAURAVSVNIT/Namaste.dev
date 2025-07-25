@@ -1,229 +1,619 @@
-import { 
-  db, 
-  collection, 
-  doc, 
-  addDoc, 
-  updateDoc, 
+import {
+  db,
+  storage,
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
   deleteDoc,
   setDoc,
   getDoc,
   getDocs,
-  query, 
-  where, 
-  orderBy, 
+  query,
+  where,
+  orderBy,
   limit,
   serverTimestamp,
   onSnapshot,
   Timestamp,
-  arrayUnion
+  arrayUnion,
+  arrayRemove
 } from './firebase';
+import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 
-// Consultation Management Functions
-export async function createConsultation(consultationData) {
-  const consultation = {
-    ...consultationData,
-    status: 'pending', // pending, active, completed, cancelled
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-    messages: [], // For real-time chat
-    totalAmount: consultationData.price || 0,
-    sessionDuration: 0, // Track actual session time
-  };
-  const docRef = await addDoc(collection(db, 'consultations'), consultation);
-  return docRef.id;
-}
+// ============== USER ROLE MANAGEMENT ==============
 
-export async function updateConsultationStatus(consultationId, status) {
-  const consultationRef = doc(db, 'consultations', consultationId);
-  await updateDoc(consultationRef, {
-    status,
-    updatedAt: serverTimestamp(),
-  });
-}
+export const updateUserRole = async (userId, role, additionalData = {}) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    const updateData = {
+      role,
+      updated_at: serverTimestamp(),
+      ...additionalData
+    };
 
-export async function getConsultationById(consultationId) {
-  const consultationRef = doc(db, 'consultations', consultationId);
-  const consultationSnap = await getDoc(consultationRef);
-  if (consultationSnap.exists()) {
-    return { id: consultationSnap.id, ...consultationSnap.data() };
+    // Initialize role-specific data
+    if (role === 'fashion_designer' || role === 'tailor') {
+      updateData.professional = {
+        specializations: additionalData.specializations || [],
+        experience: additionalData.experience || 0,
+        certifications: additionalData.certifications || [],
+        languages: additionalData.languages || ['English'],
+        workingHours: additionalData.workingHours || getDefaultWorkingHours(),
+        bio: additionalData.bio || '',
+        location: additionalData.location || {},
+        ...additionalData.professional
+      };
+
+      updateData.pricing = {
+        chatRate: additionalData.chatRate || 0,
+        callRate: additionalData.callRate || 0,
+        videoCallRate: additionalData.videoCallRate || 0,
+        consultationRate: additionalData.consultationRate || 0,
+        pricingType: additionalData.pricingType || 'fixed',
+        currency: additionalData.currency || 'USD',
+        ...additionalData.pricing
+      };
+
+      updateData.portfolio = {
+        images: [],
+        videos: [],
+        description: '',
+        achievements: [],
+        ...additionalData.portfolio
+      };
+
+      updateData.rating = {
+        average: 0,
+        count: 0,
+        reviews: []
+      };
+    }
+
+    await updateDoc(userRef, updateData);
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    throw error;
   }
-  return null;
-}
+};
 
-// Designer/Consultant Management Functions
-export async function addDesigner(designerData) {
-  const designer = {
-    ...designerData,
-    role: 'designer', // designer, stylist, tailor
-    isAvailable: true,
-    rating: 4.5, // Default rating
-    totalConsultations: 0,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  };
-  const docRef = await addDoc(collection(db, 'designers'), designer);
-  return docRef.id;
-}
+const getDefaultWorkingHours = () => ({
+  monday: { start: '09:00', end: '17:00', available: true },
+  tuesday: { start: '09:00', end: '17:00', available: true },
+  wednesday: { start: '09:00', end: '17:00', available: true },
+  thursday: { start: '09:00', end: '17:00', available: true },
+  friday: { start: '09:00', end: '17:00', available: true },
+  saturday: { start: '10:00', end: '16:00', available: true },
+  sunday: { start: '10:00', end: '16:00', available: false }
+});
 
-export async function getAvailableDesigners() {
-  const designersQuery = query(
-    collection(db, 'designers'),
-    where('isAvailable', '==', true),
-    orderBy('rating', 'desc')
-  );
-  const snapshot = await getDocs(designersQuery);
-  const designers = [];
-  snapshot.forEach(doc => {
-    designers.push({ id: doc.id, ...doc.data() });
-  });
-  return designers;
-}
+// ============== PORTFOLIO MANAGEMENT ==============
 
-export async function getDesignerById(designerId) {
-  const designerRef = doc(db, 'designers', designerId);
-  const designerSnap = await getDoc(designerRef);
-  if (designerSnap.exists()) {
-    return { id: designerSnap.id, ...designerSnap.data() };
+export const uploadPortfolioImage = async (userId, file, metadata = {}) => {
+  try {
+    const fileName = `portfolio/${userId}/${Date.now()}_${file.name}`;
+    const storageRef = ref(storage, fileName);
+    
+    const snapshot = await uploadBytes(storageRef, file);
+    const downloadURL = await getDownloadURL(snapshot.ref);
+    
+    const imageData = {
+      id: Date.now().toString(),
+      url: downloadURL,
+      fileName: file.name,
+      uploadedAt: serverTimestamp(),
+      ...metadata
+    };
+
+    // Add to user's portfolio
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      'portfolio.images': arrayUnion(imageData),
+      updated_at: serverTimestamp()
+    });
+
+    return imageData;
+  } catch (error) {
+    console.error('Error uploading portfolio image:', error);
+    throw error;
   }
-  return null;
-}
+};
 
-// Real-time Chat Functions for Consultations
-export async function sendConsultationMessage(consultationId, senderId, message, senderName) {
-  const consultationRef = doc(db, 'consultations', consultationId);
-  const consultationSnap = await getDoc(consultationRef);
-  
-  if (consultationSnap.exists()) {
-    const newMessage = {
-      id: `msg_${Date.now()}`,
-      content: message,
+export const removePortfolioImage = async (userId, imageId, imageUrl) => {
+  try {
+    // Remove from storage
+    const storageRef = ref(storage, imageUrl);
+    await deleteObject(storageRef);
+
+    // Remove from user's portfolio
+    const userRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userRef);
+    
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      const updatedImages = userData.portfolio?.images?.filter(img => img.id !== imageId) || [];
+      
+      await updateDoc(userRef, {
+        'portfolio.images': updatedImages,
+        updated_at: serverTimestamp()
+      });
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error removing portfolio image:', error);
+    throw error;
+  }
+};
+
+// ============== APPOINTMENT MANAGEMENT ==============
+
+export const createAppointment = async (appointmentData) => {
+  try {
+    const appointmentRef = doc(collection(db, 'appointments'));
+    
+    const appointment = {
+      id: appointmentRef.id,
+      clientId: appointmentData.clientId,
+      providerId: appointmentData.providerId,
+      providerType: appointmentData.providerType, // 'fashion_designer' or 'tailor'
+      type: appointmentData.type, // 'chat', 'call', 'video_call'
+      scheduledAt: appointmentData.scheduledAt,
+      duration: appointmentData.duration || 30, // minutes
+      status: 'scheduled', // 'scheduled', 'confirmed', 'in_progress', 'completed', 'cancelled'
+      pricing: {
+        rate: appointmentData.rate,
+        type: appointmentData.pricingType,
+        currency: appointmentData.currency || 'USD',
+        totalAmount: appointmentData.totalAmount
+      },
+      requirements: appointmentData.requirements || '',
+      notes: appointmentData.notes || '',
+      googleCalendarEventId: null,
+      meetingLink: null,
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    await setDoc(appointmentRef, appointment);
+
+    // Create notification for provider
+    await createNotification(appointmentData.providerId, {
+      type: 'new_appointment',
+      title: 'New Appointment Request',
+      message: `You have a new ${appointmentData.type} appointment request`,
+      data: { appointmentId: appointmentRef.id }
+    });
+
+    return appointment;
+  } catch (error) {
+    console.error('Error creating appointment:', error);
+    throw error;
+  }
+};
+
+export const updateAppointmentStatus = async (appointmentId, status, additionalData = {}) => {
+  try {
+    const appointmentRef = doc(db, 'appointments', appointmentId);
+    
+    const updateData = {
+      status,
+      updatedAt: serverTimestamp(),
+      ...additionalData
+    };
+
+    await updateDoc(appointmentRef, updateData);
+
+    // Get appointment details for notifications
+    const appointmentDoc = await getDoc(appointmentRef);
+    if (appointmentDoc.exists()) {
+      const appointment = appointmentDoc.data();
+      
+      // Notify both client and provider
+      const notifications = [];
+      
+      if (status === 'confirmed') {
+        notifications.push(
+          createNotification(appointment.clientId, {
+            type: 'appointment_confirmed',
+            title: 'Appointment Confirmed',
+            message: 'Your appointment has been confirmed',
+            data: { appointmentId }
+          }),
+          createNotification(appointment.providerId, {
+            type: 'appointment_confirmed',
+            title: 'Appointment Confirmed',
+            message: 'You confirmed an appointment',
+            data: { appointmentId }
+          })
+        );
+      }
+
+      await Promise.all(notifications);
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating appointment status:', error);
+    throw error;
+  }
+};
+
+export const getUserAppointments = async (userId, userRole = 'client') => {
+  try {
+    const appointmentsRef = collection(db, 'appointments');
+    const field = userRole === 'provider' ? 'providerId' : 'clientId';
+    
+    const q = query(
+      appointmentsRef,
+      where(field, '==', userId),
+      orderBy('scheduledAt', 'desc')
+    );
+
+    const snapshot = await getDocs(q);
+    const appointments = [];
+    
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      appointments.push({
+        ...data,
+        scheduledAt: data.scheduledAt?.toDate?.() || data.scheduledAt,
+        createdAt: data.createdAt?.toDate?.() || data.createdAt,
+        updatedAt: data.updatedAt?.toDate?.() || data.updatedAt
+      });
+    });
+
+    return appointments;
+  } catch (error) {
+    console.error('Error fetching user appointments:', error);
+    throw error;
+  }
+};
+
+// ============== REAL-TIME CHAT SYSTEM ==============
+
+export const createChatSession = async (appointmentId, participants) => {
+  try {
+    const chatRef = doc(collection(db, 'chats'));
+    
+    const chatSession = {
+      id: chatRef.id,
+      appointmentId,
+      participants,
+      messages: [],
+      status: 'active',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp()
+    };
+
+    await setDoc(chatRef, chatSession);
+    return chatSession;
+  } catch (error) {
+    console.error('Error creating chat session:', error);
+    throw error;
+  }
+};
+
+export const sendMessage = async (chatId, senderId, message, type = 'text') => {
+  try {
+    const messageData = {
+      id: Date.now().toString(),
       senderId,
-      senderName,
+      message,
+      type, // 'text', 'image', 'file', 'voice'
       timestamp: serverTimestamp(),
       read: false
     };
-    
-    await updateDoc(consultationRef, {
-      messages: arrayUnion(newMessage),
-      lastMessage: message,
-      lastMessageAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    });
-    
-    return newMessage.id;
-  }
-}
 
-export function subscribeToConsultationMessages(consultationId, callback) {
-  const consultationRef = doc(db, 'consultations', consultationId);
+    const chatRef = doc(db, 'chats', chatId);
+    await updateDoc(chatRef, {
+      messages: arrayUnion(messageData),
+      updatedAt: serverTimestamp()
+    });
+
+    return messageData;
+  } catch (error) {
+    console.error('Error sending message:', error);
+    throw error;
+  }
+};
+
+export const subscribeToChatMessages = (chatId, callback) => {
+  const chatRef = doc(db, 'chats', chatId);
   
-  return onSnapshot(consultationRef, (doc) => {
+  return onSnapshot(chatRef, (doc) => {
     if (doc.exists()) {
       const data = doc.data();
-      callback({
-        id: doc.id,
-        ...data,
-        messages: data.messages || []
-      });
+      const messages = data.messages?.map(msg => ({
+        ...msg,
+        timestamp: msg.timestamp?.toDate?.() || msg.timestamp
+      })) || [];
+      
+      callback(messages);
     }
   });
-}
+};
 
-// Get consultations for a user (customer)
-export async function getConsultationsForUser(userId) {
-  const consultationsQuery = query(
-    collection(db, 'consultations'),
-    where('customerId', '==', userId),
-    orderBy('createdAt', 'desc'),
-    limit(20)
-  );
-  const snapshot = await getDocs(consultationsQuery);
-  const consultations = [];
-  snapshot.forEach(doc => {
-    consultations.push({ id: doc.id, ...doc.data() });
-  });
-  return consultations;
-}
+// ============== GOOGLE SERVICES INTEGRATION ==============
 
-// Get consultations for a designer
-export async function getConsultationsForDesigner(designerId) {
-  const consultationsQuery = query(
-    collection(db, 'consultations'),
-    where('designerId', '==', designerId),
-    orderBy('createdAt', 'desc'),
-    limit(20)
-  );
-  const snapshot = await getDocs(consultationsQuery);
-  const consultations = [];
-  snapshot.forEach(doc => {
-    consultations.push({ id: doc.id, ...doc.data() });
-  });
-  return consultations;
-}
-
-// Real-time subscription for user's consultations
-export function subscribeToUserConsultations(userId, callback, role = 'customer') {
-  const field = role === 'customer' ? 'customerId' : 'designerId';
-  const consultationsQuery = query(
-    collection(db, 'consultations'),
-    where(field, '==', userId),
-    orderBy('updatedAt', 'desc'),
-    limit(10)
-  );
-  
-  return onSnapshot(consultationsQuery, snapshot => {
-    const consultations = [];
-    snapshot.forEach(doc => {
-      consultations.push({ id: doc.id, ...doc.data() });
+export const updateGoogleIntegration = async (userId, tokens) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      googleIntegration: {
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        calendarId: tokens.calendarId || 'primary',
+        meetEnabled: true,
+        driveEnabled: true,
+        connectedAt: serverTimestamp()
+      },
+      updated_at: serverTimestamp()
     });
-    callback(consultations);
-  });
-}
 
-// Payment Integration Functions
-export async function createConsultationPayment(consultationId, paymentData) {
-  const payment = {
-    consultationId,
-    ...paymentData,
-    status: 'pending',
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
-  };
-  
-  const docRef = await addDoc(collection(db, 'consultation_payments'), payment);
-  return docRef.id;
-}
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating Google integration:', error);
+    throw error;
+  }
+};
 
-export async function updateConsultationPaymentStatus(paymentId, status, razorpayData = {}) {
-  const paymentRef = doc(db, 'consultation_payments', paymentId);
-  await updateDoc(paymentRef, {
-    status,
-    ...razorpayData,
-    updatedAt: serverTimestamp(),
-  });
-}
+// ============== AI ASSISTANT CONFIGURATION ==============
 
-// Dashboard Stats for Designers
-export async function getDesignerStats(designerId) {
-  const consultationsQuery = query(
-    collection(db, 'consultations'),
-    where('designerId', '==', designerId),
-    where('status', '==', 'completed')
-  );
-  
-  const snapshot = await getDocs(consultationsQuery);
-  let totalEarnings = 0;
-  let totalConsultations = 0;
-  
-  snapshot.forEach(doc => {
-    const data = doc.data();
-    totalEarnings += data.totalAmount || 0;
-    totalConsultations += 1;
-  });
-  
-  return {
-    totalEarnings,
-    totalConsultations,
-    averageEarning: totalConsultations > 0 ? totalEarnings / totalConsultations : 0
-  };
-}
+export const updateAIAssistantConfig = async (userId, config) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      aiAssistant: {
+        enabled: config.enabled || false,
+        personalityType: config.personalityType || 'professional',
+        autoRespond: config.autoRespond || false,
+        responseDelay: config.responseDelay || 2,
+        customPrompts: config.customPrompts || [],
+        integrations: {
+          n8n: {
+            enabled: config.n8n?.enabled || false,
+            webhookUrl: config.n8n?.webhookUrl || '',
+            apiKey: config.n8n?.apiKey || ''
+          },
+          google: {
+            enabled: config.google?.enabled || false,
+            services: config.google?.services || []
+          }
+        },
+        updatedAt: serverTimestamp()
+      },
+      updated_at: serverTimestamp()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating AI assistant config:', error);
+    throw error;
+  }
+};
+
+// ============== PRICING MANAGEMENT ==============
+
+export const updatePricingConfig = async (userId, pricingData) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      pricing: {
+        chatRate: pricingData.chatRate || 0,
+        callRate: pricingData.callRate || 0,
+        videoCallRate: pricingData.videoCallRate || 0,
+        consultationRate: pricingData.consultationRate || 0,
+        pricingType: pricingData.pricingType || 'fixed',
+        currency: pricingData.currency || 'USD',
+        specialRates: pricingData.specialRates || {},
+        updatedAt: serverTimestamp()
+      },
+      updated_at: serverTimestamp()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating pricing config:', error);
+    throw error;
+  }
+};
+
+// ============== SEARCH & DISCOVERY ==============
+
+export const searchProviders = async (filters = {}) => {
+  try {
+    let q = collection(db, 'users');
+    
+    // Base query for providers
+    const constraints = [
+      where('role', 'in', ['fashion_designer', 'tailor'])
+    ];
+
+    // Add filters
+    if (filters.specialization) {
+      constraints.push(where('professional.specializations', 'array-contains', filters.specialization));
+    }
+
+    if (filters.city) {
+      constraints.push(where('professional.location.city', '==', filters.city));
+    }
+
+    if (filters.minRating) {
+      constraints.push(where('rating.average', '>=', filters.minRating));
+    }
+
+    // Apply constraints
+    q = query(q, ...constraints, orderBy('rating.average', 'desc'), limit(20));
+
+    const snapshot = await getDocs(q);
+    const providers = [];
+    
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      providers.push({
+        id: doc.id,
+        ...data,
+        // Remove sensitive data
+        googleIntegration: undefined,
+        aiAssistant: undefined
+      });
+    });
+
+    return providers;
+  } catch (error) {
+    console.error('Error searching providers:', error);
+    throw error;
+  }
+};
+
+// ============== NOTIFICATIONS ==============
+
+export const createNotification = async (userId, notificationData) => {
+  try {
+    const notificationRef = doc(collection(db, 'notifications'));
+    
+    const notification = {
+      id: notificationRef.id,
+      userId,
+      type: notificationData.type,
+      title: notificationData.title,
+      message: notificationData.message,
+      data: notificationData.data || {},
+      read: false,
+      createdAt: serverTimestamp()
+    };
+
+    await setDoc(notificationRef, notification);
+    return notification;
+  } catch (error) {
+    console.error('Error creating notification:', error);
+    throw error;
+  }
+};
+
+export const getUserNotifications = async (userId, unreadOnly = false) => {
+  try {
+    const notificationsRef = collection(db, 'notifications');
+    const constraints = [
+      where('userId', '==', userId),
+      orderBy('createdAt', 'desc'),
+      limit(50)
+    ];
+
+    if (unreadOnly) {
+      constraints.splice(1, 0, where('read', '==', false));
+    }
+
+    const q = query(notificationsRef, ...constraints);
+    const snapshot = await getDocs(q);
+    
+    const notifications = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      notifications.push({
+        ...data,
+        createdAt: data.createdAt?.toDate?.() || data.createdAt
+      });
+    });
+
+    return notifications;
+  } catch (error) {
+    console.error('Error fetching notifications:', error);
+    throw error;
+  }
+};
+
+// ============== AVAILABILITY MANAGEMENT ==============
+
+export const updateAvailability = async (userId, workingHours) => {
+  try {
+    const userRef = doc(db, 'users', userId);
+    await updateDoc(userRef, {
+      'professional.workingHours': workingHours,
+      updated_at: serverTimestamp()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error updating availability:', error);
+    throw error;
+  }
+};
+
+export const checkProviderAvailability = async (providerId, dateTime, duration = 30) => {
+  try {
+    // Get provider's working hours
+    const userRef = doc(db, 'users', providerId);
+    const userDoc = await getDoc(userRef);
+    
+    if (!userDoc.exists()) {
+      return { available: false, reason: 'Provider not found' };
+    }
+
+    const userData = userDoc.data();
+    const workingHours = userData.professional?.workingHours;
+    
+    if (!workingHours) {
+      return { available: false, reason: 'Working hours not set' };
+    }
+
+    // Check if the time falls within working hours
+    const date = new Date(dateTime);
+    const dayName = date.toLocaleDateString('en-US', { weekday: 'lowercase' });
+    const timeString = date.toTimeString().slice(0, 5);
+    
+    const daySchedule = workingHours[dayName];
+    if (!daySchedule || !daySchedule.available) {
+      return { available: false, reason: 'Provider not available on this day' };
+    }
+
+    if (timeString < daySchedule.start || timeString > daySchedule.end) {
+      return { available: false, reason: 'Outside working hours' };
+    }
+
+    // Check for existing appointments
+    const appointmentsRef = collection(db, 'appointments');
+    const startTime = new Date(dateTime);
+    const endTime = new Date(dateTime.getTime() + (duration * 60000));
+    
+    const q = query(
+      appointmentsRef,
+      where('providerId', '==', providerId),
+      where('status', 'in', ['scheduled', 'confirmed', 'in_progress']),
+      where('scheduledAt', '>=', Timestamp.fromDate(startTime)),
+      where('scheduledAt', '<=', Timestamp.fromDate(endTime))
+    );
+
+    const snapshot = await getDocs(q);
+    if (!snapshot.empty) {
+      return { available: false, reason: 'Time slot already booked' };
+    }
+
+    return { available: true };
+  } catch (error) {
+    console.error('Error checking availability:', error);
+    return { available: false, reason: 'Error checking availability' };
+  }
+};
+
+export default {
+  updateUserRole,
+  uploadPortfolioImage,
+  removePortfolioImage,
+  createAppointment,
+  updateAppointmentStatus,
+  getUserAppointments,
+  createChatSession,
+  sendMessage,
+  subscribeToChatMessages,
+  updateGoogleIntegration,
+  updateAIAssistantConfig,
+  updatePricingConfig,
+  searchProviders,
+  createNotification,
+  getUserNotifications,
+  updateAvailability,
+  checkProviderAvailability
+};

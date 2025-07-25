@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import styles from './Orders.module.css';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
+import OrderDetailsModal from '@/components/merchant-dashboard/OrderDetailsModal';
 
 const statusOptions = [
   { value: 'all', label: 'All Orders' },
@@ -17,6 +18,12 @@ const statusOptions = [
   { value: 'shipped', label: 'Shipped' },
   { value: 'delivered', label: 'Delivered' },
   { value: 'cancelled', label: 'Cancelled' },
+  { value: 'paid', label: 'Paid' },
+];
+
+const sourceOptions = [
+  { value: 'all', label: 'All Sources' },
+  { value: 'shiprocket', label: 'Shiprocket' },
 ];
 
 const getStatusClass = (status) => {
@@ -34,13 +41,17 @@ function OrdersPageContent() {
   const [orders, setOrders] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [sourceFilter, setSourceFilter] = useState('all');
   const [isLoading, setIsLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, hasMore: false });
+  const [ordersSummary, setOrdersSummary] = useState({ shiprocket: 0, total: 0 });
 
   // Fetch orders from Shiprocket API
-  const fetchOrders = async (page = 1, status = 'all', search = '') => {
+  const fetchOrders = async (page = 1, status = 'all', source = 'all', search = '') => {
+    console.log('🎯 Frontend: Fetching orders with params:', { page, status, source, search });
     setIsLoading(true);
     try {
       const queryParams = new URLSearchParams({
@@ -51,37 +62,71 @@ function OrdersPageContent() {
       if (status && status !== 'all') {
         queryParams.append('status', status);
       }
+      
+      if (source && source !== 'all') {
+        queryParams.append('source', source);
+      }
 
-      const response = await fetch(`/api/shiprocket/orders?${queryParams}`);
+      const url = `/api/merchant/orders?${queryParams}`;
+      console.log('📡 Frontend: Making request to:', url);
+      
+      const response = await fetch(url);
       const result = await response.json();
 
+      console.log('📦 Frontend: API Response received:', {
+        success: result.success,
+        ordersCount: result.data?.length || 0,
+        pagination: result.pagination,
+        summary: result.summary,
+        error: result.error
+      });
+
       if (result.success) {
+        console.log('✅ Frontend: Orders data:', {
+          totalOrders: result.data.length,
+          sources: {
+            shiprocket: result.data.filter(o => o.source === 'shiprocket').length
+          },
+          paymentStatuses: {
+            paid_online: result.data.filter(o => o.paymentStatus === 'paid_online').length,
+            cod: result.data.filter(o => o.paymentStatus === 'cod').length,
+            pending: result.data.filter(o => o.paymentStatus === 'pending').length
+          },
+          sampleOrders: result.data.slice(0, 3).map(o => ({
+            id: o.orderId,
+            source: o.source,
+            status: o.status,
+            paymentStatus: o.paymentStatus,
+            customer: o.customerName,
+            total: o.total
+          }))
+        });
+        
         setOrders(result.data);
         setPagination(result.pagination);
+        setOrdersSummary(result.summary || { shiprocket: 0, total: 0 });
       } else {
-        console.error('Failed to fetch orders:', result.error);
+        console.error('❌ Frontend: Failed to fetch orders:', result.error);
       }
     } catch (error) {
-      console.error('Error fetching orders:', error);
+      console.error('🚨 Frontend: Error fetching orders:', {
+        message: error.message,
+        stack: error.stack
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Fetch order details
-  const fetchOrderDetails = async (orderId) => {
-    try {
-      const response = await fetch(`/api/shiprocket/orders/${orderId}`);
-      const result = await response.json();
+  // Handle view order details
+  const handleViewOrder = (order) => {
+    setSelectedOrder(order);
+    setIsModalOpen(true);
+  };
 
-      if (result.success) {
-        setSelectedOrder(result.data);
-      } else {
-        console.error('Failed to fetch order details:', result.error);
-      }
-    } catch (error) {
-      console.error('Error fetching order details:', error);
-    }
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedOrder(null);
   };
 
   // Initial load
@@ -121,16 +166,14 @@ function OrdersPageContent() {
   const clearFilters = () => {
     setSearchTerm('');
     setStatusFilter('all');
-    fetchOrders(1, 'all');
+    setSourceFilter('all');
+    fetchOrders(1, 'all', 'all');
   };
 
   const handleRefresh = () => {
-    fetchOrders(currentPage, statusFilter, searchTerm);
+    fetchOrders(currentPage, statusFilter, sourceFilter, searchTerm);
   };
 
-  const handleViewOrder = (orderId) => {
-    fetchOrderDetails(orderId);
-  };
 
   return (
     <div className={styles.ordersContainer}>
@@ -141,8 +184,20 @@ function OrdersPageContent() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
       >
-        <h1 className={styles.title}>Orders</h1>
-        <p className={styles.subtitle}>Track and manage customer orders</p>
+        <div className="flex justify-between items-start">
+          <div>
+            <h1 className={styles.title}>Orders</h1>
+            <p className={styles.subtitle}>Track and manage customer orders</p>
+          </div>
+          <div className="flex gap-4 text-sm">
+            <div className="bg-blue-50 px-3 py-2 rounded-lg">
+              <span className="text-blue-600 font-medium">Shiprocket: {ordersSummary.shiprocket}</span>
+            </div>
+            <div className="bg-gray-50 px-3 py-2 rounded-lg">
+              <span className="text-gray-600 font-medium">Total: {ordersSummary.total}</span>
+            </div>
+          </div>
+        </div>
       </motion.header>
 
       {/* Search and Filter */}
@@ -175,7 +230,10 @@ function OrdersPageContent() {
         <div className="flex items-center gap-2">
           <Select 
             value={statusFilter} 
-            onValueChange={setStatusFilter}
+            onValueChange={(value) => {
+              setStatusFilter(value);
+              fetchOrders(1, value, sourceFilter);
+            }}
           >
             <SelectTrigger className={styles.selectTrigger}>
               <SelectValue placeholder="Filter by status" />
@@ -193,7 +251,30 @@ function OrdersPageContent() {
             </SelectContent>
           </Select>
           
-          {(searchTerm || statusFilter !== 'all') && (
+          <Select 
+            value={sourceFilter} 
+            onValueChange={(value) => {
+              setSourceFilter(value);
+              fetchOrders(1, statusFilter, value);
+            }}
+          >
+            <SelectTrigger className={styles.selectTrigger}>
+              <SelectValue placeholder="Filter by source" />
+            </SelectTrigger>
+            <SelectContent className={styles.selectContent}>
+              {sourceOptions.map((option) => (
+                <SelectItem 
+                  key={option.value} 
+                  value={option.value}
+                  className={styles.selectItem}
+                >
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          
+          {(searchTerm || statusFilter !== 'all' || sourceFilter !== 'all') && (
             <Button 
               variant="outline" 
               size="sm" 
@@ -238,9 +319,26 @@ function OrdersPageContent() {
                       {order.customerName}
                     </p>
                   </div>
-                  <span className={`${styles.statusBadge} ${getStatusClass(order.status)}`}>
-                    {order.status}
-                  </span>
+                  <div className="flex flex-col gap-1">
+                    <span className={`${styles.statusBadge} ${getStatusClass(order.status)}`}>
+                      {order.status}
+                    </span>
+                    <div className="flex gap-1">
+                      <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-700">
+                        Shiprocket
+                      </span>
+                      {order.paymentStatus === 'paid_online' && (
+                        <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-700">
+                          Paid Online
+                        </span>
+                      )}
+                      {order.paymentStatus === 'cod' && (
+                        <span className="px-2 py-1 text-xs rounded bg-orange-100 text-orange-700">
+                          COD
+                        </span>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -294,7 +392,7 @@ function OrdersPageContent() {
                       variant="outline" 
                       size="sm" 
                       className={styles.viewButton}
-                      onClick={() => handleViewOrder(order.id)}
+                      onClick={() => handleViewOrder(order)}
                       disabled={isLoading}
                     >
                       <Eye className={styles.viewButtonIcon} />
@@ -340,6 +438,13 @@ function OrdersPageContent() {
           )}
         </AnimatePresence>
       </div>
+      
+      {/* Order Details Modal */}
+      <OrderDetailsModal 
+        order={selectedOrder} 
+        isOpen={isModalOpen} 
+        onClose={closeModal} 
+      />
     </div>
   );
 }

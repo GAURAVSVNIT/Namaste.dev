@@ -5,11 +5,11 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
-import TailorSidebar from '@/components/tailor-dashboard/Sidebar';
-import TailorHeader from '@/components/tailor-dashboard/Header';
-import styles from './TailorDashboard.module.css';
+import FashionCreatorSidebar from '@/components/fashion-creator-dashboard/Sidebar';
+import FashionCreatorHeader from '@/components/fashion-creator-dashboard/Header';
+import styles from './FashionCreatorDashboard.module.css';
 
-export default function TailorDashboardLayout({ children }) {
+export default function FashionCreatorDashboardLayout({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -102,14 +102,14 @@ export default function TailorDashboardLayout({ children }) {
       <div 
         className={`${styles.dashboardLayout} ${isCollapsed ? styles.collapsed : ''} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}
       >
-        <TailorSidebar 
+        <FashionCreatorSidebar 
           isCollapsed={isCollapsed} 
           onToggleCollapse={toggleSidebar}
           onNavigation={handleNavigation}
           isMobileMenuOpen={isMobileMenuOpen}
         />
         
-        <TailorHeader 
+        <FashionCreatorHeader 
           onMenuClick={toggleSidebar} 
           isCollapsed={isCollapsed} 
           isMobileMenuOpen={isMobileMenuOpen}

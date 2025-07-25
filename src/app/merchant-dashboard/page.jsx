@@ -557,7 +557,7 @@ function MerchantDashboardContent() {
 // Main component with role protection
 export default function MerchantDashboardPage() {
   return (
-    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT]}>
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
       <MerchantDashboardContent />
     </RoleProtected>
   );

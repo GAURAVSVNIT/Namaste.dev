@@ -83,7 +83,6 @@ export default function Navbar(fontFace) {
     { name: 'Market Place', route: "marketplace" },
 { name: 'Quiz', route: "quiz" },
     { name: 'Virtual Try-On', route: "virtual-tryon" },
-    { name: 'Consultation', route: "consultation" },
     { name: 'Blog', route: "blog" }
   ];
 

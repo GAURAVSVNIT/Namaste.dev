@@ -1,303 +1,538 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { 
-  MessageCircle, 
-  Video, 
-  Star, 
-  Clock, 
-  Shield, 
-  Award,
-  Users,
-  Sparkles
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { getAvailableDesigners } from '@/lib/consultation-firebase';
-import { useAuth } from '@/hooks/useAuth';
-import Link from 'next/link';
 
-const ConsultationPage = () => {
-  const [designers, setDesigners] = useState([]);
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { searchProviders } from '@/lib/consultation-firebase';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Calendar, Clock, MapPin, Star, Filter, Search, MessageCircle, Phone, Video, X } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import Link from 'next/link';
+import styles from './consultation.module.css';
+
+const SPECIALIZATIONS = [
+  'formal_wear',
+  'casual_wear', 
+  'bridal_wear',
+  'ethnic_wear',
+  'children_wear',
+  'accessories',
+  'alterations',
+  'custom_design',
+  'pattern_making',
+  'embroidery',
+  'tailoring',
+  'styling'
+];
+
+const CONSULTATION_TYPES = [
+  { id: 'chat', label: 'Chat Consultation', icon: MessageCircle, description: 'Text-based consultation' },
+  { id: 'call', label: 'Voice Call', icon: Phone, description: 'Audio consultation' },
+  { id: 'video_call', label: 'Video Call', icon: Video, description: 'Face-to-face consultation' }
+];
+
+export default function ConsultationPage() {
+  const { user } = useAuth();
+  const [providers, setProviders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { user, isAuthenticated } = useAuth();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filters, setFilters] = useState({
+    role: 'all',
+    specialization: '',
+    city: '',
+    minRating: 0
+  });
+  const [selectedProvider, setSelectedProvider] = useState(null);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [viewProfileProvider, setViewProfileProvider] = useState(null);
+  const [showProfileModal, setShowProfileModal] = useState(false);
 
   useEffect(() => {
-    const fetchDesigners = async () => {
-      try {
-        // For demo, we'll create some sample designers if none exist
-        const availableDesigners = await getAvailableDesigners();
-        
-        if (availableDesigners.length === 0) {
-          // Demo data for competition
-          const sampleDesigners = [
-            {
-              id: 'designer_1',
-              name: 'Priya Sharma',
-              speciality: ['Traditional Indian Wear', 'Bridal Fashion'],
-              bio: 'Award-winning designer specializing in contemporary Indian fashion with 8+ years of experience.',
-              chatPrice: 299,
-              callPrice: 599,
-              rating: 4.9,
-              totalConsultations: 156,
-              responseTime: '< 5 mins',
-              languages: ['Hindi', 'English'],
-              image: 'https://images.unsplash.com/photo-1494790108755-2616b1e2f48e?w=200&h=200&fit=crop&crop=face',
-              isAvailable: true,
-              badges: ['Top Rated', 'Quick Response']
-            },
-            {
-              id: 'designer_2',
-              name: 'Arjun Singh',
-              speciality: ['Men\'s Fashion', 'Formal Wear'],
-              bio: 'Celebrity stylist and fashion consultant for Bollywood stars. Expert in modern menswear.',
-              chatPrice: 199,
-              callPrice: 399,
-              rating: 4.7,
-              totalConsultations: 89,
-              responseTime: '< 10 mins',
-              languages: ['Hindi', 'English', 'Punjabi'],
-              image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=face',
-              isAvailable: true,
-              badges: ['Celebrity Stylist']
-            },
-            {
-              id: 'designer_3',
-              name: 'Neha Gupta',
-              speciality: ['Western Wear', 'Party Outfits'],
-              bio: 'Fashion blogger turned consultant. Specializes in trendy western outfits and party wear.',
-              chatPrice: 149,
-              callPrice: 299,
-              rating: 4.8,
-              totalConsultations: 234,
-              responseTime: '< 3 mins',
-              languages: ['Hindi', 'English'],
-              image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop&crop=face',
-              isAvailable: true,
-              badges: ['Fashion Blogger', 'Trending Expert']
-            }
-          ];
-          setDesigners(sampleDesigners);
-        } else {
-          setDesigners(availableDesigners);
-        }
-      } catch (error) {
-        console.error('Error fetching designers:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+    loadProviders();
+  }, [filters]);
 
-    fetchDesigners();
-  }, []);
+  const loadProviders = async () => {
+    try {
+      setLoading(true);
+      const searchFilters = {
+        ...filters,
+        role: filters.role === 'all' ? undefined : filters.role,
+        specialization: (filters.specialization && filters.specialization !== 'all') ? filters.specialization : undefined,
+        city: filters.city || undefined,
+        minRating: filters.minRating || undefined
+      };
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
+      const results = await searchProviders(searchFilters);
+      setProviders(results);
+    } catch (error) {
+      console.error('Error loading providers:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const cardVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
-  };
+  const filteredProviders = providers.filter(provider =>
+    provider.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    provider.professional?.bio?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-8">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-64 mx-auto mb-4"></div>
-            <div className="h-4 bg-gray-200 rounded w-96 mx-auto mb-8"></div>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="bg-white rounded-xl p-6 shadow-lg">
-                  <div className="h-20 w-20 bg-gray-200 rounded-full mx-auto mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mx-auto"></div>
-                </div>
+  // ProviderCard component has been inlined in the main return statement
+
+  const ProviderProfile = ({ provider }) => (
+    <div className="space-y-6">
+      <div className="flex items-center space-x-4">
+        <Avatar className="h-16 w-16">
+          <AvatarImage src={provider.photoURL} alt={provider.name} />
+          <AvatarFallback>{provider.name?.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div>
+          <h3 className="text-xl font-semibold">{provider.name}</h3>
+          <div className="flex items-center space-x-2 mt-2">
+            <Badge variant={provider.role === 'fashion_designer' ? 'default' : 'secondary'}>
+              {provider.role === 'fashion_designer' ? 'Fashion Designer' : 'Tailor'}
+            </Badge>
+            {provider.rating?.average > 0 && (
+              <div className="flex items-center space-x-1">
+                <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                <span className="font-medium">{provider.rating.average.toFixed(1)}</span>
+                <span className="text-muted-foreground">({provider.rating.count} reviews)</span>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <Tabs defaultValue="about" className="w-full">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="about">About</TabsTrigger>
+          <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+          <TabsTrigger value="pricing">Pricing</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="about" className="space-y-4">
+          {provider.professional?.bio && (
+            <div>
+              <h4 className="font-semibold mb-2">About</h4>
+              <p className="text-sm text-muted-foreground">{provider.professional.bio}</p>
+            </div>
+          )}
+
+          <div>
+            <h4 className="font-semibold mb-2">Specializations</h4>
+            <div className="flex flex-wrap gap-2">
+              {provider.professional?.specializations?.map((spec) => (
+                <Badge key={spec} variant="outline">
+                  {spec.replace('_', ' ')}
+                </Badge>
               ))}
             </div>
           </div>
-        </div>
+
+          {provider.professional?.experience > 0 && (
+            <div>
+              <h4 className="font-semibold mb-2">Experience</h4>
+              <p className="text-sm text-muted-foreground">
+                {provider.professional.experience} years of experience
+              </p>
+            </div>
+          )}
+
+          {provider.professional?.languages?.length > 0 && (
+            <div>
+              <h4 className="font-semibold mb-2">Languages</h4>
+              <p className="text-sm text-muted-foreground">
+                {provider.professional.languages.join(', ')}
+              </p>
+            </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="portfolio" className="space-y-4">
+          {provider.portfolio?.images?.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {provider.portfolio.images.map((image, index) => (
+                <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
+                  <img 
+                    src={image.url} 
+                    alt={`Portfolio ${index + 1}`}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-muted-foreground py-8">
+              No portfolio items uploaded yet
+            </p>
+          )}
+        </TabsContent>
+
+        <TabsContent value="pricing" className="space-y-4">
+          <div className="grid gap-4">
+            {CONSULTATION_TYPES.map((type) => {
+              const rate = provider.pricing?.[`${type.id}Rate`] || 0;
+              const Icon = type.icon;
+              
+              return (
+                <div key={type.id} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div className="flex items-center space-x-3">
+                    <Icon className="h-5 w-5 text-muted-foreground" />
+                    <div>
+                      <p className="font-medium">{type.label}</p>
+                      <p className="text-sm text-muted-foreground">{type.description}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-semibold">
+                      ₹{(rate * 83).toFixed(0)}/{provider.pricing?.pricingType === 'per_minute' ? 'min' : 'session'}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
+
+  if (!user) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <Card className="max-w-md mx-auto">
+          <CardHeader>
+            <CardTitle>Login Required</CardTitle>
+            <CardDescription>
+              Please log in to access consultation services.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Link href="/auth/login">
+              <Button className="w-full">Login</Button>
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 py-8 mt-20">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Header */}
-        <motion.div 
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
-        >
-          <div className="inline-flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2 rounded-full mb-6">
-            <Sparkles className="h-5 w-5" />
-            <span className="font-semibold">Fashion Consultation</span>
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-gray-800 mb-4">
-            Expert Fashion <span className="bg-gradient-to-r from-pink-500 to-purple-500 bg-clip-text text-transparent">Consultants</span>
-          </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Get personalized fashion advice from top designers and stylists. Book a chat or video call consultation.
-          </p>
-        </motion.div>
-
-        {/* Features */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="grid md:grid-cols-3 gap-6 mb-12"
-        >
-          {[
-            { icon: MessageCircle, title: 'Chat Consultation', desc: 'Text-based advice with image sharing' },
-            { icon: Video, title: 'Video Calls', desc: 'Face-to-face styling sessions' },
-            { icon: Shield, title: 'Secure Payment', desc: 'Powered by Razorpay with full refund protection' }
-          ].map((feature, index) => (
-            <div key={index} className="bg-white/70 backdrop-blur-sm rounded-xl p-6 text-center border border-white/20">
-              <feature.icon className="h-8 w-8 text-purple-500 mx-auto mb-3" />
-              <h3 className="font-semibold text-gray-800 mb-2">{feature.title}</h3>
-              <p className="text-gray-600 text-sm">{feature.desc}</p>
+  const ProviderCard = ({ provider }) => (
+    <Card className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-gray-200 bg-white w-full max-w-2xl mx-auto">
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      
+      <CardContent className="p-6">
+        <div className="flex flex-col sm:flex-row gap-6">
+          {/* Profile Image */}
+          <div className="relative flex-shrink-0 mx-auto sm:mx-0">
+            <div className="relative">
+              <Avatar className="h-28 w-28 border-4 border-white shadow-md group-hover:scale-105 transition-transform duration-300">
+                <AvatarImage src={provider.photoURL} alt={provider.name} className="object-cover" />
+                <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-100 to-purple-100 text-blue-700">
+                  {provider.name?.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              {provider.rating?.average > 0 && (
+                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100 flex items-center">
+                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
+                  <span className="text-sm font-semibold text-gray-800">{provider.rating.average.toFixed(1)}</span>
+                  <span className="text-xs text-gray-500 ml-0.5">({provider.rating.count})</span>
+                </div>
+              )}
             </div>
-          ))}
-        </motion.div>
-
-        {/* Designers Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {designers.map((designer) => (
-            <motion.div
-              key={designer.id}
-              variants={cardVariants}
-              className="bg-white rounded-2xl shadow-xl p-6 hover:shadow-2xl transition-all duration-300 border border-gray-100 group"
-            >
-              {/* Designer Info */}
-              <div className="text-center mb-6">
-                <div className="relative inline-block mb-4">
-                  <img 
-                    src={designer.image} 
-                    alt={designer.name}
-                    className="w-20 h-20 rounded-full object-cover border-4 border-white shadow-lg"
-                  />
-                  <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
-                </div>
-                
-                <h3 className="text-xl font-bold text-gray-800 mb-1">{designer.name}</h3>
-                
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                    <span className="text-sm font-medium">{designer.rating}</span>
-                  </div>
-                  <span className="text-gray-300">•</span>
-                  <div className="flex items-center gap-1">
-                    <Users className="h-4 w-4 text-gray-400" />
-                    <span className="text-sm text-gray-600">{designer.totalConsultations} sessions</span>
-                  </div>
-                </div>
-
-                {/* Specialties */}
-                <div className="flex flex-wrap gap-1 justify-center mb-4">
-                  {designer.speciality.map((spec, idx) => (
-                    <Badge key={idx} variant="secondary" className="text-xs">
-                      {spec}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Badges */}
-                <div className="flex flex-wrap gap-1 justify-center mb-4">
-                  {designer.badges?.map((badge, idx) => (
-                    <Badge key={idx} className="text-xs bg-gradient-to-r from-pink-500 to-purple-500 text-white">
-                      {badge}
-                    </Badge>
-                  ))}
-                </div>
-
-                {/* Bio */}
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{designer.bio}</p>
-
-                {/* Response Time */}
-                <div className="flex items-center justify-center gap-1 text-green-600 text-sm mb-4">
-                  <Clock className="h-4 w-4" />
-                  <span>Responds {designer.responseTime}</span>
-                </div>
-              </div>
-
-              {/* Pricing & Actions */}
-              <div className="space-y-3">
-                <div className="flex gap-3">
-                  <Link 
-                    href={`/consultation/${designer.id}/book?type=chat`}
-                    className="flex-1"
-                  >
-                    <Button 
-                      variant="outline" 
-                      className="w-full flex items-center justify-center gap-2 hover:bg-blue-50 border-blue-200 text-blue-600"
-                    >
-                      <MessageCircle className="h-4 w-4" />
-                      <div className="text-left">
-                        <div className="text-xs">Chat</div>
-                        <div className="font-semibold">₹{designer.chatPrice}</div>
-                      </div>
-                    </Button>
-                  </Link>
-                  
-                  <Link 
-                    href={`/consultation/${designer.id}/book?type=call`}
-                    className="flex-1"
-                  >
-                    <Button 
-                      className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600"
-                    >
-                      <Video className="h-4 w-4" />
-                      <div className="text-left">
-                        <div className="text-xs opacity-90">Video Call</div>
-                        <div className="font-semibold">₹{designer.callPrice}</div>
-                      </div>
-                    </Button>
-                  </Link>
-                </div>
-
-                {/* Languages */}
-                <div className="text-center text-xs text-gray-500">
-                  Languages: {designer.languages.join(', ')}
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* CTA Section */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-16 bg-gradient-to-r from-pink-500 to-purple-500 rounded-2xl p-8 text-white"
-        >
-          <Award className="h-12 w-12 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold mb-2">Why Choose Our Consultants?</h2>
-          <p className="mb-6 opacity-90">All our fashion experts are verified professionals with proven track records</p>
-          <div className="grid md:grid-cols-3 gap-4 text-sm">
-            <div>✓ Instant refund if not satisfied</div>
-            <div>✓ 24/7 customer support</div>
-            <div>✓ Secure payment processing</div>
           </div>
-        </motion.div>
+          
+          {/* Profile Info */}
+          <div className="flex-1 min-w-0 space-y-4">
+            {/* Name and Role */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <h3 className="text-2xl font-bold text-gray-800 truncate">
+                {provider.name}
+              </h3>
+              <Badge 
+                className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                  provider.role === 'fashion_designer' 
+                    ? 'bg-pink-100 text-pink-700 hover:bg-pink-200 border border-pink-200' 
+                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-200'
+                }`}
+              >
+                {provider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
+              </Badge>
+            </div>
+            
+            {/* Location */}
+            {provider.professional?.city && (
+              <div className="flex items-center text-gray-600">
+                <MapPin className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0" />
+                <span className="text-base">{provider.professional.city}</span>
+              </div>
+            )}
+            
+            {/* Specializations */}
+            {provider.professional?.specializations?.length > 0 && (
+              <div className="py-1">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Specializes in:</h4>
+                <div className="flex flex-wrap gap-2">
+                  {provider.professional.specializations.slice(0, 4).map((spec) => (
+                    <span 
+                      key={spec} 
+                      className="px-3 py-1 text-sm rounded-full bg-gray-50 border border-gray-200 text-gray-700"
+                    >
+                      {spec.replace(/_/g, ' ')}
+                    </span>
+                  ))}
+                  {provider.professional.specializations.length > 4 && (
+                    <span className="px-3 py-1 text-sm rounded-full bg-gray-50 border border-dashed border-gray-300 text-gray-500">
+                      +{provider.professional.specializations.length - 4} more
+                    </span>
+                  )}
+                </div>
+              </div>
+            )}
+            
+            {/* Price and Action Buttons */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 mt-2 border-t border-gray-100 gap-4">
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-gray-900">
+                  ₹{((provider.pricing?.chatRate || 0) * 83).toFixed(0)}
+                </span>
+                <span className="text-sm text-gray-500">
+                  / {provider.pricing?.pricingType === 'per_minute' ? 'minute' : 'session'}
+                </span>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <Button 
+                  variant="outline" 
+                  className="h-10 px-5 text-sm font-medium bg-white hover:bg-gray-50 border-gray-300 text-gray-700 hover:text-gray-900 transition-colors"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    console.log('=== VIEW PROFILE BUTTON CLICKED ===');
+                    console.log('Event:', e);
+                    console.log('Provider:', provider.name, provider.id);
+                    console.log('Current showProfileModal state:', showProfileModal);
+                    console.log('Current viewProfileProvider:', viewProfileProvider);
+                    
+                    setViewProfileProvider(provider);
+                    setShowProfileModal(true);
+                    
+                    console.log('States updated - should show modal now');
+                    console.log('=== END VIEW PROFILE CLICK ===');
+                  }}
+                  style={{ zIndex: 10, position: 'relative' }}
+                >
+                  View Profile
+                </Button>
+                
+                <Button 
+                  className="h-10 px-5 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow-md transition-all"
+                  onClick={() => {
+                    setSelectedProvider(provider);
+                    setShowBookingModal(true);
+                  }}
+                >
+                  Book Now
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
+  return (
+    <div className={styles.container}>
+      <header className={styles.header}>
+        <h1>Find Your Perfect Fashion Expert</h1>
+        <p>Connect with experienced fashion designers and tailors for personalized consultation services. Book 1:1 sessions, get style advice, and bring your fashion ideas to life.</p>
+        
+        {/* Debug Test Button */}
+        <div className="mt-4">
+          <Button 
+            onClick={() => {
+              console.log('Test button clicked!');
+              setViewProfileProvider({ name: 'Test Provider', role: 'fashion_designer', professional: { bio: 'Test bio' } });
+              setShowProfileModal(true);
+              console.log('Test modal should now be open');
+            }}
+            variant="outline"
+          >
+            TEST: Open Profile Modal
+          </Button>
+        </div>
+      </header>
+      
+      <div className={styles.searchSection}>
+        <div className={styles.searchBar}>
+          <div className={styles.searchBox}>
+            <Search className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search designers, tailors, or specialties..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
+          
+          <div className={styles.filters}>
+            <div className={styles.filterGroup}>
+              <label htmlFor="role-filter" className={styles.filterLabel}>Role</label>
+              <Select 
+                value={filters.role} 
+                onValueChange={(value) => setFilters(prev => ({ ...prev, role: value }))}
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue placeholder="All Roles" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Roles</SelectItem>
+                  <SelectItem value="fashion_designer">Fashion Designer</SelectItem>
+                  <SelectItem value="tailor">Tailor</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className={styles.filterGroup}>
+              <label htmlFor="specialization-filter" className={styles.filterLabel}>Specialty</label>
+              <Select 
+                value={filters.specialization} 
+                onValueChange={(value) => setFilters(prev => ({ ...prev, specialization: value }))}
+              >
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="All Specialties" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Specialties</SelectItem>
+                  {SPECIALIZATIONS.map((spec) => (
+                    <SelectItem key={spec} value={spec}>
+                      {spec.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className={styles.filterGroup}>
+              <label htmlFor="city-filter" className={styles.filterLabel}>Location</label>
+              <div className={styles.locationInput}>
+                <MapPin className={styles.locationIcon} />
+                <input
+                  id="city-filter"
+                  type="text"
+                  placeholder="City"
+                  value={filters.city}
+                  onChange={(e) => setFilters(prev => ({ ...prev, city: e.target.value }))}
+                  className={styles.cityInput}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
+
+      {/* Providers Grid */}
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <Card key={i}>
+              <CardContent className="p-6">
+                <div className="space-y-2">
+                  <div className="h-3 bg-muted rounded w-full" />
+                  <div className="h-3 bg-muted rounded w-3/4" />
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : filteredProviders.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProviders.map((provider) => (
+            <ProviderCard key={provider.id} provider={provider} />
+          ))}
+        </div>
+      ) : (
+        <Card>
+          <CardContent className="py-8 text-center">
+            <p className="text-muted-foreground">No providers found matching your criteria.</p>
+            <Button 
+              variant="outline" 
+              className="mt-4"
+              onClick={() => {
+                setFilters({ role: 'all', specialization: '', city: '', minRating: 0 });
+                setSearchQuery('');
+              }}
+            >
+              Clear Filters
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Booking Modal */}
+      {showBookingModal && selectedProvider && (
+        <BookingModal
+          provider={selectedProvider}
+          user={user}
+          onClose={() => {
+            setShowBookingModal(false);
+            setSelectedProvider(null);
+          }}
+        />
+      )}
+
+      {/* Profile Modal */}
+      {showProfileModal && viewProfileProvider && (
+        <Dialog open={showProfileModal} onOpenChange={(open) => {
+          console.log('Dialog onOpenChange:', open);
+          setShowProfileModal(open);
+          if (!open) {
+            setViewProfileProvider(null);
+          }
+        }}>
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white" aria-describedby="profile-dialog-description">
+            <DialogHeader>
+              <DialogTitle>{viewProfileProvider.name} - Profile</DialogTitle>
+              <DialogDescription id="profile-dialog-description">
+                View detailed information about {viewProfileProvider.name}, including their portfolio, pricing, and experience.
+              </DialogDescription>
+            </DialogHeader>
+            <ProviderProfile provider={viewProfileProvider} />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
-};
+}
 
-export default ConsultationPage;
+const BookingModal = ({ provider, user, onClose }) => {
+  return (
+    <Dialog open={true} onOpenChange={onClose}>
+      <DialogContent className="max-w-md">
+        <DialogHeader>
+          <DialogTitle>Book Consultation</DialogTitle>
+          <DialogDescription>
+            Book a consultation with {provider.name}
+          </DialogDescription>
+        </DialogHeader>
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            This will redirect you to the booking page where you can select your preferred time and consultation type.
+          </p>
+          <div className="flex justify-end space-x-2">
+            <Button variant="outline" onClick={onClose}>Cancel</Button>
+            <Link href={`/consultation/${provider.id}/book`}>
+              <Button>Continue</Button>
+            </Link>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+};

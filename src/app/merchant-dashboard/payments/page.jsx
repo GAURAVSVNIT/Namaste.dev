@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DollarSign, Download, CreditCard, TrendingUp, ArrowUpRight, ArrowDownLeft, RefreshCw, Clock, CheckCircle, XCircle, Filter, Search, X } from 'lucide-react';
-import { useDashboard } from '@/context/DashboardContext';
+import { DollarSign, Download, CreditCard, TrendingUp, ArrowUpRight, ArrowDownLeft, RefreshCw, Clock, CheckCircle, XCircle, Filter, Search, X, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { StatsCard } from '@/components/merchant-dashboard/StatsCard';
@@ -67,34 +66,90 @@ const getStatusIcon = (status) => {
 };
 
 export default function PaymentsPage() {
-  const { state } = useDashboard();
   const [isWithdrawalModalOpen, setIsWithdrawalModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [payments, setPayments] = useState([]);
+  const [paymentsSummary, setPaymentsSummary] = useState({
+    totalPayments: 0,
+    totalAmount: 0,
+    completedPayments: 0,
+    pendingPayments: 0,
+    failedPayments: 0,
+    completedAmount: 0
+  });
+  const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, hasMore: false });
 
-  // Calculate totals
+  // Fetch payments from Razorpay API
+  const fetchPayments = async (page = 1, status = 'all') => {
+    console.log('🎯 Frontend: Fetching payments with params:', { page, status });
+    setIsLoading(true);
+    try {
+      const queryParams = new URLSearchParams({
+        page: page.toString(),
+        limit: '10'
+      });
+      
+      if (status && status !== 'all') {
+        queryParams.append('status', status);
+      }
+
+      const url = `/api/razorpay/payments?${queryParams}`;
+      console.log('📡 Frontend: Making request to:', url);
+      
+      const response = await fetch(url);
+      const result = await response.json();
+
+      console.log('📦 Frontend: API Response received:', {
+        success: result.success,
+        paymentsCount: result.data?.length || 0,
+        pagination: result.pagination,
+        summary: result.summary,
+        error: result.error
+      });
+
+      if (result.success) {
+        setPayments(result.data);
+        setPagination(result.pagination);
+        setPaymentsSummary(result.summary);
+      } else {
+        console.error('❌ Frontend: Failed to fetch payments:', result.error);
+      }
+    } catch (error) {
+      console.error('🚨 Frontend: Error fetching payments:', {
+        message: error.message,
+        stack: error.stack
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial load
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+
+  // Calculate totals from Razorpay data
   const { totalEarnings, pendingWithdrawals, availableBalance, thisMonthEarnings } = useMemo(() => {
-    const transactions = state.transactions || [];
-    
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     
-    const totals = transactions.reduce((acc, t) => {
-      const isThisMonth = new Date(t.date) >= firstDayOfMonth;
-      const amount = parseFloat(t.amount) || 0;
+    const totals = payments.reduce((acc, payment) => {
+      const isThisMonth = new Date(payment.date) >= firstDayOfMonth;
+      const amount = parseFloat(payment.amount) || 0;
       
-      if (t.type === 'sale' && t.status === 'completed') {
+      if (payment.type === 'sale' && payment.status === 'completed') {
         acc.totalEarnings += amount;
         if (isThisMonth) {
           acc.thisMonthEarnings += amount;
         }
       }
       
-      if (t.type === 'withdrawal' && t.status === 'pending') {
-        acc.pendingWithdrawals += amount;
-      }
+      // For now, we don't have withdrawal data from Razorpay
+      // This would come from a separate system
       
       return acc;
     }, { 
@@ -107,30 +162,31 @@ export default function PaymentsPage() {
       ...totals,
       availableBalance: totals.totalEarnings - totals.pendingWithdrawals
     };
-  }, [state.transactions]);
+  }, [payments]);
 
-  // Filter transactions
+  // Filter payments from Razorpay
   const filteredTransactions = useMemo(() => {
-    return (state.transactions || []).filter(transaction => {
+    return payments.filter(payment => {
       // Filter by search term
       const matchesSearch = searchTerm === '' || 
-        transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        transaction.id.toLowerCase().includes(searchTerm.toLowerCase());
+        payment.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        payment.reference.toLowerCase().includes(searchTerm.toLowerCase());
       
       // Filter by type
-      const matchesType = typeFilter === 'all' || transaction.type === typeFilter;
+      const matchesType = typeFilter === 'all' || payment.type === typeFilter;
       
       // Filter by status
-      const matchesStatus = statusFilter === 'all' || transaction.status === statusFilter;
+      const matchesStatus = statusFilter === 'all' || payment.status === statusFilter;
       
       return matchesSearch && matchesType && matchesStatus;
     }).sort((a, b) => new Date(b.date) - new Date(a.date));
-  }, [state.transactions, searchTerm, typeFilter, statusFilter]);
+  }, [payments, searchTerm, typeFilter, statusFilter]);
 
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('en-IN', {
       style: 'currency',
-      currency: 'USD',
+      currency: 'INR',
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     }).format(amount);
@@ -150,6 +206,12 @@ export default function PaymentsPage() {
     setSearchTerm('');
     setTypeFilter('all');
     setStatusFilter('all');
+    fetchPayments(1, 'all');
+  };
+
+  const handleStatusFilterChange = (value) => {
+    setStatusFilter(value);
+    fetchPayments(1, value);
   };
 
   const hasActiveFilters = searchTerm || typeFilter !== 'all' || statusFilter !== 'all';
@@ -281,7 +343,7 @@ export default function PaymentsPage() {
               </SelectContent>
             </Select>
             
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
               <SelectTrigger className="min-w-[120px]">
                 <SelectValue placeholder="Status" />
               </SelectTrigger>

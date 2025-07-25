@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
   if (isFashionTV) {
     // Fashion TV gets full-screen experience without navbar/footer
     return (
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning={true}>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
           <Script 
@@ -45,7 +45,7 @@ export default function RootLayout({ children }) {
 
   // All other pages get normal layout
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

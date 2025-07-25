@@ -25,7 +25,17 @@ export async function POST(request) {
       key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
-    const { amount, currency = 'INR', receipt } = await request.json();
+    const { 
+      amount, 
+      currency = 'INR', 
+      receipt, 
+      customerName, 
+      customerEmail, 
+      customerPhone, 
+      items, 
+      shippingAddress, 
+      billingAddress 
+    } = await request.json();
 
     // Validate required fields
     if (!amount || !receipt) {
@@ -35,12 +45,21 @@ export async function POST(request) {
       );
     }
 
-    // Create Razorpay order
+    // Create Razorpay order with additional details in notes
     const options = {
       amount: Math.round(amount * 100), // Amount in paise (multiply by 100)
       currency,
       receipt,
       payment_capture: 1, // Auto capture payment
+      notes: {
+        customer_name: customerName || 'N/A',
+        customer_email: customerEmail || 'N/A',
+        customer_phone: customerPhone || 'N/A',
+        items: items ? JSON.stringify(items) : '[]',
+        shipping_address: shippingAddress ? JSON.stringify(shippingAddress) : '{}',
+        billing_address: billingAddress ? JSON.stringify(billingAddress) : '{}',
+        created_via: 'merchant_dashboard'
+      }
     };
 
     const order = await razorpay.orders.create(options);

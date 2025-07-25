@@ -22,10 +22,15 @@ export function StatsCard({
       bg: 'bg-red-50',
       text: 'text-red-600',
       icon: <ArrowDown className="w-3 h-3" />
+    },
+    neutral: {
+      bg: 'bg-gray-50',
+      text: 'text-gray-600',
+      icon: <div className="w-3 h-3 bg-gray-400 rounded-full" />
     }
   };
 
-  const color = trendColors[trend];
+  const color = trendColors[trend] || trendColors.neutral;
   const iconColors = {
     'Total Visitors': 'bg-blue-100 text-blue-600',
     'Page Views': 'bg-purple-100 text-purple-600',
@@ -64,9 +69,17 @@ export function StatsCard({
           {/* Animated progress bar */}
           <div className="mt-4 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
             <motion.div 
-              className={`h-full rounded-full ${trend === 'up' ? 'bg-green-500' : 'bg-red-500'}`}
+              className={`h-full rounded-full ${
+                trend === 'up' ? 'bg-green-500' : 
+                trend === 'down' ? 'bg-red-500' : 
+                'bg-gray-400'
+              }`}
               initial={{ width: 0 }}
-              animate={{ width: trend === 'up' ? '75%' : '40%' }}
+              animate={{ width: 
+                trend === 'up' ? '75%' : 
+                trend === 'down' ? '40%' : 
+                '60%'
+              }}
               transition={{ delay: delay + 0.2, duration: 0.8, ease: 'easeOut' }}
             />
           </div>

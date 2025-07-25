@@ -9,6 +9,14 @@ export async function GET(request) {
     const limit = searchParams.get('limit') || 10;
     const status = searchParams.get('status');
 
+    console.log('🔍 SHIPROCKET ORDERS API - Request received:', {
+      page,
+      limit,
+      status,
+      url: request.url,
+      timestamp: new Date().toISOString()
+    });
+
     shiprocketLogger.info('Fetching Shiprocket orders', { 
       page, 
       limit, 
@@ -143,8 +151,20 @@ export async function GET(request) {
       statusCodes: transformedOrders.map(o => ({ id: o.orderId, status: o.status, statusCode: o.statusCode }))
     });
     
-    const finalResponse = {
+    console.log('✅ SHIPROCKET ORDERS API - Final Response:', {
+      success: true,
+      ordersReturned: transformedOrders.length,
+      totalFromAPI: shiprocketResponse.meta?.pagination?.total || 0,
+      sampleOrders: transformedOrders.slice(0, 3).map(o => ({
+        id: o.orderId,
+        customer: o.customerName,
+        status: o.status,
+        total: o.total,
+        items: o.items.length
+      }))
+    });
 
+    const finalResponse = {
       success: true,
       data: transformedOrders,
       pagination: {

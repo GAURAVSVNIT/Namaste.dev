@@ -6,13 +6,21 @@ import Navbar from './Navbar';
 export default function ConditionalNavbar({ face }) {
   const pathname = usePathname();
   
-  // Debug logging to verify pathname
-  console.log('ConditionalNavbar - Current pathname:', pathname);
-  console.log('ConditionalNavbar - Should hide navbar:', pathname?.startsWith('/merchant-dashboard'));
+  // Skip rendering for API routes and non-page routes
+  if (!pathname || pathname.startsWith('/api/') || pathname.startsWith('/_next/')) {
+    return null;
+  }
   
-  // Don't render navbar on merchant-dashboard pages
-  if (pathname?.startsWith('/merchant-dashboard')) {
-    console.log('ConditionalNavbar - Hiding navbar for merchant dashboard');
+  // Debug logging to verify pathname (only for actual pages)
+  console.log('ConditionalNavbar - Current pathname:', pathname);
+  
+  const shouldHideNavbar = pathname.startsWith('/merchant-dashboard') || pathname.startsWith('/tailor-dashboard');
+  
+  console.log('ConditionalNavbar - Should hide navbar:', shouldHideNavbar);
+  
+  // Don't render navbar on dashboard pages
+  if (shouldHideNavbar) {
+    console.log('ConditionalNavbar - Hiding navbar for dashboard page');
     return null;
   }
   
