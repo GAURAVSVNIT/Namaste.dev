@@ -6,6 +6,18 @@ import { searchUsers, toggleFollow } from "@/lib/social";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
+// Helper function to validate avatar URLs
+const isValidAvatarUrl = (avatar) => {
+  return avatar && (avatar.startsWith('http') || avatar.startsWith('data:') || avatar.startsWith('/'));
+};
+
+// Helper function to get avatar display content
+const getAvatarDisplay = (avatar) => {
+  if (!avatar) return '👤';
+  if (isValidAvatarUrl(avatar)) return null; // Will show image
+  return avatar; // Show emoji or text
+};
+
 const SearchPage = () => {
   const router = useRouter();
   const { user: currentUser } = useAuth();
@@ -18,6 +30,7 @@ const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [followingUsers, setFollowingUsers] = useState(new Set()); // Track which users we're following
   const [followLoading, setFollowLoading] = useState(new Set()); // Track follow button loading states
+  const [imageErrors, setImageErrors] = useState(new Set()); // Track failed avatar images
 
   // Handle follow/unfollow action
   const handleFollowToggle = async (userId, userName) => {
@@ -356,11 +369,11 @@ const SearchPage = () => {
                         justifyContent: 'center',
                         border: '2px solid rgba(59, 130, 246, 0.1)',
                         overflow: 'hidden',
-                        background: result.avatar && (result.avatar.startsWith('http') || result.avatar.startsWith('data:') || result.avatar.startsWith('/')) 
+                        background: (isValidAvatarUrl(result.avatar) && !imageErrors.has(result.userId)) 
                           ? 'transparent' 
                           : 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
                       }}>
-                        {result.avatar && (result.avatar.startsWith('http') || result.avatar.startsWith('data:') || result.avatar.startsWith('/')) ? (
+                        {isValidAvatarUrl(result.avatar) && !imageErrors.has(result.userId) ? (
                           <img 
                             src={result.avatar} 
                             alt={result.name}
@@ -370,22 +383,22 @@ const SearchPage = () => {
                               objectFit: 'cover',
                               borderRadius: '50%'
                             }}
-                            onError={(e) => {
-                              e.target.style.display = 'none';
-                              e.target.nextSibling.style.display = 'flex';
+                            onError={() => {
+                              setImageErrors(prev => new Set([...prev, result.userId]));
                             }}
                           />
-                        ) : null}
-                        <div style={{
-                          fontSize: '32px',
-                          display: result.avatar && (result.avatar.startsWith('http') || result.avatar.startsWith('data:') || result.avatar.startsWith('/')) ? 'none' : 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: '100%',
-                          height: '100%'
-                        }}>
-                          {result.avatar && !result.avatar.startsWith('http') && !result.avatar.startsWith('data:') && !result.avatar.startsWith('/') ? result.avatar : '👤'}
-                        </div>
+                        ) : (
+                          <div style={{
+                            fontSize: '32px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100%',
+                            height: '100%'
+                          }}>
+                            {getAvatarDisplay(result.avatar)}
+                          </div>
+                        )}
                       </div>
                         <div style={{ flex: 1 }}>
                           <h3 style={{

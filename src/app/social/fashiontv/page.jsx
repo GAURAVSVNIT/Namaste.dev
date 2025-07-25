@@ -28,7 +28,24 @@ export default function FashionTVPage() {
       {/* Top Right Back Button */}
       <div className="absolute top-4 right-4 z-50">
         <Link href="/social">
-          <button className="bg-black bg-opacity-50 text-white p-3 rounded-full hover:bg-opacity-70 transition-all">
+<button style={{
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            color: 'white',
+            padding: '12px',
+            borderRadius: '50%',
+            border: 'none',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            backdropFilter: 'blur(10px)'
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+            e.target.style.transform = 'scale(1.1)';
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            e.target.style.transform = 'scale(1)';
+          }}>
             <Home className="w-6 h-6" />
           </button>
         </Link>

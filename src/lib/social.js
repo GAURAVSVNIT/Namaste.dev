@@ -10,7 +10,8 @@ import {
   updateDoc,
   addDoc,
   serverTimestamp,
-  deleteDoc
+  deleteDoc,
+  runTransaction
 } from 'firebase/firestore';
 import { db } from './firebase';
 
@@ -365,40 +366,44 @@ export const createSocialReel = async (userId, reelData) => {
  */
 export const toggleLike = async (userId, contentId, contentType, contentInfo = {}) => {
   try {
-    // Check if already liked
-    const likeQuery = query(
-      collection(db, 'user_likes'),
-      where('userId', '==', userId),
-      where('contentId', '==', contentId)
-    );
-    const likeSnapshot = await getDocs(likeQuery);
-
-    if (likeSnapshot.empty) {
-      // Add like
-      await addDoc(collection(db, 'user_likes'), {
-        userId,
-        contentId,
-        contentType,
-        ...contentInfo,
-        likedAt: serverTimestamp()
-      });
-
-      // Add activity
-      await addDoc(collection(db, 'user_activities'), {
-        userId,
-        type: 'like',
-        description: `Liked a ${contentType}`,
-        details: contentInfo.title || `${contentType} content`,
-        timestamp: serverTimestamp()
-      });
-
-      return true;
-    } else {
-      // Remove like
-      const likeDoc = likeSnapshot.docs[0];
-      await deleteDoc(doc(db, 'user_likes', likeDoc.id));
-      return false;
-    }
+    return await runTransaction(db, async (transaction) => {
+      // Check existing like within transaction
+      const likeQuery = query(
+        collection(db, 'user_likes'),
+        where('userId', '==', userId),
+        where('contentId', '==', contentId)
+      );
+      const likeSnapshot = await getDocs(likeQuery);
+      
+      if (likeSnapshot.empty) {
+        // Add like
+        const likeRef = doc(collection(db, 'user_likes'));
+        transaction.set(likeRef, {
+          userId,
+          contentId,
+          contentType,
+          ...contentInfo,
+          likedAt: serverTimestamp()
+        });
+        
+        // Add activity
+        const activityRef = doc(collection(db, 'user_activities'));
+        transaction.set(activityRef, {
+          userId,
+          type: 'like',
+          description: `Liked a ${contentType}`,
+          details: contentInfo.title || `${contentType} content`,
+          timestamp: serverTimestamp()
+        });
+        
+        return true;
+      } else {
+        // Remove like
+        const likeDoc = likeSnapshot.docs[0];
+        transaction.delete(doc(db, 'user_likes', likeDoc.id));
+        return false;
+      }
+    });
   } catch (error) {
     console.error('Error toggling like:', error);
     throw error;

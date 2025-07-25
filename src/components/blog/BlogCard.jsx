@@ -13,9 +13,29 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
   
   const formatDate = (timestamp) => {
     if (!timestamp) return 'Unknown date';
-    
-    // Handle Firestore timestamp
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+
+    // Handle Firestore timestamp with toDate()
+    if (timestamp.toDate) {
+      return timestamp.toDate().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Handle Firestore-like timestamp object with seconds/nanoseconds
+    if (timestamp.seconds) {
+      return new Date(timestamp.seconds * 1000).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Fallback: try parsing as Date
+    const date = new Date(timestamp);
+    if (isNaN(date)) return 'Invalid date';
+
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',

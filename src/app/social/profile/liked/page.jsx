@@ -563,7 +563,7 @@ const LikedPage = () => {
                     <video
                       controls
                       src={reel.thumbnail || "/api/placeholder/mp4"}
-                      alt={reel.title || "Reel Video"}
+                      aria-label={reel.title || "Reel Video"}
                       style={{
                         width: '100%',
                         height: '100%',

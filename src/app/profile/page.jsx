@@ -10,6 +10,230 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { CalendarDays, MapPin, Link as LinkIcon, Activity, User, ShoppingCart } from 'lucide-react';
 
+// Reusable style objects
+const styles = {
+  // Container styles
+  mainContainer: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '32px 16px',
+    marginTop: '80px'
+  },
+  flexColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px'
+  },
+  gridLayout: {
+    display: 'grid',
+    gap: '24px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))'
+  },
+  
+  // Card styles
+  card: {
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    border: '1px solid rgba(255,255,255,0.2)',
+    borderRadius: '20px',
+    padding: '24px',
+    boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    transition: 'all 0.3s ease'
+  },
+  
+  // Header styles
+  sectionHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '20px'
+  },
+  iconContainer: {
+    padding: '12px',
+    borderRadius: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  sectionTitle: {
+    fontSize: '20px',
+    fontWeight: '600',
+    color: '#111827',
+    margin: '0'
+  },
+  
+  // Content item styles
+  contentGrid: {
+    display: 'grid',
+    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))'
+  },
+  flexColumnGap: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px'
+  },
+  itemContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '16px',
+    background: 'rgba(255,255,255,0.5)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255,255,255,0.3)'
+  },
+  statItem: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '12px 16px',
+    background: 'rgba(255,255,255,0.5)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255,255,255,0.3)'
+  },
+  
+  // Text styles
+  labelText: {
+    fontSize: '14px',
+    color: '#6B7280',
+    fontWeight: '500'
+  },
+  statValue: {
+    fontSize: '18px',
+    fontWeight: '700',
+    color: '#111827'
+  },
+  smallText: {
+    fontSize: '13px',
+    color: '#6B7280',
+    margin: '0'
+  },
+  mediumText: {
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#111827',
+    margin: '0 0 4px 0'
+  },
+  
+  // Activity styles
+  activityItem: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '12px 16px',
+    background: 'rgba(255,255,255,0.5)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255,255,255,0.3)'
+  },
+  activityDot: {
+    width: '8px',
+    height: '8px',
+    background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+    borderRadius: '50%',
+    flexShrink: 0
+  },
+  activityText: {
+    fontSize: '14px',
+    color: '#6B7280',
+    flex: 1
+  },
+  activityDate: {
+    fontSize: '12px',
+    color: '#9CA3AF',
+    fontWeight: '500'
+  },
+  
+  // Button styles
+  viewAllButton: {
+    fontSize: '14px',
+    color: '#3B82F6',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    textDecoration: 'underline',
+    fontWeight: '500'
+  },
+  
+  // Coming soon placeholder
+  placeholder: {
+    textAlign: 'center',
+    padding: '40px 20px',
+    background: 'rgba(255,255,255,0.3)',
+    borderRadius: '16px',
+    border: '1px solid rgba(255,255,255,0.3)'
+  },
+  placeholderIcon: {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '60px',
+    height: '60px',
+    background: 'linear-gradient(135deg, #E5E7EB, #D1D5DB)',
+    borderRadius: '50%',
+    marginBottom: '16px'
+  },
+  placeholderTitle: {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#374151',
+    margin: '0 0 8px 0'
+  },
+  placeholderText: {
+    fontSize: '14px',
+    color: '#6B7280',
+    margin: '0 0 16px 0'
+  },
+  comingSoonBadge: {
+    display: 'inline-block',
+    padding: '8px 16px',
+    background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+    color: 'white',
+    borderRadius: '8px',
+    fontSize: '12px',
+    fontWeight: '600'
+  },
+  
+  // Empty state
+  emptyState: {
+    fontSize: '14px',
+    color: '#6B7280',
+    textAlign: 'center',
+    padding: '20px',
+    background: 'rgba(255,255,255,0.3)',
+    borderRadius: '12px',
+    border: '1px solid rgba(255,255,255,0.3)',
+    margin: '0'
+  }
+};
+
+// Gradient configurations for different sections
+const gradients = {
+  quickStats: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+  quickStatsIcon: '0 8px 25px rgba(59, 130, 246, 0.3)',
+  activity: 'linear-gradient(135deg, #22C55E, #10B981)',
+  activityIcon: '0 8px 25px rgba(34, 197, 94, 0.3)',
+  orders: 'linear-gradient(135deg, #A855F7, #EC4899)',
+  ordersIcon: '0 8px 25px rgba(168, 85, 247, 0.3)',
+  profile: 'linear-gradient(135deg, #EF4444, #DC2626)',
+  profileIcon: '0 8px 25px rgba(239, 68, 68, 0.3)',
+  totalBlogs: 'linear-gradient(135deg, #059669, #047857)',
+  blogsLiked: 'linear-gradient(135deg, #DC2626, #EF4444)',
+  totalActivities: 'linear-gradient(135deg, #7C3AED, #A855F7)'
+};
+
+// Hover effect handlers
+const hoverEffects = {
+  onMouseEnter: (e) => {
+    e.target.style.transform = 'translateY(-2px)';
+    e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
+  },
+  onMouseLeave: (e) => {
+    e.target.style.transform = 'translateY(0px)';
+    e.target.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
+  }
+};
+
 export default function ProfilePage() {
   const { user: currentUser, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -20,7 +244,7 @@ export default function ProfilePage() {
     if (authLoading) return;
     
     if (!currentUser) {
-      router.push('/auth/login');
+      router.push('auth/login');
       return;
     }
     
@@ -111,17 +335,8 @@ export default function ProfilePage() {
   }
   
   return (
-    <div style={{
-      maxWidth: '1200px',
-      margin: '0 auto',
-      padding: '32px 16px',
-      marginTop: '80px'
-    }}>
-      <div style={{
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '24px'
-      }}>
+    <div style={styles.mainContainer}>
+      <div style={styles.flexColumn}>
         {/* Profile Header */}
         <ProfileHeader user={user} onUpdateProfile={handleUpdateProfile} />
         
@@ -129,51 +344,18 @@ export default function ProfilePage() {
         <ProfileTabs />
         
         {/* Profile Overview Content */}
-        <div style={{
-          display: 'grid',
-          gap: '24px',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))'
-        }}>
+        <div style={styles.gridLayout}>
           {/* Quick Stats */}
-          <div style={{
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,250,252,0.9) 100%)',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.2)',
-            borderRadius: '20px',
-            padding: '24px',
-            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-            transition: 'all 0.3s ease'
-          }} onMouseEnter={(e) => {
-            e.target.style.transform = 'translateY(-2px)';
-            e.target.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.25)';
-          }} onMouseLeave={(e) => {
-            e.target.style.transform = 'translateY(0px)';
-            e.target.style.boxShadow = '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)';
-          }}>
-            <div style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              marginBottom: '20px'
-            }}>
+          <div style={styles.card} {...hoverEffects}>
+            <div style={styles.sectionHeader}>
               <div style={{
-                padding: '12px',
-                background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
-                borderRadius: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 8px 25px rgba(59, 130, 246, 0.3)'
+                ...styles.iconContainer,
+                background: gradients.quickStats,
+                boxShadow: gradients.quickStatsIcon
               }}>
                 <CalendarDays style={{ width: '24px', height: '24px', color: 'white' }} />
               </div>
-              <h3 style={{
-                fontSize: '20px',
-                fontWeight: '600',
-                color: '#111827',
-                margin: '0'
-              }}>Quick Stats</h3>
+              <h3 style={styles.sectionTitle}>Quick Stats</h3>
             </div>
             
             <div style={{

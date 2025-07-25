@@ -25,46 +25,98 @@ const TrendingPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [trendingContent, setTrendingContent] = useState([]);
   const [stats, setStats] = useState({
-    totalViews: '2.4M',
-    totalLikes: '156K',
-    totalCreators: '3.2K',
-    growthRate: '+24%'
+    totalViews: '0',
+    totalLikes: '0',
+    totalCreators: '0',
+    growthRate: '0%'
   });
 
-  // Simulated trending data - replace with real API calls
+  // Fetch real trending data from API
   useEffect(() => {
-    const generateTrendingData = () => {
-      return Array.from({ length: 24 }, (_, index) => ({
-        id: `trending-${index}`,
-        type: ['look', 'reel', 'live'][index % 3],
-        title: [
-          'Minimalist Chic Vibes',
-          'Street Style Revolution',
-          'Vintage Glamour',
-          'Boho Festival Look',
-          'Corporate Elegance',
-          'Summer Beach Vibes',
-          'Urban Night Out',
-          'Sustainable Fashion',
-        ][index % 8],
-        creator: `Creator${index + 1}`,
-        image: `https://picsum.photos/400/400?random=${index + 100}`,
-        views: Math.floor(Math.random() * 50000) + 10000,
-        likes: Math.floor(Math.random() * 5000) + 500,
-        comments: Math.floor(Math.random() * 500) + 50,
-        trendingScore: Math.floor(Math.random() * 100) + 50,
-        isVerified: Math.random() > 0.7,
-        tags: ['trending', 'fashion', 'style', 'outfit'].slice(0, Math.floor(Math.random() * 4) + 1)
-      }));
+    const fetchTrendingData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetch(`/api/trending-content?sort=${sortBy}&timeRange=${timeRange}`);
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch trending content');
+        }
+        
+        const data = await response.json();
+        
+        // Filter to only include looks and reels
+        const filteredData = data.filter(item => 
+          item.type === 'look' || item.type === 'reel'
+        );
+        
+        // Sort by likes first (descending), then by comments (descending) for tie-breaking
+        const sortedData = filteredData.sort((a, b) => {
+          if (b.likes !== a.likes) {
+            return b.likes - a.likes; // Sort by likes (highest first)
+          }
+          return b.comments - a.comments; // If likes are equal, sort by comments (highest first)
+        });
+        
+        setTrendingContent(sortedData);
+        
+        // Calculate real statistics from the fetched content
+        calculateRealStats(sortedData);
+      } catch (error) {
+        console.error('Error fetching trending content:', error);
+        // Fallback to empty array on error
+        setTrendingContent([]);
+        // Reset stats on error
+        setStats({
+          totalViews: '0',
+          totalLikes: '0',
+          totalCreators: '0',
+          growthRate: '0%'
+        });
+      } finally {
+        setIsLoading(false);
+      }
     };
     
-    setTrendingContent(generateTrendingData());
+    fetchTrendingData();
   }, [sortBy, timeRange]);
 
   const formatNumber = (num) => {
     if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
     if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
     return num.toString();
+  };
+
+  // Calculate real statistics from trending content
+  const calculateRealStats = (contentData) => {
+    if (!contentData || contentData.length === 0) {
+      setStats({
+        totalViews: '0',
+        totalLikes: '0',
+        totalCreators: '0',
+        growthRate: '0%'
+      });
+      return;
+    }
+
+    // Calculate totals
+    const totalViews = contentData.reduce((sum, item) => sum + (item.views || 0), 0);
+    const totalLikes = contentData.reduce((sum, item) => sum + (item.likes || 0), 0);
+    
+    // Get unique creators
+    const uniqueCreators = new Set(contentData.map(item => item.creator)).size;
+    
+    // Calculate growth rate based on trending scores
+    const avgTrendingScore = contentData.length > 0 
+      ? contentData.reduce((sum, item) => sum + (item.trendingScore || 0), 0) / contentData.length 
+      : 0;
+    const growthRate = Math.min(99, Math.max(0, avgTrendingScore));
+    
+    setStats({
+      totalViews: formatNumber(totalViews),
+      totalLikes: formatNumber(totalLikes),
+      totalCreators: formatNumber(uniqueCreators),
+      growthRate: `+${Math.round(growthRate)}%`
+    });
   };
 
   const TrendingCard = ({ item, rank }) => (
@@ -116,10 +168,10 @@ const TrendingPage = () => {
         right: '12px',
         zIndex: 10,
         background: item.type === 'look' 
-          ? 'linear-gradient(135deg, #ec4899 0%, #db2777 100%)'
+          ? 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)'
           : item.type === 'reel' 
-          ? 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)'
-          : 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+          ? 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)'
+          : 'linear-gradient(135deg, #c084fc 0%, #a855f7 100%)',
         color: '#ffffff',
         padding: '6px 12px',
         borderRadius: '20px',
@@ -140,7 +192,9 @@ const TrendingPage = () => {
         position: 'relative'
       }}>
         <img
-          src={item.image}
+          src={item.image || (item.type === 'reel' 
+            ? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop&crop=center'
+            : 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=400&fit=crop')}
           alt={item.title}
           style={{
             width: '100%',
@@ -153,6 +207,28 @@ const TrendingPage = () => {
           }}
           onMouseOut={(e) => {
             e.target.style.transform = 'scale(1)';
+          }}
+          onError={(e) => {
+            // Fallback to appropriate placeholder if image fails to load
+            if (item.type === 'reel') {
+              // Use different placeholders for different reels to avoid all showing the same image
+              const reelPlaceholders = [
+                'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=400&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=400&h=400&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400&h=400&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1529139574466-a303027c1d8b?w=400&h=400&fit=crop&crop=center',
+                'https://images.unsplash.com/photo-1487222477894-8943e31ef7b2?w=400&h=400&fit=crop&crop=center'
+              ];
+              // Get consistent placeholder based on item id
+              const hash = item.id.split('').reduce((a, b) => {
+                a = ((a << 5) - a) + b.charCodeAt(0);
+                return a & a;
+              }, 0);
+              const index = Math.abs(hash) % reelPlaceholders.length;
+              e.target.src = reelPlaceholders[index];
+            } else {
+              e.target.src = 'https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=400&h=400&fit=crop';
+            }
           }}
         />
         
@@ -244,7 +320,7 @@ const TrendingPage = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
-            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
             color: '#ffffff',
             padding: '4px 8px',
             borderRadius: '12px',
@@ -297,7 +373,6 @@ const TrendingPage = () => {
       minHeight: '100vh',
       background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
     }}>
-      {/* Hero Section */}
       <section style={{
         position: 'relative',
         padding: '120px 20px 80px',
@@ -439,7 +514,7 @@ const TrendingPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                background: 'linear-gradient(135deg, #9333ea 0%, #a855f7 100%)',
                 color: '#ffffff',
                 padding: '16px 32px',
                 borderRadius: '50px',
@@ -448,15 +523,15 @@ const TrendingPage = () => {
                 fontWeight: '700',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 10px 25px rgba(255, 107, 107, 0.4)'
+                boxShadow: '0 10px 25px rgba(147, 51, 234, 0.3)'
               }}
               onMouseOver={(e) => {
                 e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                e.target.style.boxShadow = '0 15px 35px rgba(255, 107, 107, 0.6)';
+                e.target.style.boxShadow = '0 15px 35px rgba(147, 51, 234, 0.5)';
               }}
               onMouseOut={(e) => {
                 e.target.style.transform = 'translateY(0) scale(1)';
-                e.target.style.boxShadow = '0 10px 25px rgba(255, 107, 107, 0.4)';
+                e.target.style.boxShadow = '0 10px 25px rgba(147, 51, 234, 0.3)';
               }}>
                 <Camera style={{ width: '20px', height: '20px' }} />
                 Create Trending Look
@@ -471,6 +546,10 @@ const TrendingPage = () => {
             0%, 100% { transform: translateY(0px) rotate(0deg); }
             33% { transform: translateY(-30px) rotate(1deg); }
             66% { transform: translateY(-15px) rotate(-1deg); }
+          }
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
           }
         `}</style>
       </section>
@@ -585,16 +664,142 @@ const TrendingPage = () => {
         </div>
 
         {/* Trending Content Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-          gap: '24px',
-          padding: '20px 0'
-        }}>
-          {trendingContent.map((item, index) => (
-            <TrendingCard key={item.id} item={item} rank={index + 1} />
-          ))}
-        </div>
+        {isLoading ? (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '24px',
+            padding: '20px 0'
+          }}>
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} style={{
+                background: 'rgba(255,255,255,0.9)',
+                borderRadius: '20px',
+                overflow: 'hidden',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                height: '400px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <div style={{
+                  width: '40px',
+                  height: '40px',
+                  border: '3px solid #667eea',
+                  borderTop: '3px solid transparent',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }}></div>
+              </div>
+            ))}
+          </div>
+        ) : trendingContent.length > 0 ? (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+            gap: '24px',
+            padding: '20px 0'
+          }}>
+            {trendingContent.map((item, index) => (
+              <TrendingCard key={item.id} item={item} rank={index + 1} />
+            ))}
+          </div>
+        ) : (
+          // Empty State
+          <div style={{
+            textAlign: 'center',
+            padding: '80px 20px',
+            background: 'rgba(255,255,255,0.9)',
+            borderRadius: '20px',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+            border: '2px dashed rgba(102, 126, 234, 0.3)'
+          }}>
+            <div style={{
+              width: '120px',
+              height: '120px',
+              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              boxShadow: '0 20px 40px rgba(102, 126, 234, 0.2)'
+            }}>
+              <TrendingUp size={48} style={{ color: 'white' }} />
+            </div>
+            
+            <h3 style={{
+              fontSize: '1.8rem',
+              fontWeight: '700',
+              color: '#1f2937',
+              margin: '0 0 12px 0'
+            }}>
+              No Trending Content Yet
+            </h3>
+            
+            <p style={{
+              color: '#6b7280',
+              fontSize: '1.2rem',
+              margin: '0 0 32px 0',
+              maxWidth: '500px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              lineHeight: '1.6'
+            }}>
+              Start creating amazing looks and reels to see them trending here!
+            </p>
+            
+            <div style={{
+              display: 'flex',
+              gap: '16px',
+              justifyContent: 'center',
+              flexWrap: 'wrap'
+            }}>
+              <Link href="/social/look/upload" style={{ textDecoration: 'none' }}>
+                <button style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'linear-gradient(135deg, #9333ea, #a855f7)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '16px 32px',
+                  borderRadius: '16px',
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 12px 28px rgba(147, 51, 234, 0.3)'
+                }}>
+                  <Camera size={20} />
+                  Create Your First Look
+                </button>
+              </Link>
+              
+              <Link href="/social/reel/upload" style={{ textDecoration: 'none' }}>
+                <button style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  color: 'white',
+                  border: 'none',
+                  padding: '16px 32px',
+                  borderRadius: '16px',
+                  fontSize: '1.1rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 12px 28px rgba(102, 126, 234, 0.3)'
+                }}>
+                  <Play size={20} />
+                  Create Your First Reel
+                </button>
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Load More Button */}
         <div style={{ textAlign: 'center', marginTop: '48px' }}>

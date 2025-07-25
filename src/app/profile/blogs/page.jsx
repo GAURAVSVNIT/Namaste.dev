@@ -24,7 +24,7 @@ export default function ProfileBlogsPage() {
     if (authLoading) return;
     
     if (!currentUser) {
-      router.push('/auth/login');
+      router.push('auth/login');
       return;
     }
     
