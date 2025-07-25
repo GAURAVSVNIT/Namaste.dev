@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, ShoppingCart } from 'lucide-react';
+import { User, LogOut, Settings, ShoppingCart, Sparkle } from 'lucide-react';
 import useCartStore from '@/store/cart-store';
 
 export default function Navbar(fontFace) {
@@ -190,6 +190,7 @@ export default function Navbar(fontFace) {
                 </div>
               </div>
             </div>
+
             
             {/* Navigation Links */}
             <div style={{ padding: '0 4px' }}>
