@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { getAvatarsFromFirestore } from "@/lib/fashion-builder-utils";
-import { useAuth } from "@/hooks/useAuth"; // Assumes you have auth hook
+import { useAuth } from "@/hooks/useAuth"; 
 import "@/static/avatars/avatars.css";
 import { Download, UploadCloud, Search, Camera, Play, Sparkle, Wand } from "lucide-react";
-import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 export function AvatarBuilderHeader() {
   return (
-    <section className="header-section">
+    <section className="header-section" style={{ margin: "1rem 0" }}>
       <div className="badge">🔥 Trending</div>
       <h1 className="headline">Custom Avatar Builder</h1>
       <p className="subtext">
@@ -34,12 +34,18 @@ export function AvatarBuilderHeader() {
 export default function AvatarsGallery() {
   const { user } = useAuth();
   const [avatars, setAvatars] = useState([]);
+  const router = useRouter();
 
   useEffect(() => {
     if (user?.uid) {
       getAvatarsFromFirestore(user.uid).then(setAvatars);
     }
   }, [user]);
+
+  const handleUpload = (url) => {
+    router.push(`/avatars/upload?avatar=${url.split("/").pop()}`);
+
+  }
 
   return (
     <div className="avatars-page">
@@ -58,7 +64,7 @@ export default function AvatarsGallery() {
               <Download size={16} color="#fff" /> <span>3D Model</span>
               </a>
             </div>
-            <button className="upload-btn flex gap-3"> <UploadCloud size={18} /> Upload this Look</button>
+            <button className="upload-btn flex gap-3" onClick={() => { handleUpload(url) }}> <UploadCloud size={18} /> Upload this Look</button>
           </div>
         ))}
       </div>

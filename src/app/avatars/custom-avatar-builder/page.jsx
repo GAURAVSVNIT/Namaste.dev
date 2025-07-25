@@ -2,7 +2,7 @@
 
 import { AvatarCreator } from "@readyplayerme/react-avatar-creator";
 import { useAuth } from "@/hooks/useAuth"; 
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { saveAvatarToFirestore } from "@/lib/fashion-builder-utils";
 
 const config = {
@@ -12,17 +12,39 @@ const config = {
   language: "en",
 };
 
-const style = { width: "100%", height: "100vh", border: "none" };
-
 export default function App() {
   const { user } = useAuth(); 
   const userRef = useRef(user);
+  const [style, setStyle] = useState({ width: "100%", height: "100vh", border: "none" });
 
   useEffect(() => {
     userRef.current = user;
   }, [user]);
 
-//   console.table(user)
+  
+useEffect(() => {
+  const updateStyle = () => {
+    const newStyle = { width: "100%", height: "100vh", border: "none" };
+    document.body.style.backgroundColor = "#10101b";
+
+    if (window.innerWidth < 768) {
+      newStyle.marginTop = "4.5rem";
+    } 
+    else if (window.innerWidth < 1024) {
+      newStyle.marginTop = "6rem";
+    } 
+    else {
+      newStyle.marginTop = "0";
+    }
+    setStyle(newStyle);
+  };
+  updateStyle(); 
+  window.addEventListener("resize", updateStyle); 
+
+  return () => window.removeEventListener("resize", updateStyle); 
+}, []);
+
+
 
   const handleOnAvatarExported = async (event) => {
     const currentUser = userRef.current;
@@ -48,17 +70,20 @@ export default function App() {
 
     const avatarJson = await response.json();
     console.log("Avatar metadata:", avatarJson);
-    console.table(currentUser)
-    console.log(currentUser.uid)
+    console.table(currentUser);
+    console.log(currentUser?.uid);
+
     await saveAvatarToFirestore(currentUser?.uid, pngUrl);
   };
 
   return (
-    <AvatarCreator
-      subdomain="fashionbuilder"
-      config={config}
-      style={style}
-      onAvatarExported={handleOnAvatarExported}
-    />
+    <div>
+      <AvatarCreator
+        subdomain="fashionbuilder"
+        config={config}
+        style={style}
+        onAvatarExported={handleOnAvatarExported}
+      />
+    </div>
   );
 }
