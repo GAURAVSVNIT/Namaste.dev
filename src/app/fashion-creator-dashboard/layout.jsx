@@ -5,8 +5,8 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '@/lib/firebase';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
-import FashionCreatorSidebar from '@/components/fashion-creator-dashboard/Sidebar';
-import FashionCreatorHeader from '@/components/fashion-creator-dashboard/Header';
+import TailorSidebar from '@/components/fashion-creator-dashboard/Sidebar';
+import TailorHeader from '@/components/fashion-creator-dashboard/Header';
 import styles from './FashionCreatorDashboard.module.css';
 
 export default function FashionCreatorDashboardLayout({ children }) {
@@ -102,14 +102,14 @@ export default function FashionCreatorDashboardLayout({ children }) {
       <div 
         className={`${styles.dashboardLayout} ${isCollapsed ? styles.collapsed : ''} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}
       >
-        <FashionCreatorSidebar 
+        <TailorSidebar 
           isCollapsed={isCollapsed} 
           onToggleCollapse={toggleSidebar}
           onNavigation={handleNavigation}
           isMobileMenuOpen={isMobileMenuOpen}
         />
         
-        <FashionCreatorHeader 
+        <TailorHeader 
           onMenuClick={toggleSidebar} 
           isCollapsed={isCollapsed} 
           isMobileMenuOpen={isMobileMenuOpen}

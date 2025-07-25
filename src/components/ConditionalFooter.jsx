@@ -12,7 +12,7 @@ export default function ConditionalFooter({ face }) {
   }
   
   // Don't render footer on dashboard pages
-  if (pathname.startsWith('/merchant-dashboard') || pathname.startsWith('/tailor-dashboard')) {
+  if (pathname.startsWith('/merchant-dashboard') || pathname.startsWith('/fashion-creator-dashboard')) {
     return null;
   }
   

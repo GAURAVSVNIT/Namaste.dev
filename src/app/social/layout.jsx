@@ -11,7 +11,7 @@ export default function SocialLayout({ children }) {
 
   return (
     <div className="social-layout">
-      <div className={shouldShowBottomNav ? 'pb-16' : ''}>
+      <div className={shouldShowBottomNav ? 'pb-28' : ''}>
         {children}
       </div>
       {shouldShowBottomNav && <SocialBottomNav />}

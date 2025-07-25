@@ -178,6 +178,36 @@ export const createAppointment = async (appointmentData) => {
 
     await setDoc(appointmentRef, appointment);
 
+    // Try to create Google Calendar event
+    try {
+      const { createCalendarEvent } = await import('./googleCalendar');
+      const calendarEventData = {
+        appointmentId: appointmentRef.id,
+        type: appointmentData.type,
+        scheduledAt: appointmentData.scheduledAt,
+        duration: appointmentData.duration,
+        clientId: appointmentData.clientId,
+        requirements: appointmentData.requirements,
+        notes: appointmentData.notes
+      };
+      
+      const calendarResult = await createCalendarEvent(appointmentData.providerId, calendarEventData);
+      
+      // Update appointment with Google Calendar info
+      await updateDoc(appointmentRef, {
+        googleCalendarEventId: calendarResult.googleEventId,
+        meetingLink: calendarResult.meetingLink,
+        calendarHtmlLink: calendarResult.htmlLink,
+        updatedAt: serverTimestamp()
+      });
+      
+      appointment.googleCalendarEventId = calendarResult.googleEventId;
+      appointment.meetingLink = calendarResult.meetingLink;
+    } catch (calendarError) {
+      console.warn('Failed to create Google Calendar event:', calendarError);
+      // Continue without calendar integration
+    }
+
     // Create notification for provider
     await createNotification(appointmentData.providerId, {
       type: 'new_appointment',

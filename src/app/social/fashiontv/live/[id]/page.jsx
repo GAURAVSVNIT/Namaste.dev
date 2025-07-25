@@ -30,6 +30,9 @@ export default function IndividualLiveStreamPage({ params }) {
   const [isLoading, setIsLoading] = useState(true);
   const [viewerCount, setViewerCount] = useState(12814);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [streamError, setStreamError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isReloading, setIsReloading] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -41,12 +44,13 @@ export default function IndividualLiveStreamPage({ params }) {
   const fetchStream = async () => {
     try {
       setIsLoading(true);
+      setStreamError(false);
       const streamData = await getLivestreamById(id);
       setStream(streamData);
-      
-      
+      setRetryCount(0); // Reset retry count on successful fetch
     } catch (error) {
       console.error('Error fetching stream:', error);
+      setStreamError(true);
       toast({
         title: "Error",
         description: "Failed to load live stream. Please try again.",
@@ -54,6 +58,45 @@ export default function IndividualLiveStreamPage({ params }) {
       });
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRetryStream = async () => {
+    if (retryCount >= 3) {
+      toast({
+        title: "Connection Failed",
+        description: "Unable to connect to the stream after multiple attempts. Please check your connection or try again later.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setIsReloading(true);
+    setRetryCount(prev => prev + 1);
+    
+    setTimeout(async () => {
+      await fetchStream();
+      setIsReloading(false);
+    }, 2000); // Wait 2 seconds before retrying
+  };
+
+  const handleRefreshStream = () => {
+    setIsReloading(true);
+    // Force iframe reload by changing key
+    const iframe = document.querySelector('iframe');
+    if (iframe) {
+      const src = iframe.src;
+      iframe.src = '';
+      setTimeout(() => {
+        iframe.src = src;
+        setIsReloading(false);
+        toast({
+          title: "Stream Refreshed",
+          description: "The live stream has been refreshed.",
+        });
+      }, 1000);
+    } else {
+      setIsReloading(false);
     }
   };
 
@@ -144,9 +187,9 @@ export default function IndividualLiveStreamPage({ params }) {
       let videoId = null;
       
       // Extract video ID from various YouTube URL formats
-      const watchMatch = stream.url.match(/[?&]v=([^&]+)/);
-      const shortMatch = stream.url.match(/youtu\.be\/([^?&]+)/);
-      const embedMatch = stream.url.match(/embed\/([^?&]+)/);
+      const watchMatch = stream.url.match(/[?\&]v=([^\&]+)/);
+      const shortMatch = stream.url.match(/youtu\.be\/([^?\&]+)/);
+      const embedMatch = stream.url.match(/embed\/([^?\&]+)/);
       
       if (watchMatch) {
         videoId = watchMatch[1];
@@ -162,16 +205,19 @@ export default function IndividualLiveStreamPage({ params }) {
                        stream.url.match(/@([^/?]+)/)?.[1];
       
       if (videoId) {
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+        // For specific video IDs, use standard embed with additional params for live streams
+        return `https://www.youtube.com/embed/${videoId}?autoplay=0&mute=0&enablejsapi=1&rel=0&modestbranding=1&controls=1&showinfo=0`;
       } else if (channelId) {
-        return `https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=1&mute=1`;
+        // For channel-based live streams
+        return `https://www.youtube.com/embed/live_stream?channel=${channelId}&autoplay=0&mute=0&enablejsapi=1&rel=0&modestbranding=1&controls=1`;
       }
     } else if (stream.platform === 'twitch') {
-      // Handle Twitch URLs
+      // Handle Twitch URLs with proper parent domain
       const channelMatch = stream.url.match(/twitch\.tv\/([^/?]+)/);
       if (channelMatch) {
         const channel = channelMatch[1];
-        return `https://player.twitch.tv/?channel=${channel}&parent=${window.location.hostname}&autoplay=true&muted=true`;
+        const parentDomain = typeof window !== 'undefined' ? window.location.hostname : 'localhost';
+        return `https://player.twitch.tv/?channel=${channel}&parent=${parentDomain}&autoplay=false&muted=false`;
       }
     }
     
@@ -357,6 +403,67 @@ export default function IndividualLiveStreamPage({ params }) {
             <div style={{ width: '8px', height: '8px', backgroundColor: '#10b981', borderRadius: '50%' }}></div>
             <span style={{ fontWeight: '600' }}>Connected</span>
           </div>
+          
+          {/* Stream Controls */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {streamError && (
+              <button
+                onClick={handleRetryStream}
+                disabled={isReloading || retryCount >= 3}
+                style={{
+                  background: 'rgba(239, 68, 68, 0.2)',
+                  color: '#ef4444',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  padding: '8px 16px',
+                  borderRadius: '12px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  cursor: isReloading || retryCount >= 3 ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                {isReloading ? 'Retrying...' : `Retry (${retryCount}/3)`}
+              </button>
+            )}
+            
+            <button
+              onClick={handleRefreshStream}
+              disabled={isReloading}
+              style={{
+                background: 'rgba(99, 102, 241, 0.2)',
+                color: '#a5b4fc',
+                border: '1px solid rgba(99, 102, 241, 0.3)',
+                padding: '8px 16px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: '500',
+                cursor: isReloading ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              {isReloading ? (
+                <div style={{ 
+                  width: '12px', 
+                  height: '12px', 
+                  border: '2px solid transparent',
+                  borderTop: '2px solid currentColor',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite'
+                }}></div>
+              ) : (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+              )}
+              {isReloading ? 'Refreshing...' : 'Refresh'}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -406,6 +513,24 @@ export default function IndividualLiveStreamPage({ params }) {
                       allowFullScreen
                       title={stream.title}
                     />
+                  ) : stream.platform === 'local' ? (
+                    /* Local Live Stream Viewer - Disabled */
+                    <div style={{
+                      width: '100%',
+                      height: '100%',
+                      background: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      borderRadius: '24px',
+                      position: 'relative'
+                    }}>
+                      <div style={{ textAlign: 'center', color: 'white' }}>
+                        <Eye style={{ width: '64px', height: '64px', margin: '0 auto 20px auto', opacity: 0.5 }} />
+                        <h3 style={{ fontSize: '24px', fontWeight: '600', marginBottom: '8px' }}>Live Streaming Disabled</h3>
+                        <p style={{ opacity: 0.8 }}>Go Live functionality has been removed. Only external stream URLs are supported.</p>
+                      </div>
+                    </div>
                   ) : (
                     /* Generic video player for other platforms */
                     <div style={{
@@ -746,6 +871,14 @@ export default function IndividualLiveStreamPage({ params }) {
                     gap: '8px',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.transform = 'scale(1.05)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+                    e.target.style.transform = 'scale(1)';
                   }}
                 >
                   <Share2 style={{ width: '16px', height: '16px' }} />

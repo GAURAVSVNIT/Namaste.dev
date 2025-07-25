@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 export function useToast() {
   const [toasts, setToasts] = useState([]);

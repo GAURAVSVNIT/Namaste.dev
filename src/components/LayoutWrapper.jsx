@@ -10,11 +10,11 @@ export default function LayoutWrapper({ children }) {
   // Don't show navbar on auth pages or dashboard pages
   const isAuthPage = pathname.startsWith('/auth');
   const isMerchantDashboard = pathname.startsWith('/merchant-dashboard');
-  const isTailorDashboard = pathname.startsWith('/tailor-dashboard');
-  
+  const isFashionCreatorDashboard = pathname.startsWith('/fashion-creator-dashboard');
+
   return (
     <>
-      {!isAuthPage && !isMerchantDashboard && !isTailorDashboard && <Navbar />}
+      {!isAuthPage && !isMerchantDashboard && !isFashionCreatorDashboard && <Navbar />}
       {children}
       <CartSidebar />
     </>

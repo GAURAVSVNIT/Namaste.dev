@@ -14,7 +14,7 @@ export default function ConditionalNavbar({ face }) {
   // Debug logging to verify pathname (only for actual pages)
   console.log('ConditionalNavbar - Current pathname:', pathname);
   
-  const shouldHideNavbar = pathname.startsWith('/merchant-dashboard') || pathname.startsWith('/tailor-dashboard');
+  const shouldHideNavbar = pathname.startsWith('/merchant-dashboard') || pathname.startsWith('/fashion-creator-dashboard');
   
   console.log('ConditionalNavbar - Should hide navbar:', shouldHideNavbar);
   

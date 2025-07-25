@@ -18,7 +18,8 @@ import {
   CreditCard,
   Menu,
   X,
-  User
+  User,
+  Calendar
 } from 'lucide-react';
 import styles from './Sidebar.module.css';
 import profileStyles from './ProfileSection.module.css';
@@ -30,37 +31,42 @@ const menuItems = [
   { 
     icon: <LayoutDashboard size={18} />, 
     label: 'Dashboard', 
-    href: '/tailor-dashboard' 
+    href: '/fashion-creator-dashboard' 
+  },
+  { 
+    icon: <Calendar size={18} />, 
+    label: 'Events & Schedule', 
+    href: '/fashion-creator-dashboard/events' 
   },
   { 
     icon: <Package size={18} />, 
     label: 'Measurements', 
-    href: '/tailor-dashboard/measurements' 
+    href: '/fashion-creator-dashboard/measurements' 
   },
   { 
     icon: <BarChart2 size={18} />, 
     label: 'Analytics', 
-    href: '/tailor-dashboard/analytics' 
+    href: '/fashion-creator-dashboard/analytics' 
   },
   { 
     icon: <ShoppingBag size={18} />, 
     label: 'Orders', 
-    href: '/tailor-dashboard/orders' 
+    href: '/fashion-creator-dashboard/orders' 
   },
   { 
     icon: <Users size={18} />, 
     label: 'Customers', 
-    href: '/tailor-dashboard/customers' 
+    href: '/fashion-creator-dashboard/customers' 
   },
   { 
     icon: <CreditCard size={18} />, 
     label: 'Payments', 
-    href: '/tailor-dashboard/payments' 
+    href: '/fashion-creator-dashboard/payments' 
   },
   {
     icon: <Settings size={18} />, 
     label: 'Settings', 
-    href: '/tailor-dashboard/settings' 
+    href: '/fashion-creator-dashboard/settings' 
   }
  
 ];

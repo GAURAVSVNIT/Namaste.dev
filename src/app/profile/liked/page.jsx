@@ -22,7 +22,7 @@ export default function ProfileLikedPage() {
     if (authLoading) return;
     
     if (!currentUser) {
-      router.push('/auth/login');
+      router.push('auth/login');
       return;
     }
     

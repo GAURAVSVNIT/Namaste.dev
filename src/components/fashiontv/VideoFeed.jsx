@@ -12,6 +12,8 @@ export default function VideoFeed({ onCommentsToggle }) {
   const scrollRef = useRef(null);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
   const observerRef = useRef(null);
+  // Global mute state - applies to all videos
+  const [isGloballyMuted, setIsGloballyMuted] = useState(true);
 
   useEffect(() => {
     fetchInitialVideos();
@@ -51,6 +53,20 @@ export default function VideoFeed({ onCommentsToggle }) {
       setIsLoading(false);
     }
   }, [hasMore, isLoading, lastDoc]);
+
+  const handleVideoDeleted = useCallback((deletedVideoId) => {
+    // Remove the deleted video from state
+    setVideos(prev => prev.filter(video => video.id !== deletedVideoId));
+    
+    // Adjust current video index if necessary
+    setCurrentVideoIndex(prev => {
+      const currentVideos = videos.filter(video => video.id !== deletedVideoId);
+      if (prev >= currentVideos.length && currentVideos.length > 0) {
+        return currentVideos.length - 1;
+      }
+      return prev;
+    });
+  }, [videos]);
 
   // Use Intersection Observer for better performance
   useEffect(() => {
@@ -121,6 +137,9 @@ export default function VideoFeed({ onCommentsToggle }) {
               video={video} 
               isActive={index === currentVideoIndex}
               onCommentsToggle={onCommentsToggle}
+              isGloballyMuted={isGloballyMuted}
+              onGlobalMuteToggle={setIsGloballyMuted}
+              onVideoDeleted={handleVideoDeleted}
             />
           </div>
         ))}

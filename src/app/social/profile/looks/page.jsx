@@ -1,23 +1,20 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from '@/hooks/useAuth';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { getUserSocialData } from '@/lib/social';
 import { Grid3X3, Heart, MessageCircle, Eye, Camera, Plus, Share2 } from 'lucide-react';
 import Link from 'next/link';
 import FollowersModal from '@/components/social/FollowersModal';
+import { useToast } from '@/hooks/use-toast';
+import './hover-effects.css';
 
-const ProfileHeader = ({ profileData }) => {
-  const [isMobile, setIsMobile] = useState(false);
+const ProfileHeader = ({ profileData, onScrollToLooks }) => {
+  const isMobile = useIsMobile();
   const [isFollowersModalOpen, setIsFollowersModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
+  const [hoveredStat, setHoveredStat] = useState(null);
   const { user } = useAuth();
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
 
   return (
     <div style={{
@@ -112,16 +109,7 @@ const ProfileHeader = ({ profileData }) => {
             marginBottom: '20px'
           }}>
             <div 
-              onClick={() => {
-                // Scroll to looks section or show looks grid
-                const looksSection = document.querySelector('[data-section="looks-grid"]');
-                if (looksSection) {
-                  looksSection.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  // If no looks section found, just highlight the looks count
-                  console.log('User has', profileData?.looks?.length || 0, 'looks');
-                }
-              }}
+              onClick={onScrollToLooks}
               style={{
                 textAlign: 'center',
                 padding: '20px',
@@ -129,16 +117,12 @@ const ProfileHeader = ({ profileData }) => {
                 borderRadius: '16px',
                 border: '1px solid rgba(255,255,255,0.3)',
                 transition: 'all 0.3s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transform: hoveredStat === 'looks' ? 'translateY(-4px)' : 'translateY(0)',
+                boxShadow: hoveredStat === 'looks' ? '0 12px 28px rgba(0, 0, 0, 0.15)' : 'none'
               }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-4px)';
-              e.target.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}>
+              onMouseEnter={() => setHoveredStat('looks')}
+              onMouseLeave={() => setHoveredStat(null)}>
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
@@ -165,16 +149,12 @@ const ProfileHeader = ({ profileData }) => {
                 borderRadius: '16px',
                 border: '1px solid rgba(255,255,255,0.3)',
                 transition: 'all 0.3s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transform: hoveredStat === 'followers' ? 'translateY(-4px)' : 'translateY(0)',
+                boxShadow: hoveredStat === 'followers' ? '0 12px 28px rgba(0, 0, 0, 0.15)' : 'none'
               }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-4px)';
-              e.target.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}>
+              onMouseEnter={() => setHoveredStat('followers')}
+              onMouseLeave={() => setHoveredStat(null)}>
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
@@ -201,16 +181,12 @@ const ProfileHeader = ({ profileData }) => {
                 borderRadius: '16px',
                 border: '1px solid rgba(255,255,255,0.3)',
                 transition: 'all 0.3s ease',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transform: hoveredStat === 'following' ? 'translateY(-4px)' : 'translateY(0)',
+                boxShadow: hoveredStat === 'following' ? '0 12px 28px rgba(0, 0, 0, 0.15)' : 'none'
               }}
-            onMouseEnter={(e) => {
-              e.target.style.transform = 'translateY(-4px)';
-              e.target.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.15)';
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = 'none';
-            }}>
+              onMouseEnter={() => setHoveredStat('following')}
+              onMouseLeave={() => setHoveredStat(null)}>
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
@@ -250,14 +226,8 @@ const ProfileHeader = ({ profileData }) => {
 };
 
 const NavigationTabs = ({ activeTab = 'looks' }) => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768);
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
+  const isMobile = useIsMobile();
+  const [hoveredTab, setHoveredTab] = useState(null);
 
   const tabs = [
     { id: 'looks', label: 'Looks', icon: Grid3X3, href: '/social/profile/looks' },
@@ -268,28 +238,23 @@ const NavigationTabs = ({ activeTab = 'looks' }) => {
   ];
 
   return (
-    <div style={{
-      display: 'flex',
-      justifyContent: 'center',
-      gap: isMobile ? '4px' : '8px',
-      marginBottom: '32px',
-      background: 'rgba(255,255,255,0.8)',
-      padding: isMobile ? '6px' : '8px',
-      borderRadius: '16px',
-      backdropFilter: 'blur(20px)',
-      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-      border: '1px solid rgba(255,255,255,0.3)',
-      overflowX: 'auto',
-      scrollBehavior: 'smooth',
-      WebkitOverflowScrolling: 'touch',
-      ...(isMobile ? {
-        '&::-webkit-scrollbar': {
-          display: 'none'
-        },
-        msOverflowStyle: 'none',
-        scrollbarWidth: 'none'
-      } : {})
-    }}>
+    <div 
+      className={isMobile ? 'nav-tabs-mobile' : ''}
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        gap: isMobile ? '4px' : '8px',
+        marginBottom: '32px',
+        background: 'rgba(255,255,255,0.8)',
+        padding: isMobile ? '6px' : '8px',
+        borderRadius: '16px',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
+        border: '1px solid rgba(255,255,255,0.3)',
+        overflowX: 'auto',
+        scrollBehavior: 'smooth',
+        WebkitOverflowScrolling: 'touch'
+      }}>
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;
@@ -306,25 +271,25 @@ const NavigationTabs = ({ activeTab = 'looks' }) => {
               fontWeight: '600',
               transition: 'all 0.3s ease',
               cursor: 'pointer',
-              background: isActive ? 'linear-gradient(135deg, #667eea, #764ba2)' : 'transparent',
-              color: isActive ? 'white' : '#6b7280',
+              background: isActive 
+                ? 'linear-gradient(135deg, #667eea, #764ba2)' 
+                : hoveredTab === tab.id 
+                  ? 'rgba(102, 126, 234, 0.1)' 
+                  : 'transparent',
+              color: isActive 
+                ? 'white' 
+                : hoveredTab === tab.id 
+                  ? '#667eea' 
+                  : '#6b7280',
               boxShadow: isActive ? '0 8px 20px rgba(102, 126, 234, 0.4)' : 'none',
-              transform: isActive ? 'translateY(-2px)' : 'none'
+              transform: isActive 
+                ? 'translateY(-2px)' 
+                : hoveredTab === tab.id 
+                  ? 'translateY(-1px)' 
+                  : 'translateY(0)'
             }}
-            onMouseEnter={(e) => {
-              if (!isActive) {
-                e.target.style.background = 'rgba(102, 126, 234, 0.1)';
-                e.target.style.color = '#667eea';
-                e.target.style.transform = 'translateY(-1px)';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!isActive) {
-                e.target.style.background = 'transparent';
-                e.target.style.color = '#6b7280';
-                e.target.style.transform = 'translateY(0)';
-              }
-            }}>
+            onMouseEnter={() => !isActive && setHoveredTab(tab.id)}
+            onMouseLeave={() => !isActive && setHoveredTab(null)}>
               <Icon size={16} />
               <span>{tab.label}</span>
             </div>
@@ -340,6 +305,15 @@ const LooksPage = () => {
   const [profileData, setProfileData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [hoveredButton, setHoveredButton] = useState(null);
+  const looksGridRef = useRef(null);
+  const { toast } = useToast();
+
+  const handleScrollToLooks = () => {
+    if (looksGridRef.current) {
+      looksGridRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   useEffect(() => {
     if (authLoading) return;
@@ -383,22 +357,18 @@ const LooksPage = () => {
           textAlign: 'center',
           boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)'
         }}>
-          <div style={{
-            width: '60px',
-            height: '60px',
-            border: '4px solid #667eea',
-            borderTop: '4px solid transparent',
-            borderRadius: '50%',
-            animation: 'spin 1s linear infinite',
-            margin: '0 auto 20px'
-          }}></div>
+          <div 
+            className="animate-spin"
+            style={{
+              width: '60px',
+              height: '60px',
+              border: '4px solid #667eea',
+              borderTop: '4px solid transparent',
+              borderRadius: '50%',
+              margin: '0 auto 20px'
+            }}>
+          </div>
           <p style={{ color: '#6b7280', fontSize: '1.1rem', fontWeight: '500' }}>Loading your looks...</p>
-          <style jsx>{`
-            @keyframes spin {
-              0% { transform: rotate(0deg); }
-              100% { transform: rotate(360deg); }
-            }
-          `}</style>
         </div>
       </div>
     );
@@ -481,14 +451,14 @@ const LooksPage = () => {
         margin: '0 auto'
       }}>
         {/* Profile Header */}
-        <ProfileHeader profileData={profileData} />
+        <ProfileHeader profileData={profileData} onScrollToLooks={handleScrollToLooks} />
         
         {/* Navigation Tabs */}
         <NavigationTabs activeTab="looks" />
         
         {/* Looks Content */}
         <div 
-          data-section="looks-grid"
+          ref={looksGridRef}
           style={{
           background: 'rgba(255,255,255,0.9)',
           borderRadius: '24px',
@@ -552,16 +522,13 @@ const LooksPage = () => {
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 8px 20px rgba(16, 185, 129, 0.3)'
+                boxShadow: hoveredButton === 'create' 
+                  ? '0 12px 28px rgba(16, 185, 129, 0.4)' 
+                  : '0 8px 20px rgba(16, 185, 129, 0.3)',
+                transform: hoveredButton === 'create' ? 'translateY(-2px)' : 'translateY(0)'
               }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 12px 28px rgba(16, 185, 129, 0.4)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.3)';
-              }}>
+              onMouseEnter={() => setHoveredButton('create')}
+              onMouseLeave={() => setHoveredButton(null)}>
                 <Plus size={16} />
                 Create Look
               </button>
@@ -577,25 +544,7 @@ const LooksPage = () => {
             }}>
               {looks.map((look, index) => (
                 <Link key={look.id || index} href={`/social/look/${look.id}`} style={{ textDecoration: 'none' }}>
-                  <div
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95))',
-                      borderRadius: '20px',
-                      overflow: 'hidden',
-                      boxShadow: '0 12px 28px rgba(0, 0, 0, 0.08)',
-                      transition: 'all 0.3s ease',
-                      cursor: 'pointer',
-                      border: '1px solid rgba(255,255,255,0.3)'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.transform = 'translateY(-8px)';
-                      e.target.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = '0 12px 28px rgba(0, 0, 0, 0.08)';
-                    }}
-                  >
+                  <div className="look-card">
                   {/* Look Image */}
                   <div style={{
                     position: 'relative',
@@ -605,56 +554,21 @@ const LooksPage = () => {
                     <img
                       src={look.image || "/api/placeholder/300/300"}
                       alt={look.title || "Fashion Look"}
+                      className="look-image"
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s ease'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.transform = 'scale(1.05)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.transform = 'scale(1)';
+                        objectFit: 'cover'
                       }}
                     />
                     
                     {/* Overlay */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '0',
-                      left: '0',
-                      right: '0',
-                      bottom: '0',
-                      background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%)',
-                      opacity: '0',
-                      transition: 'opacity 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.opacity = '1';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.opacity = '0';
-                    }}
-                    />
+                    <div className="look-overlay" />
                     
                     {/* Action Buttons */}
-                    <div style={{
-                      position: 'absolute',
-                      top: '12px',
-                      right: '12px',
-                      display: 'flex',
-                      gap: '8px',
-                      opacity: '0',
-                      transition: 'opacity 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.opacity = '1';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.opacity = '0';
-                    }}>
+                    <div className="action-buttons">
                       <button 
+                        className="share-button"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
@@ -667,26 +581,21 @@ const LooksPage = () => {
                             });
                           } else {
                             // Fallback: copy to clipboard
-                            navigator.clipboard.writeText(window.location.origin + `/social/look/${look.id}`);
-                            alert('Link copied to clipboard!');
+                            navigator.clipboard.writeText(window.location.origin + `/social/look/${look.id}`)
+                              .then(() => {
+                                toast({
+                                  title: "Success",
+                                  description: "Link copied to clipboard!",
+                                });
+                              })
+                              .catch(() => {
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to copy link",
+                                  variant: "destructive",
+                                });
+                              });
                           }
-                        }}
-                        style={{
-                          background: 'rgba(255,255,255,0.9)',
-                          border: 'none',
-                          borderRadius: '8px',
-                          padding: '8px',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s ease',
-                          backdropFilter: 'blur(10px)'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.target.style.background = 'rgba(255,255,255,1)';
-                          e.target.style.transform = 'scale(1.1)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.target.style.background = 'rgba(255,255,255,0.9)';
-                          e.target.style.transform = 'scale(1)';
                         }}>
                         <Share2 size={16} style={{ color: '#6b7280' }} />
                       </button>
@@ -759,7 +668,7 @@ const LooksPage = () => {
                             e.preventDefault();
                             e.stopPropagation();
                             // Handle comments click - navigate to look detail page
-                            window.open(`/social/look/${look.id}#comments`, '_blank');
+                            window.open(`/social/look/${look.id}#comments`, '_blank', 'noopener,noreferrer');
                           }}
                           style={{
                           display: 'flex',

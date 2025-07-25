@@ -4,13 +4,22 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { uploadVideo } from '@/lib/fashiontv';
 import { toast } from '@/hooks/use-toast';
+import { 
+  generateVideoThumbnail, 
+  validateVideoFile, 
+  createThumbnailPreviewURL, 
+  cleanupPreviewURL 
+} from '@/utils/videoUtils';
 
 export default function UploadForm({ onSuccess }) {
   const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailBlob, setThumbnailBlob] = useState(null);
   const [caption, setCaption] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false);
   const [validationError, setValidationError] = useState('');
 
   const validateVideo = (file) => {
@@ -42,7 +51,23 @@ export default function UploadForm({ onSuccess }) {
     
     // Create preview URL
     const previewUrl = URL.createObjectURL(file);
-    setPreview(previewUrl);
+setPreview(previewUrl);
+
+    // Generate and set thumbnail
+    setIsGeneratingThumbnail(true);
+    generateVideoThumbnail(file, 2)
+      .then(thumbnailBlob => {
+        const thumbnailUrl = createThumbnailPreviewURL(thumbnailBlob);
+        setThumbnail(thumbnailUrl); // For preview display
+        setThumbnailBlob(thumbnailBlob); // For upload
+        setIsGeneratingThumbnail(false);
+      })
+      .catch(() => {
+        setValidationError('Failed to generate thumbnail');
+        setThumbnail(null);
+        setThumbnailBlob(null);
+        setIsGeneratingThumbnail(false);
+      });
 
     // Check video duration
     const video = document.createElement('video');
@@ -95,10 +120,10 @@ export default function UploadForm({ onSuccess }) {
     
     try {
       const videoData = {
-        caption: caption.trim(),
+        caption: caption.trim()
       };
 
-      await uploadVideo(user.uid, selectedFile, videoData);
+      await uploadVideo(user.uid, selectedFile, videoData, thumbnailBlob);
       
       toast({
         title: "Success!",
@@ -134,19 +159,63 @@ export default function UploadForm({ onSuccess }) {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center">Upload Video</h2>
+<div style={{
+      maxWidth: '600px',
+      margin: 'auto',
+      padding: '40px',
+      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+      borderRadius: '24px',
+      boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+      backdropFilter: 'blur(20px)'
+    }}>
+<h2 style={{
+        fontSize: '28px',
+        fontWeight: 'bold',
+        marginBottom: '24px',
+        textAlign: 'center',
+        color: '#1f2937',
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent',
+        backgroundClip: 'text'
+      }}>Upload Your Fashion Video</h2>
       
       {/* File Input */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div style={{ marginBottom: '24px' }}>
+<label style={{
+          display: 'block',
+          fontSize: '16px',
+          fontWeight: '600',
+          color: '#374151',
+          marginBottom: '8px'
+        }}>
           Select Video
         </label>
+        <p style={{
+          fontSize: '14px',
+          color: '#6b7280',
+          marginBottom: '12px',
+          margin: '0 0 12px 0'
+        }}>Upload a video file (max 100MB, 60 seconds)</p>
         <input
           type="file"
           accept="video/*"
           onChange={handleFileSelect}
-          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+          style={{
+            display: 'block',
+            width: '100%',
+            padding: '12px',
+            fontSize: '14px',
+            color: '#374151',
+            backgroundColor: '#f1f5f9',
+            border: '2px solid #e5e7eb',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            transition: 'border-color 0.2s ease',
+            outline: 'none'
+          }}
+          onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+          onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
         />
         {validationError && (
           <p className="text-red-500 text-sm mt-1">{validationError}</p>
@@ -155,8 +224,14 @@ export default function UploadForm({ onSuccess }) {
 
       {/* Video Preview */}
       {preview && (
-        <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+        <div style={{ marginBottom: '24px' }}>
+<label style={{
+            display: 'block',
+            fontSize: '16px',
+            fontWeight: '600',
+            color: '#374151',
+            marginBottom: '8px'
+          }}>
             Preview
           </label>
           <div className="relative aspect-square bg-black rounded-lg overflow-hidden">
@@ -165,9 +240,28 @@ export default function UploadForm({ onSuccess }) {
               controls
               className="w-full h-full object-cover"
             />
-            <button
+<button
               onClick={clearSelection}
-              className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm hover:bg-red-600"
+              style={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                width: '32px',
+                height: '32px',
+                backgroundColor: '#ef4444',
+                color: 'white',
+                border: 'none',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '18px',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease',
+                boxShadow: '0 2px 8px rgba(239, 68, 68, 0.3)'
+              }}
+              onMouseOver={(e) => e.target.style.backgroundColor = '#dc2626'}
+              onMouseOut={(e) => e.target.style.backgroundColor = '#ef4444'}
             >
               ×
             </button>
@@ -176,24 +270,62 @@ export default function UploadForm({ onSuccess }) {
       )}
 
       {/* Caption Input */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div style={{ marginBottom: '32px' }}>
+<label style={{
+          display: 'block',
+          fontSize: '16px',
+          fontWeight: '600',
+          color: '#374151',
+          marginBottom: '8px'
+        }}>
           Caption
         </label>
+        <p style={{
+          fontSize: '14px',
+          color: '#6b7280',
+          marginBottom: '12px',
+          margin: '0 0 12px 0'
+        }}>Describe your fashion video to engage your audience</p>
         <textarea
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           placeholder="Write a caption for your video..."
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows={3}
+          style={{
+            width: '100%',
+            padding: '12px',
+            fontSize: '14px',
+            color: '#374151',
+            border: '2px solid #e5e7eb',
+            borderRadius: '12px',
+            backgroundColor: '#f8fafc',
+            outline: 'none',
+            transition: 'border-color 0.2s ease',
+            resize: 'vertical'
+          }}
+          onFocus={(e) => e.target.style.borderColor = '#3b82f6'}
+          onBlur={(e) => e.target.style.borderColor = '#e5e7eb'}
         />
       </div>
 
       {/* Upload Button */}
-      <button
+<button
         onClick={handleUpload}
         disabled={!selectedFile || isUploading || !!validationError}
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+        style={{
+          width: '100%',
+          padding: '16px',
+          fontSize: '16px',
+          fontWeight: 'bold',
+          color: '#ffffff',
+          backgroundColor: !selectedFile || isUploading || validationError ? '#d1d5db' : '#2563eb',
+          border: 'none',
+          borderRadius: '12px',
+          cursor: !selectedFile || isUploading || validationError ? 'not-allowed' : 'pointer',
+          transition: 'background-color 0.3s ease'
+        }}
+        onMouseOver={(e) => {!selectedFile && !isUploading && !validationError ? (e.target.style.backgroundColor = '#1d4ed8') : null}}
+        onMouseOut={(e) => {!selectedFile && !isUploading && !validationError ? (e.target.style.backgroundColor = '#2563eb') : null}}
       >
         {isUploading ? 'Uploading...' : 'Upload Video'}
       </button>
