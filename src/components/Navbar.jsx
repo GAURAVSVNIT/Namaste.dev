@@ -139,6 +139,13 @@ export default function Navbar(fontFace) {
               <span>Profile</span>
             </Link>
           </DropdownMenuItem>
+
+          <DropdownMenuItem asChild className="focus:bg-gray-50">
+            <Link href="/avatars" className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <User className="h-4 w-4" />
+              <span>Avatars</span>
+            </Link>
+          </DropdownMenuItem>
           
           <DropdownMenuItem asChild className="focus:bg-gray-50">
             <Link href="/profile/blogs" className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
