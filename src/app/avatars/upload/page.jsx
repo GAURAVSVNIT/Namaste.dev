@@ -54,7 +54,7 @@ export default function UploadAvatar() {
 
   return (
     <div className="avatars-page">
-      <h3>Upload your Avatar</h3>
+      <h3 className="text-2xl text-center font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 dark:to-blue-500 bg-clip-text text-transparent" style={{ marginBottom: "1rem" }}>Upload your Avatar</h3>
       <LookForm 
           onSubmit={handleSubmit} 
           onCancel={handleCancel}

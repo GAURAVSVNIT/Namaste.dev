@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, ShoppingCart } from 'lucide-react';
+import { User, LogOut, Settings, ShoppingCart, Sparkle } from 'lucide-react';
 import useCartStore from '@/store/cart-store';
 
 export default function Navbar(fontFace) {
@@ -142,7 +142,7 @@ export default function Navbar(fontFace) {
 
           <DropdownMenuItem asChild className="focus:bg-gray-50">
             <Link href="/avatars" className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-              <User className="h-4 w-4" />
+              <Sparkle className="h-4 w-4" />
               <span>Avatars</span>
             </Link>
           </DropdownMenuItem>

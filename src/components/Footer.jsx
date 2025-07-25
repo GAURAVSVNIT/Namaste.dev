@@ -2,9 +2,12 @@
 
 import React from 'react';
 import '../static/Footer.css';
+import { useRouter } from 'next/navigation';
 import { FaInstagram, FaTwitter, FaLinkedin, FaTshirt, FaCamera, FaUserGraduate } from 'react-icons/fa';
 
 const Footer = (fontFace) => {
+  const router = useRouter();
+
   return (
     <footer className={"footer-glass " + fontFace}>
       <div className="footer-wrapper">
@@ -47,7 +50,7 @@ const Footer = (fontFace) => {
         </div>
 
         <div className="footer-cta">
-          <button className="cta-button-footer"><FaCamera /> Upload Your Look</button>
+          <button className="cta-button-footer" onClick={() => {router.push('/social/look/upload')}}><FaCamera /> Upload Your Look</button>
           <button className="cta-button-footer secondary"><FaUserGraduate /> Join the Community</button>
         </div>
 
