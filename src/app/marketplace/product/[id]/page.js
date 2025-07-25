@@ -8,6 +8,7 @@ import useCartStore from '../../../../store/cart-store';
 import { formatCurrency } from '../../../../lib/utils';
 import '../../../../static/ProductPage.css';
 import Navbar from '../../../../components/Navbar';
+import ChatButton from '../../../../components/chat/ChatButton';
 
 const ProductPage = () => {
   const { id } = useParams();
@@ -220,6 +221,8 @@ const ProductPage = () => {
           </div>
         </div>
       </div>
+      
+      <ChatButton product={product} />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import QuizPromo from '../components/QuizPromo';
 import ServicesSection from '../components/ServicesSection';
 import '../static/Hero.css';
 import '../static/ScrollingCards.css';
+import { AvatarBuilderHeader } from './avatars/page';
 
 const Home = () => {
   return (
@@ -20,6 +21,7 @@ const Home = () => {
       <QuizPromo />
       <TestimonialsSection />
       <ServicesSection />
+      <AvatarBuilderHeader />
     </>
   )
 }

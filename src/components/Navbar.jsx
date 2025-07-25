@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, ShoppingCart } from 'lucide-react';
+import { User, LogOut, Settings, ShoppingCart, Sparkle } from 'lucide-react';
 import useCartStore from '@/store/cart-store';
 
 export default function Navbar(fontFace) {
@@ -83,11 +83,12 @@ export default function Navbar(fontFace) {
     { name: 'Market Place', route: "marketplace" },
 { name: 'Quiz', route: "quiz" },
     { name: 'Virtual Try-On', route: "virtual-tryon" },
+    { name: 'Consultation', route: "consultation" },
     { name: 'Blog', route: "blog" }
   ];
 
   const { openCart, getCartCount } = useCartStore();
-  const cartCount = getCartCount();
+  const { cartCount, setCardCount } = getCartCount();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -190,6 +191,7 @@ export default function Navbar(fontFace) {
                 </div>
               </div>
             </div>
+
             
             {/* Navigation Links */}
             <div style={{ padding: '0 4px' }}>

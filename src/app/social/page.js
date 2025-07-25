@@ -640,28 +640,28 @@ const SocialFeedPage = () => {
               icon={Camera}
               title="Explore Looks"
               subtitle="Browse fashion styles"
-              gradient="from-indigo-500 to-purple-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/look"
             />
             <QuickActionCard
               icon={Play}
               title="Create Reel"
               subtitle="Make fashion videos"
-              gradient="from-indigo-500 to-purple-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/fashiontv"
             />
             <QuickActionCard
               icon={Tv}
               title="Live Streams"
               subtitle="Watch fashion shows"
-              gradient="from-indigo-500 to-purple-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/fashiontv/live"
             />
             <QuickActionCard
               icon={Zap}
               title="Trending"
               subtitle="What's hot now"
-              gradient="from-indigo-500 to-purple-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/trending"
             />
           </div>
@@ -672,10 +672,10 @@ const SocialFeedPage = () => {
           <div className="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg" style={{ padding: '12px' }}>
             <div className="flex" style={{ gap: '12px' }}>
             {[
-              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-indigo-500 to-purple-600' },
-              { id: 'looks', label: 'Looks', icon: Camera, color: 'from-indigo-500 to-purple-600' },
-              { id: 'reels', label: 'Fashion TV', icon: Play, color: 'from-indigo-500 to-purple-600' },
-              { id: 'live', label: 'Live', icon: Tv, color: 'from-indigo-500 to-purple-600' }
+              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-pink-500 to-purple-500' },
+              { id: 'looks', label: 'Looks', icon: Camera, color: 'from-pink-500 to-purple-500' },
+              { id: 'reels', label: 'Fashion TV', icon: Play, color: 'from-pink-500 to-purple-500' },
+              { id: 'live', label: 'Live', icon: Tv, color: 'from-pink-500 to-purple-500' }
             ].map((tab) => {
               const Icon = tab.icon;
               return (

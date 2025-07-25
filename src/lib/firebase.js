@@ -350,7 +350,8 @@ export {
   limit,
   serverTimestamp,
   onSnapshot,
-  Timestamp
+  Timestamp,
+  arrayUnion
 };
 
 // FirestoreConversationData interface removed for JavaScript conversion
