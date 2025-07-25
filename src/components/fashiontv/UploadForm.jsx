@@ -4,13 +4,22 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { uploadVideo } from '@/lib/fashiontv';
 import { toast } from '@/hooks/use-toast';
+import { 
+  generateVideoThumbnail, 
+  validateVideoFile, 
+  createThumbnailPreviewURL, 
+  cleanupPreviewURL 
+} from '@/utils/videoUtils';
 
 export default function UploadForm({ onSuccess }) {
   const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
+  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailBlob, setThumbnailBlob] = useState(null);
   const [caption, setCaption] = useState('');
   const [isUploading, setIsUploading] = useState(false);
+  const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false);
   const [validationError, setValidationError] = useState('');
 
   const validateVideo = (file) => {
@@ -42,7 +51,23 @@ export default function UploadForm({ onSuccess }) {
     
     // Create preview URL
     const previewUrl = URL.createObjectURL(file);
-    setPreview(previewUrl);
+setPreview(previewUrl);
+
+    // Generate and set thumbnail
+    setIsGeneratingThumbnail(true);
+    generateVideoThumbnail(file, 2)
+      .then(thumbnailBlob => {
+        const thumbnailUrl = createThumbnailPreviewURL(thumbnailBlob);
+        setThumbnail(thumbnailUrl); // For preview display
+        setThumbnailBlob(thumbnailBlob); // For upload
+        setIsGeneratingThumbnail(false);
+      })
+      .catch(() => {
+        setValidationError('Failed to generate thumbnail');
+        setThumbnail(null);
+        setThumbnailBlob(null);
+        setIsGeneratingThumbnail(false);
+      });
 
     // Check video duration
     const video = document.createElement('video');
@@ -95,10 +120,10 @@ export default function UploadForm({ onSuccess }) {
     
     try {
       const videoData = {
-        caption: caption.trim(),
+        caption: caption.trim()
       };
 
-      await uploadVideo(user.uid, selectedFile, videoData);
+      await uploadVideo(user.uid, selectedFile, videoData, thumbnailBlob);
       
       toast({
         title: "Success!",

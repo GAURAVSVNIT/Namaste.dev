@@ -54,6 +54,20 @@ export default function VideoFeed({ onCommentsToggle }) {
     }
   }, [hasMore, isLoading, lastDoc]);
 
+  const handleVideoDeleted = useCallback((deletedVideoId) => {
+    // Remove the deleted video from state
+    setVideos(prev => prev.filter(video => video.id !== deletedVideoId));
+    
+    // Adjust current video index if necessary
+    setCurrentVideoIndex(prev => {
+      const currentVideos = videos.filter(video => video.id !== deletedVideoId);
+      if (prev >= currentVideos.length && currentVideos.length > 0) {
+        return currentVideos.length - 1;
+      }
+      return prev;
+    });
+  }, [videos]);
+
   // Use Intersection Observer for better performance
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -125,6 +139,7 @@ export default function VideoFeed({ onCommentsToggle }) {
               onCommentsToggle={onCommentsToggle}
               isGloballyMuted={isGloballyMuted}
               onGlobalMuteToggle={setIsGloballyMuted}
+              onVideoDeleted={handleVideoDeleted}
             />
           </div>
         ))}

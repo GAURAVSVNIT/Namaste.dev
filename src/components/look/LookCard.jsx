@@ -246,7 +246,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
           </div>
 
           {/* Caption */}
-          <Link href={`/look/${look.id}`}>
+          <Link href={`/social/look/${look.id}`}>
             <p className="text-sm text-gray-900 mb-3 line-clamp-2 cursor-pointer hover:text-gray-700">
               {look.caption}
             </p>
@@ -282,7 +282,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
                 <span className="ml-1 text-sm">{likesCount}</span>
               </Button>
               
-              <Link href={`/look/${look.id}`}>
+              <Link href={`/social/look/${look.id}`}>
                 <Button variant="ghost" size="sm" className="p-0 h-auto text-gray-500 hover:text-gray-700">
                   <MessageCircle className="h-5 w-5" />
                   <span className="ml-1 text-sm">{look.comments?.length || 0}</span>
@@ -290,7 +290,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
               </Link>
             </div>
 
-            <Link href={`/look/${look.id}`}>
+            <Link href={`/social/look/${look.id}`}>
               <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-gray-700">
                 View Details
               </Button>

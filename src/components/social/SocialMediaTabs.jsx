@@ -466,19 +466,19 @@ const SocialMediaTabs = ({ profileData }) => {
           <div 
             className="text-center py-16 rounded-3xl" 
             style={{
-              background: 'linear-gradient(135deg, rgba(147, 51, 234, 0.05), rgba(168, 85, 247, 0.05))',
-              border: '2px dashed rgba(147, 51, 234, 0.2)',
+            background: 'linear-gradient(135deg, rgba(100, 116, 139, 0.03), rgba(107, 114, 128, 0.03))',
+            border: '2px dashed rgba(100, 116, 139, 0.12)',
               backdropFilter: 'blur(10px)'
             }}
           >
             <div className="relative mx-auto mb-8" style={{ width: '120px', height: '120px' }}>
               <div 
-                className="absolute inset-0 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center"
+                className="absolute inset-0 bg-gradient-to-br from-slate-50 to-gray-50 rounded-full flex items-center justify-center"
                 style={{
-                  boxShadow: '0 20px 25px -5px rgba(147, 51, 234, 0.15)'
+                  boxShadow: '0 20px 25px -5px rgba(100, 116, 139, 0.05)'
                 }}
               >
-                <Grid3X3 size={56} className="text-purple-500" />
+                <Grid3X3 size={56} className="text-slate-400" />
               </div>
               
               {/* Floating elements */}
@@ -497,7 +497,7 @@ const SocialMediaTabs = ({ profileData }) => {
             <h3 
               className="text-2xl font-bold mb-4"
               style={{
-                background: 'linear-gradient(135deg, #9333ea, #a855f7)',
+                background: 'linear-gradient(135deg, #64748b, #6b7280)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
@@ -511,11 +511,11 @@ const SocialMediaTabs = ({ profileData }) => {
             </p>
             
             <div className="flex gap-4 justify-center flex-wrap">
-              <button className="bg-gradient-to-r from-purple-500 to-violet-500 hover:from-purple-600 hover:to-violet-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
+              <button className="bg-gradient-to-r from-slate-400 to-gray-500 hover:from-slate-500 hover:to-gray-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
                 <Plus size={20} />
                 Upload Look
               </button>
-              <button className="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
+              <button className="bg-gradient-to-r from-gray-400 to-slate-500 hover:from-gray-500 hover:to-slate-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
                 <Eye size={20} />
                 Explore Looks
               </button>
@@ -544,33 +544,40 @@ const SocialMediaTabs = ({ profileData }) => {
 
   const ReelsGrid = ({ reels }) => (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {false ? (
+      {reels && reels.length > 0 ? (
         reels.map((reel, index) => (
           <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
             <div className="aspect-[9/16] bg-gray-200 relative">
               {reel.thumbnail ? (
                 <img 
                   src={reel.thumbnail} 
-                  alt={reel.title || "Reel"}
+                  alt={reel.title || reel.caption || "Reel"}
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // Fallback to placeholder if thumbnail fails to load
+                    e.target.style.display = 'none';
+                    e.target.nextSibling.style.display = 'flex';
+                  }}
                 />
-              ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-400">
-                  <Play size={32} />
-                </div>
-              )}
-              <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+              ) : null}
+              <div 
+                className="w-full h-full flex items-center justify-center text-gray-400 bg-gradient-to-br from-blue-100 to-purple-100"
+                style={{ display: reel.thumbnail ? 'none' : 'flex' }}
+              >
+                <Play size={32} className="text-blue-500" />
+              </div>
+              <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
                 <Play className="text-white" size={24} />
               </div>
               <div className="absolute bottom-2 left-2 text-white text-xs bg-black bg-opacity-50 px-2 py-1 rounded">
-                {reel.duration || "0:00"}
+                {reel.duration ? `${Math.floor(reel.duration / 60)}:${String(Math.floor(reel.duration % 60)).padStart(2, '0')}` : "0:00"}
               </div>
             </div>
             <CardContent className="p-2">
-              <p className="text-sm font-medium truncate">{reel.title || "Untitled Reel"}</p>
+              <p className="text-sm font-medium truncate">{reel.title || reel.caption || "Untitled Reel"}</p>
               <div className="flex justify-between text-xs text-gray-500 mt-1">
                 <span>{reel.views || 0} views</span>
-                <span>{reel.likes || 0} ❤️</span>
+                <span>{reel.likes?.length || 0} ❤️</span>
               </div>
             </CardContent>
           </Card>
@@ -580,19 +587,19 @@ const SocialMediaTabs = ({ profileData }) => {
           <div 
             className="text-center py-16 rounded-3xl" 
             style={{
-              background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05), rgba(14, 165, 233, 0.05))',
-              border: '2px dashed rgba(59, 130, 246, 0.2)',
+            background: 'linear-gradient(135deg, rgba(100, 116, 139, 0.02), rgba(107, 114, 128, 0.02))',
+            border: '2px dashed rgba(100, 116, 139, 0.1)',
               backdropFilter: 'blur(10px)'
             }}
           >
             <div className="relative mx-auto mb-8" style={{ width: '120px', height: '120px' }}>
               <div 
-                className="absolute inset-0 bg-gradient-to-br from-blue-100 to-cyan-100 rounded-full flex items-center justify-center"
+                className="absolute inset-0 bg-gradient-to-br from-slate-50 to-gray-50 rounded-full flex items-center justify-center"
                 style={{
-                  boxShadow: '0 20px 25px -5px rgba(59, 130, 246, 0.15)'
+                  boxShadow: '0 20px 25px -5px rgba(100, 116, 139, 0.05)'
                 }}
               >
-                <Play size={56} className="text-blue-500 fill-blue-500" />
+                <Play size={56} className="text-slate-400 fill-slate-400" />
               </div>
               
               {/* Floating elements */}
@@ -611,7 +618,7 @@ const SocialMediaTabs = ({ profileData }) => {
             <h3 
               className="text-2xl font-bold mb-4"
               style={{
-                background: 'linear-gradient(135deg, #3b82f6, #06b6d4)',
+                background: 'linear-gradient(135deg, #64748b, #6b7280)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
@@ -625,11 +632,11 @@ const SocialMediaTabs = ({ profileData }) => {
             </p>
             
             <div className="flex gap-4 justify-center flex-wrap">
-              <button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
+              <button className="bg-gradient-to-r from-slate-400 to-gray-500 hover:from-slate-500 hover:to-gray-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
                 <Plus size={20} />
                 Create Reel
               </button>
-              <button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
+              <button className="bg-gradient-to-r from-gray-400 to-slate-500 hover:from-gray-500 hover:to-slate-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
                 <Eye size={20} />
                 Watch Reels
               </button>
@@ -794,7 +801,7 @@ const SocialMediaTabs = ({ profileData }) => {
             <h3 
               className="text-2xl font-bold mb-4"
               style={{
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                background: 'linear-gradient(135deg, #64748b, #6b7280)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
@@ -808,11 +815,11 @@ const SocialMediaTabs = ({ profileData }) => {
             </p>
             
             <div className="flex gap-4 justify-center">
-              <button className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
+              <button className="bg-gradient-to-r from-slate-400 to-gray-500 hover:from-slate-500 hover:to-gray-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
                 <Plus size={20} />
                 Explore Looks
               </button>
-              <button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
+              <button className="bg-gradient-to-r from-gray-400 to-slate-500 hover:from-gray-500 hover:to-slate-600 text-white px-6 py-3 rounded-full font-bold transform hover:scale-105 transition-all duration-200 shadow-lg flex items-center gap-2">
                 <Play size={20} />
                 Watch Reels
               </button>

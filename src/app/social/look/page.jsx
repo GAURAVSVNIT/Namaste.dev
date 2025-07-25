@@ -7,6 +7,7 @@ import LookCard from '@/components/look/LookCard';
 import { toast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
 
 export default function LookPage() {
   const { user } = useAuth();
@@ -17,6 +18,8 @@ export default function LookPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [moodFilter, setMoodFilter] = useState('');
   const [sortBy, setSortBy] = useState('recent');
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [selectedTags, setSelectedTags] = useState([]);
 
   useEffect(() => {
     const fetchLooks = async () => {
@@ -124,13 +127,38 @@ export default function LookPage() {
     }
   };
 
+  const toggleTagSelection = (tag) => {
+    if (tag === 'All') {
+      setSelectedTags([]);
+    } else {
+      setSelectedTags(prev => {
+        const isSelected = prev.includes(tag);
+        if (isSelected) {
+          return prev.filter(t => t !== tag);
+        } else {
+          return [...prev, tag];
+        }
+      });
+    }
+  };
+
+  const applyFilters = () => {
+    if (selectedTags.length === 0) {
+      setMoodFilter('');
+    } else {
+      // For now, we'll use the first selected tag as the mood filter
+      // In the future, you could enhance this to support multiple filters
+      setMoodFilter(selectedTags[0]);
+    }
+    setFilterModalOpen(false);
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
       background: '#ffffff',
       paddingTop: '80px' // Add space for navbar
     }}>
-      {/* Hero Section */}
       <div style={{
         background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         margin: '0 20px',
@@ -172,14 +200,17 @@ export default function LookPage() {
           zIndex: 2
         }}>
           <h1 style={{
-            fontSize: '48px',
+            fontSize: '64px',
             fontWeight: '800',
             color: 'white',
-            marginBottom: '16px',
+            marginBottom: '20px',
             fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-            textShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+            textShadow: '0 6px 30px rgba(0, 0, 0, 0.6)',
             letterSpacing: '-0.02em',
-            lineHeight: '1.1'
+            lineHeight: '1.1',
+            margin: '0 0 20px 0',
+            padding: '0',
+            background: 'transparent'
           }}>
             Fashion Looks
           </h1>
@@ -190,11 +221,11 @@ export default function LookPage() {
             marginBottom: '30px',
             fontWeight: '400',
             textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
-            maxWidth: '500px',
+            maxWidth: '700px',
             margin: '0 auto 30px',
             lineHeight: '1.5'
           }}>
-            Discover, create, and share amazing fashion inspirations with the community
+            Discover, create, and share the latest fashion trends with a vibrant community of style enthusiasts
           </p>
 
           {/* Action Button */}
@@ -237,11 +268,14 @@ export default function LookPage() {
         margin: '0 auto',
         padding: '40px 20px'
       }}>
-        {/* Search Section */}
+        {/* Search and Filter Section */}
         <div style={{
           display: 'flex',
           justifyContent: 'center',
-          marginBottom: '50px'
+          alignItems: 'center',
+          gap: '20px',
+          marginBottom: '50px',
+          flexWrap: 'wrap'
         }}>
           <div style={{
             position: 'relative',
@@ -302,81 +336,192 @@ export default function LookPage() {
               </span>
             </div>
           </div>
-        </div>
 
-        {/* Filter Section */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'center',
-          marginBottom: '40px',
-          flexWrap: 'wrap',
-          gap: '16px'
-        }}>
-          <div style={{
-            background: 'rgba(102, 126, 234, 0.05)',
-            borderRadius: '20px',
-            padding: '20px',
-            border: '1px solid rgba(102, 126, 234, 0.1)',
-            backdropFilter: 'blur(10px)',
-            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.1)'
-          }}>
-            <h3 style={{
+          {/* Filter Button */}
+          <button
+            onClick={() => setFilterModalOpen(true)}
+            style={{
+              padding: '22px 32px',
+              borderRadius: '25px',
+              border: 'none',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
               fontSize: '16px',
               fontWeight: '600',
-              color: '#374151',
-              marginBottom: '16px',
-              textAlign: 'center'
-            }}>
-              🎨 Filter by Style
-            </h3>
-            
+              cursor: 'pointer',
+              boxShadow: '0 8px 30px rgba(102, 126, 234, 0.3)',
+              transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+              fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+              minWidth: '120px'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.transform = 'scale(1.03) translateY(-2px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.transform = 'scale(1) translateY(0)';
+              e.target.style.boxShadow = '0 8px 30px rgba(102, 126, 234, 0.3)';
+            }}
+          >
+            🎨 Filter
+          </button>
+        </div>
+
+        {/* Filter Modal */}
+        {filterModalOpen && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            background: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1000
+          }}
+            onClick={() => setFilterModalOpen(false)}
+          >
             <div style={{
-              display: 'flex',
-              flexWrap: 'wrap',
-              gap: '8px',
-              justifyContent: 'center'
-            }}>
-              {['All', 'Casual', 'Formal', 'Sporty', 'Elegant', 'Trendy', 'Vintage', 'Bohemian', 'Classic', 'Edgy', 'Romantic', 'Minimalist', 'Chill'].map((mood) => (
+              background: 'white',
+              borderRadius: '20px',
+              padding: '40px',
+              width: '90%',
+              maxWidth: '500px',
+              maxHeight: '80vh',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
+              position: 'relative'
+            }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setFilterModalOpen(false)}
+                style={{
+                  position: 'absolute',
+                  top: '15px',
+                  right: '15px',
+                  background: 'none',
+                  border: 'none',
+                  fontSize: '24px',
+                  cursor: 'pointer',
+                  color: '#666',
+                  padding: '5px'
+                }}
+              >
+                ✕
+              </button>
+
+              <h3 style={{
+                fontSize: '28px',
+                fontWeight: '700',
+                marginBottom: '30px',
+                textAlign: 'center',
+                color: '#2d3748',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>🎨 Select Filters</h3>
+
+              <div style={{
+                maxHeight: '300px',
+                overflowY: 'auto',
+                marginBottom: '30px',
+                paddingRight: '10px'
+              }}>
+                {['All', 'Casual', 'Formal', 'Sporty', 'Elegant', 'Trendy', 'Vintage', 'Bohemian', 'Classic', 'Edgy', 'Romantic', 'Minimalist', 'Chill'].map((mood) => (
+                  <div key={mood} style={{ marginBottom: '15px' }}>
+                    <label style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      gap: '12px',
+                      cursor: 'pointer',
+                      padding: '10px',
+                      borderRadius: '12px',
+                      transition: 'background-color 0.2s ease',
+                      fontSize: '16px',
+                      fontWeight: '500'
+                    }}
+                      onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(102, 126, 234, 0.05)'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedTags.includes(mood) || (mood === 'All' && selectedTags.length === 0)}
+                        onChange={() => toggleTagSelection(mood)}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          accentColor: '#667eea'
+                        }}
+                      />
+                      <span style={{ color: '#374151' }}>{mood}</span>
+                    </label>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: 'flex', gap: '15px' }}>
                 <button
-                  key={mood}
-                  onClick={() => setMoodFilter(mood === 'All' ? '' : mood)}
+                  onClick={() => {
+                    setSelectedTags([]);
+                    setMoodFilter('');
+                    setFilterModalOpen(false);
+                  }}
                   style={{
-                    padding: '8px 16px',
-                    borderRadius: '20px',
-                    border: 'none',
-                    background: moodFilter === mood || (mood === 'All' && !moodFilter) 
-                      ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                      : 'rgba(255, 255, 255, 0.8)',
-                    color: moodFilter === mood || (mood === 'All' && !moodFilter) ? 'white' : '#6b7280',
-                    fontSize: '14px',
-                    fontWeight: '500',
+                    flex: 1,
+                    padding: '15px 24px',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    background: 'white',
+                    color: '#6b7280',
+                    fontSize: '16px',
+                    fontWeight: '600',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: moodFilter === mood || (mood === 'All' && !moodFilter)
-                      ? '0 4px 12px rgba(102, 126, 234, 0.3)'
-                      : '0 2px 6px rgba(0, 0, 0, 0.05)',
-                    textShadow: moodFilter === mood || (mood === 'All' && !moodFilter) 
-                      ? '0 1px 2px rgba(0, 0, 0, 0.2)' : 'none'
+                    transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
-                    if (!(moodFilter === mood || (mood === 'All' && !moodFilter))) {
-                      e.target.style.background = 'rgba(102, 126, 234, 0.1)';
-                      e.target.style.transform = 'translateY(-1px)';
-                    }
+                    e.target.style.borderColor = '#667eea';
+                    e.target.style.color = '#667eea';
                   }}
                   onMouseLeave={(e) => {
-                    if (!(moodFilter === mood || (mood === 'All' && !moodFilter))) {
-                      e.target.style.background = 'rgba(255, 255, 255, 0.8)';
-                      e.target.style.transform = 'translateY(0)';
-                    }
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.color = '#6b7280';
                   }}
                 >
-                  {mood}
+                  Clear All
                 </button>
-              ))}
+                <button
+                  onClick={applyFilters}
+                  style={{
+                    flex: 1,
+                    padding: '15px 24px',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.5)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+                  }}
+                >
+                  Apply Filters
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Sort Options */}
         <div style={{
