@@ -18,7 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, ShoppingCart, Sparkle } from 'lucide-react';
+import { User, LogOut, Settings, ShoppingCart, Sparkle, Sparkles } from 'lucide-react';
 import useCartStore from '@/store/cart-store';
 
 export default function Navbar(fontFace) {
@@ -266,6 +266,44 @@ export default function Navbar(fontFace) {
                   <div>
                     <div style={{ fontWeight: '500', fontSize: '14px', color: '#374151', marginBottom: '2px' }}>My Orders</div>
                     <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Track your purchases</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link href="/avatars" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  textDecoration: 'none',
+                  borderRadius: '12px',
+                  transition: 'all 0.2s ease',
+                  marginBottom: '4px',
+                  background: 'transparent'
+                }} onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))';
+                  e.target.style.transform = 'translateY(-1px)';
+                }} onMouseLeave={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.transform = 'translateY(0px)';
+                }}>
+                  <div style={{
+                    padding: '10px',
+                    background: 'linear-gradient(135deg, #FACC15, #F97316, #EF4444)',
+                    color: 'white',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4)',
+                    transition: 'all 0.2s ease'
+                  }}>
+                    <Sparkles style={{ width: '16px', height: '16px' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '500', fontSize: '14px', color: '#374151', marginBottom: '2px' }}>My Avatars</div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Express Yourself in 3D.</div>
                   </div>
                 </Link>
               </DropdownMenuItem>
