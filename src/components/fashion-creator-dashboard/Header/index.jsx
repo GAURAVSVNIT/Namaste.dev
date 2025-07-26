@@ -46,7 +46,7 @@ function Header({ onMenuClick, isCollapsed }) {
           <input
             type="text"
             className={styles.searchInput}
-            placeholder="Search products, orders, customers..."
+            placeholder="Search orders, customers, designs..."
           />
         </div>
 

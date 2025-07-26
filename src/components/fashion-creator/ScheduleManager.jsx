@@ -7,6 +7,251 @@ import { z } from 'zod';
 import { updateAvailability } from '../../lib/consultation-firebase';
 import { useAuth } from '../../hooks/useAuth';
 
+// Inline CSS styles
+const styles = {
+  container: {
+    maxWidth: '896px',
+    margin: '0 auto',
+    padding: '24px'
+  },
+  card: {
+    backgroundColor: '#ffffff',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+    padding: '24px'
+  },
+  header: {
+    marginBottom: '24px'
+  },
+  title: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    color: '#111827',
+    marginBottom: '8px',
+    margin: 0
+  },
+  subtitle: {
+    color: '#6b7280',
+    margin: 0
+  },
+  messageContainer: {
+    marginBottom: '24px',
+    padding: '16px',
+    borderRadius: '6px'
+  },
+  successMessage: {
+    backgroundColor: '#f0fdf4',
+    color: '#15803d',
+    border: '1px solid #bbf7d0'
+  },
+  errorMessage: {
+    backgroundColor: '#fef2f2',
+    color: '#dc2626',
+    border: '1px solid #fecaca'
+  },
+  form: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px'
+  },
+  fieldContainer: {
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  label: {
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#374151',
+    marginBottom: '8px'
+  },
+  select: {
+    display: 'block',
+    width: '100%',
+    padding: '8px 12px',
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: '#111827',
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    borderRadius: '6px',
+    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    outline: 'none',
+    transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
+  },
+  selectFocus: {
+    borderColor: '#3b82f6',
+    boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)'
+  },
+  errorText: {
+    marginTop: '4px',
+    fontSize: '14px',
+    color: '#dc2626'
+  },
+  daysGrid: {
+    display: 'grid',
+    gap: '16px',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))'
+  },
+  dayCard: {
+    border: '1px solid #e5e7eb',
+    borderRadius: '8px',
+    padding: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '12px'
+  },
+  dayHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+  },
+  dayTitle: {
+    fontWeight: '500',
+    textTransform: 'capitalize',
+    color: '#111827',
+    margin: 0,
+    fontSize: '16px'
+  },
+  checkboxLabel: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    cursor: 'pointer'
+  },
+  checkbox: {
+    width: '16px',
+    height: '16px',
+    borderRadius: '4px',
+    border: '1px solid #d1d5db',
+    accentColor: '#3b82f6',
+    cursor: 'pointer'
+  },
+  checkboxText: {
+    fontSize: '14px',
+    color: '#6b7280'
+  },
+  timeSlotsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px'
+  },
+  timeSlotRow: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px'
+  },
+  timeSlotField: {
+    flex: 1,
+    display: 'flex',
+    flexDirection: 'column'
+  },
+  timeSlotSelect: {
+    display: 'block',
+    width: '100%',
+    padding: '6px 8px',
+    fontSize: '14px',
+    lineHeight: '20px',
+    color: '#111827',
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    borderRadius: '6px',
+    boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+    outline: 'none',
+    transition: 'border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out'
+  },
+  toText: {
+    color: '#6b7280',
+    fontSize: '14px'
+  },
+  removeButton: {
+    color: '#dc2626',
+    backgroundColor: 'transparent',
+    border: 'none',
+    padding: '4px',
+    borderRadius: '4px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'color 0.15s ease-in-out'
+  },
+  removeButtonHover: {
+    color: '#991b1b'
+  },
+  removeButtonDisabled: {
+    opacity: '0.5',
+    cursor: 'not-allowed'
+  },
+  addTimeSlotButton: {
+    color: '#3b82f6',
+    backgroundColor: 'transparent',
+    border: 'none',
+    fontSize: '14px',
+    fontWeight: '500',
+    display: 'flex',
+    alignItems: 'center',
+    gap: '4px',
+    cursor: 'pointer',
+    transition: 'color 0.15s ease-in-out',
+    padding: '4px 0'
+  },
+  addTimeSlotButtonHover: {
+    color: '#1d4ed8'
+  },
+  buttonContainer: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '12px',
+    paddingTop: '24px',
+    borderTop: '1px solid #e5e7eb'
+  },
+  resetButton: {
+    padding: '8px 16px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#374151',
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    transition: 'background-color 0.15s ease-in-out',
+    outline: 'none'
+  },
+  resetButtonHover: {
+    backgroundColor: '#f9fafb'
+  },
+  resetButtonFocus: {
+    boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)'
+  },
+  submitButton: {
+    padding: '8px 16px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#ffffff',
+    backgroundColor: '#3b82f6',
+    border: '1px solid transparent',
+    borderRadius: '6px',
+    cursor: 'pointer',
+    transition: 'background-color 0.15s ease-in-out',
+    outline: 'none'
+  },
+  submitButtonHover: {
+    backgroundColor: '#2563eb'
+  },
+  submitButtonFocus: {
+    boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)'
+  },
+  submitButtonDisabled: {
+    opacity: '0.5',
+    cursor: 'not-allowed'
+  },
+  icon: {
+    width: '16px',
+    height: '16px'
+  }
+};
+
 // Zod schema for validation
 const timeSlotSchema = z.object({
   startTime: z.string().min(1, 'Start time is required'),
@@ -172,51 +417,51 @@ const DaySchedule = memo(({ day }) => {
     };
 
     return (
-      <div className="border rounded-lg p-4 space-y-3">
-        <div className="flex items-center justify-between">
-          <h3 className="font-medium capitalize text-gray-900">{day}</h3>
-          <label className="flex items-center space-x-2">
+      <div style={styles.dayCard}>
+        <div style={styles.dayHeader}>
+          <h3 style={styles.dayTitle}>{day}</h3>
+          <label style={styles.checkboxLabel}>
             <input
               type="checkbox"
               checked={dayData?.isAvailable || false}
               onChange={(e) => toggleDay(e.target.checked)}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              style={styles.checkbox}
             />
-            <span className="text-sm text-gray-600">Available</span>
+            <span style={styles.checkboxText}>Available</span>
           </label>
         </div>
 
         {dayData?.isAvailable && (
-          <div className="space-y-2">
+          <div style={styles.timeSlotsContainer}>
             {fields.map((field, index) => (
-              <div key={field.id} className="flex items-center space-x-2">
-                <div className="flex-1">
-<select
-  {...form.register(`${day}.timeSlots.${index}.startTime`)}
-  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
->
-  {TIME_OPTIONS.map(({ value, label }) => (
-    <option key={value} value={value}>{label}</option>
-  ))}
-</select>
+              <div key={field.id} style={styles.timeSlotRow}>
+                <div style={styles.timeSlotField}>
+                  <select
+                    {...form.register(`${day}.timeSlots.${index}.startTime`)}
+                    style={styles.timeSlotSelect}
+                  >
+                    {TIME_OPTIONS.map(({ value, label }) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
                   {errors[day]?.timeSlots?.[index]?.startTime && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p style={styles.errorText}>
                       {errors[day].timeSlots[index].startTime.message}
                     </p>
                   )}
                 </div>
-                <span className="text-gray-500">to</span>
-                <div className="flex-1">
-<select
-  {...form.register(`${day}.timeSlots.${index}.endTime`)}
-  className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
->
-  {TIME_OPTIONS.map(({ value, label }) => (
-    <option key={value} value={value}>{label}</option>
-  ))}
-</select>
+                <span style={styles.toText}>to</span>
+                <div style={styles.timeSlotField}>
+                  <select
+                    {...form.register(`${day}.timeSlots.${index}.endTime`)}
+                    style={styles.timeSlotSelect}
+                  >
+                    {TIME_OPTIONS.map(({ value, label }) => (
+                      <option key={value} value={value}>{label}</option>
+                    ))}
+                  </select>
                   {errors[day]?.timeSlots?.[index]?.endTime && (
-                    <p className="mt-1 text-sm text-red-600">
+                    <p style={styles.errorText}>
                       {errors[day].timeSlots[index].endTime.message}
                     </p>
                   )}
@@ -224,10 +469,23 @@ const DaySchedule = memo(({ day }) => {
                 <button
                   type="button"
                   onClick={() => remove(index)}
-                  className="text-red-600 hover:text-red-800 p-1"
+                  style={{
+                    ...styles.removeButton,
+                    ...(fields.length === 1 ? styles.removeButtonDisabled : {})
+                  }}
                   disabled={fields.length === 1}
+                  onMouseEnter={(e) => {
+                    if (fields.length > 1) {
+                      Object.assign(e.target.style, styles.removeButtonHover);
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (fields.length > 1) {
+                      Object.assign(e.target.style, styles.removeButton);
+                    }
+                  }}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                   </svg>
                 </button>
@@ -236,9 +494,11 @@ const DaySchedule = memo(({ day }) => {
             <button
               type="button"
               onClick={addTimeSlot}
-              className="text-blue-600 hover:text-blue-800 text-sm font-medium flex items-center space-x-1"
+              style={styles.addTimeSlotButton}
+              onMouseEnter={(e) => Object.assign(e.target.style, styles.addTimeSlotButtonHover)}
+              onMouseLeave={(e) => Object.assign(e.target.style, styles.addTimeSlotButton)}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
               <span>Add Time Slot</span>
@@ -249,33 +509,1854 @@ const DaySchedule = memo(({ day }) => {
     );
   });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Schedule Manager</h2>
-          <p className="text-gray-600">Set your availability for client consultations</p>
+    <>
+        <div style={styles.header}>
+          <h2 style={styles.title}>Schedule Manager</h2>
+          <p style={styles.subtitle}>Set your availability for client consultations</p>
         </div>
 
         {message.text && (
-          <div className={`mb-6 p-4 rounded-md ${
-            message.type === 'success' 
-              ? 'bg-green-50 text-green-700 border border-green-200' 
-              : 'bg-red-50 text-red-700 border border-red-200'
-          }`}>
+          <div style={{
+            ...styles.messageContainer,
+            ...(message.type === 'success' ? styles.successMessage : styles.errorMessage)
+          }}>
             {message.text}
           </div>
         )}
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        <form onSubmit={handleSubmit(onSubmit)} style={styles.form}>
           {/* Timezone Selection */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+          <div style={styles.fieldContainer}>
+            <label style={styles.label}>
               Timezone
             </label>
             <select
               {...form.register('timezone')}
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              style={styles.select}
+              onFocus={(e) => Object.assign(e.target.style, styles.selectFocus)}
+              onBlur={(e) => Object.assign(e.target.style, styles.select)}
             >
               {TIMEZONES.map((tz) => (
                 <option key={tz} value={tz}>
@@ -284,36 +2365,62 @@ const DaySchedule = memo(({ day }) => {
               ))}
             </select>
             {errors.timezone && (
-              <p className="mt-1 text-sm text-red-600">{errors.timezone.message}</p>
+              <p style={styles.errorText}>{errors.timezone.message}</p>
             )}
           </div>
 
           {/* Days of Week */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          <div style={styles.daysGrid}>
             {DAYS_OF_WEEK.map((day) => (
               <DaySchedule key={day} day={day} />
             ))}
           </div>
 
           {/* Submit Button */}
-          <div className="flex justify-end space-x-3 pt-6 border-t">
+          <div style={styles.buttonContainer}>
             <button
               type="button"
               onClick={() => form.reset()}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              style={styles.resetButton}
+              onMouseEnter={(e) => Object.assign(e.target.style, styles.resetButtonHover)}
+              onMouseLeave={(e) => Object.assign(e.target.style, styles.resetButton)}
+              onFocus={(e) => Object.assign(e.target.style, styles.resetButtonFocus)}
+              onBlur={(e) => Object.assign(e.target.style, styles.resetButton)}
             >
               Reset
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                ...styles.submitButton,
+                ...(loading ? styles.submitButtonDisabled : {})
+              }}
+              onMouseEnter={(e) => {
+                if (!loading) {
+                  Object.assign(e.target.style, styles.submitButtonHover);
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!loading) {
+                  Object.assign(e.target.style, styles.submitButton);
+                }
+              }}
+              onFocus={(e) => {
+                if (!loading) {
+                  Object.assign(e.target.style, styles.submitButtonFocus);
+                }
+              }}
+              onBlur={(e) => {
+                if (!loading) {
+                  Object.assign(e.target.style, styles.submitButton);
+                }
+              }}
             >
               {loading ? 'Saving...' : 'Save Schedule'}
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </>
   );
 }

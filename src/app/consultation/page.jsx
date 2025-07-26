@@ -14,6 +14,7 @@ import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
 import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
+import ProfileCard from '@/blocks/Components/ProfileCard/ProfileCard';
 import styles from './consultation.module.css';
 
 const SPECIALIZATIONS = [
@@ -52,6 +53,7 @@ export default function ConsultationPage() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [viewProfileProvider, setViewProfileProvider] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showDetailedProfileModal, setShowDetailedProfileModal] = useState(false);
 
   useEffect(() => {
     loadProviders();
@@ -108,26 +110,223 @@ export default function ConsultationPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="about" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="about">About</TabsTrigger>
-          <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-          <TabsTrigger value="pricing">Pricing</TabsTrigger>
+      <Tabs defaultValue="about" className="w-full" style={{
+        marginTop: '16px'
+      }}>
+        <TabsList style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '100%',
+          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%)',
+          borderRadius: '16px',
+          padding: '8px',
+          border: '1px solid rgba(99, 102, 241, 0.1)',
+          marginBottom: '24px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          overflow: 'hidden',
+          position: 'relative'
+        }}>
+          <TabsTrigger value="about" style={{
+            fontSize: '13px',
+            fontWeight: '600',
+            padding: '10px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'transparent',
+            color: '#6b7280',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            flex: '1',
+            whiteSpace: 'nowrap',
+            minWidth: '0',
+            textAlign: 'center'
+          }}>ℹ️ About</TabsTrigger>
+          <TabsTrigger value="portfolio" style={{
+            fontSize: '13px',
+            fontWeight: '600',
+            padding: '10px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'transparent',
+            color: '#6b7280',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            flex: '1',
+            whiteSpace: 'nowrap',
+            minWidth: '0',
+            textAlign: 'center'
+          }}>🎨 Portfolio</TabsTrigger>
+          <TabsTrigger value="pricing" style={{
+            fontSize: '13px',
+            fontWeight: '600',
+            padding: '10px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'transparent',
+            color: '#6b7280',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            flex: '1',
+            whiteSpace: 'nowrap',
+            minWidth: '0',
+            textAlign: 'center'
+          }}>💰 Pricing</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="about" className="space-y-4">
+        <TabsContent value="about" style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px',
+          marginTop: '24px'
+        }}>
           {provider.professional?.bio && (
-            <div>
-              <h4 className="font-semibold mb-2">About</h4>
-              <p className="text-sm text-muted-foreground">{provider.professional.bio}</p>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(99, 102, 241, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>ℹ</span>
+                </div>
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>About</h4>
+              </div>
+              <p style={{
+                fontSize: '15px',
+                lineHeight: '1.7',
+                color: '#4b5563',
+                margin: 0,
+                fontWeight: '400',
+                textAlign: 'justify'
+              }}>{provider.professional.bio}</p>
             </div>
           )}
 
-          <div>
-            <h4 className="font-semibold mb-2">Specializations</h4>
-            <div className="flex flex-wrap gap-2">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(5, 150, 105, 0.03) 100%)',
+            borderRadius: '16px',
+            padding: '24px',
+            border: '1px solid rgba(16, 185, 129, 0.08)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {/* Decorative element */}
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              width: '40px',
+              height: '40px',
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
+              borderRadius: '50%'
+            }} />
+            
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              marginBottom: '16px'
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+              }}>
+                <span style={{
+                  color: 'white',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>⚡</span>
+              </div>
+              <h4 style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#1f2937',
+                margin: 0,
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>Specializations</h4>
+            </div>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '10px'
+            }}>
               {provider.professional?.specializations?.map((spec) => (
-                <Badge key={spec} variant="outline">
+                <Badge key={spec} style={{
+                  padding: '8px 16px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)',
+                  color: '#065f46',
+                  border: '1px solid rgba(16, 185, 129, 0.2)',
+                  transition: 'all 0.2s ease',
+                  cursor: 'default'
+                }}>
                   {spec.replace('_', ' ')}
                 </Badge>
               ))}
@@ -135,67 +334,424 @@ export default function ConsultationPage() {
           </div>
 
           {provider.professional?.experience > 0 && (
-            <div>
-              <h4 className="font-semibold mb-2">Experience</h4>
-              <p className="text-sm text-muted-foreground">
-                {provider.professional.experience} years of experience
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(245, 101, 101, 0.03) 0%, rgba(239, 68, 68, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(245, 101, 101, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(245, 101, 101, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '12px'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(245, 101, 101, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>⭐</span>
+                </div>
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>Experience</h4>
+              </div>
+              <p style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#7c2d12',
+                margin: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: '#dc2626'
+                }}>{provider.professional.experience}</span>
+                years of professional experience
               </p>
             </div>
           )}
 
           {provider.professional?.languages?.length > 0 && (
-            <div>
-              <h4 className="font-semibold mb-2">Languages</h4>
-              <p className="text-sm text-muted-foreground">
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, rgba(124, 58, 237, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(139, 92, 246, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '12px'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(139, 92, 246, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>🌐</span>
+                </div>
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>Languages</h4>
+              </div>
+              <p style={{
+                fontSize: '15px',
+                lineHeight: '1.6',
+                color: '#581c87',
+                margin: 0,
+                fontWeight: '500'
+              }}>
                 {provider.professional.languages.join(', ')}
               </p>
             </div>
           )}
         </TabsContent>
 
-        <TabsContent value="portfolio" className="space-y-4">
+        <TabsContent value="portfolio" style={{
+          marginTop: '24px'
+        }}>
           {provider.portfolio?.images?.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {provider.portfolio.images.map((image, index) => (
-                <div key={`${provider.id}-portfolio-${index}-${image.url || index}`} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                  <img 
-                    src={image.url} 
-                    alt={`Portfolio ${index + 1}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                  />
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(245, 101, 101, 0.03) 0%, rgba(239, 68, 68, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(245, 101, 101, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(245, 101, 101, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '20px',
+                position: 'relative',
+                zIndex: 2
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(245, 101, 101, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>🎨</span>
                 </div>
-              ))}
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>Portfolio</h4>
+              </div>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                gap: '16px',
+                position: 'relative',
+                zIndex: 2
+              }}>
+                {provider.portfolio.images.map((image, index) => (
+                  <div key={`${provider.id}-portfolio-${index}-${image.url || index}`} style={{
+                    aspectRatio: '1',
+                    background: '#f9fafb',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    border: '2px solid rgba(245, 101, 101, 0.1)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05) translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(245, 101, 101, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                  }}>
+                    <img 
+                      src={image.url} 
+                      alt={`Portfolio ${index + 1}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
-            <p className="text-center text-muted-foreground py-8">
-              No portfolio items uploaded yet
-            </p>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.05) 0%, rgba(107, 114, 128, 0.05) 100%)',
+              borderRadius: '16px',
+              padding: '48px 24px',
+              border: '2px dashed rgba(156, 163, 175, 0.2)',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'rgba(156, 163, 175, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px'
+              }}>
+                <span style={{
+                  fontSize: '24px'
+                }}>📁</span>
+              </div>
+              <p style={{
+                color: '#6b7280',
+                fontSize: '16px',
+                margin: 0,
+                fontWeight: '500'
+              }}>
+                No portfolio items uploaded yet
+              </p>
+            </div>
           )}
         </TabsContent>
 
-        <TabsContent value="pricing" className="space-y-4">
-          <div className="grid gap-4">
-            {CONSULTATION_TYPES.map((type) => {
-              const rate = provider.pricing?.[`${type.id}Rate`] || 0;
-              const Icon = type.icon;
-              
-              return (
-                <div key={type.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Icon className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">{type.label}</p>
-                      <p className="text-sm text-muted-foreground">{type.description}</p>
+        <TabsContent value="pricing" style={{
+          marginTop: '24px'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(5, 150, 105, 0.03) 100%)',
+            borderRadius: '16px',
+            padding: '24px',
+            border: '1px solid rgba(16, 185, 129, 0.08)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {/* Decorative element */}
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              width: '40px',
+              height: '40px',
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
+              borderRadius: '50%'
+            }} />
+            
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              marginBottom: '20px',
+              position: 'relative',
+              zIndex: 2
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+              }}>
+                <span style={{
+                  color: 'white',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>💰</span>
+              </div>
+              <h4 style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#1f2937',
+                margin: 0,
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>Consultation Pricing</h4>
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              position: 'relative',
+              zIndex: 2
+            }}>
+              {CONSULTATION_TYPES.map((type) => {
+                const rate = provider.pricing?.[`${type.id}Rate`] || 0;
+                const Icon = type.icon;
+                
+                return (
+                  <div key={type.id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '20px',
+                    background: 'rgba(255, 255, 255, 0.7)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(16, 185, 129, 0.1)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    transition: 'all 0.3s ease',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.15)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)';
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px'
+                    }}>
+                      <div style={{
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '1px solid rgba(16, 185, 129, 0.2)'
+                      }}>
+                        <Icon style={{
+                          width: '20px',
+                          height: '20px',
+                          color: '#059669'
+                        }} />
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          color: '#1f2937',
+                          margin: '0 0 4px 0'
+                        }}>{type.label}</p>
+                        <p style={{
+                          fontSize: '14px',
+                          color: '#6b7280',
+                          margin: 0,
+                          fontWeight: '400'
+                        }}>{type.description}</p>
+                      </div>
+                    </div>
+                    <div style={{
+                      textAlign: 'right'
+                    }}>
+                      <p style={{
+                        fontSize: '20px',
+                        fontWeight: '700',
+                        color: '#059669',
+                        margin: '0 0 2px 0'
+                      }}>
+                        ₹{(rate * 83).toFixed(0)}
+                      </p>
+                      <p style={{
+                        fontSize: '12px',
+                        color: '#6b7280',
+                        margin: 0,
+                        fontWeight: '500'
+                      }}>
+                        per {provider.pricing?.pricingType === 'per_minute' ? 'minute' : 'session'}
+                      </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold">
-                      ₹{(rate * 83).toFixed(0)}/{provider.pricing?.pricingType === 'per_minute' ? 'min' : 'session'}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </TabsContent>
       </Tabs>
@@ -1075,75 +1631,271 @@ export default function ConsultationPage() {
         }
       }}>
         {selectedProvider && (
-          <DialogContent className="max-w-md rounded-xl shadow-2xl border-0 p-0 bg-white">
-            {/* Header with gradient background */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 rounded-t-xl border-b border-gray-100">
-              <DialogHeader className="space-y-1">
-                <DialogTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium">
-                    <Calendar className="h-5 w-5" />
+          <DialogContent style={{
+            maxWidth: '500px',
+            width: '90vw',
+            padding: 0,
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
+            border: 'none',
+            borderRadius: '24px',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            overflow: 'hidden',
+            animation: 'modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}>
+            {/* Header with enhanced gradient background */}
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              padding: '24px 32px',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative pattern overlay */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                opacity: 0.3
+              }} />
+              
+              <DialogHeader style={{ position: 'relative', zIndex: 2 }}>
+                <DialogTitle style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  marginBottom: '8px'
+                }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px solid rgba(255, 255, 255, 0.3)'
+                  }}>
+                    <Calendar style={{ width: '24px', height: '24px', color: 'white' }} />
                   </div>
                   Book Consultation
                 </DialogTitle>
-                <DialogDescription className="text-gray-600">
-                  Book a consultation with <span className="font-medium text-gray-900">{selectedProvider.name}</span>
+                <DialogDescription style={{
+                  fontSize: '16px',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontWeight: '500'
+                }}>
+                  Book a consultation with <span style={{ fontWeight: '700', color: 'white' }}>{selectedProvider.name}</span>
                 </DialogDescription>
               </DialogHeader>
             </div>
             
             {/* Content */}
-            <div className="p-6 space-y-6">
+            <div style={{ padding: '32px' }}>
               {/* Provider Info Card */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%)',
+                borderRadius: '20px',
+                padding: '24px',
+                border: '1px solid rgba(99, 102, 241, 0.1)',
+                marginBottom: '24px',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                {/* Card background pattern */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  width: '100px',
+                  height: '100px',
+                  background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
+                  transform: 'translate(30px, -30px)'
+                }} />
+                
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  marginBottom: '16px',
+                  position: 'relative',
+                  zIndex: 2
+                }}>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '20px',
+                    fontWeight: '700',
+                    boxShadow: '0 8px 20px rgba(102, 126, 234, 0.4)',
+                    border: '3px solid rgba(255, 255, 255, 0.9)'
+                  }}>
                     {selectedProvider.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">{selectedProvider.name}</h4>
-                    <p className="text-sm text-gray-600">
+                    <h4 style={{
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      color: '#1f2937',
+                      margin: '0 0 4px 0'
+                    }}>{selectedProvider.name}</h4>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#6b7280',
+                      margin: 0,
+                      fontWeight: '500'
+                    }}>
                       {selectedProvider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
                     </p>
                   </div>
                 </div>
+                
                 {selectedProvider.pricing && (
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200">
-                    <span className="text-lg font-semibold text-gray-900">
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    paddingTop: '16px',
+                    borderTop: '1px solid rgba(99, 102, 241, 0.1)',
+                    position: 'relative',
+                    zIndex: 2
+                  }}>
+                    <span style={{
+                      fontSize: '24px',
+                      fontWeight: '800',
+                      color: '#1f2937',
+                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}>
                       ₹{((selectedProvider.pricing.chatRate || 0) * 83).toFixed(0)}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span style={{
+                      fontSize: '14px',
+                      color: '#6b7280',
+                      fontWeight: '600'
+                    }}>
                       / {selectedProvider.pricing.pricingType === 'per_minute' ? 'minute' : 'session'}
                     </span>
                   </div>
                 )}
               </div>
               
-              {/* Description */}
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Info className="h-3 w-3 text-blue-600" />
+              {/* Enhanced Description */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 197, 253, 0.05) 100%)',
+                borderRadius: '16px',
+                padding: '20px',
+                border: '1px solid rgba(59, 130, 246, 0.1)',
+                marginBottom: '32px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px'
+                }}>
+                  <div style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    marginTop: '2px',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                  }}>
+                    <Info style={{ width: '16px', height: '16px', color: 'white' }} />
                   </div>
-                  <p className="text-sm text-blue-800 leading-relaxed">
+                  <p style={{
+                    fontSize: '15px',
+                    color: '#1e40af',
+                    lineHeight: '1.6',
+                    margin: 0,
+                    fontWeight: '500'
+                  }}>
                     This will redirect you to the booking page where you can select your preferred time and consultation type.
                   </p>
                 </div>
               </div>
               
-              {/* Action Buttons */}
-              <div className="flex justify-end space-x-3 pt-2">
+              {/* Enhanced Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                justifyContent: 'flex-end',
+                paddingTop: '8px'
+              }}>
                 <Button 
                   variant="outline" 
                   onClick={() => {
                     setShowBookingModal(false);
                     setSelectedProvider(null);
                   }}
-                  className="px-6 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                  style={{
+                    padding: '12px 24px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    backgroundColor: 'white',
+                    color: '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#f9fafb';
+                    e.target.style.borderColor = '#d1d5db';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'white';
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                  }}
                 >
                   Cancel
                 </Button>
                 <Link href={`/consultation/${selectedProvider.id}/book`}>
-                  <Button className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-md hover:shadow-lg transition-all">
+                  <Button style={{
+                    padding: '12px 32px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px) scale(1.02)';
+                    e.target.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
+                  }}
+                  >
                     Continue to Book
                   </Button>
                 </Link>
@@ -1153,31 +1905,284 @@ export default function ConsultationPage() {
         )}
       </Dialog>
 
-      {/* Profile Modal */}
-      <Dialog open={showProfileModal} onOpenChange={(open) => {
-        console.log('Dialog onOpenChange:', open);
-        setShowProfileModal(open);
+      {/* Profile Modal - Just the ProfileCard */}
+      {showProfileModal && viewProfileProvider && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '20px'
+        }} onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setShowProfileModal(false);
+            setViewProfileProvider(null);
+          }
+        }}>
+          <div 
+            style={{
+              position: 'relative',
+              opacity: 1,
+              transform: 'scale(1) translateY(0)',
+              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ProfileCard
+              avatarUrl={viewProfileProvider.photoURL || '/default-avatar.png'}
+              name={viewProfileProvider.name}
+              title={viewProfileProvider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
+              handle={viewProfileProvider.name?.toLowerCase().replace(/\s+/g, '')}
+              status="Available"
+              contactText="Details"
+              onContactClick={() => {
+                // Close ProfileCard modal and open detailed profile modal
+                setShowProfileModal(false);
+                // We need to set up a detailed profile modal state
+                setViewProfileProvider(viewProfileProvider);
+                setShowDetailedProfileModal(true);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Detailed Profile Modal */}
+      <Dialog open={showDetailedProfileModal} onOpenChange={(open) => {
         if (!open) {
+          setShowDetailedProfileModal(false);
           setViewProfileProvider(null);
         }
       }}>
         {viewProfileProvider && (
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white rounded-xl shadow-2xl border-0 p-0">
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 rounded-t-xl border-b border-gray-100">
-              <DialogHeader className="space-y-1">
-                <DialogTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
-                    {viewProfileProvider.name.charAt(0).toUpperCase()}
+          <DialogContent
+            style={{
+              maxWidth: '800px',
+              width: '90vw',
+              maxHeight: '85vh',
+              padding: 0,
+              background:
+                'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
+              border: 'none',
+              borderRadius: '24px',
+              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              overflow: 'hidden',
+              animation: 'modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <DialogTitle style={{ position: 'absolute', left: '-9999px', fontSize: '1px' }}>
+              Detailed Profile of {viewProfileProvider.name}
+            </DialogTitle>
+            {/* Header */}
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              padding: '32px',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative pattern overlay */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                opacity: 0.3
+              }} />
+              
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '24px',
+                  marginBottom: '16px'
+                }}>
+                  <Avatar style={{
+                    width: '100px',
+                    height: '100px',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    border: '4px solid rgba(255, 255, 255, 0.3)',
+                    flexShrink: 0
+                  }}>
+                    <AvatarImage src={viewProfileProvider.photoURL} alt={viewProfileProvider.name} style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }} />
+                    <AvatarFallback style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                      fontSize: '36px',
+                      fontWeight: '600'
+                    }}>
+                      {viewProfileProvider.name?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div style={{ flex: 1, color: 'white' }}>
+                    <h2 style={{
+                      fontSize: '32px',
+                      fontWeight: '700',
+                      color: 'white',
+                      margin: '0 0 8px 0',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                      {viewProfileProvider.name}
+                    </h2>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      marginBottom: '12px'
+                    }}>
+                      <span style={{
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        border: '1px solid rgba(255, 255, 255, 0.3)'
+                      }}>
+                        {viewProfileProvider.role === 'fashion_designer' ? 'Fashion Designer' : 'Tailor'}
+                      </span>
+                      {viewProfileProvider.rating?.average > 0 && (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}>
+                          <Star style={{
+                            width: '18px',
+                            height: '18px',
+                            fill: '#fbbf24',
+                            color: '#fbbf24'
+                          }} />
+                          <span style={{
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            color: 'white'
+                          }}>{viewProfileProvider.rating.average.toFixed(1)}</span>
+                          <span style={{
+                            fontSize: '14px',
+                            color: 'rgba(255, 255, 255, 0.8)'
+                          }}>({viewProfileProvider.rating.count} reviews)</span>
+                        </div>
+                      )}
+                    </div>
+                    {viewProfileProvider.professional?.city && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        color: 'rgba(255, 255, 255, 0.9)'
+                      }}>
+                        <MapPin style={{
+                          width: '16px',
+                          height: '16px'
+                        }} />
+                        <span style={{
+                          fontSize: '16px'
+                        }}>{viewProfileProvider.professional.city}</span>
+                      </div>
+                    )}
                   </div>
-                  {viewProfileProvider.name} - Profile
-                </DialogTitle>
-                <DialogDescription id="profile-dialog-description" className="text-gray-600">
-                  View detailed information about {viewProfileProvider.name}, including their portfolio, pricing, and experience.
-                </DialogDescription>
-              </DialogHeader>
+                </div>
+              </div>
             </div>
-            <div className="p-6">
+            
+            {/* Content */}
+            <div style={{ 
+              padding: '32px',
+              maxHeight: 'calc(85vh - 200px)',
+              overflowY: 'auto'
+            }}>
               <ProviderProfile provider={viewProfileProvider} />
+              
+              {/* Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '16px',
+                justifyContent: 'center',
+                marginTop: '32px',
+                paddingTop: '24px',
+                borderTop: '1px solid rgba(229, 231, 235, 0.3)'
+              }}>
+                <button
+                  onClick={() => {
+                    setShowDetailedProfileModal(false);
+                    setSelectedProvider(viewProfileProvider);
+                    setShowBookingModal(true);
+                  }}
+                  style={{
+                    padding: '14px 32px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                    color: 'white',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                  }}
+                >
+                  <Calendar style={{ width: '18px', height: '18px' }} />
+                  Book Consultation
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDetailedProfileModal(false);
+                    setViewProfileProvider(null);
+                  }}
+                  style={{
+                    padding: '14px 32px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    background: 'white',
+                    color: '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#f9fafb';
+                    e.target.style.borderColor = '#9ca3af';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'white';
+                    e.target.style.borderColor = '#e5e7eb';
+                  }}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </DialogContent>
         )}

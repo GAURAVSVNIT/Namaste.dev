@@ -16,9 +16,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Clock, MessageCircle, Phone, Video, CheckCircle, AlertCircle, Loader2, Check, Briefcase, Users, MessageSquare } from 'lucide-react';
+import { Calendar, Clock, MessageCircle, Phone, Video, CheckCircle, AlertCircle, Loader2, Check, Briefcase, Users, MessageSquare, MapPin, Star } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from '@/components/ui/use-toast';
+import ProfileCard from '@/blocks/Components/ProfileCard/ProfileCard';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -275,6 +276,19 @@ export default function BookingPage() {
     return events;
   };
 
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [viewProfileProvider, setViewProfileProvider] = useState(null);
+
+  const handleProfileClick = () => {
+    setViewProfileProvider(provider);
+    setShowProfileModal(true);
+  };
+
+  const closeProfileModal = () => {
+    setShowProfileModal(false);
+    setViewProfileProvider(null);
+  };
+
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
@@ -331,70 +345,78 @@ export default function BookingPage() {
               {/* Content */}
               <CardHeader className="relative bg-white/80 backdrop-blur-sm py-6">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6">
-                  {/* Avatar */}
-                  <div className="relative group">
-                    <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur"></div>
-                    <Avatar className="relative h-24 w-24 border-4 border-white shadow-lg">
-                      <AvatarImage src={provider.photoURL} alt={provider.name} className="object-cover" />
-                      <AvatarFallback className="text-3xl font-semibold bg-gradient-to-br from-blue-100 to-indigo-100 text-blue-700">
-                        {provider.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </div>
-                  
-                  {/* Provider Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <div>
-                        <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Book with {provider.name}</h1>
-                        <div className="flex flex-wrap items-center gap-2 mt-2">
-                          <Badge className={`px-4 py-1.5 rounded-full text-sm font-medium border ${
-                            provider.role === 'fashion_designer' 
-                              ? 'bg-pink-50 text-pink-700 border-pink-200 hover:bg-pink-100' 
-                              : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
-                          }`}>
-                            {provider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
-                          </Badge>
-                          
-                          {provider.professional?.location?.city && (
-                            <div className="flex items-center bg-white/80 px-3 py-1 rounded-full border border-gray-200 text-sm text-gray-700">
-                              <MapPin className="h-3.5 w-3.5 mr-1.5 text-blue-500" />
-                              <span>{provider.professional.location.city}</span>
-                            </div>
-                          )}
-                          
-                          {provider.rating?.average > 0 && (
-                            <div className="flex items-center bg-white/80 px-3 py-1 rounded-full border border-gray-200 text-sm">
-                              <span className="text-amber-500 font-medium mr-1">{provider.rating.average.toFixed(1)}</span>
-                              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                              <span className="text-gray-500 ml-1">({provider.rating.count})</span>
-                            </div>
+                  {/* Clickable Provider Info Area */}
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-4 sm:space-y-0 sm:space-x-6 flex-1 cursor-pointer hover:bg-white/60 rounded-lg p-2 -m-2 transition-colors duration-200" onClick={handleProfileClick}>
+                    {/* Avatar */}
+                    <div className="relative group">
+                      <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur"></div>
+                      <Avatar className="relative h-24 w-24 border-4 border-white shadow-lg">
+                        <AvatarImage src={provider.photoURL} alt={provider.name} className="object-cover" />
+                        <AvatarFallback className="text-3xl font-semibold bg-gradient-to-br from-blue-100 to-indigo-100 text-blue-700">
+                          {provider.name?.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    </div>
+                    
+                    {/* Provider Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div>
+                          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Book with {provider.name}</h1>
+                          <div className="flex flex-wrap items-center gap-2 mt-2">
+                            <Badge className={`px-4 py-1.5 rounded-full text-sm font-medium border ${
+                              provider.role === 'fashion_designer' 
+                                ? 'bg-pink-50 text-pink-700 border-pink-200 hover:bg-pink-100' 
+                                : 'bg-blue-50 text-blue-700 border-blue-200 hover:bg-blue-100'
+                            }`}>
+                              {provider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
+                            </Badge>
+                            
+                            {provider.professional?.location?.city && (
+                              <div className="flex items-center bg-white/80 px-3 py-1 rounded-full border border-gray-200 text-sm text-gray-700">
+                                <MapPin className="h-3.5 w-3.5 mr-1.5 text-blue-500" />
+                                <span>{provider.professional.location.city}</span>
+                              </div>
+                            )}
+                            
+                            {provider.rating?.average > 0 && (
+                              <div className="flex items-center bg-white/80 px-3 py-1 rounded-full border border-gray-200 text-sm">
+                                <span className="text-amber-500 font-medium mr-1">{provider.rating.average.toFixed(1)}</span>
+                                <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                                <span className="text-gray-500 ml-1">({provider.rating.count})</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center space-x-2">
+                          {provider.onlineStatus === 'online' ? (
+                            <span className="flex items-center text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                              <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
+                              Online Now
+                            </span>
+                          ) : (
+                            <span className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
+                              <span className="h-2 w-2 rounded-full bg-gray-400 mr-2"></span>
+                              Offline
+                            </span>
                           )}
                         </div>
                       </div>
                       
-                      <div className="flex items-center space-x-2">
-                        {provider.onlineStatus === 'online' ? (
-                          <span className="flex items-center text-sm text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-100">
-                            <span className="h-2 w-2 rounded-full bg-green-500 mr-2"></span>
-                            Online Now
-                          </span>
-                        ) : (
-                          <span className="flex items-center text-sm text-gray-500 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
-                            <span className="h-2 w-2 rounded-full bg-gray-400 mr-2"></span>
-                            Offline
-                          </span>
-                        )}
+                      {provider.professional?.bio && (
+                        <p className="mt-3 text-gray-600 text-sm max-w-3xl">
+                          {provider.professional.bio.length > 150 
+                            ? `${provider.professional.bio.substring(0, 150)}...` 
+                            : provider.professional.bio}
+                        </p>
+                      )}
+                      
+                      {/* Click to view profile hint */}
+                      <div className="mt-2 opacity-60 hover:opacity-100 transition-opacity">
+                        <span className="text-xs text-blue-600 font-medium">👆 Click to view full profile</span>
                       </div>
                     </div>
-                    
-                    {provider.professional?.bio && (
-                      <p className="mt-3 text-gray-600 text-sm max-w-3xl">
-                        {provider.professional.bio.length > 150 
-                          ? `${provider.professional.bio.substring(0, 150)}...` 
-                          : provider.professional.bio}
-                      </p>
-                    )}
                   </div>
                 </div>
               </CardHeader>
@@ -828,6 +850,15 @@ export default function BookingPage() {
           </div>
         </div>
       </div>
+      
+      {/* Profile Modal */}
+      {showProfileModal && viewProfileProvider && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity z-50" aria-hidden="true" onClick={closeProfileModal}>
+          <div className="flex items-center justify-center min-h-screen p-4">
+            <ProfileCard provider={viewProfileProvider} onClose={closeProfileModal} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
