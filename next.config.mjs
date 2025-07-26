@@ -10,9 +10,6 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    esmExternals: 'loose',
-  },
   webpack: (config, { isServer, webpack }) => {
     // Handle module resolution issues
     config.resolve.fallback = {

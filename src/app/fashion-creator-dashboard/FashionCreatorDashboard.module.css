@@ -1,14 +1,233 @@
 /* ===== Fashion Creator Dashboard Layout ===== */
-.dashboardLayout {
+
+/* Welcome Card */
+.welcomeCard {
+  background: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  border-radius: 1rem;
+  padding: 2rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.welcomeCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 0%, transparent 40%);
+  z-index: -1;
+  border-radius: 1rem;
+}
+
+.welcomeCard:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.welcomeContent {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  width: 100%;
+  align-items: flex-start;
+}
+
+.welcomeText h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin: 0 0 0.75rem 0;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+}
+
+.welcomeText p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.125rem;
+  margin: 0 0 1.5rem 0;
+  max-width: 600px;
+  line-height: 1.6;
+}
+
+.welcomeText {
+  max-width: 100%;
+  z-index: 2;
+}
+
+.welcomeText h1 {
+  font-size: 1.875rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem 0;
+  line-height: 1.2;
+}
+
+.welcomeText p {
+  color: var(--white-80);
+  font-size: 1.125rem;
+  margin: 0 0 1.5rem 0;
+  max-width: 600px;
+}
+
+.quickActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.quickActionButton {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.75rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.9375rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.quickActionButton:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.quickActionButton:active {
+  transform: translateY(0);
+}
+
+.secondaryAction {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.buttonIcon {
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-right: 0.5rem;
+}
+
+.dateCard {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  min-width: 240px;
+  align-self: flex-start;
+  z-index: 2;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.dateCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.dateCard p {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.dateText {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0.5rem 0 !important;
+  color: white !important;
+  line-height: 1.2;
+}
+
+.timeDisplay {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9375rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.timeDisplay svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+/* Decorative Elements */
+.decorativeCircle1 {
+  position: absolute;
+  right: -2.5rem;
+  top: -2.5rem;
+  width: 10rem;
+  height: 10rem;
+  background: var(--white-10);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+.decorativeCircle2 {
+  position: absolute;
+  right: -5rem;
+  top: 50%;
+  width: 15rem;
+  height: 15rem;
+  background: var(--white-5);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+  .welcomeContent {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  
+  .welcomeText {
+    flex: 2;
+    padding-right: 2rem;
+  }
+  
+  .dateCard {
+    margin-top: 0;
+    align-self: flex-start;
+  }
+}
+
+@media (min-width: 1024px) {
+  .welcomeText h1 {
+    font-size: 2.25rem;
+  }
+}
+/* .dashboardLayout {
   display: flex;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #0e3052;
   position: relative;
   width: 100%;
   overflow-x: hidden;
   margin: 0;
   padding: 0;
-}
+} */
 
 /* Main content area */
 .mainContent {
@@ -30,12 +249,17 @@
   flex: 1;
   overflow-x: hidden;
   padding: 1.5rem;
-  padding-top: 5rem;
+  padding-top: 5.5rem;
   min-height: 100%;
   box-sizing: border-box;
   max-width: 100%;
   margin: 0 auto;
   width: 100%;
+  background-color: #f8fafc;
+  border-radius: 2rem 2rem 0 0;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.03);
+  position: relative;
+  z-index: 2;
 }
 
 .dashboardContainer {
@@ -44,6 +268,18 @@
   gap: 1.5rem;
   max-width: 100%;
   width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0;
+}
+
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 100%;
+  width: 100%;
+  height: 100%;
   margin: 0 auto;
   padding: 0;
 }
@@ -52,7 +288,7 @@
 .card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(255, 255, 255, 0.1);
   border: 1px solid #e2e8f0;
   transition: all 0.2s ease;
   overflow: hidden;
@@ -336,4 +572,13 @@
 @keyframes slideInRight {
   from { opacity: 0; transform: translateX(20px); }
   to { opacity: 1; transform: translateX(0); }
+
 }
+
+.welcomeHeader {
+  background-color: blueviolet;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+

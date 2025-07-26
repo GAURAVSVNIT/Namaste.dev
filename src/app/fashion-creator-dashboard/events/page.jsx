@@ -2,35 +2,26 @@
 
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { getUserAppointments, updateAvailability, updateGoogleIntegration } from '@/lib/consultation-firebase';
+import { getUserAppointments } from '@/lib/consultation-firebase';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Switch } from '@/components/ui/switch';
 import { toast } from '@/components/ui/use-toast';
 import { 
   Calendar, 
-  Settings, 
   Clock, 
-  MapPin, 
   Phone, 
-  Mail, 
-  User, 
   Video, 
   MessageCircle,
   ExternalLink,
-  GoogleIcon,
   Loader2,
   CheckCircle,
   AlertCircle,
-  Plus,
-  Edit
 } from 'lucide-react';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import ScheduleManager from '@/components/fashion-creator/ScheduleManager';
+import styles from './events.module.css';
 
 const CONSULTATION_TYPES = {
   chat: { label: 'Chat Consultation', icon: MessageCircle, color: 'bg-blue-100 text-blue-800' },
@@ -52,6 +43,7 @@ export default function EventsPage() {
   const [loading, setLoading] = useState(true);
   const [googleCalendarConnected, setGoogleCalendarConnected] = useState(false);
   const [connectingGoogle, setConnectingGoogle] = useState(false);
+  const [activeTab, setActiveTab] = useState('appointments');
 
   useEffect(() => {
     if (user) {
@@ -152,31 +144,44 @@ export default function EventsPage() {
 
   return (
     <div className="container mx-auto p-6 max-w-7xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Events & Schedule</h1>
-        <p className="text-gray-600">Manage your consultation bookings and schedule availability</p>
-      </div>
-
-      <Tabs defaultValue="events" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="events" className="flex items-center gap-2">
-            <Calendar className="h-4 w-4" />
-            Booked Events ({appointments.length})
+      <Tabs 
+        defaultValue="appointments" 
+        className="w-full"
+        onValueChange={(value) => setActiveTab(value)}
+      >
+        <TabsList className={styles.tabsList}>
+          <TabsTrigger 
+            value="appointments" 
+            className={`${styles.tabTrigger} ${activeTab === 'appointments' ? styles.activeTab : ''}`}
+          >
+            Appointments
           </TabsTrigger>
-          <TabsTrigger value="schedule" className="flex items-center gap-2">
-            <Settings className="h-4 w-4" />
-            Schedule Management
+          <TabsTrigger 
+            value="schedule" 
+            className={`${styles.tabTrigger} ${activeTab === 'schedule' ? styles.activeTab : ''}`}
+          >
+            Schedule
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="events" className="mt-6">
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <div>
-                <h2 className="text-xl font-semibold mb-1">Consultation Bookings</h2>
-                <p className="text-gray-600">View and manage your upcoming client consultations</p>
-              </div>
-              <div className="flex items-center gap-4">
+        <TabsContent value="appointments" className="mt-0">
+          <div className="space-y-6">
+            <div className={styles.card}>
+              <div className={styles.cardContent}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-xl font-semibold">Upcoming Appointments</h2>
+                    <p className="text-sm text-gray-600">Manage your upcoming consultations</p>
+                  </div>
+                  <Button 
+                    onClick={loadAppointments} 
+                    disabled={loading}
+                    className={styles.button}
+                  >
+                    {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                    Refresh
+                  </Button>
+                </div>
                 {googleCalendarConnected ? (
                   <Badge className="bg-green-100 text-green-800">
                     <CheckCircle className="h-3 w-3 mr-1" />

@@ -6,7 +6,7 @@ import { searchProviders } from '@/lib/consultation-firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Calendar, Clock, MapPin, Star, Filter, Search, MessageCircle, Phone, Video, X } from 'lucide-react';
+import { Calendar, Clock, MapPin, Star, Filter, Search, MessageCircle, Phone, Video, X, Info } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -156,7 +156,7 @@ export default function ConsultationPage() {
           {provider.portfolio?.images?.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {provider.portfolio.images.map((image, index) => (
-                <div key={index} className="aspect-square bg-muted rounded-lg overflow-hidden">
+                <div key={`${provider.id}-portfolio-${index}-${image.url || index}`} className="aspect-square bg-muted rounded-lg overflow-hidden">
                   <img 
                     src={image.url} 
                     alt={`Portfolio ${index + 1}`}
@@ -441,7 +441,7 @@ export default function ConsultationPage() {
       {loading ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[...Array(6)].map((_, i) => (
-            <Card key={i}>
+            <Card key={`loading-skeleton-${i}`}>
               <CardContent className="p-6">
                 <div className="space-y-2">
                   <div className="h-3 bg-muted rounded w-full" />
@@ -476,63 +476,121 @@ export default function ConsultationPage() {
       )}
 
       {/* Booking Modal */}
-      {showBookingModal && selectedProvider && (
-        <BookingModal
-          provider={selectedProvider}
-          user={user}
-          onClose={() => {
-            setShowBookingModal(false);
-            setSelectedProvider(null);
-          }}
-        />
-      )}
+      <Dialog open={showBookingModal} onOpenChange={(open) => {
+        if (!open) {
+          setShowBookingModal(false);
+          setSelectedProvider(null);
+        }
+      }}>
+        {selectedProvider && (
+          <DialogContent className="max-w-md rounded-xl shadow-2xl border-0 p-0 bg-white">
+            {/* Header with gradient background */}
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 rounded-t-xl border-b border-gray-100">
+              <DialogHeader className="space-y-1">
+                <DialogTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium">
+                    <Calendar className="h-5 w-5" />
+                  </div>
+                  Book Consultation
+                </DialogTitle>
+                <DialogDescription className="text-gray-600">
+                  Book a consultation with <span className="font-medium text-gray-900">{selectedProvider.name}</span>
+                </DialogDescription>
+              </DialogHeader>
+            </div>
+            
+            {/* Content */}
+            <div className="p-6 space-y-6">
+              {/* Provider Info Card */}
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
+                    {selectedProvider.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-gray-900">{selectedProvider.name}</h4>
+                    <p className="text-sm text-gray-600">
+                      {selectedProvider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
+                    </p>
+                  </div>
+                </div>
+                {selectedProvider.pricing && (
+                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200">
+                    <span className="text-lg font-semibold text-gray-900">
+                      ₹{((selectedProvider.pricing.chatRate || 0) * 83).toFixed(0)}
+                    </span>
+                    <span className="text-sm text-gray-500">
+                      / {selectedProvider.pricing.pricingType === 'per_minute' ? 'minute' : 'session'}
+                    </span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Description */}
+              <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Info className="h-3 w-3 text-blue-600" />
+                  </div>
+                  <p className="text-sm text-blue-800 leading-relaxed">
+                    This will redirect you to the booking page where you can select your preferred time and consultation type.
+                  </p>
+                </div>
+              </div>
+              
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-3 pt-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setShowBookingModal(false);
+                    setSelectedProvider(null);
+                  }}
+                  className="px-6 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                >
+                  Cancel
+                </Button>
+                <Link href={`/consultation/${selectedProvider.id}/book`}>
+                  <Button className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-md hover:shadow-lg transition-all">
+                    Continue to Book
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
 
       {/* Profile Modal */}
-      {showProfileModal && viewProfileProvider && (
-        <Dialog open={showProfileModal} onOpenChange={(open) => {
-          console.log('Dialog onOpenChange:', open);
-          setShowProfileModal(open);
-          if (!open) {
-            setViewProfileProvider(null);
-          }
-        }}>
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white" aria-describedby="profile-dialog-description">
-            <DialogHeader>
-              <DialogTitle>{viewProfileProvider.name} - Profile</DialogTitle>
-              <DialogDescription id="profile-dialog-description">
-                View detailed information about {viewProfileProvider.name}, including their portfolio, pricing, and experience.
-              </DialogDescription>
-            </DialogHeader>
-            <ProviderProfile provider={viewProfileProvider} />
+      <Dialog open={showProfileModal} onOpenChange={(open) => {
+        console.log('Dialog onOpenChange:', open);
+        setShowProfileModal(open);
+        if (!open) {
+          setViewProfileProvider(null);
+        }
+      }}>
+        {viewProfileProvider && (
+          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white rounded-xl shadow-2xl border-0 p-0">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 rounded-t-xl border-b border-gray-100">
+              <DialogHeader className="space-y-1">
+                <DialogTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
+                    {viewProfileProvider.name.charAt(0).toUpperCase()}
+                  </div>
+                  {viewProfileProvider.name} - Profile
+                </DialogTitle>
+                <DialogDescription id="profile-dialog-description" className="text-gray-600">
+                  View detailed information about {viewProfileProvider.name}, including their portfolio, pricing, and experience.
+                </DialogDescription>
+              </DialogHeader>
+            </div>
+            <div className="p-6">
+              <ProviderProfile provider={viewProfileProvider} />
+            </div>
           </DialogContent>
-        </Dialog>
-      )}
+        )}
+      </Dialog>
     </div>
   );
 }
 
-const BookingModal = ({ provider, user, onClose }) => {
-  return (
-    <Dialog open={true} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>Book Consultation</DialogTitle>
-          <DialogDescription>
-            Book a consultation with {provider.name}
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
-          <p className="text-sm text-muted-foreground">
-            This will redirect you to the booking page where you can select your preferred time and consultation type.
-          </p>
-          <div className="flex justify-end space-x-2">
-            <Button variant="outline" onClick={onClose}>Cancel</Button>
-            <Link href={`/consultation/${provider.id}/book`}>
-              <Button>Continue</Button>
-            </Link>
-          </div>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-};

@@ -32,7 +32,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Progress } from '@/components/ui/progress';
-import styles from '../merchant-dashboard/Dashboard.module.css';
+import styles from './FashionCreatorDashboard.module.css';
 
 const statsData = [
   {
@@ -197,7 +197,7 @@ export default function TailorDashboardPage() {
   }
 
   return (
-    <div className={styles.dashboardLayout}>
+    // <div className={styles.dashboardLayout}>
       <div className={styles.mainContent}>
         <div className={styles.mainInner}>
           <div className={styles.dashboardContainer}>
@@ -206,48 +206,46 @@ export default function TailorDashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className={styles.card}
-              style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', color: 'white' }}
+              className={`${styles.card} ${styles.welcomeCard}`}
             >
-              <div className={styles.cardContent} style={{ position: 'relative', overflow: 'hidden' }}>
+            <div className={styles.welcomeHeader}>
+              <div className={styles.cardContent}>
                 {/* Decorative elements */}
-                <div style={{ position: 'absolute', right: '-40px', top: '-40px', width: '160px', height: '160px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }}></div>
-                <div style={{ position: 'absolute', right: '-80px', top: '50%', width: '240px', height: '240px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', transform: 'translateY(-50%)' }}></div>
+                <div className={styles.decorativeCircle1}></div>
+                <div className={styles.decorativeCircle2}></div>
                 
-                <div style={{ position: 'relative', zIndex: 10 }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                    <div style={{ maxWidth: '600px' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', margin: 0 }}>Welcome back, Fashion Creator! 👋</h1>
-                      </div>
-                      <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.125rem', margin: 0 }}>Here's what's happening with your business today.</p>
-                      
-                      {/* Quick Actions */}
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '12px', marginTop: '16px' }}>
-                        <Button 
-                          variant="outline" 
-                          style={{ background: 'rgba(255,255,255,0.1)', borderColor: 'rgba(255,255,255,0.2)', color: 'white' }}
-                        >
-                          <Plus className="w-4 h-4" style={{ marginRight: '8px' }} />
-                          New Order
-                        </Button>
-                        <Button 
-                          variant="outline" 
-                          style={{ background: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.2)', color: 'white' }}
-                        >
-                          <Calendar className="w-4 h-4" style={{ marginRight: '8px' }} />
-                          Schedule
-                        </Button>
-                      </div>
-                    </div>
+                <div className={styles.welcomeContent}>
+                  <div className={styles.welcomeText}>
+                    <h1>Welcome back, Fashion Creator! 👋</h1>
+                    <p>Here's what's happening with your business today.</p>
                     
-                    {/* Date and Stats Card */}
-                    <div style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)', minWidth: '240px', alignSelf: 'flex-end' }}>
-                      <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem', fontWeight: '500', margin: 0 }}>Today is {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}</p>
-                      <p style={{ fontSize: '1.5rem', fontWeight: 'bold', margin: '8px 0' }}>
-                        {currentTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-                      </p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.8)', fontSize: '0.875rem' }}>
+                    {/* Quick Actions */}
+                    <div className={styles.quickActions}>
+                      <Button 
+                        variant="outline" 
+                        className={styles.quickActionButton}
+                      >
+                        <Plus className={styles.buttonIcon} />
+                        New Order
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        className={`${styles.quickActionButton} ${styles.secondaryAction}`}
+                      >
+                        <Calendar className={styles.buttonIcon} />
+                        Schedule
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+                  
+                  {/* Date and Stats Card */}
+                  <div className={styles.dateCard}>
+                    <p>Today is {currentTime.toLocaleDateString('en-US', { weekday: 'long' })}</p>
+                    <p className={styles.dateText}>
+                      {currentTime.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </p>
+                    <div className={styles.timeDisplay}>
                         <Clock className="w-4 h-4" />
                         <span>{currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
                       </div>
@@ -263,10 +261,9 @@ export default function TailorDashboardPage() {
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
+      
+            </div>
             </motion.div>
-        
             {/* Stats Grid */}
             <motion.div 
               initial={{ opacity: 0, y: 20 }}
@@ -370,6 +367,7 @@ export default function TailorDashboardPage() {
               <motion.div 
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
                 className={styles.contentGridSidebar}
               >
                 {/* Today's Schedule */}
@@ -465,9 +463,9 @@ export default function TailorDashboardPage() {
                 </div>
               </motion.div>
             </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
+    // </div>
   );
 }
