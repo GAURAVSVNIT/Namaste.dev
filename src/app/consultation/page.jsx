@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
+import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
 import styles from './consultation.module.css';
 
 const SPECIALIZATIONS = [
@@ -203,17 +204,73 @@ export default function ConsultationPage() {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle>Login Required</CardTitle>
-            <CardDescription>
-              Please log in to access consultation services.
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '100px 20px 60px',
+        minHeight: '100vh',
+        backgroundColor: '#ffffff',
+        fontFamily: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif"
+      }}>
+        <Card style={{
+          maxWidth: '480px',
+          margin: '60px auto 0',
+          background: 'white',
+          borderRadius: '16px',
+          border: '1px solid #e5e7eb',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)',
+          overflow: 'hidden'
+        }}>
+          <CardHeader style={{
+            padding: '32px 32px 24px',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+            borderBottom: '1px solid #f1f5f9'
+          }}>
+            <CardTitle style={{
+              fontSize: '1.75rem',
+              fontWeight: '700',
+              color: '#1f2937',
+              marginBottom: '12px',
+              letterSpacing: '-0.025em'
+            }}>Login Required</CardTitle>
+            <CardDescription style={{
+              fontSize: '1rem',
+              color: '#6b7280',
+              lineHeight: '1.6',
+              margin: 0
+            }}>
+              Please log in to access our consultation services and connect with fashion experts.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent style={{
+            padding: '32px'
+          }}>
             <Link href="/auth/login">
-              <Button className="w-full">Login</Button>
+              <Button style={{
+                width: '100%',
+                padding: '14px 24px',
+                fontSize: '16px',
+                fontWeight: '600',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                color: 'white',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                textDecoration: 'none',
+                display: 'inline-block',
+                textAlign: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+              }}>Login</Button>
             </Link>
           </CardContent>
         </Card>
@@ -222,258 +279,793 @@ export default function ConsultationPage() {
   }
 
   const ProviderCard = ({ provider }) => (
-    <Card className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-gray-200 bg-white w-full max-w-2xl mx-auto">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      <CardContent className="p-6">
-        <div className="flex flex-col sm:flex-row gap-6">
-          {/* Profile Image */}
-          <div className="relative flex-shrink-0 mx-auto sm:mx-0">
-            <div className="relative">
-              <Avatar className="h-28 w-28 border-4 border-white shadow-md group-hover:scale-105 transition-transform duration-300">
-                <AvatarImage src={provider.photoURL} alt={provider.name} className="object-cover" />
-                <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-100 to-purple-100 text-blue-700">
-                  {provider.name?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+    <div style={{
+      background: 'white',
+      borderRadius: '12px',
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+      transition: 'all 0.3s ease',
+      overflow: 'hidden'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-2px)';
+      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+    }}
+    >
+      <div style={{
+        padding: '24px'
+      }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px'
+        }}>
+          {/* Profile Header */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}>
+            <Avatar style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '3px solid #f3f4f6',
+              flexShrink: 0
+            }}>
+              <AvatarImage src={provider.photoURL} alt={provider.name} style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }} />
+              <AvatarFallback style={{
+                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                color: 'white',
+                fontSize: '24px',
+                fontWeight: '600'
+              }}>
+                {provider.name?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            
+            <div style={{ flex: 1 }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '8px'
+              }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: '#111827',
+                  margin: 0
+                }}>
+                  {provider.name}
+                </h3>
+                <span style={{
+                  padding: '4px 12px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  backgroundColor: provider.role === 'fashion_designer' ? '#dbeafe' : '#e0e7ff',
+                  color: provider.role === 'fashion_designer' ? '#1e40af' : '#3730a3'
+                }}>
+                  {provider.role === 'fashion_designer' ? 'Designer' : 'Tailor'}
+                </span>
+              </div>
+              
+              {/* Location */}
+              {provider.professional?.city && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  color: '#6b7280',
+                  marginBottom: '8px'
+                }}>
+                  <MapPin style={{
+                    width: '14px',
+                    height: '14px'
+                  }} />
+                  <span style={{
+                    fontSize: '14px'
+                  }}>{provider.professional.city}</span>
+                </div>
+              )}
+              
+              {/* Rating */}
               {provider.rating?.average > 0 && (
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100 flex items-center">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span className="text-sm font-semibold text-gray-800">{provider.rating.average.toFixed(1)}</span>
-                  <span className="text-xs text-gray-500 ml-0.5">({provider.rating.count})</span>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <Star style={{
+                    width: '16px',
+                    height: '16px',
+                    fill: '#fbbf24',
+                    color: '#fbbf24'
+                  }} />
+                  <span style={{
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#111827'
+                  }}>{provider.rating.average.toFixed(1)}</span>
+                  <span style={{
+                    fontSize: '12px',
+                    color: '#6b7280'
+                  }}>({provider.rating.count})</span>
                 </div>
               )}
             </div>
           </div>
           
-          {/* Profile Info */}
-          <div className="flex-1 min-w-0 space-y-4">
-            {/* Name and Role */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <h3 className="text-2xl font-bold text-gray-800 truncate">
-                {provider.name}
-              </h3>
-              <Badge 
-                className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                  provider.role === 'fashion_designer' 
-                    ? 'bg-pink-100 text-pink-700 hover:bg-pink-200 border border-pink-200' 
-                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-200'
-                }`}
-              >
-                {provider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
-              </Badge>
+          {/* Specializations */}
+          {provider.professional?.specializations?.length > 0 && (
+            <div>
+              <h4 style={{
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#6b7280',
+                marginBottom: '8px'
+              }}>Specializes in:</h4>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px'
+              }}>
+                {provider.professional.specializations.slice(0, 3).map((spec) => (
+                  <span 
+                    key={spec}
+                    style={{
+                      padding: '4px 8px',
+                      fontSize: '12px',
+                      borderRadius: '12px',
+                      backgroundColor: '#f3f4f6',
+                      color: '#374151',
+                      border: '1px solid #e5e7eb'
+                    }}
+                  >
+                    {spec.replace(/_/g, ' ')}
+                  </span>
+                ))}
+                {provider.professional.specializations.length > 3 && (
+                  <span style={{
+                    padding: '4px 8px',
+                    fontSize: '12px',
+                    borderRadius: '12px',
+                    backgroundColor: '#f9fafb',
+                    color: '#6b7280',
+                    border: '1px dashed #d1d5db'
+                  }}>
+                    +{provider.professional.specializations.length - 3} more
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Price and Actions */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: '16px',
+            borderTop: '1px solid #f3f4f6'
+          }}>
+            <div>
+              <span style={{
+                fontSize: '20px',
+                fontWeight: '600',
+                color: '#111827'
+              }}>
+                ₹{((provider.pricing?.chatRate || 0) * 83).toFixed(0)}
+              </span>
+              <span style={{
+                fontSize: '12px',
+                color: '#6b7280',
+                marginLeft: '4px'
+              }}>
+                / {provider.pricing?.pricingType === 'per_minute' ? 'min' : 'session'}
+              </span>
             </div>
             
-            {/* Location */}
-            {provider.professional?.city && (
-              <div className="flex items-center text-gray-600">
-                <MapPin className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0" />
-                <span className="text-base">{provider.professional.city}</span>
-              </div>
-            )}
-            
-            {/* Specializations */}
-            {provider.professional?.specializations?.length > 0 && (
-              <div className="py-1">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">Specializes in:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {provider.professional.specializations.slice(0, 4).map((spec) => (
-                    <span 
-                      key={spec} 
-                      className="px-3 py-1 text-sm rounded-full bg-gray-50 border border-gray-200 text-gray-700"
-                    >
-                      {spec.replace(/_/g, ' ')}
-                    </span>
-                  ))}
-                  {provider.professional.specializations.length > 4 && (
-                    <span className="px-3 py-1 text-sm rounded-full bg-gray-50 border border-dashed border-gray-300 text-gray-500">
-                      +{provider.professional.specializations.length - 4} more
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {/* Price and Action Buttons */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 mt-2 border-t border-gray-100 gap-4">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-gray-900">
-                  ₹{((provider.pricing?.chatRate || 0) * 83).toFixed(0)}
-                </span>
-                <span className="text-sm text-gray-500">
-                  / {provider.pricing?.pricingType === 'per_minute' ? 'minute' : 'session'}
-                </span>
-              </div>
+            <div style={{
+              display: 'flex',
+              gap: '8px'
+            }}>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setViewProfileProvider(provider);
+                  setShowProfileModal(true);
+                }}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  backgroundColor: 'white',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#f9fafb';
+                  e.target.style.borderColor = '#9ca3af';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'white';
+                  e.target.style.borderColor = '#d1d5db';
+                }}
+              >
+                View Profile
+              </button>
               
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <Button 
-                  variant="outline" 
-                  className="h-10 px-5 text-sm font-medium bg-white hover:bg-gray-50 border-gray-300 text-gray-700 hover:text-gray-900 transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('=== VIEW PROFILE BUTTON CLICKED ===');
-                    console.log('Event:', e);
-                    console.log('Provider:', provider.name, provider.id);
-                    console.log('Current showProfileModal state:', showProfileModal);
-                    console.log('Current viewProfileProvider:', viewProfileProvider);
-                    
-                    setViewProfileProvider(provider);
-                    setShowProfileModal(true);
-                    
-                    console.log('States updated - should show modal now');
-                    console.log('=== END VIEW PROFILE CLICK ===');
-                  }}
-                  style={{ zIndex: 10, position: 'relative' }}
-                >
-                  View Profile
-                </Button>
-                
-                <Button 
-                  className="h-10 px-5 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow-md transition-all"
-                  onClick={() => {
-                    setSelectedProvider(provider);
-                    setShowBookingModal(true);
-                  }}
-                >
-                  Book Now
-                </Button>
+              <button
+                onClick={() => {
+                  setSelectedProvider(provider);
+                  setShowBookingModal(true);
+                }}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                }}
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{
+      marginTop: '100px',
+      minHeight: '100vh',
+      backgroundColor: '#ffffff',
+      fontFamily: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif"
+    }}>
+      <div style={{
+        padding: '0 20px',
+        maxWidth: '1200px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      }}>
+        {/* Hero Section */}
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          margin: '0',
+          padding: '80px 40px',
+          textAlign: 'center',
+          color: 'white',
+          borderRadius: '24px 24px 24px 24px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Decorative background pattern */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            opacity: 0.4
+          }} />
+          
+          {/* Content */}
+          <div style={{
+            position: 'relative',
+            zIndex: 2,
+            maxWidth: '800px',
+            margin: '0 auto'
+          }}>
+            <SplitText 
+              text="Find Your Perfect Fashion Expert"
+              as="h1"
+              style={{
+                fontSize: '3rem',
+                fontWeight: '700',
+                marginBottom: '20px',
+                textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                lineHeight: '1.1'
+              }}
+              splitBy="chars"
+              stagger={0.05}
+              duration={0.8}
+              animationProps={{
+                y: 50,
+                opacity: 0
+              }}
+            />
+            <p style={{
+              fontSize: '1.25rem',
+              lineHeight: '1.6',
+              opacity: 0.9,
+              marginBottom: '32px'
+            }}>Connect with experienced fashion designers and tailors for personalized consultation services. Book 1:1 sessions, get style advice, and bring your fashion ideas to life.</p>
+            
+            {/* Feature highlights */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '40px',
+              flexWrap: 'wrap',
+              marginTop: '40px'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  ✓
+                </div>
+                Expert Professionals
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  ✓
+                </div>
+                1:1 Consultations
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  ✓
+                </div>
+                Instant Booking
               </div>
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
-  );
-
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>Find Your Perfect Fashion Expert</h1>
-        <p>Connect with experienced fashion designers and tailors for personalized consultation services. Book 1:1 sessions, get style advice, and bring your fashion ideas to life.</p>
         
-        {/* Debug Test Button */}
-        <div className="mt-4">
-          <Button 
-            onClick={() => {
-              console.log('Test button clicked!');
-              setViewProfileProvider({ name: 'Test Provider', role: 'fashion_designer', professional: { bio: 'Test bio' } });
-              setShowProfileModal(true);
-              console.log('Test modal should now be open');
-            }}
-            variant="outline"
-          >
-            TEST: Open Profile Modal
-          </Button>
-        </div>
-      </header>
-      
-      <div className={styles.searchSection}>
-        <div className={styles.searchBar}>
-          <div className={styles.searchBox}>
-            <Search className={styles.searchIcon} />
+        {/* Search & Filters Section */}
+        <div style={{
+          background: 'white',
+          padding: '30px',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          marginBottom: '40px',
+          border: '1px solid #e5e7eb'
+        }}>
+        {/* Search Bar */}
+        <div style={{
+          marginBottom: '32px'
+        }}>
+          <div style={{
+            position: 'relative',
+            maxWidth: '600px',
+            margin: '0 auto'
+          }}>
+            <Search style={{
+              position: 'absolute',
+              left: '20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '20px',
+              height: '20px',
+              color: '#6b7280',
+              zIndex: 2
+            }} />
             <input
               type="text"
               placeholder="Search designers, tailors, or specialties..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
+              style={{
+                width: '100%',
+                padding: '18px 20px 18px 55px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '15px',
+                fontSize: '16px',
+                fontWeight: '400',
+                backgroundColor: '#f9fafb',
+                transition: 'all 0.3s ease',
+                outline: 'none',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#667eea';
+                e.target.style.backgroundColor = 'white';
+                e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 20px rgba(0,0,0,0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#e5e7eb';
+                e.target.style.backgroundColor = '#f9fafb';
+                e.target.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)';
+              }}
             />
           </div>
+        </div>
+        
+        {/* Filters */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '20px',
+          alignItems: 'end'
+        }}>
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              color: '#374151',
+              fontSize: '14px'
+            }}>Role</label>
+            <Select 
+              value={filters.role} 
+              onValueChange={(value) => setFilters(prev => ({ ...prev, role: value }))}
+            >
+              <SelectTrigger style={{
+                width: '100%',
+                padding: '14px 16px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '12px',
+                backgroundColor: 'white',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                outline: 'none',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                minHeight: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <SelectValue placeholder="All Roles" />
+              </SelectTrigger>
+              <SelectContent style={{
+                backgroundColor: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)',
+                padding: '8px',
+                zIndex: 50,
+                minWidth: 'var(--radix-select-trigger-width)',
+                maxHeight: '200px',
+                overflowY: 'auto'
+              }}>
+                <SelectItem value="all" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}>
+                  <span style={{ width: '100%', display: 'block' }}>All Roles</span>
+                  <style jsx>{`
+                    [data-state="checked"] [data-radix-select-item-indicator] {
+                      display: none !important;
+                    }
+                  `}</style>
+                </SelectItem>
+                <SelectItem value="fashion_designer" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}>
+                  <span style={{ width: '100%', display: 'block' }}>Fashion Designer</span>
+                </SelectItem>
+                <SelectItem value="tailor" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}>
+                  <span style={{ width: '100%', display: 'block' }}>Tailor</span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           
-          <div className={styles.filters}>
-            <div className={styles.filterGroup}>
-              <label htmlFor="role-filter" className={styles.filterLabel}>Role</label>
-              <Select 
-                value={filters.role} 
-                onValueChange={(value) => setFilters(prev => ({ ...prev, role: value }))}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="All Roles" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="fashion_designer">Fashion Designer</SelectItem>
-                  <SelectItem value="tailor">Tailor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className={styles.filterGroup}>
-              <label htmlFor="specialization-filter" className={styles.filterLabel}>Specialty</label>
-              <Select 
-                value={filters.specialization} 
-                onValueChange={(value) => setFilters(prev => ({ ...prev, specialization: value }))}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="All Specialties" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Specialties</SelectItem>
-                  {SPECIALIZATIONS.map((spec) => (
-                    <SelectItem key={spec} value={spec}>
-                      {spec.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className={styles.filterGroup}>
-              <label htmlFor="city-filter" className={styles.filterLabel}>Location</label>
-              <div className={styles.locationInput}>
-                <MapPin className={styles.locationIcon} />
-                <input
-                  id="city-filter"
-                  type="text"
-                  placeholder="City"
-                  value={filters.city}
-                  onChange={(e) => setFilters(prev => ({ ...prev, city: e.target.value }))}
-                  className={styles.cityInput}
-                />
-              </div>
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              color: '#374151',
+              fontSize: '14px'
+            }}>Specialty</label>
+            <Select 
+              value={filters.specialization} 
+              onValueChange={(value) => setFilters(prev => ({ ...prev, specialization: value }))}
+            >
+              <SelectTrigger style={{
+                width: '100%',
+                padding: '14px 16px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '12px',
+                backgroundColor: 'white',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                outline: 'none',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                minHeight: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <SelectValue placeholder="All Specialties" />
+              </SelectTrigger>
+              <SelectContent style={{
+                backgroundColor: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)',
+                padding: '8px',
+                zIndex: 50,
+                minWidth: 'var(--radix-select-trigger-width)',
+                maxHeight: '200px',
+                overflowY: 'auto'
+              }}>
+                <SelectItem value="all" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0'
+                }}>All Specialties</SelectItem>
+                {SPECIALIZATIONS.map((spec) => (
+                  <SelectItem key={spec} value={spec} style={{
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    margin: '2px 0'
+                  }}>
+                    {spec.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              color: '#374151',
+              fontSize: '14px'
+            }}>Location</label>
+            <div style={{
+              position: 'relative'
+            }}>
+              <MapPin style={{
+                position: 'absolute',
+                left: '16px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '16px',
+                height: '16px',
+                color: '#6b7280',
+                zIndex: 2
+              }} />
+              <input
+                id="city-filter"
+                type="text"
+                placeholder="City"
+                value={filters.city}
+                onChange={(e) => setFilters(prev => ({ ...prev, city: e.target.value }))}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px 12px 45px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  backgroundColor: 'white',
+                  transition: 'all 0.3s ease',
+                  outline: 'none'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#667eea';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Providers Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <Card key={`loading-skeleton-${i}`}>
-              <CardContent className="p-6">
-                <div className="space-y-2">
-                  <div className="h-3 bg-muted rounded w-full" />
-                  <div className="h-3 bg-muted rounded w-3/4" />
+        {/* Providers Grid */}
+        <div style={{
+          padding: '0 20px',
+          maxWidth: '1200px',
+          marginLeft: 'auto',
+          marginRight: 'auto'
+        }}>
+          {loading ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+              gap: '24px',
+              marginBottom: '40px'
+            }}>
+              {[...Array(6)].map((_, i) => (
+                <div key={`loading-skeleton-${i}`} style={{
+                  background: 'white',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  border: '1px solid #e5e7eb',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                }}>
+                  <div style={{
+                    height: '100px',
+                    background: '#f3f4f6',
+                    borderRadius: '8px',
+                    marginBottom: '16px',
+                    animation: 'pulse 2s infinite'
+                  }} />
+                  <div style={{
+                    height: '20px',
+                    background: '#f3f4f6',
+                    borderRadius: '4px',
+                    marginBottom: '8px',
+                    animation: 'pulse 2s infinite'
+                  }} />
+                  <div style={{
+                    height: '16px',
+                    background: '#f3f4f6',
+                    borderRadius: '4px',
+                    width: '75%',
+                    animation: 'pulse 2s infinite'
+                  }} />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              ))}
+            </div>
+          ) : filteredProviders.length > 0 ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+              gap: '24px',
+              marginBottom: '40px'
+            }}>
+              {filteredProviders.map((provider) => (
+                <ProviderCard key={provider.id} provider={provider} />
+              ))}
+            </div>
+          ) : (
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '60px 40px',
+              textAlign: 'center',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              marginBottom: '40px'
+            }}>
+              <p style={{
+                color: '#6b7280',
+                fontSize: '1.125rem',
+                marginBottom: '24px'
+              }}>No providers found matching your criteria.</p>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setFilters({ role: 'all', specialization: '', city: '', minRating: 0 });
+                  setSearchQuery('');
+                }}
+                style={{
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  border: '2px solid #e5e7eb',
+                  backgroundColor: 'white',
+                  color: '#374151',
+                  fontWeight: '500',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Clear Filters
+              </Button>
+            </div>
+          )}
         </div>
-      ) : filteredProviders.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProviders.map((provider) => (
-            <ProviderCard key={provider.id} provider={provider} />
-          ))}
-        </div>
-      ) : (
-        <Card>
-          <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">No providers found matching your criteria.</p>
-            <Button 
-              variant="outline" 
-              className="mt-4"
-              onClick={() => {
-                setFilters({ role: 'all', specialization: '', city: '', minRating: 0 });
-                setSearchQuery('');
-              }}
-            >
-              Clear Filters
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      </div>
 
       {/* Booking Modal */}
       <Dialog open={showBookingModal} onOpenChange={(open) => {
