@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { getAvatarsFromFirestore } from "@/lib/fashion-builder-utils";
 import { useAuth } from "@/hooks/useAuth"; 
-import "@/static/avatars/avatars.css";
+import "@/static/avatars/avatars.css"; 
 import { Download, UploadCloud, Search, Camera, Play, Sparkle, Wand } from "lucide-react";
 import { useRouter } from 'next/navigation';
 

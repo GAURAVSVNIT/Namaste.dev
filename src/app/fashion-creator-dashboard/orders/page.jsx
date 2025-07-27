@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import styles from './Orders.module.css';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
-import OrderDetailsModal from '@/components/merchant-dashboard/OrderDetailsModal';
+import OrderDetailsModal from '@/components/fashion-creator-dashboard/OrderDetailsModal';
 
 const statusOptions = [
   { value: 'all', label: 'All Orders' },
@@ -67,7 +67,7 @@ function OrdersPageContent() {
         queryParams.append('source', source);
       }
 
-      const url = `/api/merchant/orders?${queryParams}`;
+      const url = `/api/fashion-creator/orders?${queryParams}`;
       console.log('📡 Frontend: Making request to:', url);
       
       const response = await fetch(url);
@@ -206,23 +206,23 @@ function OrdersPageContent() {
               margin: '0 0 0.5rem 0',
               lineHeight: '1.2',
               letterSpacing: '-0.025em'
-            }}>Orders</h1>
+            }}>Fashion Orders</h1>
             <p style={{
               color: '#6b7280',
               fontSize: '1rem',
               margin: '0',
               fontWeight: '400'
-            }}>Track and manage customer orders efficiently</p>
+            }}>Track and manage your fashion creation orders</p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
             <div style={{
-              backgroundColor: '#f0f9ff',
+              backgroundColor: '#f0f4ff',
               padding: '0.875rem 1.25rem',
               borderRadius: '12px',
-              border: '1px solid #e0f2fe'
+              border: '1px solid #e0e7ff'
             }}>
               <span style={{
-                color: '#0369a1',
+                color: '#4338ca',
                 fontWeight: '600',
                 fontSize: '0.875rem'
               }}>Shiprocket: {ordersSummary.shiprocket}</span>
@@ -277,7 +277,7 @@ function OrdersPageContent() {
           }} />
           <input
             type="text"
-            placeholder="Search orders, customers, or products..."
+            placeholder="Search fashion orders, customers, or products..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             style={{
@@ -293,8 +293,8 @@ function OrdersPageContent() {
               outline: 'none'
             }}
             onFocus={(e) => {
-              e.target.style.borderColor = '#3b82f6';
-              e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+              e.target.style.borderColor = '#4338ca';
+              e.target.style.boxShadow = '0 0 0 3px rgba(67, 56, 202, 0.1)';
             }}
             onBlur={(e) => {
               e.target.style.borderColor = '#e1e5e9';
@@ -569,7 +569,7 @@ function OrdersPageContent() {
 // Main component with role protection
 export default function OrdersPage() {
   return (
-    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
+    <RoleProtected allowedRoles={[USER_ROLES.FASHION_CREATOR, USER_ROLES.ADMIN]}>
       <OrdersPageContent />
     </RoleProtected>
   );

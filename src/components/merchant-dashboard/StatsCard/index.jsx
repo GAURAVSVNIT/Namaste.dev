@@ -12,30 +12,30 @@ export function StatsCard({
   trend = 'up',
   delay = 0 
 }) {
-  const trendColors = {
+  const trendStyles = {
     up: {
-      bg: 'bg-green-50',
-      text: 'text-green-600',
-      icon: <ArrowUp className="w-3 h-3" />
+      bg: { backgroundColor: '#f0fdf4' },
+      text: { color: '#16a34a' },
+      icon: <ArrowUp style={{ width: '12px', height: '12px' }} />
     },
     down: {
-      bg: 'bg-red-50',
-      text: 'text-red-600',
-      icon: <ArrowDown className="w-3 h-3" />
+      bg: { backgroundColor: '#fef2f2' },
+      text: { color: '#dc2626' },
+      icon: <ArrowDown style={{ width: '12px', height: '12px' }} />
     },
     neutral: {
-      bg: 'bg-gray-50',
-      text: 'text-gray-600',
-      icon: <div className="w-3 h-3 bg-gray-400 rounded-full" />
+      bg: { backgroundColor: '#f9fafb' },
+      text: { color: '#6b7280' },
+      icon: <div style={{ width: '12px', height: '12px', backgroundColor: '#9ca3af', borderRadius: '50%' }} />
     }
   };
 
-  const color = trendColors[trend] || trendColors.neutral;
-  const iconColors = {
-    'Total Visitors': 'bg-blue-100 text-blue-600',
-    'Page Views': 'bg-purple-100 text-purple-600',
-    'Conversion Rate': 'bg-amber-100 text-amber-600',
-    'Avg Order Value': 'bg-emerald-100 text-emerald-600'
+  const color = trendStyles[trend] || trendStyles.neutral;
+  const iconStyles = {
+    'Total Visitors': { backgroundColor: '#dbeafe', color: '#2563eb' },
+    'Page Views': { backgroundColor: '#f3e8ff', color: '#9333ea' },
+    'Conversion Rate': { backgroundColor: '#fef3c7', color: '#d97706' },
+    'Avg Order Value': { backgroundColor: '#dcfce7', color: '#16a34a' }
   };
 
   return (
@@ -43,37 +43,75 @@ export function StatsCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay, ease: [0.4, 0, 0.2, 1] }}
-      whileHover={{ y: -4 }}
-      className="h-full"
+whileHover={{ y: -4 }}
+      style={{ height: '100%' }}
     >
-      <div className="h-full bg-white rounded-xl border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:border-gray-200 flex flex-col">
-        <div className="p-5 flex-1 flex flex-col">
-          <div className="flex justify-between items-start">
+      <div style={{
+        height: '100%',
+        backgroundColor: 'white',
+        borderRadius: '12px',
+        border: '1px solid #f3f4f6',
+        overflow: 'hidden',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)',
+        transition: 'all 0.3s ease',
+        display: 'flex',
+        flexDirection: 'column'
+      }}>
+        <div style={{
+          padding: '20px',
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start'
+          }}>
             <div>
-              <p className="text-sm font-medium text-gray-500 mb-1">{title}</p>
-              <p className="text-2xl font-bold text-gray-900 mb-2">{value}</p>
-              
+              <p style={{ fontSize: '0.875rem', fontWeight: 500, color: '#6b7280', marginBottom: '0.25rem' }}>{title}</p>
+              <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#111827', marginBottom: '0.5rem' }}>{value}</p>
               {change && (
-                <div className={`inline-flex items-center ${color.bg} ${color.text} px-2 py-1 rounded-md text-xs font-medium`}>
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  ...color.bg,
+                  ...color.text,
+                  padding: '0.25rem 0.5rem',
+                  borderRadius: '0.375rem',
+                  fontSize: '0.75rem',
+                  fontWeight: 500
+                }}>
                   {color.icon}
-                  <span className="ml-1">{change}</span>
+                  <span style={{ marginLeft: '0.25rem' }}>{change}</span>
                 </div>
               )}
             </div>
-            
-            <div className={`p-2 rounded-lg ${iconColors[title] || 'bg-gray-100 text-gray-600'}`}>
-              <Icon className="w-5 h-5" />
+            <div style={{
+              padding: '0.5rem',
+              borderRadius: '0.5rem',
+              ...iconStyles[title],
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Icon style={{ width: '20px', height: '20px' }} />
             </div>
           </div>
-          
-          {/* Animated progress bar */}
-          <div className="mt-4 w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
+          <div style={{
+            marginTop: '1rem',
+            width: '100%',
+            backgroundColor: '#f3f4f6',
+            borderRadius: '0.75rem',
+            height: '0.375rem',
+            overflow: 'hidden'
+          }}>
             <motion.div 
-              className={`h-full rounded-full ${
-                trend === 'up' ? 'bg-green-500' : 
-                trend === 'down' ? 'bg-red-500' : 
-                'bg-gray-400'
-              }`}
+              style={{
+                height: '100%',
+                borderRadius: '0.75rem',
+                backgroundColor: trend === 'up' ? '#10b981' : trend === 'down' ? '#f87171' : '#9ca3af'
+              }}
               initial={{ width: 0 }}
               animate={{ width: 
                 trend === 'up' ? '75%' : 
@@ -84,9 +122,12 @@ export function StatsCard({
             />
           </div>
         </div>
-        
-        {/* Subtle gradient accent */}
-        <div className="h-1 bg-gradient-to-r from-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div style={{
+          height: '4px',
+          backgroundColor: '#6366f1',
+          opacity: 0,
+          transition: 'opacity 0.3s ease'
+        }} />
       </div>
     </motion.div>
   );
