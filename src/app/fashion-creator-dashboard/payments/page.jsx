@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { DollarSign, Download, CreditCard, TrendingUp, ArrowUpRight, ArrowDownLeft, RefreshCw, Clock, CheckCircle, XCircle, Filter, Search, X, Loader2, Calendar, BarChart3, Wallet } from 'lucide-react';
+import { DollarSign, Download, CreditCard, TrendingUp, ArrowUpRight, ArrowDownLeft, RefreshCw, Clock, CheckCircle, XCircle, Filter, Search, X, Loader2, Palette, Scissors, Sparkles, Crown } from 'lucide-react';
 import { StatsCard } from '@/components/merchant-dashboard/StatsCard';
 import WithdrawalModal from '@/components/merchant-dashboard/WithdrawalModal';
 
@@ -31,8 +31,8 @@ const getTypeIcon = (type) => {
     marginRight: '12px'
   };
 
-  const saleStyle = { backgroundColor: '#dbeafe', color: '#2563eb' };
-  const withdrawalStyle = { backgroundColor: '#ede9fe', color: '#8b5cf6' };
+  const saleStyle = { backgroundColor: '#ede9fe', color: '#8b5cf6' };
+  const withdrawalStyle = { backgroundColor: '#fdf2f8', color: '#ec4899' };
   const refundStyle = { backgroundColor: '#fef3c7', color: '#f59e0b' };
   
   const style = type === 'sale' ? saleStyle : type === 'withdrawal' ? withdrawalStyle : refundStyle;
@@ -216,10 +216,10 @@ export default function PaymentsPage() {
 
   const hasActiveFilters = searchTerm || typeFilter !== 'all' || statusFilter !== 'all';
 
-  // Professional inline styles
+  // Professional fashion-themed inline styles
   const containerStyle = {
     padding: '32px 24px',
-    backgroundColor: '#f8fafc',
+    background: '#ffffffff',
     minHeight: '100vh',
     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
   };
@@ -230,20 +230,25 @@ export default function PaymentsPage() {
     alignItems: 'flex-start',
     marginBottom: '40px',
     flexWrap: 'wrap',
-    gap: '20px'
+    gap: '20px',
+    backgroundColor: 'white',
+    padding: '24px',
+    borderRadius: '16px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    border: '1px solid rgba(0, 0, 0, 0.1)'
   };
 
   const titleStyle = {
     fontSize: '32px',
     fontWeight: '700',
-    color: '#1e293b',
+    color: '#1f2937',
     margin: '0 0 8px 0',
     lineHeight: '1.2'
   };
 
   const subtitleStyle = {
     fontSize: '16px',
-    color: '#64748b',
+    color: '#6b7280',
     margin: '0',
     lineHeight: '1.5'
   };
@@ -253,20 +258,16 @@ export default function PaymentsPage() {
     alignItems: 'center',
     gap: '10px',
     padding: '14px 24px',
-    backgroundColor: availableBalance <= 0 ? '#e2e8f0' : '#3b82f6',
-    color: availableBalance <= 0 ? '#94a3b8' : 'white',
-    border: 'none',
+    backgroundColor: availableBalance <= 0 ? '#f3f4f6' : '#8B5CF6',
+    color: availableBalance <= 0 ? '#9ca3af' : 'white',
+    border: '2px solid #e5e7eb',
     borderRadius: '12px',
     fontSize: '15px',
     fontWeight: '600',
     cursor: availableBalance <= 0 ? 'not-allowed' : 'pointer',
-    transition: 'all 0.2s ease',
-    boxShadow: availableBalance <= 0 ? 'none' : '0 4px 6px -1px rgba(59, 130, 246, 0.1)',
-    ':hover': {
-      backgroundColor: availableBalance <= 0 ? '#e2e8f0' : '#2563eb',
-      transform: availableBalance <= 0 ? 'none' : 'translateY(-1px)',
-      boxShadow: availableBalance <= 0 ? 'none' : '0 6px 8px -1px rgba(59, 130, 246, 0.15)'
-    }
+    transition: 'all 0.3s ease',
+    backdropFilter: 'blur(10px)',
+    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)'
   };
 
   const statsGridStyle = {
@@ -277,80 +278,28 @@ export default function PaymentsPage() {
   };
 
   const sectionStyle = {
-    backgroundColor: 'white',
-    borderRadius: '16px',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    borderRadius: '20px',
     padding: '32px',
-    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1)',
-    border: '1px solid #e2e8f0'
+    boxShadow: '0 20px 40px rgba(0, 0, 0, 0.1)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    backdropFilter: 'blur(10px)'
   };
 
   const sectionHeaderStyle = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '24px',
+    marginBottom: '32px',
     flexWrap: 'wrap',
     gap: '16px'
   };
 
   const sectionTitleStyle = {
-    fontSize: '24px',
+    fontSize: '28px',
     fontWeight: '700',
-    color: '#1e293b',
+    color: '#1f2937',
     margin: '0'
-  };
-
-  const filtersContainerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    flexWrap: 'wrap'
-  };
-
-  const searchInputStyle = {
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center'
-  };
-
-  const inputStyle = {
-    paddingLeft: '40px',
-    paddingRight: '12px',
-    paddingTop: '12px',
-    paddingBottom: '12px',
-    fontSize: '14px',
-    border: '2px solid #e2e8f0',
-    borderRadius: '10px',
-    outline: 'none',
-    transition: 'all 0.2s ease',
-    width: '280px',
-    backgroundColor: 'white'
-  };
-
-  const selectStyle = {
-    padding: '12px 16px',
-    fontSize: '14px',
-    border: '2px solid #e2e8f0',
-    borderRadius: '10px',
-    outline: 'none',
-    backgroundColor: 'white',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    minWidth: '140px'
-  };
-
-  const clearButtonStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    padding: '10px 16px',
-    backgroundColor: 'transparent',
-    color: '#64748b',
-    border: '2px solid #e2e8f0',
-    borderRadius: '10px',
-    fontSize: '14px',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
   };
 
   return (
@@ -363,8 +312,8 @@ export default function PaymentsPage() {
         transition={{ duration: 0.3 }}
       >
         <div>
-          <h1 style={titleStyle}>💳 Payment Management</h1>
-          <p style={subtitleStyle}>Track earnings, manage withdrawals, and monitor transaction history</p>
+          <h1 style={titleStyle}>✨ Fashion Creator Earnings</h1>
+          <p style={subtitleStyle}>Manage your creative income and track fashion design sales</p>
         </div>
         <button 
           onClick={() => setIsWithdrawalModalOpen(true)}
@@ -372,21 +321,21 @@ export default function PaymentsPage() {
           disabled={availableBalance <= 0}
           onMouseEnter={(e) => {
             if (availableBalance > 0) {
-              e.target.style.backgroundColor = '#2563eb';
-              e.target.style.transform = 'translateY(-1px)';
-              e.target.style.boxShadow = '0 6px 8px -1px rgba(59, 130, 246, 0.15)';
+              e.target.style.backgroundColor = '#7c3aed';
+              e.target.style.transform = 'translateY(-2px)';
+              e.target.style.boxShadow = '0 12px 40px rgba(139, 92, 246, 0.3)';
             }
           }}
           onMouseLeave={(e) => {
             if (availableBalance > 0) {
-              e.target.style.backgroundColor = '#3b82f6';
+              e.target.style.backgroundColor = '#8B5CF6';
               e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 4px 6px -1px rgba(59, 130, 246, 0.1)';
+              e.target.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.1)';
             }
           }}
         >
-          <Download size={20} />
-          Request Withdrawal
+          <Crown size={20} />
+          Request Payout
         </button>
       </motion.header>
 
@@ -398,10 +347,10 @@ export default function PaymentsPage() {
           transition={{ delay: 0.1 }}
         >
           <StatsCard
-            title="Total Earnings"
+            title="Design Earnings"
             value={formatCurrency(totalEarnings)}
-            icon={DollarSign}
-            change="+12% from last month"
+            icon={Palette}
+            change="+18% from last month"
             trend="up"
           />
         </motion.div>
@@ -414,8 +363,8 @@ export default function PaymentsPage() {
           <StatsCard
             title="Available Balance"
             value={formatCurrency(availableBalance)}
-            icon={Wallet}
-            change="+8% from last month"
+            icon={Sparkles}
+            change="+12% from last month"
             trend="up"
           />
         </motion.div>
@@ -426,10 +375,10 @@ export default function PaymentsPage() {
           transition={{ delay: 0.3 }}
         >
           <StatsCard
-            title="Pending Withdrawals"
+            title="Pending Payouts"
             value={formatCurrency(pendingWithdrawals)}
             icon={Clock}
-            change={pendingWithdrawals > 0 ? `${Math.ceil(pendingWithdrawals / 100 * 3)} days to process` : 'No pending withdrawals'}
+            change={pendingWithdrawals > 0 ? `${Math.ceil(pendingWithdrawals / 100 * 3)} days to process` : 'No pending payouts'}
             trend={pendingWithdrawals > 0 ? 'down' : 'neutral'}
           />
         </motion.div>
@@ -442,8 +391,8 @@ export default function PaymentsPage() {
           <StatsCard
             title="This Month"
             value={formatCurrency(thisMonthEarnings)}
-            icon={BarChart3}
-            change="+25% from last month"
+            icon={Scissors}
+            change="+35% from last month"
             trend="up"
           />
         </motion.div>
@@ -457,40 +406,38 @@ export default function PaymentsPage() {
         transition={{ delay: 0.5 }}
       >
         <div style={sectionHeaderStyle}>
-          <h2 style={sectionTitleStyle}>📊 Transaction History</h2>
+          <h2 style={sectionTitleStyle}>🎨 Creative Earnings</h2>
           
-          <div style={filtersContainerStyle}>
-            <div style={searchInputStyle}>
-              <Search 
-                size={16} 
-                style={{
-                  position: 'absolute',
-                  left: '12px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  color: '#9ca3af',
-                  zIndex: 1
-                }} 
-              />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <div style={{ position: 'relative' }}>
+              <Search size={16} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#9ca3af', zIndex: 1 }} />
               <input
                 type="text"
                 placeholder="Search transactions..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 style={{
-                  ...inputStyle,
-                  ':focus': {
-                    borderColor: '#3b82f6',
-                    boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)'
-                  }
+                  paddingLeft: '40px',
+                  paddingRight: '12px',
+                  paddingTop: '12px',
+                  paddingBottom: '12px',
+                  fontSize: '14px',
+                  border: '2px solid rgba(139, 92, 246, 0.2)',
+                  borderRadius: '12px',
+                  outline: 'none',
+                  transition: 'all 0.2s ease',
+                  width: '280px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.8)'
                 }}
                 onFocus={(e) => {
-                  e.target.style.borderColor = '#3b82f6';
-                  e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+                  e.target.style.borderColor = '#8B5CF6';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(139, 92, 246, 0.1)';
+                  e.target.style.backgroundColor = 'white';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = '#e2e8f0';
+                  e.target.style.borderColor = 'rgba(139, 92, 246, 0.2)';
                   e.target.style.boxShadow = 'none';
+                  e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
                 }}
               />
               {searchTerm && (
@@ -508,31 +455,24 @@ export default function PaymentsPage() {
                     padding: '4px',
                     borderRadius: '4px'
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.color = '#6b7280';
-                    e.target.style.backgroundColor = '#f3f4f6';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.color = '#9ca3af';
-                    e.target.style.backgroundColor = 'transparent';
-                  }}
                 >
                   <X size={16} />
                 </button>
               )}
             </div>
             
-            <select 
-              value={typeFilter} 
+            <select
+              value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              style={selectStyle}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6';
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e2e8f0';
-                e.target.style.boxShadow = 'none';
+              style={{
+                padding: '12px 16px',
+                fontSize: '14px',
+                border: '2px solid rgba(139, 92, 246, 0.2)',
+                borderRadius: '12px',
+                outline: 'none',
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                cursor: 'pointer',
+                minWidth: '140px'
               }}
             >
               {transactionTypes.map((type) => (
@@ -542,17 +482,18 @@ export default function PaymentsPage() {
               ))}
             </select>
             
-            <select 
-              value={statusFilter} 
+            <select
+              value={statusFilter}
               onChange={(e) => handleStatusFilterChange(e.target.value)}
-              style={selectStyle}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#3b82f6';
-                e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e2e8f0';
-                e.target.style.boxShadow = 'none';
+              style={{
+                padding: '12px 16px',
+                fontSize: '14px',
+                border: '2px solid rgba(139, 92, 246, 0.2)',
+                borderRadius: '12px',
+                outline: 'none',
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                cursor: 'pointer',
+                minWidth: '140px'
               }}
             >
               {statusOptions.map((status) => (
@@ -563,18 +504,20 @@ export default function PaymentsPage() {
             </select>
             
             {hasActiveFilters && (
-              <button 
+              <button
                 onClick={clearFilters}
-                style={clearButtonStyle}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#f8fafc';
-                  e.target.style.borderColor = '#cbd5e1';
-                  e.target.style.color = '#475569';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = 'transparent';
-                  e.target.style.borderColor = '#e2e8f0';
-                  e.target.style.color = '#64748b';
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '10px 16px',
+                  backgroundColor: 'transparent',
+                  color: '#8B5CF6',
+                  border: '2px solid rgba(139, 92, 246, 0.2)',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
                 }}
               >
                 <X size={16} />
@@ -591,8 +534,8 @@ export default function PaymentsPage() {
                 <div style={{
                   width: '48px',
                   height: '48px',
-                  border: '4px solid #e5e7eb',
-                  borderTop: '4px solid #3b82f6',
+                  border: '4px solid rgba(139, 92, 246, 0.2)',
+                  borderTop: '4px solid #8B5CF6',
                   borderRadius: '50%',
                   animation: 'spin 1s linear infinite'
                 }}></div>
@@ -613,20 +556,13 @@ export default function PaymentsPage() {
                       delay: Math.min(index * 0.03, 0.3)
                     }}
                     style={{
-                      backgroundColor: 'white',
-                      borderRadius: '12px',
-                      padding: '20px',
-                      border: '1px solid #f1f5f9',
-                      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
-                      e.currentTarget.style.transform = 'translateY(-1px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
-                      e.currentTarget.style.transform = 'translateY(0)';
+                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                      borderRadius: '16px',
+                      padding: '24px',
+                      border: '1px solid rgba(139, 92, 246, 0.1)',
+                      boxShadow: '0 4px 6px rgba(139, 92, 246, 0.1)',
+                      transition: 'all 0.2s ease',
+                      backdropFilter: 'blur(10px)'
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
@@ -659,12 +595,12 @@ export default function PaymentsPage() {
                     <div style={{ 
                       display: 'grid', 
                       gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
-                      gap: '12px',
+                      gap: '16px',
                       paddingTop: '16px',
-                      borderTop: '1px solid #f1f5f9'
+                      borderTop: '1px solid rgba(139, 92, 246, 0.1)'
                     }}>
                       <div>
-                        <span style={{ fontSize: '12px', fontWeight: '500', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#8B5CF6', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                           Transaction ID
                         </span>
                         <div style={{ fontSize: '14px', fontWeight: '500', color: '#374151', marginTop: '4px', fontFamily: 'monospace' }}>
@@ -672,7 +608,7 @@ export default function PaymentsPage() {
                         </div>
                       </div>
                       <div>
-                        <span style={{ fontSize: '12px', fontWeight: '500', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#8B5CF6', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                           Payment Method
                         </span>
                         <div style={{ fontSize: '14px', fontWeight: '500', color: '#374151', marginTop: '4px' }}>
@@ -680,7 +616,7 @@ export default function PaymentsPage() {
                         </div>
                       </div>
                       <div>
-                        <span style={{ fontSize: '12px', fontWeight: '500', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#8B5CF6', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
                           Reference
                         </span>
                         <div style={{ fontSize: '14px', fontWeight: '500', color: '#374151', marginTop: '4px' }}>
@@ -706,45 +642,38 @@ export default function PaymentsPage() {
                 }}
               >
                 <div style={{
-                  width: '64px',
-                  height: '64px',
-                  backgroundColor: '#f3f4f6',
+                  width: '80px',
+                  height: '80px',
+                  background: '#374151',
                   borderRadius: '50%',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  marginBottom: '16px',
-                  color: '#9ca3af'
+                  marginBottom: '24px',
+                  color: 'white'
                 }}>
-                  <DollarSign size={32} />
+                  <Palette size={40} />
                 </div>
-                <h3 style={{ margin: '0 0 8px 0', fontSize: '20px', fontWeight: '600', color: '#374151' }}>No transactions found</h3>
-                <p style={{ margin: '0 0 24px 0', fontSize: '16px', color: '#64748b', maxWidth: '400px' }}>
+                <h3 style={{ margin: '0 0 12px 0', fontSize: '24px', fontWeight: '700', color: '#1f2937' }}>No transactions found</h3>
+                <p style={{ margin: '0 0 32px 0', fontSize: '16px', color: '#64748b', maxWidth: '400px', lineHeight: '1.6' }}>
                   {hasActiveFilters
                     ? 'No transactions match your current filters. Try adjusting your search or filter criteria.'
-                    : 'You currently have no transactions. Completed transactions will appear here.'}
+                    : 'Your creative earnings will appear here once you start selling your designs.'}
                 </p>
                 {hasActiveFilters && (
                   <button 
                     onClick={clearFilters}
                     style={{
-                      padding: '12px 24px',
-                      backgroundColor: 'transparent',
-                      color: '#64748b',
-                      border: '2px solid #e2e8f0',
-                      borderRadius: '8px',
+                      padding: '14px 28px',
+                      background: '#8B5CF6',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '12px',
                       fontSize: '14px',
-                      fontWeight: '500',
+                      fontWeight: '600',
                       cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.target.style.backgroundColor = '#f8fafc';
-                      e.target.style.borderColor = '#cbd5e1';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.target.style.backgroundColor = 'transparent';
-                      e.target.style.borderColor = '#e2e8f0';
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 4px 6px rgba(139, 92, 246, 0.2)'
                     }}
                   >
                     Clear all filters

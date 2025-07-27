@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, 
@@ -37,6 +37,7 @@ import {
   AreaChart,
   Area
 } from 'recharts';
+import styles from '../../merchant-dashboard/analytics/Analytics.module.css';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
 
@@ -50,47 +51,47 @@ const salesData = [
   { name: 'Jul', sales: 7490, orders: 430, visitors: 2500 },
 ];
 
-const topProducts = [
+const topDesigns = [
   { 
-    name: 'Classic T-Shirt', 
+    name: 'Evening Gown Collection', 
     sales: 145, 
     revenue: 4350,
-    category: 'T-Shirts',
+    category: 'Formal Wear',
     stock: 24,
     status: 'in_stock'
   },
   { 
-    name: 'Denim Jacket', 
+    name: 'Streetwear Line', 
     sales: 89, 
     revenue: 8009,
-    category: 'Jackets',
+    category: 'Casual',
     stock: 5,
     status: 'low_stock'
   },
   { 
-    name: 'Summer Dress', 
+    name: 'Boho Chic Series', 
     sales: 67, 
     revenue: 4020,
-    category: 'Dresses',
+    category: 'Bohemian',
     stock: 0,
     status: 'out_of_stock'
   },
   { 
-    name: 'Sneakers', 
+    name: 'Minimalist Collection', 
     sales: 45, 
     revenue: 5400,
-    category: 'Shoes',
+    category: 'Minimalist',
     stock: 12,
     status: 'in_stock'
   },
 ];
 
 const categoryData = [
-  { name: 'T-Shirts', value: 35, color: '#3B82F6' },
-  { name: 'Jackets', value: 25, color: '#EF4444' },
-  { name: 'Dresses', value: 20, color: '#10B981' },
-  { name: 'Shoes', value: 12, color: '#8B5CF6' },
-  { name: 'Accessories', value: 8, color: '#F59E0B' },
+  { name: 'Formal Wear', value: 35, color: '#8B5CF6' },
+  { name: 'Casual', value: 25, color: '#EF4444' },
+  { name: 'Bohemian', value: 20, color: '#10B981' },
+  { name: 'Minimalist', value: 12, color: '#F59E0B' },
+  { name: 'Accessories', value: 8, color: '#3B82F6' },
 ];
 
 // Custom tooltip for charts
@@ -145,116 +146,11 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-// Inline styles objects
-const styles = {
-  container: {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '24px',
-    backgroundColor: '#f8fafc'
-  },
-  header: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '32px',
-    paddingBottom: '24px',
-    borderBottom: '1px solid #e2e8f0'
-  },
-  title: {
-    fontSize: '32px',
-    fontWeight: '700',
-    color: '#1e293b',
-    marginBottom: '8px'
-  },
-  subtitle: {
-    fontSize: '16px',
-    color: '#64748b',
-    fontWeight: '400'
-  },
-  select: {
-    appearance: 'none',
-    backgroundColor: '#ffffff',
-    border: '1px solid #d1d5db',
-    borderRadius: '8px',
-    padding: '8px 40px 8px 12px',
-    fontSize: '14px',
-    color: '#374151',
-    cursor: 'pointer',
-    outline: 'none',
-    transition: 'all 0.2s ease',
-    minWidth: '120px'
-  },
-  statsGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
-    gap: '24px',
-    marginBottom: '32px'
-  },
-  chartsGrid: baseWindowWidth => ({
-    display: 'grid',
-    gridTemplateColumns: baseWindowWidth >= 1024 ? '2fr 1fr' : '1fr',
-    gap: '24px'
-  }),
-  chartCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: '12px',
-    border: '1px solid #e2e8f0',
-    padding: '24px',
-    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-    transition: 'all 0.2s ease'
-  },
-  chartHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: '20px'
-  },
-  chartTitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    color: '#1e293b',
-    display: 'flex',
-    alignItems: 'center'
-  },
-  chartContainer: {
-    height: '300px',
-    width: '100%'
-  },
-  legend: {
-    marginTop: '16px',
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '8px'
-  },
-  legendItem: {
-    display: 'flex',
-    alignItems: 'center',
-    fontSize: '14px',
-    color: '#64748b'
-  },
-  legendColor: {
-    width: '12px',
-    height: '12px',
-    borderRadius: '50%',
-    marginRight: '8px',
-    flexShrink: 0
-  }
-};
-
 function AnalyticsPageContent() {
   const [timeRange, setTimeRange] = useState('monthly');
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('overview');
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
-
-  // Adjust window size dynamically
-  useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
+  
   // Simulate loading state
   const handleTimeRangeChange = (value) => {
     setIsLoading(true);
@@ -273,17 +169,17 @@ function AnalyticsPageContent() {
   const conversionRate = ((totalOrders / totalVisitors) * 100).toFixed(1);
   
   return (
-    <div style={styles.container}>
+    <div className={styles.container}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        style={styles.header}
+        className={styles.header}
       >
         <div>
-          <h1 style={styles.title}>Analytics Dashboard</h1>
-          <p style={styles.subtitle}>
-            Track your store performance and gain valuable insights
+          <h1 className={styles.title}>Analytics Dashboard</h1>
+          <p className={styles.subtitle}>
+            Track your fashion creator performance and gain valuable insights
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -291,11 +187,7 @@ function AnalyticsPageContent() {
             <select 
               value={timeRange}
               onChange={(e) => handleTimeRangeChange(e.target.value)}
-              style={{
-                ...styles.select,
-                opacity: isLoading ? 0.5 : 1,
-                cursor: isLoading ? 'not-allowed' : 'pointer'
-              }}
+              className={styles.select}
               disabled={isLoading}
             >
               <option value="daily">Today</option>
@@ -324,7 +216,12 @@ function AnalyticsPageContent() {
       {/* Stats Cards */}
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <div style={styles.statsGrid}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '24px',
+            marginBottom: '32px'
+          }}>
             {[1, 2, 3, 4].map((i) => (
               <motion.div 
                 key={i}
@@ -348,7 +245,12 @@ function AnalyticsPageContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            style={styles.statsGrid}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+              gap: '24px',
+              marginBottom: '32px'
+            }}
           >
             <StatsCard
               title="Total Sales"
@@ -402,7 +304,7 @@ function AnalyticsPageContent() {
           [
             { id: 'overview', label: 'Overview', icon: <BarChart2 size={16} /> },
             { id: 'sales', label: 'Sales', icon: <DollarSign size={16} /> },
-            { id: 'products', label: 'Products', icon: <ShoppingBag size={16} /> },
+            { id: 'designs', label: 'Designs', icon: <ShoppingBag size={16} /> },
             { id: 'customers', label: 'Customers', icon: <Users size={16} /> },
           ].map((tab) => {
             const isActive = activeTab === tab.id;
@@ -486,15 +388,56 @@ function AnalyticsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <div style={styles.chartCard}>
-                <div style={styles.chartHeader}>
-                  <h3 style={styles.chartTitle}>
+              <div style={{
+                background: 'white',
+                borderRadius: '0.75rem',
+                border: '1px solid #e5e7eb',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                padding: '1.5rem',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
+                overflow: 'hidden',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '1.5rem',
+                  paddingBottom: '1rem',
+                  borderBottom: '1px solid #f3f4f6'
+                }}>
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    color: '#111827',
+                    margin: '0',
+                    letterSpacing: '-0.01em'
+                  }}>
                     <BarChart2 size={20} className="inline-block mr-2 -mt-1" />
                     Sales & Orders
                   </h3>
                   <div className="flex items-center gap-2 text-sm">
                     <select 
-                      style={styles.select}
+                      style={{
+                        backgroundColor: 'white',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '0.5rem',
+                        padding: '0.5rem 2.5rem 0.5rem 0.75rem',
+                        fontSize: '0.875rem',
+                        color: '#374151',
+                        appearance: 'none',
+                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 0.5rem center',
+                        backgroundSize: '1.5em 1.5em',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        minWidth: '120px',
+                        fontWeight: '500'
+                      }}
                       value={timeRange}
                       onChange={(e) => handleTimeRangeChange(e.target.value)}
                     >
@@ -505,7 +448,12 @@ function AnalyticsPageContent() {
                     </select>
                   </div>
                 </div>
-                <div style={styles.chartContainer}>
+                <div style={{
+                  height: '320px',
+                  width: '100%',
+                  position: 'relative',
+                  margin: '0.5rem 0'
+                }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={salesData}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
@@ -574,14 +522,44 @@ function AnalyticsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <div style={styles.chartCard}>
-                <div style={styles.chartHeader}>
-                  <h3 style={styles.chartTitle}>
+              <div style={{
+                background: 'white',
+                borderRadius: '0.75rem',
+                border: '1px solid #e5e7eb',
+                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
+                padding: '1.5rem',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                position: 'relative',
+                overflow: 'hidden',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: '1.5rem',
+                  paddingBottom: '1rem',
+                  borderBottom: '1px solid #f3f4f6'
+                }}>
+                  <h3 style={{
+                    fontSize: '1.25rem',
+                    fontWeight: '600',
+                    color: '#111827',
+                    margin: '0',
+                    letterSpacing: '-0.01em'
+                  }}>
                     <PieChartIcon size={20} className="inline-block mr-2 -mt-1" />
                     Category Distribution
                   </h3>
                 </div>
-                <div style={styles.chartContainer}>
+                <div style={{
+                  height: '320px',
+                  width: '100%',
+                  position: 'relative',
+                  margin: '0.5rem 0'
+                }}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
@@ -632,10 +610,35 @@ function AnalyticsPageContent() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div style={styles.legend}>
+                <div style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: '1rem',
+                  marginTop: '1.5rem',
+                  justifyContent: 'flex-start',
+                  paddingTop: '1rem',
+                  borderTop: '1px solid #f3f4f6'
+                }}>
                   {categoryData.map((category, index) => (
-                    <div key={index} style={styles.legendItem}>
-                      <div style={{ ...styles.legendColor, backgroundColor: category.color }} />
+                    <div key={index} style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      fontSize: '0.8125rem',
+                      color: '#4b5563',
+                      background: '#f9fafb',
+                      padding: '0.375rem 0.75rem',
+                      borderRadius: '9999px',
+                      fontWeight: '500',
+                      transition: 'all 0.2s ease'
+                    }}>
+                      <div style={{
+                        width: '10px',
+                        height: '10px',
+                        borderRadius: '50%',
+                        marginRight: '0.5rem',
+                        flexShrink: 0,
+                        backgroundColor: category.color
+                      }} />
                       <span>{category.name}</span>
                       <span className="ml-auto font-medium text-gray-900">{category.value}%</span>
                     </div>
@@ -658,7 +661,7 @@ function AnalyticsPageContent() {
           <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1e293b', display: 'flex', alignItems: 'center' }}>
               <ShoppingBag size={20} style={{ marginRight: '8px' }} />
-              Top Performing Products
+              Top Performing Designs
             </h3>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <div style={{ position: 'relative' }}>
@@ -685,7 +688,7 @@ function AnalyticsPageContent() {
               <thead style={{ backgroundColor: '#f3f4f6' }}>
                 <tr>
                   <th style={{ padding: '24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                    Product
+                    Design
                   </th>
                   <th style={{ padding: '24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Category
@@ -705,7 +708,7 @@ function AnalyticsPageContent() {
                 </tr>
               </thead>
               <tbody style={{ backgroundColor: '#ffffff' }}>
-                {topProducts.map((product, index) => (
+                {topDesigns.map((design, index) => (
                   <tr key={index} style={{ transition: 'background-color 0.2s ease', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}>
                     <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -713,28 +716,28 @@ function AnalyticsPageContent() {
                           <ShoppingBag size={18} />
                         </div>
                         <div style={{ marginLeft: '16px' }}>
-                          <div style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>{product.name}</div>
-                          <div style={{ fontSize: '12px', color: '#9ca3af' }}>SKU: {Math.floor(100000 + Math.random() * 900000)}</div>
+                          <div style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>{design.name}</div>
+                          <div style={{ fontSize: '12px', color: '#9ca3af' }}>Design ID: {Math.floor(100000 + Math.random() * 900000)}</div>
                         </div>
                       </div>
                     </td>
                     <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
                       <span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: '600', borderRadius: '9999px', backgroundColor: '#dbeafe', color: '#1d4ed8' }}>
-                        {product.category}
+                        {design.category}
                       </span>
                     </td>
                     <td style={{ padding: '16px', whiteSpace: 'nowrap', fontSize: '14px', color: '#1f2937' }}>
-                      {product.sales.toLocaleString()}
+                      {design.sales.toLocaleString()}
                     </td>
                     <td style={{ padding: '16px', whiteSpace: 'nowrap', fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>
-                      ${product.revenue.toLocaleString()}
+                      ${design.revenue.toLocaleString()}
                     </td>
                     <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
-                      <span style={{ padding: '4px 10px', fontSize: '12px', fontWeight: '600', borderRadius: '9999px', backgroundColor: product.status === 'in_stock' ? '#dcfce7' : product.status === 'low_stock' ? '#fef9c3' : '#fee2e2', color: product.status === 'in_stock' ? '#166534' : product.status === 'low_stock' ? '#92400e' : '#b91c1c' }}>
-                        {product.status === 'in_stock' 
+                      <span style={{ padding: '4px 10px', fontSize: '12px', fontWeight: '600', borderRadius: '9999px', backgroundColor: design.status === 'in_stock' ? '#dcfce7' : design.status === 'low_stock' ? '#fef9c3' : '#fee2e2', color: design.status === 'in_stock' ? '#166534' : design.status === 'low_stock' ? '#92400e' : '#b91c1c' }}>
+                        {design.status === 'in_stock' 
                           ? 'In Stock' 
-                          : product.status === 'low_stock'
-                          ? `Low Stock (${product.stock})`
+                          : design.status === 'low_stock'
+                          ? `Low Stock (${design.stock})`
                           : 'Out of Stock'}
                       </span>
                     </td>
@@ -749,8 +752,8 @@ function AnalyticsPageContent() {
           
           <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e5e7eb' }}>
             <div style={{ fontSize: '14px', color: '#6b7280' }}>
-              Showing <span style={{ fontWeight: '500' }}>1</span> to <span style={{ fontWeight: '500' }}>{topProducts.length}</span> of{' '}
-              <span style={{ fontWeight: '500' }}>{topProducts.length}</span> results
+              Showing <span style={{ fontWeight: '500' }}>1</span> to <span style={{ fontWeight: '500' }}>{topDesigns.length}</span> of{' '}
+              <span style={{ fontWeight: '500' }}>{topDesigns.length}</span> results
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button
@@ -776,7 +779,7 @@ function AnalyticsPageContent() {
 // Main component with role protection
 export default function AnalyticsPage() {
   return (
-    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
+    <RoleProtected allowedRoles={[USER_ROLES.FASHION_CREATOR, USER_ROLES.ADMIN]}>
       <AnalyticsPageContent />
     </RoleProtected>
   );

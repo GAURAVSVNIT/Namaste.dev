@@ -79,10 +79,11 @@ export default function Navbar(fontFace) {
 
   const navItems = [
     // { name: 'Home'},
-    { name: 'Social Media', route: "social" },
+    { name: 'StyleSphere', route: "social" },
     { name: 'Market Place', route: "marketplace" },
 { name: 'Quiz', route: "quiz" },
-    { name: 'Virtual Try-On', route: "virtual-tryon" },
+    { name: 'Avatarra', route: "virtual-tryon" },
+    { name: 'Consultation', route: "consultation" },
     { name: 'Blog', route: "blog" }
   ];
 

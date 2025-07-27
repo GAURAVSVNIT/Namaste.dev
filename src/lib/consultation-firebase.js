@@ -456,42 +456,73 @@ export const searchProviders = async (filters = {}) => {
   try {
     let q = collection(db, 'users');
     
-    // Base query for providers
+    // Base query for providers - simplified to avoid complex indexing
     const constraints = [
       where('role', 'in', ['fashion_designer', 'tailor'])
     ];
 
-    // Add filters
-    if (filters.specialization) {
-      constraints.push(where('professional.specializations', 'array-contains', filters.specialization));
-    }
-
-    if (filters.city) {
+    // For complex queries with multiple filters, we'll use a simpler approach
+    // and filter in memory to avoid complex Firestore indexes
+    
+    // Only add one additional filter constraint to keep indexing simple
+    if (filters.city && !filters.specialization && !filters.minRating) {
+      // Simple city filter
       constraints.push(where('professional.location.city', '==', filters.city));
-    }
-
-    if (filters.minRating) {
+      q = query(q, ...constraints, orderBy('rating.average', 'desc'), limit(50));
+    } else if (filters.specialization && !filters.city && !filters.minRating) {
+      // Simple specialization filter
+      constraints.push(where('professional.specializations', 'array-contains', filters.specialization));
+      q = query(q, ...constraints, orderBy('rating.average', 'desc'), limit(50));
+    } else if (filters.minRating && !filters.city && !filters.specialization) {
+      // Simple rating filter
       constraints.push(where('rating.average', '>=', filters.minRating));
+      q = query(q, ...constraints, orderBy('rating.average', 'desc'), limit(50));
+    } else {
+      // For multiple filters, get all providers and filter in memory
+      q = query(q, ...constraints, orderBy('rating.average', 'desc'), limit(100));
     }
-
-    // Apply constraints
-    q = query(q, ...constraints, orderBy('rating.average', 'desc'), limit(20));
 
     const snapshot = await getDocs(q);
-    const providers = [];
+    let providers = [];
     
     snapshot.forEach((doc) => {
       const data = doc.data();
-      providers.push({
-        id: doc.id,
-        ...data,
-        // Remove sensitive data
-        googleIntegration: undefined,
-        aiAssistant: undefined
-      });
+      
+      // Apply client-side filtering for complex queries
+      let includeProvider = true;
+      
+      // Filter by specialization if not already filtered by Firestore
+      if (filters.specialization && !constraints.some(c => c.toString().includes('specializations'))) {
+        const specializations = data.professional?.specializations || [];
+        includeProvider = includeProvider && specializations.includes(filters.specialization);
+      }
+      
+      // Filter by city if not already filtered by Firestore
+      if (filters.city && !constraints.some(c => c.toString().includes('location.city'))) {
+        includeProvider = includeProvider && data.professional?.location?.city === filters.city;
+      }
+      
+      // Filter by rating if not already filtered by Firestore
+      if (filters.minRating && !constraints.some(c => c.toString().includes('rating.average'))) {
+        includeProvider = includeProvider && (data.rating?.average || 0) >= filters.minRating;
+      }
+      
+      if (includeProvider) {
+        providers.push({
+          id: doc.id,
+          ...data,
+          // Remove sensitive data
+          googleIntegration: undefined,
+          aiAssistant: undefined
+        });
+      }
     });
 
-    return providers;
+    // Sort by rating (in case we did client-side filtering)
+    providers.sort((a, b) => (b.rating?.average || 0) - (a.rating?.average || 0));
+    
+    // Limit to 20 results
+    return providers.slice(0, 20);
   } catch (error) {
     console.error('Error searching providers:', error);
     throw error;

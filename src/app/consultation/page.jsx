@@ -13,6 +13,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import Link from 'next/link';
+import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
+import ProfileCard from '@/blocks/Components/ProfileCard/ProfileCard';
 import styles from './consultation.module.css';
 
 const SPECIALIZATIONS = [
@@ -51,6 +53,7 @@ export default function ConsultationPage() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [viewProfileProvider, setViewProfileProvider] = useState(null);
   const [showProfileModal, setShowProfileModal] = useState(false);
+  const [showDetailedProfileModal, setShowDetailedProfileModal] = useState(false);
 
   useEffect(() => {
     loadProviders();
@@ -107,26 +110,223 @@ export default function ConsultationPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="about" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="about">About</TabsTrigger>
-          <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-          <TabsTrigger value="pricing">Pricing</TabsTrigger>
+      <Tabs defaultValue="about" className="w-full" style={{
+        marginTop: '16px'
+      }}>
+        <TabsList style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '100%',
+          background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%)',
+          borderRadius: '16px',
+          padding: '8px',
+          border: '1px solid rgba(99, 102, 241, 0.1)',
+          marginBottom: '24px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+          overflow: 'hidden',
+          position: 'relative'
+        }}>
+          <TabsTrigger value="about" style={{
+            fontSize: '13px',
+            fontWeight: '600',
+            padding: '10px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'transparent',
+            color: '#6b7280',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            flex: '1',
+            whiteSpace: 'nowrap',
+            minWidth: '0',
+            textAlign: 'center'
+          }}>ℹ️ About</TabsTrigger>
+          <TabsTrigger value="portfolio" style={{
+            fontSize: '13px',
+            fontWeight: '600',
+            padding: '10px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'transparent',
+            color: '#6b7280',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            flex: '1',
+            whiteSpace: 'nowrap',
+            minWidth: '0',
+            textAlign: 'center'
+          }}>🎨 Portfolio</TabsTrigger>
+          <TabsTrigger value="pricing" style={{
+            fontSize: '13px',
+            fontWeight: '600',
+            padding: '10px 16px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'transparent',
+            color: '#6b7280',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '6px',
+            flex: '1',
+            whiteSpace: 'nowrap',
+            minWidth: '0',
+            textAlign: 'center'
+          }}>💰 Pricing</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="about" className="space-y-4">
+        <TabsContent value="about" style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '24px',
+          marginTop: '24px'
+        }}>
           {provider.professional?.bio && (
-            <div>
-              <h4 className="font-semibold mb-2">About</h4>
-              <p className="text-sm text-muted-foreground">{provider.professional.bio}</p>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.03) 0%, rgba(168, 85, 247, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(99, 102, 241, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '16px'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>ℹ</span>
+                </div>
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #6366f1, #a855f7)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>About</h4>
+              </div>
+              <p style={{
+                fontSize: '15px',
+                lineHeight: '1.7',
+                color: '#4b5563',
+                margin: 0,
+                fontWeight: '400',
+                textAlign: 'justify'
+              }}>{provider.professional.bio}</p>
             </div>
           )}
 
-          <div>
-            <h4 className="font-semibold mb-2">Specializations</h4>
-            <div className="flex flex-wrap gap-2">
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(5, 150, 105, 0.03) 100%)',
+            borderRadius: '16px',
+            padding: '24px',
+            border: '1px solid rgba(16, 185, 129, 0.08)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {/* Decorative element */}
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              width: '40px',
+              height: '40px',
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
+              borderRadius: '50%'
+            }} />
+            
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              marginBottom: '16px'
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+              }}>
+                <span style={{
+                  color: 'white',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>⚡</span>
+              </div>
+              <h4 style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#1f2937',
+                margin: 0,
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>Specializations</h4>
+            </div>
+            <div style={{
+              display: 'flex',
+              flexWrap: 'wrap',
+              gap: '10px'
+            }}>
               {provider.professional?.specializations?.map((spec) => (
-                <Badge key={spec} variant="outline">
+                <Badge key={spec} style={{
+                  padding: '8px 16px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)',
+                  color: '#065f46',
+                  border: '1px solid rgba(16, 185, 129, 0.2)',
+                  transition: 'all 0.2s ease',
+                  cursor: 'default'
+                }}>
                   {spec.replace('_', ' ')}
                 </Badge>
               ))}
@@ -134,67 +334,424 @@ export default function ConsultationPage() {
           </div>
 
           {provider.professional?.experience > 0 && (
-            <div>
-              <h4 className="font-semibold mb-2">Experience</h4>
-              <p className="text-sm text-muted-foreground">
-                {provider.professional.experience} years of experience
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(245, 101, 101, 0.03) 0%, rgba(239, 68, 68, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(245, 101, 101, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(245, 101, 101, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '12px'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(245, 101, 101, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>⭐</span>
+                </div>
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>Experience</h4>
+              </div>
+              <p style={{
+                fontSize: '16px',
+                fontWeight: '600',
+                color: '#7c2d12',
+                margin: 0,
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: '#dc2626'
+                }}>{provider.professional.experience}</span>
+                years of professional experience
               </p>
             </div>
           )}
 
           {provider.professional?.languages?.length > 0 && (
-            <div>
-              <h4 className="font-semibold mb-2">Languages</h4>
-              <p className="text-sm text-muted-foreground">
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.03) 0%, rgba(124, 58, 237, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(139, 92, 246, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '12px'
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(139, 92, 246, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>🌐</span>
+                </div>
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #8b5cf6, #7c3aed)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>Languages</h4>
+              </div>
+              <p style={{
+                fontSize: '15px',
+                lineHeight: '1.6',
+                color: '#581c87',
+                margin: 0,
+                fontWeight: '500'
+              }}>
                 {provider.professional.languages.join(', ')}
               </p>
             </div>
           )}
         </TabsContent>
 
-        <TabsContent value="portfolio" className="space-y-4">
+        <TabsContent value="portfolio" style={{
+          marginTop: '24px'
+        }}>
           {provider.portfolio?.images?.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {provider.portfolio.images.map((image, index) => (
-                <div key={`${provider.id}-portfolio-${index}-${image.url || index}`} className="aspect-square bg-muted rounded-lg overflow-hidden">
-                  <img 
-                    src={image.url} 
-                    alt={`Portfolio ${index + 1}`}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-200"
-                  />
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(245, 101, 101, 0.03) 0%, rgba(239, 68, 68, 0.03) 100%)',
+              borderRadius: '16px',
+              padding: '24px',
+              border: '1px solid rgba(245, 101, 101, 0.08)',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative element */}
+              <div style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                width: '40px',
+                height: '40px',
+                background: 'radial-gradient(circle, rgba(245, 101, 101, 0.1) 0%, transparent 70%)',
+                borderRadius: '50%'
+              }} />
+              
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                marginBottom: '20px',
+                position: 'relative',
+                zIndex: 2
+              }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  borderRadius: '50%',
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: '0 4px 12px rgba(245, 101, 101, 0.25)'
+                }}>
+                  <span style={{
+                    color: 'white',
+                    fontSize: '14px',
+                    fontWeight: '600'
+                  }}>🎨</span>
                 </div>
-              ))}
+                <h4 style={{
+                  fontSize: '18px',
+                  fontWeight: '700',
+                  color: '#1f2937',
+                  margin: 0,
+                  background: 'linear-gradient(135deg, #f56565, #ef4444)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent'
+                }}>Portfolio</h4>
+              </div>
+              
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
+                gap: '16px',
+                position: 'relative',
+                zIndex: 2
+              }}>
+                {provider.portfolio.images.map((image, index) => (
+                  <div key={`${provider.id}-portfolio-${index}-${image.url || index}`} style={{
+                    aspectRatio: '1',
+                    background: '#f9fafb',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    border: '2px solid rgba(245, 101, 101, 0.1)',
+                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                    transition: 'all 0.3s ease',
+                    cursor: 'pointer'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'scale(1.05) translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(245, 101, 101, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'scale(1) translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.1)';
+                  }}>
+                    <img 
+                      src={image.url} 
+                      alt={`Portfolio ${index + 1}`}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
-            <p className="text-center text-muted-foreground py-8">
-              No portfolio items uploaded yet
-            </p>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(156, 163, 175, 0.05) 0%, rgba(107, 114, 128, 0.05) 100%)',
+              borderRadius: '16px',
+              padding: '48px 24px',
+              border: '2px dashed rgba(156, 163, 175, 0.2)',
+              textAlign: 'center'
+            }}>
+              <div style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'rgba(156, 163, 175, 0.1)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                margin: '0 auto 16px'
+              }}>
+                <span style={{
+                  fontSize: '24px'
+                }}>📁</span>
+              </div>
+              <p style={{
+                color: '#6b7280',
+                fontSize: '16px',
+                margin: 0,
+                fontWeight: '500'
+              }}>
+                No portfolio items uploaded yet
+              </p>
+            </div>
           )}
         </TabsContent>
 
-        <TabsContent value="pricing" className="space-y-4">
-          <div className="grid gap-4">
-            {CONSULTATION_TYPES.map((type) => {
-              const rate = provider.pricing?.[`${type.id}Rate`] || 0;
-              const Icon = type.icon;
-              
-              return (
-                <div key={type.id} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div className="flex items-center space-x-3">
-                    <Icon className="h-5 w-5 text-muted-foreground" />
-                    <div>
-                      <p className="font-medium">{type.label}</p>
-                      <p className="text-sm text-muted-foreground">{type.description}</p>
+        <TabsContent value="pricing" style={{
+          marginTop: '24px'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(5, 150, 105, 0.03) 100%)',
+            borderRadius: '16px',
+            padding: '24px',
+            border: '1px solid rgba(16, 185, 129, 0.08)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {/* Decorative element */}
+            <div style={{
+              position: 'absolute',
+              top: '-10px',
+              right: '-10px',
+              width: '40px',
+              height: '40px',
+              background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
+              borderRadius: '50%'
+            }} />
+            
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              marginBottom: '20px',
+              position: 'relative',
+              zIndex: 2
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(16, 185, 129, 0.25)'
+              }}>
+                <span style={{
+                  color: 'white',
+                  fontSize: '14px',
+                  fontWeight: '600'
+                }}>💰</span>
+              </div>
+              <h4 style={{
+                fontSize: '18px',
+                fontWeight: '700',
+                color: '#1f2937',
+                margin: 0,
+                background: 'linear-gradient(135deg, #10b981, #059669)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent'
+              }}>Consultation Pricing</h4>
+            </div>
+            
+            <div style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+              position: 'relative',
+              zIndex: 2
+            }}>
+              {CONSULTATION_TYPES.map((type) => {
+                const rate = provider.pricing?.[`${type.id}Rate`] || 0;
+                const Icon = type.icon;
+                
+                return (
+                  <div key={type.id} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '20px',
+                    background: 'rgba(255, 255, 255, 0.7)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(16, 185, 129, 0.1)',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+                    transition: 'all 0.3s ease',
+                    backdropFilter: 'blur(10px)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(16, 185, 129, 0.15)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.9)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.05)';
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.7)';
+                  }}>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px'
+                    }}>
+                      <div style={{
+                        width: '48px',
+                        height: '48px',
+                        borderRadius: '12px',
+                        background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.1) 100%)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        border: '1px solid rgba(16, 185, 129, 0.2)'
+                      }}>
+                        <Icon style={{
+                          width: '20px',
+                          height: '20px',
+                          color: '#059669'
+                        }} />
+                      </div>
+                      <div>
+                        <p style={{
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          color: '#1f2937',
+                          margin: '0 0 4px 0'
+                        }}>{type.label}</p>
+                        <p style={{
+                          fontSize: '14px',
+                          color: '#6b7280',
+                          margin: 0,
+                          fontWeight: '400'
+                        }}>{type.description}</p>
+                      </div>
+                    </div>
+                    <div style={{
+                      textAlign: 'right'
+                    }}>
+                      <p style={{
+                        fontSize: '20px',
+                        fontWeight: '700',
+                        color: '#059669',
+                        margin: '0 0 2px 0'
+                      }}>
+                        ₹{(rate * 83).toFixed(0)}
+                      </p>
+                      <p style={{
+                        fontSize: '12px',
+                        color: '#6b7280',
+                        margin: 0,
+                        fontWeight: '500'
+                      }}>
+                        per {provider.pricing?.pricingType === 'per_minute' ? 'minute' : 'session'}
+                      </p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-semibold">
-                      ₹{(rate * 83).toFixed(0)}/{provider.pricing?.pricingType === 'per_minute' ? 'min' : 'session'}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </TabsContent>
       </Tabs>
@@ -203,17 +760,73 @@ export default function ConsultationPage() {
 
   if (!user) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <Card className="max-w-md mx-auto">
-          <CardHeader>
-            <CardTitle>Login Required</CardTitle>
-            <CardDescription>
-              Please log in to access consultation services.
+      <div style={{
+        maxWidth: '1200px',
+        margin: '0 auto',
+        padding: '100px 20px 60px',
+        minHeight: '100vh',
+        backgroundColor: '#ffffff',
+        fontFamily: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif"
+      }}>
+        <Card style={{
+          maxWidth: '480px',
+          margin: '60px auto 0',
+          background: 'white',
+          borderRadius: '16px',
+          border: '1px solid #e5e7eb',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)',
+          overflow: 'hidden'
+        }}>
+          <CardHeader style={{
+            padding: '32px 32px 24px',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+            borderBottom: '1px solid #f1f5f9'
+          }}>
+            <CardTitle style={{
+              fontSize: '1.75rem',
+              fontWeight: '700',
+              color: '#1f2937',
+              marginBottom: '12px',
+              letterSpacing: '-0.025em'
+            }}>Login Required</CardTitle>
+            <CardDescription style={{
+              fontSize: '1rem',
+              color: '#6b7280',
+              lineHeight: '1.6',
+              margin: 0
+            }}>
+              Please log in to access our consultation services and connect with fashion experts.
             </CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent style={{
+            padding: '32px'
+          }}>
             <Link href="/auth/login">
-              <Button className="w-full">Login</Button>
+              <Button style={{
+                width: '100%',
+                padding: '14px 24px',
+                fontSize: '16px',
+                fontWeight: '600',
+                borderRadius: '12px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                color: 'white',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                textDecoration: 'none',
+                display: 'inline-block',
+                textAlign: 'center'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.transform = 'translateY(-2px)';
+                e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+              }}>Login</Button>
             </Link>
           </CardContent>
         </Card>
@@ -222,258 +835,793 @@ export default function ConsultationPage() {
   }
 
   const ProviderCard = ({ provider }) => (
-    <Card className="group relative overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl border border-gray-200 bg-white w-full max-w-2xl mx-auto">
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 via-transparent to-purple-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-      
-      <CardContent className="p-6">
-        <div className="flex flex-col sm:flex-row gap-6">
-          {/* Profile Image */}
-          <div className="relative flex-shrink-0 mx-auto sm:mx-0">
-            <div className="relative">
-              <Avatar className="h-28 w-28 border-4 border-white shadow-md group-hover:scale-105 transition-transform duration-300">
-                <AvatarImage src={provider.photoURL} alt={provider.name} className="object-cover" />
-                <AvatarFallback className="text-3xl bg-gradient-to-br from-blue-100 to-purple-100 text-blue-700">
-                  {provider.name?.charAt(0).toUpperCase()}
-                </AvatarFallback>
-              </Avatar>
+    <div style={{
+      background: 'white',
+      borderRadius: '12px',
+      border: '1px solid #e5e7eb',
+      boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+      transition: 'all 0.3s ease',
+      overflow: 'hidden'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-2px)';
+      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+    }}
+    >
+      <div style={{
+        padding: '24px'
+      }}>
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '20px'
+        }}>
+          {/* Profile Header */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '16px'
+          }}>
+            <Avatar style={{
+              width: '80px',
+              height: '80px',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              border: '3px solid #f3f4f6',
+              flexShrink: 0
+            }}>
+              <AvatarImage src={provider.photoURL} alt={provider.name} style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }} />
+              <AvatarFallback style={{
+                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                color: 'white',
+                fontSize: '24px',
+                fontWeight: '600'
+              }}>
+                {provider.name?.charAt(0).toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            
+            <div style={{ flex: 1 }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '8px'
+              }}>
+                <h3 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: '#111827',
+                  margin: 0
+                }}>
+                  {provider.name}
+                </h3>
+                <span style={{
+                  padding: '4px 12px',
+                  borderRadius: '20px',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  backgroundColor: provider.role === 'fashion_designer' ? '#dbeafe' : '#e0e7ff',
+                  color: provider.role === 'fashion_designer' ? '#1e40af' : '#3730a3'
+                }}>
+                  {provider.role === 'fashion_designer' ? 'Designer' : 'Tailor'}
+                </span>
+              </div>
+              
+              {/* Location */}
+              {provider.professional?.city && (
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  color: '#6b7280',
+                  marginBottom: '8px'
+                }}>
+                  <MapPin style={{
+                    width: '14px',
+                    height: '14px'
+                  }} />
+                  <span style={{
+                    fontSize: '14px'
+                  }}>{provider.professional.city}</span>
+                </div>
+              )}
+              
+              {/* Rating */}
               {provider.rating?.average > 0 && (
-                <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-white px-3 py-1 rounded-full shadow-md border border-gray-100 flex items-center">
-                  <Star className="h-4 w-4 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span className="text-sm font-semibold text-gray-800">{provider.rating.average.toFixed(1)}</span>
-                  <span className="text-xs text-gray-500 ml-0.5">({provider.rating.count})</span>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '4px'
+                }}>
+                  <Star style={{
+                    width: '16px',
+                    height: '16px',
+                    fill: '#fbbf24',
+                    color: '#fbbf24'
+                  }} />
+                  <span style={{
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#111827'
+                  }}>{provider.rating.average.toFixed(1)}</span>
+                  <span style={{
+                    fontSize: '12px',
+                    color: '#6b7280'
+                  }}>({provider.rating.count})</span>
                 </div>
               )}
             </div>
           </div>
           
-          {/* Profile Info */}
-          <div className="flex-1 min-w-0 space-y-4">
-            {/* Name and Role */}
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-              <h3 className="text-2xl font-bold text-gray-800 truncate">
-                {provider.name}
-              </h3>
-              <Badge 
-                className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                  provider.role === 'fashion_designer' 
-                    ? 'bg-pink-100 text-pink-700 hover:bg-pink-200 border border-pink-200' 
-                    : 'bg-blue-100 text-blue-700 hover:bg-blue-200 border border-blue-200'
-                }`}
-              >
-                {provider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
-              </Badge>
+          {/* Specializations */}
+          {provider.professional?.specializations?.length > 0 && (
+            <div>
+              <h4 style={{
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#6b7280',
+                marginBottom: '8px'
+              }}>Specializes in:</h4>
+              <div style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: '8px'
+              }}>
+                {provider.professional.specializations.slice(0, 3).map((spec) => (
+                  <span 
+                    key={spec}
+                    style={{
+                      padding: '4px 8px',
+                      fontSize: '12px',
+                      borderRadius: '12px',
+                      backgroundColor: '#f3f4f6',
+                      color: '#374151',
+                      border: '1px solid #e5e7eb'
+                    }}
+                  >
+                    {spec.replace(/_/g, ' ')}
+                  </span>
+                ))}
+                {provider.professional.specializations.length > 3 && (
+                  <span style={{
+                    padding: '4px 8px',
+                    fontSize: '12px',
+                    borderRadius: '12px',
+                    backgroundColor: '#f9fafb',
+                    color: '#6b7280',
+                    border: '1px dashed #d1d5db'
+                  }}>
+                    +{provider.professional.specializations.length - 3} more
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Price and Actions */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            paddingTop: '16px',
+            borderTop: '1px solid #f3f4f6'
+          }}>
+            <div>
+              <span style={{
+                fontSize: '20px',
+                fontWeight: '600',
+                color: '#111827'
+              }}>
+                ₹{((provider.pricing?.chatRate || 0) * 83).toFixed(0)}
+              </span>
+              <span style={{
+                fontSize: '12px',
+                color: '#6b7280',
+                marginLeft: '4px'
+              }}>
+                / {provider.pricing?.pricingType === 'per_minute' ? 'min' : 'session'}
+              </span>
             </div>
             
-            {/* Location */}
-            {provider.professional?.city && (
-              <div className="flex items-center text-gray-600">
-                <MapPin className="h-5 w-5 mr-2 text-blue-500 flex-shrink-0" />
-                <span className="text-base">{provider.professional.city}</span>
-              </div>
-            )}
-            
-            {/* Specializations */}
-            {provider.professional?.specializations?.length > 0 && (
-              <div className="py-1">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">Specializes in:</h4>
-                <div className="flex flex-wrap gap-2">
-                  {provider.professional.specializations.slice(0, 4).map((spec) => (
-                    <span 
-                      key={spec} 
-                      className="px-3 py-1 text-sm rounded-full bg-gray-50 border border-gray-200 text-gray-700"
-                    >
-                      {spec.replace(/_/g, ' ')}
-                    </span>
-                  ))}
-                  {provider.professional.specializations.length > 4 && (
-                    <span className="px-3 py-1 text-sm rounded-full bg-gray-50 border border-dashed border-gray-300 text-gray-500">
-                      +{provider.professional.specializations.length - 4} more
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-            
-            {/* Price and Action Buttons */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-3 mt-2 border-t border-gray-100 gap-4">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-gray-900">
-                  ₹{((provider.pricing?.chatRate || 0) * 83).toFixed(0)}
-                </span>
-                <span className="text-sm text-gray-500">
-                  / {provider.pricing?.pricingType === 'per_minute' ? 'minute' : 'session'}
-                </span>
-              </div>
+            <div style={{
+              display: 'flex',
+              gap: '8px'
+            }}>
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  setViewProfileProvider(provider);
+                  setShowProfileModal(true);
+                }}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  borderRadius: '8px',
+                  border: '1px solid #d1d5db',
+                  backgroundColor: 'white',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.backgroundColor = '#f9fafb';
+                  e.target.style.borderColor = '#9ca3af';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.backgroundColor = 'white';
+                  e.target.style.borderColor = '#d1d5db';
+                }}
+              >
+                View Profile
+              </button>
               
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <Button 
-                  variant="outline" 
-                  className="h-10 px-5 text-sm font-medium bg-white hover:bg-gray-50 border-gray-300 text-gray-700 hover:text-gray-900 transition-colors"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    console.log('=== VIEW PROFILE BUTTON CLICKED ===');
-                    console.log('Event:', e);
-                    console.log('Provider:', provider.name, provider.id);
-                    console.log('Current showProfileModal state:', showProfileModal);
-                    console.log('Current viewProfileProvider:', viewProfileProvider);
-                    
-                    setViewProfileProvider(provider);
-                    setShowProfileModal(true);
-                    
-                    console.log('States updated - should show modal now');
-                    console.log('=== END VIEW PROFILE CLICK ===');
-                  }}
-                  style={{ zIndex: 10, position: 'relative' }}
-                >
-                  View Profile
-                </Button>
-                
-                <Button 
-                  className="h-10 px-5 text-sm font-medium bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-sm hover:shadow-md transition-all"
-                  onClick={() => {
-                    setSelectedProvider(provider);
-                    setShowBookingModal(true);
-                  }}
-                >
-                  Book Now
-                </Button>
+              <button
+                onClick={() => {
+                  setSelectedProvider(provider);
+                  setShowBookingModal(true);
+                }}
+                style={{
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  borderRadius: '8px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                  color: 'white',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
+                }}
+              >
+                Book Now
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div style={{
+      marginTop: '100px',
+      minHeight: '100vh',
+      backgroundColor: '#ffffff',
+      fontFamily: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif"
+    }}>
+      <div style={{
+        padding: '0 20px',
+        maxWidth: '1200px',
+        marginLeft: 'auto',
+        marginRight: 'auto'
+      }}>
+        {/* Hero Section */}
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          margin: '0',
+          padding: '80px 40px',
+          textAlign: 'center',
+          color: 'white',
+          borderRadius: '24px 24px 24px 24px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Decorative background pattern */}
+          <div style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            opacity: 0.4
+          }} />
+          
+          {/* Content */}
+          <div style={{
+            position: 'relative',
+            zIndex: 2,
+            maxWidth: '800px',
+            margin: '0 auto'
+          }}>
+            <SplitText 
+              text="Find Your Perfect Fashion Expert"
+              as="h1"
+              style={{
+                fontSize: '3rem',
+                fontWeight: '700',
+                marginBottom: '20px',
+                textShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                lineHeight: '1.1'
+              }}
+              splitBy="chars"
+              stagger={0.05}
+              duration={0.8}
+              animationProps={{
+                y: 50,
+                opacity: 0
+              }}
+            />
+            <p style={{
+              fontSize: '1.25rem',
+              lineHeight: '1.6',
+              opacity: 0.9,
+              marginBottom: '32px'
+            }}>Connect with experienced fashion designers and tailors for personalized consultation services. Book 1:1 sessions, get style advice, and bring your fashion ideas to life.</p>
+            
+            {/* Feature highlights */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '40px',
+              flexWrap: 'wrap',
+              marginTop: '40px'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  ✓
+                </div>
+                Expert Professionals
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  ✓
+                </div>
+                1:1 Consultations
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                fontSize: '14px',
+                fontWeight: '500'
+              }}>
+                <div style={{
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  ✓
+                </div>
+                Instant Booking
               </div>
             </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
-  );
-
-  return (
-    <div className={styles.container}>
-      <header className={styles.header}>
-        <h1>Find Your Perfect Fashion Expert</h1>
-        <p>Connect with experienced fashion designers and tailors for personalized consultation services. Book 1:1 sessions, get style advice, and bring your fashion ideas to life.</p>
         
-        {/* Debug Test Button */}
-        <div className="mt-4">
-          <Button 
-            onClick={() => {
-              console.log('Test button clicked!');
-              setViewProfileProvider({ name: 'Test Provider', role: 'fashion_designer', professional: { bio: 'Test bio' } });
-              setShowProfileModal(true);
-              console.log('Test modal should now be open');
-            }}
-            variant="outline"
-          >
-            TEST: Open Profile Modal
-          </Button>
-        </div>
-      </header>
-      
-      <div className={styles.searchSection}>
-        <div className={styles.searchBar}>
-          <div className={styles.searchBox}>
-            <Search className={styles.searchIcon} />
+        {/* Search & Filters Section */}
+        <div style={{
+          background: 'white',
+          padding: '30px',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          marginBottom: '40px',
+          border: '1px solid #e5e7eb'
+        }}>
+        {/* Search Bar */}
+        <div style={{
+          marginBottom: '32px'
+        }}>
+          <div style={{
+            position: 'relative',
+            maxWidth: '600px',
+            margin: '0 auto'
+          }}>
+            <Search style={{
+              position: 'absolute',
+              left: '20px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              width: '20px',
+              height: '20px',
+              color: '#6b7280',
+              zIndex: 2
+            }} />
             <input
               type="text"
               placeholder="Search designers, tailors, or specialties..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className={styles.searchInput}
+              style={{
+                width: '100%',
+                padding: '18px 20px 18px 55px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '15px',
+                fontSize: '16px',
+                fontWeight: '400',
+                backgroundColor: '#f9fafb',
+                transition: 'all 0.3s ease',
+                outline: 'none',
+                boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
+              }}
+              onFocus={(e) => {
+                e.target.style.borderColor = '#667eea';
+                e.target.style.backgroundColor = 'white';
+                e.target.style.boxShadow = '0 0 0 4px rgba(102, 126, 234, 0.1), 0 4px 20px rgba(0,0,0,0.1)';
+              }}
+              onBlur={(e) => {
+                e.target.style.borderColor = '#e5e7eb';
+                e.target.style.backgroundColor = '#f9fafb';
+                e.target.style.boxShadow = '0 4px 15px rgba(0,0,0,0.05)';
+              }}
             />
           </div>
+        </div>
+        
+        {/* Filters */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: '20px',
+          alignItems: 'end'
+        }}>
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              color: '#374151',
+              fontSize: '14px'
+            }}>Role</label>
+            <Select 
+              value={filters.role} 
+              onValueChange={(value) => setFilters(prev => ({ ...prev, role: value }))}
+            >
+              <SelectTrigger style={{
+                width: '100%',
+                padding: '14px 16px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '12px',
+                backgroundColor: 'white',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                outline: 'none',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                minHeight: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <SelectValue placeholder="All Roles" />
+              </SelectTrigger>
+              <SelectContent style={{
+                backgroundColor: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)',
+                padding: '8px',
+                zIndex: 50,
+                minWidth: 'var(--radix-select-trigger-width)',
+                maxHeight: '200px',
+                overflowY: 'auto'
+              }}>
+                <SelectItem value="all" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}>
+                  <span style={{ width: '100%', display: 'block' }}>All Roles</span>
+                  <style jsx>{`
+                    [data-state="checked"] [data-radix-select-item-indicator] {
+                      display: none !important;
+                    }
+                  `}</style>
+                </SelectItem>
+                <SelectItem value="fashion_designer" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}>
+                  <span style={{ width: '100%', display: 'block' }}>Fashion Designer</span>
+                </SelectItem>
+                <SelectItem value="tailor" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0',
+                  position: 'relative',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'flex-start'
+                }}>
+                  <span style={{ width: '100%', display: 'block' }}>Tailor</span>
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
           
-          <div className={styles.filters}>
-            <div className={styles.filterGroup}>
-              <label htmlFor="role-filter" className={styles.filterLabel}>Role</label>
-              <Select 
-                value={filters.role} 
-                onValueChange={(value) => setFilters(prev => ({ ...prev, role: value }))}
-              >
-                <SelectTrigger className="w-[140px]">
-                  <SelectValue placeholder="All Roles" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Roles</SelectItem>
-                  <SelectItem value="fashion_designer">Fashion Designer</SelectItem>
-                  <SelectItem value="tailor">Tailor</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className={styles.filterGroup}>
-              <label htmlFor="specialization-filter" className={styles.filterLabel}>Specialty</label>
-              <Select 
-                value={filters.specialization} 
-                onValueChange={(value) => setFilters(prev => ({ ...prev, specialization: value }))}
-              >
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue placeholder="All Specialties" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Specialties</SelectItem>
-                  {SPECIALIZATIONS.map((spec) => (
-                    <SelectItem key={spec} value={spec}>
-                      {spec.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            
-            <div className={styles.filterGroup}>
-              <label htmlFor="city-filter" className={styles.filterLabel}>Location</label>
-              <div className={styles.locationInput}>
-                <MapPin className={styles.locationIcon} />
-                <input
-                  id="city-filter"
-                  type="text"
-                  placeholder="City"
-                  value={filters.city}
-                  onChange={(e) => setFilters(prev => ({ ...prev, city: e.target.value }))}
-                  className={styles.cityInput}
-                />
-              </div>
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              color: '#374151',
+              fontSize: '14px'
+            }}>Specialty</label>
+            <Select 
+              value={filters.specialization} 
+              onValueChange={(value) => setFilters(prev => ({ ...prev, specialization: value }))}
+            >
+              <SelectTrigger style={{
+                width: '100%',
+                padding: '14px 16px',
+                border: '2px solid #e5e7eb',
+                borderRadius: '12px',
+                backgroundColor: 'white',
+                fontSize: '14px',
+                fontWeight: '500',
+                color: '#374151',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                outline: 'none',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+                minHeight: '48px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between'
+              }}>
+                <SelectValue placeholder="All Specialties" />
+              </SelectTrigger>
+              <SelectContent style={{
+                backgroundColor: 'white',
+                border: '1px solid #e5e7eb',
+                borderRadius: '12px',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.05)',
+                padding: '8px',
+                zIndex: 50,
+                minWidth: 'var(--radix-select-trigger-width)',
+                maxHeight: '200px',
+                overflowY: 'auto'
+              }}>
+                <SelectItem value="all" style={{
+                  padding: '12px 16px',
+                  borderRadius: '8px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: '#374151',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  margin: '2px 0'
+                }}>All Specialties</SelectItem>
+                {SPECIALIZATIONS.map((spec) => (
+                  <SelectItem key={spec} value={spec} style={{
+                    padding: '12px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    margin: '2px 0'
+                  }}>
+                    {spec.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          
+          <div>
+            <label style={{
+              display: 'block',
+              marginBottom: '8px',
+              fontWeight: '600',
+              color: '#374151',
+              fontSize: '14px'
+            }}>Location</label>
+            <div style={{
+              position: 'relative'
+            }}>
+              <MapPin style={{
+                position: 'absolute',
+                left: '16px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                width: '16px',
+                height: '16px',
+                color: '#6b7280',
+                zIndex: 2
+              }} />
+              <input
+                id="city-filter"
+                type="text"
+                placeholder="City"
+                value={filters.city}
+                onChange={(e) => setFilters(prev => ({ ...prev, city: e.target.value }))}
+                style={{
+                  width: '100%',
+                  padding: '12px 16px 12px 45px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '12px',
+                  fontSize: '14px',
+                  backgroundColor: 'white',
+                  transition: 'all 0.3s ease',
+                  outline: 'none'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#667eea';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(102, 126, 234, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Providers Grid */}
-      {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[...Array(6)].map((_, i) => (
-            <Card key={`loading-skeleton-${i}`}>
-              <CardContent className="p-6">
-                <div className="space-y-2">
-                  <div className="h-3 bg-muted rounded w-full" />
-                  <div className="h-3 bg-muted rounded w-3/4" />
+        {/* Providers Grid */}
+        <div style={{
+          padding: '0 20px',
+          maxWidth: '1200px',
+          marginLeft: 'auto',
+          marginRight: 'auto'
+        }}>
+          {loading ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+              gap: '24px',
+              marginBottom: '40px'
+            }}>
+              {[...Array(6)].map((_, i) => (
+                <div key={`loading-skeleton-${i}`} style={{
+                  background: 'white',
+                  borderRadius: '12px',
+                  padding: '24px',
+                  border: '1px solid #e5e7eb',
+                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+                }}>
+                  <div style={{
+                    height: '100px',
+                    background: '#f3f4f6',
+                    borderRadius: '8px',
+                    marginBottom: '16px',
+                    animation: 'pulse 2s infinite'
+                  }} />
+                  <div style={{
+                    height: '20px',
+                    background: '#f3f4f6',
+                    borderRadius: '4px',
+                    marginBottom: '8px',
+                    animation: 'pulse 2s infinite'
+                  }} />
+                  <div style={{
+                    height: '16px',
+                    background: '#f3f4f6',
+                    borderRadius: '4px',
+                    width: '75%',
+                    animation: 'pulse 2s infinite'
+                  }} />
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              ))}
+            </div>
+          ) : filteredProviders.length > 0 ? (
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+              gap: '24px',
+              marginBottom: '40px'
+            }}>
+              {filteredProviders.map((provider) => (
+                <ProviderCard key={provider.id} provider={provider} />
+              ))}
+            </div>
+          ) : (
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '60px 40px',
+              textAlign: 'center',
+              border: '1px solid #e5e7eb',
+              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+              marginBottom: '40px'
+            }}>
+              <p style={{
+                color: '#6b7280',
+                fontSize: '1.125rem',
+                marginBottom: '24px'
+              }}>No providers found matching your criteria.</p>
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setFilters({ role: 'all', specialization: '', city: '', minRating: 0 });
+                  setSearchQuery('');
+                }}
+                style={{
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  border: '2px solid #e5e7eb',
+                  backgroundColor: 'white',
+                  color: '#374151',
+                  fontWeight: '500',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                Clear Filters
+              </Button>
+            </div>
+          )}
         </div>
-      ) : filteredProviders.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredProviders.map((provider) => (
-            <ProviderCard key={provider.id} provider={provider} />
-          ))}
-        </div>
-      ) : (
-        <Card>
-          <CardContent className="py-8 text-center">
-            <p className="text-muted-foreground">No providers found matching your criteria.</p>
-            <Button 
-              variant="outline" 
-              className="mt-4"
-              onClick={() => {
-                setFilters({ role: 'all', specialization: '', city: '', minRating: 0 });
-                setSearchQuery('');
-              }}
-            >
-              Clear Filters
-            </Button>
-          </CardContent>
-        </Card>
-      )}
+      </div>
 
       {/* Booking Modal */}
       <Dialog open={showBookingModal} onOpenChange={(open) => {
@@ -483,75 +1631,271 @@ export default function ConsultationPage() {
         }
       }}>
         {selectedProvider && (
-          <DialogContent className="max-w-md rounded-xl shadow-2xl border-0 p-0 bg-white">
-            {/* Header with gradient background */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 rounded-t-xl border-b border-gray-100">
-              <DialogHeader className="space-y-1">
-                <DialogTitle className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white font-medium">
-                    <Calendar className="h-5 w-5" />
+          <DialogContent style={{
+            maxWidth: '500px',
+            width: '90vw',
+            padding: 0,
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
+            border: 'none',
+            borderRadius: '24px',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            overflow: 'hidden',
+            animation: 'modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+          }}>
+            {/* Header with enhanced gradient background */}
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              padding: '24px 32px',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative pattern overlay */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                opacity: 0.3
+              }} />
+              
+              <DialogHeader style={{ position: 'relative', zIndex: 2 }}>
+                <DialogTitle style={{
+                  fontSize: '24px',
+                  fontWeight: '700',
+                  color: 'white',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  marginBottom: '8px'
+                }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '50%',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    backdropFilter: 'blur(10px)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '2px solid rgba(255, 255, 255, 0.3)'
+                  }}>
+                    <Calendar style={{ width: '24px', height: '24px', color: 'white' }} />
                   </div>
                   Book Consultation
                 </DialogTitle>
-                <DialogDescription className="text-gray-600">
-                  Book a consultation with <span className="font-medium text-gray-900">{selectedProvider.name}</span>
+                <DialogDescription style={{
+                  fontSize: '16px',
+                  color: 'rgba(255, 255, 255, 0.9)',
+                  fontWeight: '500'
+                }}>
+                  Book a consultation with <span style={{ fontWeight: '700', color: 'white' }}>{selectedProvider.name}</span>
                 </DialogDescription>
               </DialogHeader>
             </div>
             
             {/* Content */}
-            <div className="p-6 space-y-6">
+            <div style={{ padding: '32px' }}>
               {/* Provider Info Card */}
-              <div className="bg-gray-50 rounded-lg p-4 border border-gray-100">
-                <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%)',
+                borderRadius: '20px',
+                padding: '24px',
+                border: '1px solid rgba(99, 102, 241, 0.1)',
+                marginBottom: '24px',
+                position: 'relative',
+                overflow: 'hidden'
+              }}>
+                {/* Card background pattern */}
+                <div style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  width: '100px',
+                  height: '100px',
+                  background: 'radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%)',
+                  transform: 'translate(30px, -30px)'
+                }} />
+                
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '16px',
+                  marginBottom: '16px',
+                  position: 'relative',
+                  zIndex: 2
+                }}>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: 'white',
+                    fontSize: '20px',
+                    fontWeight: '700',
+                    boxShadow: '0 8px 20px rgba(102, 126, 234, 0.4)',
+                    border: '3px solid rgba(255, 255, 255, 0.9)'
+                  }}>
                     {selectedProvider.name.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h4 className="font-medium text-gray-900">{selectedProvider.name}</h4>
-                    <p className="text-sm text-gray-600">
+                    <h4 style={{
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      color: '#1f2937',
+                      margin: '0 0 4px 0'
+                    }}>{selectedProvider.name}</h4>
+                    <p style={{
+                      fontSize: '14px',
+                      color: '#6b7280',
+                      margin: 0,
+                      fontWeight: '500'
+                    }}>
                       {selectedProvider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
                     </p>
                   </div>
                 </div>
+                
                 {selectedProvider.pricing && (
-                  <div className="flex items-center gap-2 mt-3 pt-3 border-t border-gray-200">
-                    <span className="text-lg font-semibold text-gray-900">
+                  <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    paddingTop: '16px',
+                    borderTop: '1px solid rgba(99, 102, 241, 0.1)',
+                    position: 'relative',
+                    zIndex: 2
+                  }}>
+                    <span style={{
+                      fontSize: '24px',
+                      fontWeight: '800',
+                      color: '#1f2937',
+                      background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent'
+                    }}>
                       ₹{((selectedProvider.pricing.chatRate || 0) * 83).toFixed(0)}
                     </span>
-                    <span className="text-sm text-gray-500">
+                    <span style={{
+                      fontSize: '14px',
+                      color: '#6b7280',
+                      fontWeight: '600'
+                    }}>
                       / {selectedProvider.pricing.pricingType === 'per_minute' ? 'minute' : 'session'}
                     </span>
                   </div>
                 )}
               </div>
               
-              {/* Description */}
-              <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Info className="h-3 w-3 text-blue-600" />
+              {/* Enhanced Description */}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, rgba(147, 197, 253, 0.05) 100%)',
+                borderRadius: '16px',
+                padding: '20px',
+                border: '1px solid rgba(59, 130, 246, 0.1)',
+                marginBottom: '32px'
+              }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '12px'
+                }}>
+                  <div style={{
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    marginTop: '2px',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)'
+                  }}>
+                    <Info style={{ width: '16px', height: '16px', color: 'white' }} />
                   </div>
-                  <p className="text-sm text-blue-800 leading-relaxed">
+                  <p style={{
+                    fontSize: '15px',
+                    color: '#1e40af',
+                    lineHeight: '1.6',
+                    margin: 0,
+                    fontWeight: '500'
+                  }}>
                     This will redirect you to the booking page where you can select your preferred time and consultation type.
                   </p>
                 </div>
               </div>
               
-              {/* Action Buttons */}
-              <div className="flex justify-end space-x-3 pt-2">
+              {/* Enhanced Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '12px',
+                justifyContent: 'flex-end',
+                paddingTop: '8px'
+              }}>
                 <Button 
                   variant="outline" 
                   onClick={() => {
                     setShowBookingModal(false);
                     setSelectedProvider(null);
                   }}
-                  className="px-6 py-2 border-gray-300 text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors"
+                  style={{
+                    padding: '12px 24px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    backgroundColor: 'white',
+                    color: '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#f9fafb';
+                    e.target.style.borderColor = '#d1d5db';
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'white';
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.1)';
+                  }}
                 >
                   Cancel
                 </Button>
                 <Link href={`/consultation/${selectedProvider.id}/book`}>
-                  <Button className="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white shadow-md hover:shadow-lg transition-all">
+                  <Button style={{
+                    padding: '12px 32px',
+                    fontSize: '14px',
+                    fontWeight: '700',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    color: 'white',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px) scale(1.02)';
+                    e.target.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.6)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
+                  }}
+                  >
                     Continue to Book
                   </Button>
                 </Link>
@@ -561,31 +1905,284 @@ export default function ConsultationPage() {
         )}
       </Dialog>
 
-      {/* Profile Modal */}
-      <Dialog open={showProfileModal} onOpenChange={(open) => {
-        console.log('Dialog onOpenChange:', open);
-        setShowProfileModal(open);
+      {/* Profile Modal - Just the ProfileCard */}
+      {showProfileModal && viewProfileProvider && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(12px)',
+          WebkitBackdropFilter: 'blur(12px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 99999,
+          padding: '20px'
+        }} onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            setShowProfileModal(false);
+            setViewProfileProvider(null);
+          }
+        }}>
+          <div 
+            style={{
+              position: 'relative',
+              opacity: 1,
+              transform: 'scale(1) translateY(0)',
+              transition: 'all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }} 
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ProfileCard
+              avatarUrl={viewProfileProvider.photoURL || '/default-avatar.png'}
+              name={viewProfileProvider.name}
+              title={viewProfileProvider.role === 'fashion_designer' ? 'Fashion Designer' : 'Master Tailor'}
+              handle={viewProfileProvider.name?.toLowerCase().replace(/\s+/g, '')}
+              status="Available"
+              contactText="Details"
+              onContactClick={() => {
+                // Close ProfileCard modal and open detailed profile modal
+                setShowProfileModal(false);
+                // We need to set up a detailed profile modal state
+                setViewProfileProvider(viewProfileProvider);
+                setShowDetailedProfileModal(true);
+              }}
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Detailed Profile Modal */}
+      <Dialog open={showDetailedProfileModal} onOpenChange={(open) => {
         if (!open) {
+          setShowDetailedProfileModal(false);
           setViewProfileProvider(null);
         }
       }}>
         {viewProfileProvider && (
-          <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto bg-white rounded-xl shadow-2xl border-0 p-0">
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 px-6 py-4 rounded-t-xl border-b border-gray-100">
-              <DialogHeader className="space-y-1">
-                <DialogTitle className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 flex items-center justify-center text-white text-sm font-medium">
-                    {viewProfileProvider.name.charAt(0).toUpperCase()}
+          <DialogContent
+            style={{
+              maxWidth: '800px',
+              width: '90vw',
+              maxHeight: '85vh',
+              padding: 0,
+              background:
+                'linear-gradient(135deg, rgba(255,255,255,0.98) 0%, rgba(248,250,252,0.98) 100%)',
+              border: 'none',
+              borderRadius: '24px',
+              boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              overflow: 'hidden',
+              animation: 'modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              display: 'flex',
+              flexDirection: 'column'
+            }}
+          >
+            <DialogTitle style={{ position: 'absolute', left: '-9999px', fontSize: '1px' }}>
+              Detailed Profile of {viewProfileProvider.name}
+            </DialogTitle>
+            {/* Header */}
+            <div style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              padding: '32px',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              {/* Decorative pattern overlay */}
+              <div style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='20' cy='20' r='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                opacity: 0.3
+              }} />
+              
+              <div style={{ position: 'relative', zIndex: 2 }}>
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '24px',
+                  marginBottom: '16px'
+                }}>
+                  <Avatar style={{
+                    width: '100px',
+                    height: '100px',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    border: '4px solid rgba(255, 255, 255, 0.3)',
+                    flexShrink: 0
+                  }}>
+                    <AvatarImage src={viewProfileProvider.photoURL} alt={viewProfileProvider.name} style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover'
+                    }} />
+                    <AvatarFallback style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                      fontSize: '36px',
+                      fontWeight: '600'
+                    }}>
+                      {viewProfileProvider.name?.charAt(0).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  
+                  <div style={{ flex: 1, color: 'white' }}>
+                    <h2 style={{
+                      fontSize: '32px',
+                      fontWeight: '700',
+                      color: 'white',
+                      margin: '0 0 8px 0',
+                      textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}>
+                      {viewProfileProvider.name}
+                    </h2>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      marginBottom: '12px'
+                    }}>
+                      <span style={{
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        fontSize: '14px',
+                        fontWeight: '600',
+                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        border: '1px solid rgba(255, 255, 255, 0.3)'
+                      }}>
+                        {viewProfileProvider.role === 'fashion_designer' ? 'Fashion Designer' : 'Tailor'}
+                      </span>
+                      {viewProfileProvider.rating?.average > 0 && (
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px'
+                        }}>
+                          <Star style={{
+                            width: '18px',
+                            height: '18px',
+                            fill: '#fbbf24',
+                            color: '#fbbf24'
+                          }} />
+                          <span style={{
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            color: 'white'
+                          }}>{viewProfileProvider.rating.average.toFixed(1)}</span>
+                          <span style={{
+                            fontSize: '14px',
+                            color: 'rgba(255, 255, 255, 0.8)'
+                          }}>({viewProfileProvider.rating.count} reviews)</span>
+                        </div>
+                      )}
+                    </div>
+                    {viewProfileProvider.professional?.city && (
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        color: 'rgba(255, 255, 255, 0.9)'
+                      }}>
+                        <MapPin style={{
+                          width: '16px',
+                          height: '16px'
+                        }} />
+                        <span style={{
+                          fontSize: '16px'
+                        }}>{viewProfileProvider.professional.city}</span>
+                      </div>
+                    )}
                   </div>
-                  {viewProfileProvider.name} - Profile
-                </DialogTitle>
-                <DialogDescription id="profile-dialog-description" className="text-gray-600">
-                  View detailed information about {viewProfileProvider.name}, including their portfolio, pricing, and experience.
-                </DialogDescription>
-              </DialogHeader>
+                </div>
+              </div>
             </div>
-            <div className="p-6">
+            
+            {/* Content */}
+            <div style={{ 
+              padding: '32px',
+              maxHeight: 'calc(85vh - 200px)',
+              overflowY: 'auto'
+            }}>
               <ProviderProfile provider={viewProfileProvider} />
+              
+              {/* Action Buttons */}
+              <div style={{
+                display: 'flex',
+                gap: '16px',
+                justifyContent: 'center',
+                marginTop: '32px',
+                paddingTop: '24px',
+                borderTop: '1px solid rgba(229, 231, 235, 0.3)'
+              }}>
+                <button
+                  onClick={() => {
+                    setShowDetailedProfileModal(false);
+                    setSelectedProvider(viewProfileProvider);
+                    setShowBookingModal(true);
+                  }}
+                  style={{
+                    padding: '14px 32px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    borderRadius: '12px',
+                    border: 'none',
+                    background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                    color: 'white',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                  }}
+                >
+                  <Calendar style={{ width: '18px', height: '18px' }} />
+                  Book Consultation
+                </button>
+                <button
+                  onClick={() => {
+                    setShowDetailedProfileModal(false);
+                    setViewProfileProvider(null);
+                  }}
+                  style={{
+                    padding: '14px 32px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    borderRadius: '12px',
+                    border: '2px solid #e5e7eb',
+                    background: 'white',
+                    color: '#374151',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.target.style.backgroundColor = '#f9fafb';
+                    e.target.style.borderColor = '#9ca3af';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.target.style.backgroundColor = 'white';
+                    e.target.style.borderColor = '#e5e7eb';
+                  }}
+                >
+                  Close
+                </button>
+              </div>
             </div>
           </DialogContent>
         )}

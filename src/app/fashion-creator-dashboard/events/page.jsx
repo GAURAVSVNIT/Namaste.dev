@@ -3,10 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { getUserAppointments } from '@/lib/consultation-firebase';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
 import { 
   Calendar, 
@@ -21,7 +17,6 @@ import {
 } from 'lucide-react';
 import { format } from 'date-fns';
 import ScheduleManager from '@/components/fashion-creator/ScheduleManager';
-import styles from './events.module.css';
 
 const CONSULTATION_TYPES = {
   chat: { label: 'Chat Consultation', icon: MessageCircle, color: 'bg-blue-100 text-blue-800' },
@@ -142,246 +137,470 @@ export default function EventsPage() {
     }
   };
 
+  // Professional inline styles
+  const containerStyle = {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '2rem 1rem',
+    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif'
+  };
+
+  const tabsContainerStyle = {
+    width: '100%',
+    marginBottom: '2rem'
+  };
+
+  const tabsListStyle = {
+    display: 'flex',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '12px',
+    padding: '0.5rem',
+    marginBottom: '2rem',
+    border: '1px solid #e9ecef',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.02)'
+  };
+
+  const tabTriggerStyle = {
+    flex: 1,
+    padding: '0.75rem 1.5rem',
+    borderRadius: '8px',
+    fontWeight: '500',
+    fontSize: '0.95rem',
+    color: '#6b7280',
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
+
+  const activeTabStyle = {
+    ...tabTriggerStyle,
+    backgroundColor: 'white',
+    color: '#6366f1',
+    fontWeight: '600',
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.06)'
+  };
+
+  const cardStyle = {
+    backgroundColor: 'white',
+    borderRadius: '12px',
+    border: '1px solid #e5e7eb',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+    transition: 'all 0.2s ease',
+    marginBottom: '1.5rem',
+    overflow: 'hidden'
+  };
+
+  const cardHoverStyle = {
+    ...cardStyle,
+    boxShadow: '0 8px 25px rgba(0, 0, 0, 0.1)',
+    transform: 'translateY(-2px)'
+  };
+
+  const cardHeaderStyle = {
+    padding: '1.5rem',
+    borderBottom: '1px solid #f3f4f6'
+  };
+
+  const cardContentStyle = {
+    padding: '1.5rem'
+  };
+
+  const buttonStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: '8px',
+    fontWeight: '500',
+    padding: '0.625rem 1.25rem',
+    fontSize: '0.875rem',
+    transition: 'all 0.2s ease',
+    cursor: 'pointer',
+    border: 'none',
+    textDecoration: 'none'
+  };
+
+  const primaryButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#6366f1',
+    color: 'white',
+    boxShadow: '0 1px 2px rgba(0, 0, 0, 0.05)'
+  };
+
+  const outlineButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: 'white',
+    color: '#4b5563',
+    border: '1px solid #d1d5db'
+  };
+
+  const ghostButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: 'transparent',
+    color: '#6b7280',
+    border: 'none'
+  };
+
+  const badgeStyle = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    padding: '0.25rem 0.75rem',
+    borderRadius: '9999px',
+    fontSize: '0.75rem',
+    fontWeight: '500',
+    lineHeight: '1'
+  };
+
+  const emptyStateStyle = {
+    textAlign: 'center',
+    padding: '3rem 1rem',
+    backgroundColor: '#f9fafb',
+    borderRadius: '12px',
+    border: '2px dashed #e5e7eb'
+  };
+
+  const loadingCardStyle = {
+    ...cardStyle,
+    animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite'
+  };
+
+  const appointmentGridStyle = {
+    display: 'grid',
+    gap: '1rem',
+    gridTemplateColumns: '1fr'
+  };
+
+  const appointmentCardStyle = {
+    ...cardStyle,
+    cursor: 'pointer'
+  };
+
+  const getStatusBadgeStyle = (status) => {
+    const baseStyle = { ...badgeStyle };
+    switch (status) {
+      case 'scheduled':
+        return { ...baseStyle, backgroundColor: '#fef3c7', color: '#92400e' };
+      case 'confirmed':
+        return { ...baseStyle, backgroundColor: '#dcfce7', color: '#166534' };
+      case 'in_progress':
+        return { ...baseStyle, backgroundColor: '#dbeafe', color: '#1e40af' };
+      case 'completed':
+        return { ...baseStyle, backgroundColor: '#f3f4f6', color: '#374151' };
+      case 'cancelled':
+        return { ...baseStyle, backgroundColor: '#fee2e2', color: '#991b1b' };
+      default:
+        return { ...baseStyle, backgroundColor: '#f3f4f6', color: '#374151' };
+    }
+  };
+
+  const getConsultationBadgeStyle = (type) => {
+    const baseStyle = { ...badgeStyle };
+    switch (type) {
+      case 'chat':
+        return { ...baseStyle, backgroundColor: '#dbeafe', color: '#1e40af' };
+      case 'call':
+        return { ...baseStyle, backgroundColor: '#dcfce7', color: '#166534' };
+      case 'video_call':
+        return { ...baseStyle, backgroundColor: '#f3e8ff', color: '#7c3aed' };
+      default:
+        return { ...baseStyle, backgroundColor: '#f3f4f6', color: '#374151' };
+    }
+  };
+
   return (
-    <div className="container mx-auto p-6 max-w-7xl">
-      <Tabs 
-        defaultValue="appointments" 
-        className="w-full"
-        onValueChange={(value) => setActiveTab(value)}
-      >
-        <TabsList className={styles.tabsList}>
-          <TabsTrigger 
-            value="appointments" 
-            className={`${styles.tabTrigger} ${activeTab === 'appointments' ? styles.activeTab : ''}`}
+    <div style={containerStyle}>
+      <div style={tabsContainerStyle}>
+        {/* Custom Tabs Header */}
+        <div style={tabsListStyle}>
+          <button
+            onClick={() => setActiveTab('appointments')}
+            style={activeTab === 'appointments' ? activeTabStyle : tabTriggerStyle}
           >
             Appointments
-          </TabsTrigger>
-          <TabsTrigger 
-            value="schedule" 
-            className={`${styles.tabTrigger} ${activeTab === 'schedule' ? styles.activeTab : ''}`}
+          </button>
+          <button
+            onClick={() => setActiveTab('schedule')}
+            style={activeTab === 'schedule' ? activeTabStyle : tabTriggerStyle}
           >
             Schedule
-          </TabsTrigger>
-        </TabsList>
+          </button>
+        </div>
 
-        <TabsContent value="appointments" className="mt-0">
-          <div className="space-y-6">
-            <div className={styles.card}>
-              <div className={styles.cardContent}>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">Upcoming Appointments</h2>
-                    <p className="text-sm text-gray-600">Manage your upcoming consultations</p>
+        {/* Appointments Tab Content */}
+        {activeTab === 'appointments' && (
+          <div style={{ marginTop: '0' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div style={cardStyle}>
+                <div style={cardContentStyle}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                    <div>
+                      <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: '0 0 0.5rem 0', color: '#111827' }}>Upcoming Appointments</h2>
+                      <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0' }}>Manage your upcoming consultations</p>
+                    </div>
+                    <button 
+                      onClick={loadAppointments} 
+                      disabled={loading}
+                      style={{
+                        ...primaryButtonStyle,
+                        opacity: loading ? 0.6 : 1,
+                        cursor: loading ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      {loading && <Loader2 style={{ width: '1rem', height: '1rem', marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} />}
+                      Refresh
+                    </button>
                   </div>
-                  <Button 
-                    onClick={loadAppointments} 
-                    disabled={loading}
-                    className={styles.button}
-                  >
-                    {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                    Refresh
-                  </Button>
-                </div>
-                {googleCalendarConnected ? (
-                  <Badge className="bg-green-100 text-green-800">
-                    <CheckCircle className="h-3 w-3 mr-1" />
-                    Google Calendar Connected
-                  </Badge>
-                ) : (
-                  <Button 
-                    variant="outline" 
-                    size="sm" 
-                    onClick={handleGoogleCalendarConnect}
-                    disabled={connectingGoogle}
-                  >
-                    {connectingGoogle ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                    {googleCalendarConnected ? (
+                      <div style={{ ...badgeStyle, backgroundColor: '#dcfce7', color: '#166534' }}>
+                        <CheckCircle style={{ width: '0.75rem', height: '0.75rem', marginRight: '0.25rem' }} />
+                        Google Calendar Connected
+                      </div>
                     ) : (
-                      <ExternalLink className="h-4 w-4 mr-2" />
+                      <button 
+                        onClick={handleGoogleCalendarConnect}
+                        disabled={connectingGoogle}
+                        style={{
+                          ...outlineButtonStyle,
+                          fontSize: '0.8125rem',
+                          padding: '0.5rem 0.875rem',
+                          opacity: connectingGoogle ? 0.6 : 1,
+                          cursor: connectingGoogle ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        {connectingGoogle ? (
+                          <Loader2 style={{ width: '1rem', height: '1rem', marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} />
+                        ) : (
+                          <ExternalLink style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                        )}
+                        Connect Google Calendar
+                      </button>
                     )}
-                    Connect Google Calendar
-                  </Button>
-                )}
-                <Button onClick={loadAppointments} disabled={loading}>
-                  {loading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
-                  Refresh
-                </Button>
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {loading ? (
-              <div className="grid gap-4">
-                {[1, 2, 3].map((i) => (
-                  <Card key={i} className="animate-pulse">
-                    <CardContent className="p-6">
-                      <div className="h-4 bg-gray-200 rounded w-1/4 mb-4"></div>
-                      <div className="h-3 bg-gray-200 rounded w-1/2 mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            ) : appointments.length === 0 ? (
-              <Card>
-                <CardContent className="py-8 text-center">
-                  <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">No appointments yet</h3>
-                  <p className="text-gray-600">Your consultation bookings will appear here once clients book sessions with you.</p>
-                </CardContent>
-              </Card>
-            ) : (
-              <div className="space-y-4">
-                {appointments.map((appointment) => {
-                  const consultationType = CONSULTATION_TYPES[appointment.type] || {
-                    label: appointment.type,
-                    icon: MessageCircle,
-                    color: 'bg-gray-100 text-gray-800'
-                  };
-                  const Icon = consultationType.icon;
+              {loading ? (
+                <div style={{ display: 'grid', gap: '1rem' }}>
+                  {[1, 2, 3].map((i) => (
+                    <div key={i} style={loadingCardStyle}>
+                      <div style={{ padding: '1.5rem' }}>
+                        <div style={{ height: '1rem', backgroundColor: '#e5e7eb', borderRadius: '0.25rem', width: '25%', marginBottom: '1rem' }}></div>
+                        <div style={{ height: '0.75rem', backgroundColor: '#e5e7eb', borderRadius: '0.25rem', width: '50%', marginBottom: '0.5rem' }}></div>
+                        <div style={{ height: '0.75rem', backgroundColor: '#e5e7eb', borderRadius: '0.25rem', width: '75%' }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : appointments.length === 0 ? (
+                <div style={cardStyle}>
+                  <div style={emptyStateStyle}>
+                    <Calendar style={{ width: '3rem', height: '3rem', color: '#9ca3af', margin: '0 auto 1rem' }} />
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '500', color: '#111827', margin: '0 0 0.5rem 0' }}>No appointments yet</h3>
+                    <p style={{ color: '#6b7280', margin: '0' }}>Your consultation bookings will appear here once clients book sessions with you.</p>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {appointments.map((appointment) => {
+                    const consultationType = CONSULTATION_TYPES[appointment.type] || {
+                      label: appointment.type,
+                      icon: MessageCircle,
+                      color: 'bg-gray-100 text-gray-800'
+                    };
+                    const Icon = consultationType.icon;
 
-                  return (
-                    <Card key={appointment.id} className="hover:shadow-md transition-shadow">
-                      <CardHeader>
-                        <div className="flex items-start justify-between">
-                          <div className="space-y-2">
-                            <div className="flex items-center gap-2">
-                              <h3 className="text-lg font-semibold">
-                                Client ID: {appointment.clientId.slice(-8)}
-                              </h3>
-                              <Badge className={STATUS_COLORS[appointment.status]}>
-                                {getStatusIcon(appointment.status)}
-                                <span className="ml-1 capitalize">{appointment.status.replace('_', ' ')}</span>
-                              </Badge>
+                    return (
+                      <div 
+                        key={appointment.id} 
+                        style={appointmentCardStyle}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 0, 0, 0.1)';
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.boxShadow = '0 1px 3px rgba(0, 0, 0, 0.1)';
+                          e.currentTarget.style.transform = 'translateY(0)';
+                        }}
+                      >
+                        <div style={cardHeaderStyle}>
+                          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', margin: '0', color: '#111827' }}>
+                                  Client ID: {appointment.clientId.slice(-8)}
+                                </h3>
+                                <div style={getStatusBadgeStyle(appointment.status)}>
+                                  {getStatusIcon(appointment.status)}
+                                  <span style={{ marginLeft: '0.25rem', textTransform: 'capitalize' }}>
+                                    {appointment.status.replace('_', ' ')}
+                                  </span>
+                                </div>
+                              </div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                <div style={getConsultationBadgeStyle(appointment.type)}>
+                                  <Icon style={{ width: '0.75rem', height: '0.75rem', marginRight: '0.25rem' }} />
+                                  {consultationType.label}
+                                </div>
+                                <span style={{ fontSize: '0.875rem', color: '#6b7280' }}>
+                                  {appointment.duration} minutes
+                                </span>
+                              </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                              <Badge className={consultationType.color}>
-                                <Icon className="h-3 w-3 mr-1" />
-                                {consultationType.label}
-                              </Badge>
-                              <span className="text-sm text-gray-500">
+                            <div style={{ textAlign: 'right' }}>
+                              <p style={{ fontSize: '1.125rem', fontWeight: '600', color: '#059669', margin: '0' }}>
+                                ${appointment.pricing?.totalAmount || 0}
+                              </p>
+                              <p style={{ fontSize: '0.75rem', color: '#6b7280', margin: '0.25rem 0 0 0' }}>
+                                {appointment.pricing?.currency || 'USD'}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div style={{ ...cardContentStyle, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <Calendar style={{ width: '1rem', height: '1rem', color: '#6b7280' }} />
+                              <span style={{ fontSize: '0.875rem' }}>
+                                {formatDateTime(appointment.scheduledAt)}
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <Clock style={{ width: '1rem', height: '1rem', color: '#6b7280' }} />
+                              <span style={{ fontSize: '0.875rem' }}>
                                 {appointment.duration} minutes
                               </span>
                             </div>
                           </div>
-                          <div className="text-right">
-                            <p className="text-lg font-semibold text-green-600">
-                              ${appointment.pricing?.totalAmount || 0}
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              {appointment.pricing?.currency || 'USD'}
-                            </p>
-                          </div>
-                        </div>
-                      </CardHeader>
-                      <CardContent className="space-y-4">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="flex items-center gap-2">
-                            <Calendar className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm">
-                              {formatDateTime(appointment.scheduledAt)}
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-gray-500" />
-                            <span className="text-sm">
-                              {appointment.duration} minutes
-                            </span>
-                          </div>
-                        </div>
-                        
-                        {appointment.requirements && (
-                          <div>
-                            <h4 className="text-sm font-medium mb-1">Requirements:</h4>
-                            <p className="text-sm text-gray-600">{appointment.requirements}</p>
-                          </div>
-                        )}
-                        
-                        {appointment.notes && (
-                          <div>
-                            <h4 className="text-sm font-medium mb-1">Notes:</h4>
-                            <p className="text-sm text-gray-600">{appointment.notes}</p>
-                          </div>
-                        )}
-                        
-                        <div className="flex gap-2 pt-2 border-t">
-                          {appointment.status === 'scheduled' && (
-                            <Button size="sm" variant="outline">
-                              Confirm Appointment
-                            </Button>
+                          
+                          {appointment.requirements && (
+                            <div>
+                              <h4 style={{ fontSize: '0.875rem', fontWeight: '500', margin: '0 0 0.25rem 0', color: '#374151' }}>Requirements:</h4>
+                              <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0' }}>{appointment.requirements}</p>
+                            </div>
                           )}
-                          {appointment.meetingLink && (
-                            <Button size="sm" variant="outline" asChild>
-                              <a href={appointment.meetingLink} target="_blank" rel="noopener noreferrer">
-                                <ExternalLink className="h-3 w-3 mr-1" />
+                          
+                          {appointment.notes && (
+                            <div>
+                              <h4 style={{ fontSize: '0.875rem', fontWeight: '500', margin: '0 0 0.25rem 0', color: '#374151' }}>Notes:</h4>
+                              <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0' }}>{appointment.notes}</p>
+                            </div>
+                          )}
+                          
+                          <div style={{ display: 'flex', gap: '0.5rem', paddingTop: '0.5rem', borderTop: '1px solid #f3f4f6', flexWrap: 'wrap' }}>
+                            {appointment.status === 'scheduled' && (
+                              <button style={{
+                                ...outlineButtonStyle,
+                                fontSize: '0.8125rem',
+                                padding: '0.5rem 0.875rem'
+                              }}>
+                                Confirm Appointment
+                              </button>
+                            )}
+                            {appointment.meetingLink && (
+                              <a 
+                                href={appointment.meetingLink} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                style={{
+                                  ...outlineButtonStyle,
+                                  fontSize: '0.8125rem',
+                                  padding: '0.5rem 0.875rem'
+                                }}
+                              >
+                                <ExternalLink style={{ width: '0.75rem', height: '0.75rem', marginRight: '0.25rem' }} />
                                 Join Meeting
                               </a>
-                            </Button>
-                          )}
-                          <Button size="sm" variant="ghost">
-                            <MessageCircle className="h-3 w-3 mr-1" />
-                            Message Client
-                          </Button>
+                            )}
+                            <button style={{
+                              ...ghostButtonStyle,
+                              fontSize: '0.8125rem',
+                              padding: '0.5rem 0.875rem'
+                            }}>
+                              <MessageCircle style={{ width: '0.75rem', height: '0.75rem', marginRight: '0.25rem' }} />
+                              Message Client
+                            </button>
+                          </div>
                         </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </TabsContent>
-
-        <TabsContent value="schedule" className="mt-6">
-          <div className="space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold mb-1">Schedule Management</h2>
-              <p className="text-gray-600">Set your availability for client consultations</p>
-            </div>
-
-            {/* Google Calendar Integration */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ExternalLink className="h-5 w-5" />
-                  Google Calendar Integration
-                </CardTitle>
-                <CardDescription>
-                  Connect your Google Calendar to automatically sync appointments
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`w-3 h-3 rounded-full ${
-                      googleCalendarConnected ? 'bg-green-500' : 'bg-gray-300'
-                    }`}></div>
-                    <span className="text-sm">
-                      {googleCalendarConnected ? 'Connected to Google Calendar' : 'Not connected'}
-                    </span>
-                  </div>
-                  {!googleCalendarConnected && (
-                    <Button 
-                      onClick={handleGoogleCalendarConnect} 
-                      disabled={connectingGoogle}
-                      size="sm"
-                    >
-                      {connectingGoogle ? (
-                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      ) : (
-                        <ExternalLink className="h-4 w-4 mr-2" />
-                      )}
-                      Connect Google Calendar
-                    </Button>
-                  )}
+                      </div>
+                    );
+                  })}
                 </div>
-              </CardContent>
-            </Card>
-
-            {/* Schedule Manager Component */}
-            <ScheduleManager userId={user?.uid} />
+              )}
+            </div>
           </div>
-        </TabsContent>
-      </Tabs>
+        )}
+
+        {/* Schedule Tab Content */}
+        {activeTab === 'schedule' && (
+          <div style={{ marginTop: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              <div>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: '600', margin: '0 0 0.25rem 0', color: '#111827' }}>Schedule Management</h2>
+                <p style={{ color: '#6b7280', margin: '0' }}>Set your availability for client consultations</p>
+              </div>
+
+              {/* Google Calendar Integration */}
+              <div style={cardStyle}>
+                <div style={cardHeaderStyle}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <ExternalLink style={{ width: '1.25rem', height: '1.25rem', color: '#6366f1' }} />
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '600', margin: '0', color: '#111827' }}>Google Calendar Integration</h3>
+                  </div>
+                  <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: '0' }}>
+                    Connect your Google Calendar to automatically sync appointments
+                  </p>
+                </div>
+                <div style={cardContentStyle}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{
+                        width: '0.75rem',
+                        height: '0.75rem',
+                        borderRadius: '50%',
+                        backgroundColor: googleCalendarConnected ? '#10b981' : '#9ca3af'
+                      }}></div>
+                      <span style={{ fontSize: '0.875rem', color: '#374151' }}>
+                        {googleCalendarConnected ? 'Connected to Google Calendar' : 'Not connected'}
+                      </span>
+                    </div>
+                    {!googleCalendarConnected && (
+                      <button 
+                        onClick={handleGoogleCalendarConnect} 
+                        disabled={connectingGoogle}
+                        style={{
+                          ...primaryButtonStyle,
+                          fontSize: '0.8125rem',
+                          padding: '0.5rem 0.875rem',
+                          opacity: connectingGoogle ? 0.6 : 1,
+                          cursor: connectingGoogle ? 'not-allowed' : 'pointer'
+                        }}
+                      >
+                        {connectingGoogle ? (
+                          <Loader2 style={{ width: '1rem', height: '1rem', marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} />
+                        ) : (
+                          <ExternalLink style={{ width: '1rem', height: '1rem', marginRight: '0.5rem' }} />
+                        )}
+                        Connect Google Calendar
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Schedule Manager Component */}
+              <div style={cardStyle}>
+                <div style={cardContentStyle}>
+                  <ScheduleManager userId={user?.uid} />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

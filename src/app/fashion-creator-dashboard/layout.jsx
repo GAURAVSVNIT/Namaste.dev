@@ -1,20 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '@/lib/firebase';
-import RoleProtected from '@/components/auth/RoleProtected';
-import { USER_ROLES } from '@/lib/roles';
+import { DashboardProvider } from '@/context/DashboardContext';
 import TailorSidebar from '@/components/fashion-creator-dashboard/Sidebar';
 import TailorHeader from '@/components/fashion-creator-dashboard/Header';
-import styles from './FashionCreatorDashboard.module.css';
+import { motion } from 'framer-motion';
+import styles from '../merchant-dashboard/Dashboard.module.css';
 
 export default function FashionCreatorDashboardLayout({ children }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
-  const [user] = useAuthState(auth);
 
   // Set mounted state to prevent hydration issues
   useEffect(() => {
@@ -98,7 +95,7 @@ export default function FashionCreatorDashboardLayout({ children }) {
   }, [isMobileMenuOpen, isMounted]);
 
   return (
-    <RoleProtected allowedRoles={[USER_ROLES.FASHION_CREATOR, USER_ROLES.ADMIN]}>
+    <DashboardProvider>
       <div 
         className={`${styles.dashboardLayout} ${isCollapsed ? styles.collapsed : ''} ${isMobileMenuOpen ? styles.mobileMenuOpen : ''}`}
       >
@@ -113,7 +110,6 @@ export default function FashionCreatorDashboardLayout({ children }) {
           onMenuClick={toggleSidebar} 
           isCollapsed={isCollapsed} 
           isMobileMenuOpen={isMobileMenuOpen}
-          user={user}
         />
         
         <main className={`${styles.mainContent} ${isMobileMenuOpen ? styles.menuOpen : ''}`}>
@@ -122,6 +118,6 @@ export default function FashionCreatorDashboardLayout({ children }) {
           </div>
         </main>
       </div>
-    </RoleProtected>
+    </DashboardProvider>
   );
 }

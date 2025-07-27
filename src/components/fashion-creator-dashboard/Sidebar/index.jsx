@@ -262,11 +262,11 @@ function Sidebar({ isCollapsed, onToggleCollapse, onNavigation }) {
           {/* Logo */}
           <header className={styles.sidebarHeader}>
             {!isCollapsed && (
-              <Link href="/tailor-dashboard" className={styles.logo}>
+              <Link href="/fashion-creator-dashboard" className={styles.logo}>
                 <span className={styles.logoIcon}>
                   <LayoutDashboard size={18} />
                 </span>
-                <span>TailorPro</span>
+                <span>FashionPro</span>
               </Link>
             )}
             <div className={styles.headerControls}>
@@ -394,7 +394,7 @@ function Sidebar({ isCollapsed, onToggleCollapse, onNavigation }) {
                     </button>
                     
                     <Link
-                      href="/tailor-dashboard/settings"
+                      href="/fashion-creator-dashboard/settings"
                       className={profileStyles.settingsButton}
                       onClick={(e) => {
                         e.stopPropagation();
