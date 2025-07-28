@@ -30,7 +30,7 @@ const ShippingRates = ({ orderItems = [], onShippingSelect, selectedShipping }) 
     try {
       const codAmount = paymentMethod === 'cod' ? orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0) : 0;
       
-      const response = await fetch('/api/shiprocket/shipping-rates', {
+      const response = await fetch('/api/merchant/shiprocket/shipping-rates', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

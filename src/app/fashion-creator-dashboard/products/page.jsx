@@ -7,6 +7,7 @@ import styles from './Products.module.css';
 import ProductModal from '@/components/merchant-dashboard/ProductModal';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
+import { filterRealProducts } from '@/lib/shiprocket-utils';
 
 function ProductsPageContent() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -32,7 +33,11 @@ function ProductsPageContent() {
         });
 
         const data = await response.json();
-        setShiprocketProducts(data.data || []);
+        
+        // Filter out placeholder category products and inactive products
+        const realProducts = filterRealProducts(data.data || [], false); // false = exclude inactive
+        
+        setShiprocketProducts(realProducts);
       } catch (error) {
         console.error('Error loading Shiprocket products:', error);
       } finally {
@@ -81,7 +86,11 @@ function ProductsPageContent() {
         });
 
         const data = await response.json();
-        setShiprocketProducts(data.data || []);
+        
+        // Filter out placeholder category products and inactive products
+        const realProducts = filterRealProducts(data.data || [], false); // false = exclude inactive
+        
+        setShiprocketProducts(realProducts);
       } catch (error) {
         console.error('Error refreshing Shiprocket products:', error);
       }
