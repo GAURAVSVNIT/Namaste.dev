@@ -30,6 +30,31 @@ const TrendingPage = () => {
     totalCreators: '0',
     growthRate: '0%'
   });
+  
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12);
+
+  // Update items per page based on screen size
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) {
+        // Desktop: 3 items per row, 4 rows = 12 items
+        setItemsPerPage(12);
+      } else if (width >= 768) {
+        // Tablet: 2 items per row, 4 rows = 8 items
+        setItemsPerPage(8);
+      } else {
+        // Mobile: 1 item per row, 4 rows = 4 items
+        setItemsPerPage(4);
+      }
+    };
+
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
 
   // Fetch real trending data from API
   useEffect(() => {
@@ -368,6 +393,231 @@ const TrendingPage = () => {
     </div>
   );
 
+  // Calculate pagination
+  const filteredContent = trendingContent.filter(item => {
+    if (!searchTerm) return true;
+    return (
+      item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.creator.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      item.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
+    );
+  });
+
+  const totalPages = Math.ceil(filteredContent.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentItems = filteredContent.slice(startIndex, endIndex);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // Scroll to content section smoothly
+    window.scrollTo({
+      top: 600,
+      behavior: 'smooth'
+    });
+  };
+
+  const renderPageNumbers = () => {
+    const pageNumbers = [];
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // Previous button
+    if (currentPage > 1) {
+      pageNumbers.push(
+        <button
+          key="prev"
+          onClick={() => handlePageChange(currentPage - 1)}
+          style={{
+            padding: '12px 16px',
+            margin: '0 4px',
+            borderRadius: '12px',
+            border: '2px solid #e5e7eb',
+            background: '#ffffff',
+            color: '#6b7280',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.borderColor = '#667eea';
+            e.target.style.color = '#667eea';
+            e.target.style.transform = 'translateY(-2px)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.borderColor = '#e5e7eb';
+            e.target.style.color = '#6b7280';
+            e.target.style.transform = 'translateY(0)';
+          }}
+        >
+          Previous
+        </button>
+      );
+    }
+
+    // Add ellipsis if needed at the beginning
+    if (startPage > 1) {
+      pageNumbers.push(
+        <button
+          key={1}
+          onClick={() => handlePageChange(1)}
+          style={{
+            padding: '12px 16px',
+            margin: '0 4px',
+            borderRadius: '12px',
+            border: '2px solid #e5e7eb',
+            background: '#ffffff',
+            color: '#6b7280',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.borderColor = '#667eea';
+            e.target.style.color = '#667eea';
+            e.target.style.transform = 'translateY(-2px)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.borderColor = '#e5e7eb';
+            e.target.style.color = '#6b7280';
+            e.target.style.transform = 'translateY(0)';
+          }}
+        >
+          1
+        </button>
+      );
+      if (startPage > 2) {
+        pageNumbers.push(
+          <span key="ellipsis1" style={{ margin: '0 8px', color: '#6b7280' }}>...</span>
+        );
+      }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+      pageNumbers.push(
+        <button
+          key={i}
+          onClick={() => handlePageChange(i)}
+          style={{
+            padding: '12px 16px',
+            margin: '0 4px',
+            borderRadius: '12px',
+            border: currentPage === i ? '2px solid #667eea' : '2px solid #e5e7eb',
+            background: currentPage === i 
+              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+              : '#ffffff',
+            color: currentPage === i ? '#ffffff' : '#6b7280',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            transform: currentPage === i ? 'translateY(-2px)' : 'translateY(0)',
+            boxShadow: currentPage === i ? '0 8px 20px rgba(102, 126, 234, 0.3)' : 'none'
+          }}
+          onMouseOver={(e) => {
+            if (currentPage !== i) {
+              e.target.style.borderColor = '#667eea';
+              e.target.style.color = '#667eea';
+              e.target.style.transform = 'translateY(-2px)';
+            }
+          }}
+          onMouseOut={(e) => {
+            if (currentPage !== i) {
+              e.target.style.borderColor = '#e5e7eb';
+              e.target.style.color = '#6b7280';
+              e.target.style.transform = 'translateY(0)';
+            }
+          }}
+        >
+          {i}
+        </button>
+      );
+    }
+
+    // Add ellipsis if needed at the end
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pageNumbers.push(
+          <span key="ellipsis2" style={{ margin: '0 8px', color: '#6b7280' }}>...</span>
+        );
+      }
+      pageNumbers.push(
+        <button
+          key={totalPages}
+          onClick={() => handlePageChange(totalPages)}
+          style={{
+            padding: '12px 16px',
+            margin: '0 4px',
+            borderRadius: '12px',
+            border: '2px solid #e5e7eb',
+            background: '#ffffff',
+            color: '#6b7280',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.borderColor = '#667eea';
+            e.target.style.color = '#667eea';
+            e.target.style.transform = 'translateY(-2px)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.borderColor = '#e5e7eb';
+            e.target.style.color = '#6b7280';
+            e.target.style.transform = 'translateY(0)';
+          }}
+        >
+          {totalPages}
+        </button>
+      );
+    }
+
+    // Next button
+    if (currentPage < totalPages) {
+      pageNumbers.push(
+        <button
+          key="next"
+          onClick={() => handlePageChange(currentPage + 1)}
+          style={{
+            padding: '12px 16px',
+            margin: '0 4px',
+            borderRadius: '12px',
+            border: '2px solid #e5e7eb',
+            background: '#ffffff',
+            color: '#6b7280',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.borderColor = '#667eea';
+            e.target.style.color = '#667eea';
+            e.target.style.transform = 'translateY(-2px)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.borderColor = '#e5e7eb';
+            e.target.style.color = '#6b7280';
+            e.target.style.transform = 'translateY(0)';
+          }}
+        >
+          Next
+        </button>
+      );
+    }
+
+    return pageNumbers;
+  };
+
   return (
     <div style={{
       minHeight: '100vh',
@@ -694,16 +944,117 @@ const TrendingPage = () => {
               </div>
             ))}
           </div>
-        ) : trendingContent.length > 0 ? (
+        ) : filteredContent.length > 0 ? (
+          <>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+              gap: '24px',
+              padding: '20px 0'
+            }}>
+              {currentItems.map((item, index) => (
+                <TrendingCard key={item.id} item={item} rank={startIndex + index + 1} />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexWrap: 'wrap',
+                gap: '8px',
+                marginTop: '48px',
+                padding: '32px',
+                background: 'rgba(255, 255, 255, 0.9)',
+                borderRadius: '20px',
+                boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+                border: '1px solid rgba(255, 255, 255, 0.2)'
+              }}>
+                {renderPageNumbers()}
+              </div>
+            )}
+
+            {/* Page Info */}
+            {totalPages > 1 && (
+              <div style={{
+                textAlign: 'center',
+                marginTop: '24px',
+                color: '#6b7280',
+                fontSize: '14px',
+                fontWeight: '600'
+              }}>
+                Showing {startIndex + 1}-{Math.min(endIndex, filteredContent.length)} of {filteredContent.length} trending items
+              </div>
+            )}
+          </>
+        ) : searchTerm ? (
+          // No Search Results State
           <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
-            gap: '24px',
-            padding: '20px 0'
+            textAlign: 'center',
+            padding: '80px 20px',
+            background: 'rgba(255,255,255,0.9)',
+            borderRadius: '20px',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+            border: '2px dashed rgba(102, 126, 234, 0.3)'
           }}>
-            {trendingContent.map((item, index) => (
-              <TrendingCard key={item.id} item={item} rank={index + 1} />
-            ))}
+            <div style={{
+              width: '120px',
+              height: '120px',
+              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 24px',
+              boxShadow: '0 20px 40px rgba(102, 126, 234, 0.2)'
+            }}>
+              <Search size={48} style={{ color: 'white' }} />
+            </div>
+            
+            <h3 style={{
+              fontSize: '1.8rem',
+              fontWeight: '700',
+              color: '#1f2937',
+              margin: '0 0 12px 0'
+            }}>
+              No Results Found
+            </h3>
+            
+            <p style={{
+              color: '#6b7280',
+              fontSize: '1.2rem',
+              margin: '0 0 32px 0',
+              maxWidth: '500px',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              lineHeight: '1.6'
+            }}>
+              No trending content matches "{searchTerm}". Try different keywords or explore all trending content.
+            </p>
+            
+            <button
+              onClick={() => setSearchTerm('')}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                color: 'white',
+                border: 'none',
+                padding: '16px 32px',
+                borderRadius: '16px',
+                fontSize: '1.1rem',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 12px 28px rgba(102, 126, 234, 0.3)'
+              }}
+            >
+              <TrendingUp size={20} />
+              View All Trending
+            </button>
           </div>
         ) : (
           // Empty State

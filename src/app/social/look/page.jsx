@@ -20,6 +20,46 @@ export default function LookPage() {
   const [sortBy, setSortBy] = useState('recent');
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [selectedTags, setSelectedTags] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(12); // Default: 3 per row × 4 rows
+
+  // Update items per page based on screen size
+  useEffect(() => {
+    const updateItemsPerPage = () => {
+      const width = window.innerWidth;
+      if (width <= 768) {
+        setItemsPerPage(4); // Mobile: 1 per row × 4 rows = 4 items
+      } else if (width <= 1024) {
+        setItemsPerPage(8); // Tablet: 2 per row × 4 rows = 8 items
+      } else {
+        setItemsPerPage(12); // Desktop: 3 per row × 4 rows = 12 items
+      }
+    };
+
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
+  }, []);
+
+  // Reset to first page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm, moodFilter, sortBy]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(filteredLooks.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentLooks = filteredLooks.slice(startIndex, endIndex);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // Scroll to top of looks section
+    document.getElementById('looks-section')?.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'start' 
+    });
+  };
 
   useEffect(() => {
     const fetchLooks = async () => {
@@ -589,147 +629,319 @@ export default function LookPage() {
           </p>
         </div>
 
-        {/* Looks Grid */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
-          gap: '24px',
-          marginBottom: '60px',
-          justifyItems: 'center'
+        {/* Looks Grid Section */}
+        <div id="looks-section" style={{
+          marginBottom: '60px'
         }}>
-          {isLoading ? (
-            // Loading Cards
-            Array.from({ length: 6 }).map((_, index) => (
-              <div
-                key={index}
-                style={{
-                  background: '#ffffff',
-                  borderRadius: '16px',
-                  boxShadow: '0 2px 15px rgba(0, 0, 0, 0.08)',
-                  overflow: 'hidden',
-                  height: '400px',
-                  width: '100%',
-                  maxWidth: '350px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  border: '1px solid #f1f5f9'
-                }}
-              >
-                <div style={{
-                  color: '#cbd5e0',
-                  fontSize: '18px',
-                  fontWeight: '500'
-                }}>
-                  ✨ Loading...
-                </div>
-              </div>
-            ))
-          ) : filteredLooks.length === 0 ? (
-            // Empty State
-            <div style={{
-              gridColumn: '1 / -1',
-              textAlign: 'center',
-              padding: '60px 40px',
-              background: '#ffffff',
-              borderRadius: '16px',
-              boxShadow: '0 2px 15px rgba(0, 0, 0, 0.08)',
-              border: '1px solid #f1f5f9',
-              margin: '0 auto',
-              maxWidth: '600px'
-            }}>
-              <div style={{
-                fontSize: '64px',
-                marginBottom: '24px'
-              }}>
-                👗
-              </div>
-              <h3 style={{
-                fontSize: '28px',
-                fontWeight: '700',
-                color: '#2d3748',
-                marginBottom: '16px'
-              }}>
-                No looks found
-              </h3>
-              <p style={{
-                color: '#718096',
-                fontSize: '16px',
-                marginBottom: '32px',
-                lineHeight: '1.6'
-              }}>
-                {searchTerm 
-                  ? `No results for "${searchTerm}". Try different search terms.`
-                  : 'Be the first to share your amazing fashion look!'
-                }
-              </p>
-              {user && (
-                <Link href="/social/look/upload" style={{ textDecoration: 'none' }}>
-                  <button style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                    color: 'white',
-                    border: 'none',
+          {/* Looks Grid */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+            gap: '24px',
+            marginBottom: '40px',
+            justifyItems: 'center',
+            minHeight: '600px' // Maintain consistent height for pagination
+          }}>
+            {isLoading ? (
+              // Loading Cards
+              Array.from({ length: itemsPerPage }).map((_, index) => (
+                <div
+                  key={index}
+                  style={{
+                    background: '#ffffff',
                     borderRadius: '16px',
-                    padding: '16px 32px',
-                    fontSize: '16px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    boxShadow: '0 8px 25px rgba(102, 126, 234, 0.3)'
+                    boxShadow: '0 2px 15px rgba(0, 0, 0, 0.08)',
+                    overflow: 'hidden',
+                    height: '400px',
+                    width: '100%',
+                    maxWidth: '350px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: '1px solid #f1f5f9'
+                  }}
+                >
+                  <div style={{
+                    color: '#cbd5e0',
+                    fontSize: '18px',
+                    fontWeight: '500'
+                  }}>
+                    ✨ Loading...
+                  </div>
+                </div>
+              ))
+            ) : filteredLooks.length === 0 ? (
+              // Empty State
+              <div style={{
+                gridColumn: '1 / -1',
+                textAlign: 'center',
+                padding: '60px 40px',
+                background: '#ffffff',
+                borderRadius: '16px',
+                boxShadow: '0 2px 15px rgba(0, 0, 0, 0.08)',
+                border: '1px solid #f1f5f9',
+                margin: '0 auto',
+                maxWidth: '600px'
+              }}>
+                <div style={{
+                  fontSize: '64px',
+                  marginBottom: '24px'
+                }}>
+                  👗
+                </div>
+                <h3 style={{
+                  fontSize: '28px',
+                  fontWeight: '700',
+                  color: '#2d3748',
+                  marginBottom: '16px'
+                }}>
+                  No looks found
+                </h3>
+                <p style={{
+                  color: '#718096',
+                  fontSize: '16px',
+                  marginBottom: '32px',
+                  lineHeight: '1.6'
+                }}>
+                  {searchTerm 
+                    ? `No results for "${searchTerm}". Try different search terms.`
+                    : 'Be the first to share your amazing fashion look!'
+                  }
+                </p>
+                {user && (
+                  <Link href="/social/look/upload" style={{ textDecoration: 'none' }}>
+                    <button style={{
+                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '16px',
+                      padding: '16px 32px',
+                      fontSize: '16px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: '0 8px 25px rgba(102, 126, 234, 0.3)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.target.style.transform = 'translateY(-2px)';
+                      e.target.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.4)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
+                    }}>
+                      Upload Your First Look
+                    </button>
+                  </Link>
+                )}
+              </div>
+            ) : (
+              // Look Cards - Display current page of looks
+              currentLooks.map((look) => (
+                <div
+                  key={look.id}
+                  style={{
+                    background: '#ffffff',
+                    borderRadius: '16px',
+                    boxShadow: '0 2px 15px rgba(0, 0, 0, 0.08)',
+                    overflow: 'hidden',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    border: '1px solid #f1f5f9',
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '350px'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.4)';
+                    e.currentTarget.style.transform = 'translateY(-8px)';
+                    e.currentTarget.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.15)';
+                    e.currentTarget.style.borderColor = '#e2e8f0';
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.3)';
-                  }}>
-                    Upload Your First Look
-                  </button>
-                </Link>
-              )}
-            </div>
-          ) : (
-            // Look Cards
-            filteredLooks.map((look) => (
-              <div
-                key={look.id}
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
+                    e.currentTarget.style.borderColor = '#f1f5f9';
+                  }}
+                >
+                  <LookCard
+                    look={look}
+                    onEdit={handleEditLook}
+                    onDelete={handleDeleteLook}
+                    style={{
+                      border: 'none',
+                      boxShadow: 'none',
+                      borderRadius: '0',
+                      background: 'transparent'
+                    }}
+                  />
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Pagination Controls */}
+          {!isLoading && filteredLooks.length > 0 && totalPages > 1 && (
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '8px',
+              flexWrap: 'wrap',
+              marginTop: '40px'
+            }}>
+              {/* Previous Button */}
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
                 style={{
-                  background: '#ffffff',
-                  borderRadius: '16px',
-                  boxShadow: '0 2px 15px rgba(0, 0, 0, 0.08)',
-                  overflow: 'hidden',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  border: '1px solid #f1f5f9',
-                  position: 'relative',
-                  width: '100%',
-                  maxWidth: '350px'
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: currentPage === 1 ? '#f8f9fa' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: currentPage === 1 ? '#cbd5e0' : 'white',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                  opacity: currentPage === 1 ? 0.5 : 1,
+                  boxShadow: currentPage === 1 ? 'none' : '0 4px 12px rgba(102, 126, 234, 0.25)'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-8px)';
-                  e.currentTarget.style.boxShadow = '0 20px 60px rgba(0, 0, 0, 0.15)';
-                  e.currentTarget.style.borderColor = '#e2e8f0';
+                  if (currentPage !== 1) {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.35)';
+                  }
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
-                  e.currentTarget.style.borderColor = '#f1f5f9';
+                  if (currentPage !== 1) {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.25)';
+                  }
                 }}
               >
-                <LookCard
-                  look={look}
-                  onEdit={handleEditLook}
-                  onDelete={handleDeleteLook}
-                  style={{
-                    border: 'none',
-                    boxShadow: 'none',
-                    borderRadius: '0',
-                    background: 'transparent'
-                  }}
-                />
-              </div>
-            ))
+                ← Previous
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => {
+                // Show first page, last page, current page, and pages around current
+                const showPage = page === 1 || 
+                                page === totalPages || 
+                                (page >= currentPage - 1 && page <= currentPage + 1);
+                
+                if (!showPage) {
+                  // Show ellipsis
+                  if (page === currentPage - 2 || page === currentPage + 2) {
+                    return (
+                      <span
+                        key={`ellipsis-${page}`}
+                        style={{
+                          padding: '12px 8px',
+                          color: '#cbd5e0',
+                          fontSize: '14px',
+                          fontWeight: '600'
+                        }}
+                      >
+                        ...
+                      </span>
+                    );
+                  }
+                  return null;
+                }
+
+                return (
+                  <button
+                    key={page}
+                    onClick={() => handlePageChange(page)}
+                    style={{
+                      padding: '12px 16px',
+                      borderRadius: '12px',
+                      border: 'none',
+                      background: currentPage === page 
+                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                        : '#ffffff',
+                      color: currentPage === page ? 'white' : '#6b7280',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      border: currentPage === page ? 'none' : '2px solid #e5e7eb',
+                      boxShadow: currentPage === page 
+                        ? '0 4px 12px rgba(102, 126, 234, 0.25)'
+                        : '0 2px 8px rgba(0, 0, 0, 0.06)',
+                      minWidth: '44px'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (currentPage !== page) {
+                        e.target.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)';
+                        e.target.style.borderColor = '#667eea';
+                        e.target.style.color = '#667eea';
+                        e.target.style.transform = 'translateY(-2px)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (currentPage !== page) {
+                        e.target.style.background = '#ffffff';
+                        e.target.style.borderColor = '#e5e7eb';
+                        e.target.style.color = '#6b7280';
+                        e.target.style.transform = 'translateY(0)';
+                      }
+                    }}
+                  >
+                    {page}
+                  </button>
+                );
+              })}
+
+              {/* Next Button */}
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: currentPage === totalPages ? '#f8f9fa' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                  color: currentPage === totalPages ? '#cbd5e0' : 'white',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.3s ease',
+                  opacity: currentPage === totalPages ? 0.5 : 1,
+                  boxShadow: currentPage === totalPages ? 'none' : '0 4px 12px rgba(102, 126, 234, 0.25)'
+                }}
+                onMouseEnter={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.target.style.transform = 'translateY(-2px)';
+                    e.target.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.35)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (currentPage !== totalPages) {
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.25)';
+                  }
+                }}
+              >
+                Next →
+              </button>
+            </div>
+          )}
+
+          {/* Pagination Info */}
+          {!isLoading && filteredLooks.length > 0 && (
+            <div style={{
+              textAlign: 'center',
+              marginTop: '30px',
+              color: '#718096',
+              fontSize: '14px',
+              fontWeight: '500'
+            }}>
+              Showing {startIndex + 1}-{Math.min(endIndex, filteredLooks.length)} of {filteredLooks.length} looks
+              {totalPages > 1 && (
+                <span style={{ margin: '0 8px', color: '#cbd5e0' }}>•</span>
+              )}
+              {totalPages > 1 && `Page ${currentPage} of ${totalPages}`}
+            </div>
           )}
         </div>
       </div>

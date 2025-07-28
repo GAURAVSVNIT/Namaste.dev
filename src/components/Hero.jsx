@@ -22,11 +22,11 @@ const Hero = () => {
           <a href="/marketplace" className="cta-button-outlined">Test your fashion</a>
         </div>
       </div>
-      <div className="hero-images">
-        <img src="#" alt="Fashion 1" className="hero-image image-1" />
-        <img src="#" alt="Fashion 2" className="hero-image image-2" />
-        <img src="#" alt="Fashion 3" className="hero-image image-3" />
-      </div>
+          <div className="hero-images">
+            <img src="/images/fashion-hero-1.jpg" alt="Fashion Look 1" className="hero-image image-1" />
+            <img src="/images/fashion-hero-2.jpg" alt="Fashion Look 2" className="hero-image image-2" />
+            <img src="/images/fashion-hero-3.jpg" alt="Fashion Look 3" className="hero-image image-3" />
+          </div>
     </div>
   );
 };
