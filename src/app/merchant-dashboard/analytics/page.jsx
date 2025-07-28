@@ -39,59 +39,8 @@ import {
 } from 'recharts';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
+import { getAnalyticsData, subscribeToAnalyticsUpdates } from '@/lib/analytics';
 
-const salesData = [
-  { name: 'Jan', sales: 4200, orders: 240, visitors: 1200 },
-  { name: 'Feb', sales: 3800, orders: 139, visitors: 1100 },
-  { name: 'Mar', sales: 5200, orders: 980, visitors: 1800 },
-  { name: 'Apr', sales: 4780, orders: 390, visitors: 1500 },
-  { name: 'May', sales: 5890, orders: 480, visitors: 2000 },
-  { name: 'Jun', sales: 6390, orders: 380, visitors: 2200 },
-  { name: 'Jul', sales: 7490, orders: 430, visitors: 2500 },
-];
-
-const topProducts = [
-  { 
-    name: 'Classic T-Shirt', 
-    sales: 145, 
-    revenue: 4350,
-    category: 'T-Shirts',
-    stock: 24,
-    status: 'in_stock'
-  },
-  { 
-    name: 'Denim Jacket', 
-    sales: 89, 
-    revenue: 8009,
-    category: 'Jackets',
-    stock: 5,
-    status: 'low_stock'
-  },
-  { 
-    name: 'Summer Dress', 
-    sales: 67, 
-    revenue: 4020,
-    category: 'Dresses',
-    stock: 0,
-    status: 'out_of_stock'
-  },
-  { 
-    name: 'Sneakers', 
-    sales: 45, 
-    revenue: 5400,
-    category: 'Shoes',
-    stock: 12,
-    status: 'in_stock'
-  },
-];
-
-const categoryData = [
-  { name: 'T-Shirts', value: 35, color: '#3B82F6' },
-  { name: 'Jackets', value: 25, color: '#EF4444' },
-  { name: 'Dresses', value: 20, color: '#10B981' },
-  { name: 'Shoes', value: 12, color: '#8B5CF6' },
-  { name: 'Accessories', value: 8, color: '#F59E0B' },
-];
 
 // Custom tooltip for charts
 const CustomTooltip = ({ active, payload, label }) => {
@@ -244,33 +193,66 @@ const styles = {
 
 function AnalyticsPageContent() {
   const [timeRange, setTimeRange] = useState('monthly');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [analytics, setAnalytics] = useState({
+    salesData: [],
+    categoryData: [],
+    topProducts: [],
+    summary: {
+      totalSales: 0,
+      totalOrders: 0,
+      averageOrderValue: 0,
+      conversionRate: 0,
+    }
+  });
 
   // Adjust window size dynamically
   useEffect(() => {
-    const handleResize = () => setWindowWidth(window.innerWidth);
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    if (typeof window !== 'undefined') {
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
   }, []);
 
-  // Simulate loading state
-  const handleTimeRangeChange = (value) => {
-    setIsLoading(true);
-    setTimeRange(value);
+  // Fetch analytics data based on time range
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getAnalyticsData(timeRange);
+        setAnalytics(data);
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
+    fetchData();
+
+    // Subscribe to real-time updates
+    const unsubscribeUpdates = subscribeToAnalyticsUpdates((updates) => {
+      // Only update summary stats, not the time-based data
+      if (updates.summary) {
+        setAnalytics(prev => ({ 
+          ...prev, 
+          summary: { ...prev.summary, ...updates.summary }
+        }));
+      }
+    });
+    
+    return () => {
+      unsubscribeUpdates();
+    };
+  }, [timeRange]);
+
+  // Handle time range change
+  const handleTimeRangeChange = (value) => {
+    setTimeRange(value);
   };
-  
-  // Calculate totals for summary cards
-  const totalSales = salesData.reduce((sum, item) => sum + item.sales, 0);
-  const totalOrders = salesData.reduce((sum, item) => sum + item.orders, 0);
-  const totalVisitors = salesData.reduce((sum, item) => sum + item.visitors, 0);
-  const conversionRate = ((totalOrders / totalVisitors) * 100).toFixed(1);
   
   return (
     <div style={styles.container}>
@@ -352,7 +334,7 @@ function AnalyticsPageContent() {
           >
             <StatsCard
               title="Total Sales"
-              value={`$${totalSales.toLocaleString()}`}
+              value={`₹${analytics.summary.totalSales.toLocaleString()}`}
               icon={ShoppingBag}
               change={timeRange === 'monthly' ? "+12% from last month" : "Viewing current period"}
               trend="up"
@@ -361,7 +343,7 @@ function AnalyticsPageContent() {
             />
             <StatsCard
               title="Total Orders"
-              value={totalOrders.toLocaleString()}
+              value={analytics.summary.totalOrders.toLocaleString()}
               icon={ShoppingBag}
               change={timeRange === 'monthly' ? "+8% from last month" : "Viewing current period"}
               trend="up"
@@ -370,7 +352,7 @@ function AnalyticsPageContent() {
             />
             <StatsCard
               title="Conversion Rate"
-              value={`${conversionRate}%`}
+              value={`${analytics.summary.conversionRate.toFixed(1)}%`}
               icon={TrendingUp}
               change={timeRange === 'monthly' ? "+1.2% from last month" : "Viewing current period"}
               trend="up"
@@ -379,7 +361,7 @@ function AnalyticsPageContent() {
             />
             <StatsCard
               title="Avg. Order Value"
-              value={`$${(totalSales / totalOrders).toFixed(2)}`}
+              value={`₹${analytics.summary.averageOrderValue.toFixed(2)}`}
               icon={DollarSign}
               change={timeRange === 'monthly' ? "+3.5% from last month" : "Viewing current period"}
               trend="up"
@@ -507,7 +489,7 @@ function AnalyticsPageContent() {
                 </div>
                 <div style={styles.chartContainer}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={salesData}>
+                    <LineChart data={analytics.salesData}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                       <XAxis 
                         dataKey="name" 
@@ -585,7 +567,7 @@ function AnalyticsPageContent() {
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={categoryData}
+                        data={analytics.categoryData}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
@@ -595,7 +577,7 @@ function AnalyticsPageContent() {
                         label={renderCustomizedLabel}
                         labelLine={false}
                       >
-                        {categoryData.map((entry, index) => (
+                        {analytics.categoryData.map((entry, index) => (
                           <Cell 
                             key={`cell-${index}`} 
                             fill={entry.color} 
@@ -633,7 +615,7 @@ function AnalyticsPageContent() {
                   </ResponsiveContainer>
                 </div>
                 <div style={styles.legend}>
-                  {categoryData.map((category, index) => (
+                  {analytics.categoryData.map((category, index) => (
                     <div key={index} style={styles.legendItem}>
                       <div style={{ ...styles.legendColor, backgroundColor: category.color }} />
                       <span>{category.name}</span>
@@ -705,7 +687,7 @@ function AnalyticsPageContent() {
                 </tr>
               </thead>
               <tbody style={{ backgroundColor: '#ffffff' }}>
-                {topProducts.map((product, index) => (
+                {analytics.topProducts.map((product, index) => (
                   <tr key={index} style={{ transition: 'background-color 0.2s ease', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}>
                     <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
                       <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -749,8 +731,8 @@ function AnalyticsPageContent() {
           
           <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e5e7eb' }}>
             <div style={{ fontSize: '14px', color: '#6b7280' }}>
-              Showing <span style={{ fontWeight: '500' }}>1</span> to <span style={{ fontWeight: '500' }}>{topProducts.length}</span> of{' '}
-              <span style={{ fontWeight: '500' }}>{topProducts.length}</span> results
+              Showing <span style={{ fontWeight: '500' }}>1</span> to <span style={{ fontWeight: '500' }}>{analytics.topProducts.length}</span> of{' '}
+              <span style={{ fontWeight: '500' }}>{analytics.topProducts.length}</span> results
             </div>
             <div style={{ display: 'flex', gap: '8px' }}>
               <button

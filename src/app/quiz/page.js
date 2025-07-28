@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { db } from '@/lib/quiz'; 
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
 import Link from 'next/link';
+import Image from 'next/image';
 import '@/static/quiz/quiz.css';
 
 export default function QuizPage() {
