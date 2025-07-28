@@ -1,15 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from "@/hooks/useAuth";
 import LookForm from "@/components/look/LookForm";
 import { toast } from '@/hooks/use-toast';
 import { createLook } from '@/lib/look';
 
-
-
-export default function UploadAvatar() {
+function UploadAvatarContent() {
     const { user } = useAuth();
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -23,7 +21,6 @@ export default function UploadAvatar() {
         tags: ["avatar"]
     };
 
-  
     const handleSubmit = async (lookData) => {
       setIsSubmitting(true);
       try {
@@ -50,17 +47,23 @@ export default function UploadAvatar() {
       router.push('/social/look');
     };
 
+    return (
+      <div className="avatars-page">
+        <h3 className="text-2xl text-center font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 dark:to-blue-500 bg-clip-text text-transparent" style={{ marginBottom: "1rem" }}>Upload your Avatar</h3>
+        <LookForm 
+            onSubmit={handleSubmit} 
+            onCancel={handleCancel}
+            isSubmitting={isSubmitting}
+            initialData={initialData}
+         />
+      </div>
+    );
+}
 
-
+export default function UploadAvatar() {
   return (
-    <div className="avatars-page">
-      <h3 className="text-2xl text-center font-bold bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 dark:to-blue-500 bg-clip-text text-transparent" style={{ marginBottom: "1rem" }}>Upload your Avatar</h3>
-      <LookForm 
-          onSubmit={handleSubmit} 
-          onCancel={handleCancel}
-          isSubmitting={isSubmitting}
-          initialData={initialData}
-       />
-    </div>
+    <Suspense fallback={<div className="p-4">Loading...</div>}>
+      <UploadAvatarContent />
+    </Suspense>
   );
 }
