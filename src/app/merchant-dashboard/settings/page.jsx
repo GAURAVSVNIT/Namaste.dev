@@ -57,7 +57,7 @@ function SettingsPageContent() {
   const fetchPickupLocations = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/shiprocket/pickup-locations');
+      const response = await fetch('/api/merchant/shiprocket/pickup-locations');
       const result = await response.json();
 
       if (result.success) {
@@ -138,7 +138,7 @@ function SettingsPageContent() {
 
     setIsSubmitting(true);
     try {
-      const response = await fetch('/api/shiprocket/pickup-locations', {
+      const response = await fetch('/api/merchant/shiprocket/pickup-locations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

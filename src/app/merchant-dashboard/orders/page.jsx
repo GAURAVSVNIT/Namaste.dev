@@ -67,7 +67,7 @@ function OrdersPageContent() {
         queryParams.append('source', source);
       }
 
-      const url = `/api/merchant/orders?${queryParams}`;
+      const url = `/api/merchant/shiprocket/orders?${queryParams}`;
       console.log('📡 Frontend: Making request to:', url);
       
       const response = await fetch(url);

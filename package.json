@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "populate-consultation": "node scripts/populate-consultation-data.js"
+    "populate-consultation": "node scripts/populate-consultation-data.js",
+    "populate-marketplace": "node -r dotenv/config src/scripts/populate-marketplace.js dotenv_config_path=.env.local"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.26.0",
