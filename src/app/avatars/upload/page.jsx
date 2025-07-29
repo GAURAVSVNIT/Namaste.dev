@@ -13,7 +13,7 @@ function UploadAvatarContent() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const searchParams = useSearchParams();
 
-    const avatarUrl = "https://models.readyplayer.me/" + searchParams.get('avatar');
+    const avatarUrl = "https://models.readyplayer.me/" + searchParams.get('avatar').replaceAll("~", "&");
 
     const initialData = {
         images: [avatarUrl],

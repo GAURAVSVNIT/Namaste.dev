@@ -46,8 +46,8 @@ export const expressions = {
     browDownLeft: 0.5,
   },
   excited: {
-    mouthSmileLeft: 0.9,
-    mouthSmileRight: 0.9,
+    mouthSmileLeft: 0.64,
+    mouthSmileRight: 0.64,
     eyeWideLeft: 0.7,
     eyeWideRight: 0.7,
     jawOpen: 0.5,

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   UploadCloud,
   Download,
@@ -14,7 +15,7 @@ import { expressions, expressionEmojis, selectedPoses } from '@/lib/avatar-data'
 import { generateBlendShapeQuery } from '@/lib/avatar-utils';
 import '@/static/avatars/avatarExpressionPicker.css';
 
-const AVATAR_BASE_URL = "https://models.readyplayer.me/6881e12a16da7a17b7475564.png?";
+// const avatarBaseUrl = "https://models.readyplayer.me/6881e12a16da7a17b7475564.png?";
 
 const poses = ['power-stance', 'relaxed', 'standing', 'thumbs-up'];
 const cameraPresets = ['portrait', 'fullbody', 'fit'];
@@ -34,13 +35,15 @@ const backgroundPresets = [
 ];
 
 export default function AvatarExpressionPicker() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
   const [activeTab, setActiveTab] = useState('expressions');
   const [selectedExpression, setSelectedExpression] = useState('neutral');
   const [selectedPose, setSelectedPose] = useState('relaxed');
   const [selectedCamera, setSelectedCamera] = useState('portrait');
   const [selectedBackground, setSelectedBackground] = useState('');
-
-  const expressionList = Object.keys(expressions);
+  const [avatarBaseUrl, setAvatarBaseUrl] = useState(`https://models.readyplayer.me/${searchParams.get('avatar')}.png?`)
 
   const expressionQuery = generateBlendShapeQuery(selectedExpression);
   const poseQuery = selectedPose ? `pose=${selectedPose}` : '';
@@ -48,13 +51,45 @@ export default function AvatarExpressionPicker() {
   const bgQuery = selectedBackground ? `background=${selectedBackground}` : '';
 
   const queryParts = [expressionQuery, poseQuery, cameraQuery, bgQuery].filter(Boolean);
-  const blendURL = AVATAR_BASE_URL + queryParts.join('&');
+  const blendURL = avatarBaseUrl + queryParts.join('&');
+
+    const handleDownload = async () => {
+        try {
+            const response = await fetch(blendURL, {
+            mode: 'cors',
+            });
+
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = blobUrl;
+            link.setAttribute('download', `avatar: ${selectedExpression} ${selectedPose} ${selectedCamera}.png`);
+            link.style.display = 'none';
+
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            setTimeout(() => URL.revokeObjectURL(blobUrl), 100);
+        } catch (error) {
+            console.error('Download failed:', error);
+            alert('Download failed. Try again.');
+        }
+    };
+
+    const handleUpload = (url) => {
+        router.push(`/avatars/upload?avatar=${url.split("/").pop().replaceAll('&', '~')}`);
+    }
+
+
+
 
   return (
     <div className="avatar-picker-container">
       {/* Sidebar */}
       <aside className="sidebar">
-        <h2 className="sidebar-title">Options</h2>
+        <h2 className="sidebar-title">Avtarra</h2>
         <button className={`sidebar-btn ${activeTab === 'expressions' ? 'active' : ''}`} onClick={() => setActiveTab('expressions')}>
           <Smile className="sidebar-icon" /> Expressions
         </button>
@@ -79,26 +114,21 @@ export default function AvatarExpressionPicker() {
             className="avatar-display"
           />
           <div className="avatar-actions">
-            <button className="avatar-action-btn">
+            <button className="avatar-action-btn" onClick={() => { handleUpload(blendURL); }}>
               <UploadCloud className="action-icon" />
               Upload your look
             </button>
-            <button className="avatar-action-btn avatar-download-action-btn">
-              <Download className="action-icon" />
-              Download this avatar
+            <button className="avatar-action-btn avatar-download-action-btn" onClick={handleDownload}>
+                <Download className="action-icon" />
+                Download this avatar
             </button>
           </div>
         </div>
-        {/* <h3 className="avatar-label">
-          {expressionEmojis[selectedExpression]} {selectedExpression}
-          {selectedPose && ` + ${selectedPose}`}
-          {selectedCamera && ` + ${selectedCamera}`}
-        </h3> */}
       </main>
 
       {/* Bottom Bar */}
       <footer className="avatar-footer">
-        {activeTab === 'expressions' && expressionList.map((expr) => (
+        {activeTab === 'expressions' && Object.keys(expressions).map((expr) => (
           <button
             key={expr}
             className={`avatar-thumb-btn ${selectedExpression === expr ? 'selected' : ''}`}
@@ -134,7 +164,10 @@ export default function AvatarExpressionPicker() {
           <button
             key={name}
             className={`avatar-color-btn ${selectedBackground === value ? 'selected' : ''}`}
-            style={{ backgroundColor: value ? `rgb(${value})` : 'transparent', color: value ? '#000' : '#555' }}
+            style={{
+              backgroundColor: value ? `rgb(${value})` : 'transparent',
+              color: value ? '#000' : '#555'
+            }}
             onClick={() => setSelectedBackground(value)}
           >
             {display || name}

@@ -44,14 +44,14 @@ export default function AvatarsGallery() {
   }, [user]);
 
   const handleUpload = (url) => {
-    router.push(`/avatars/upload?avatar=${url.split("/").pop()}`);
+    router.push(`/avatars/select?avatar=${url.split("/").pop().split(".png")[0]}`);
 
   }
 
   return (
     <div className="avatars-page">
       <AvatarBuilderHeader />
-      <AvatarExpressionPicker />
+      
       <h1 className="avatars-title">Your Saved Looks</h1>
       <div className="avatars-container">
         {avatars.map((url, index) => (
