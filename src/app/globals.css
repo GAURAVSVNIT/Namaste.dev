@@ -41,7 +41,7 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #f9fafb;
   --foreground: #171717;
   --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
   
@@ -142,7 +142,7 @@
 ---break---*/
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.99 0.002 247.858);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);

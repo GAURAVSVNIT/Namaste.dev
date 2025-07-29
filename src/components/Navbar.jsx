@@ -413,8 +413,13 @@ export default function Navbar(fontFace) {
       <nav className={`navbar ${scrolled ? 'scrolled' : ''} ` + fontFace}>
         <div className="navbar-container">
           <Link href="/" className="logo">
-            <i className="fas fa-tshirt logo-icon"></i>
-            FashionHub
+            <div className="logo-container">
+              <img 
+                src="/logo-home.png" 
+                alt="FashionHub Logo" 
+                className="logo-image"
+              />
+            </div>
           </Link>
 
           {isMobile ? (

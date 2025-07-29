@@ -140,7 +140,7 @@ const SocialFeedPage = () => {
     return (
       <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
         <div className="relative">
-          <div className={`${type === 'reel' ? 'aspect-[9/16]' : type === 'stream' ? 'aspect-video' : 'aspect-square'} overflow-hidden bg-gray-100`}>
+          <div className={`${type === 'stream' ? 'aspect-video' : 'aspect-square'} overflow-hidden bg-gray-100`}>
             <img
               src={getImageSrc()}
               alt={item.title || item.caption}
@@ -363,7 +363,7 @@ const SocialFeedPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Content Area with top padding for main navbar */}
-      <div className="pb-24" style={{ paddingTop: '100px' }}>
+      <div style={{ paddingTop: '100px' }}>
         
         <section style={{
           position: 'relative',
@@ -481,64 +481,6 @@ const SocialFeedPage = () => {
               flexWrap: 'wrap',
               marginBottom: '20px'
             }}>
-              {/* Search Button */}
-              <div style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  placeholder="🔍 Search trends, looks, creators..."
-                  style={{
-                    width: 'min(400px, 80vw)',
-                    padding: '16px 60px 16px 24px',
-                    borderRadius: '50px',
-                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(20px)',
-                    fontSize: '16px',
-                    outline: 'none',
-                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-                    transition: 'all 0.3s ease',
-                    color: '#2d3748',
-                    fontWeight: '500'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.transform = 'scale(1.02)';
-                    e.target.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.3)';
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.transform = 'scale(1)';
-                    e.target.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                  }}
-                />
-                <button style={{
-                  position: 'absolute',
-                  right: '8px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '40px',
-                  height: '40px',
-                  backgroundColor: '#667eea',
-                  border: 'none',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.backgroundColor = '#764ba2';
-                  e.target.style.transform = 'translateY(-50%) scale(1.1)';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.backgroundColor = '#667eea';
-                  e.target.style.transform = 'translateY(-50%) scale(1)';
-                }}>
-                  <Search style={{ width: '20px', height: '20px', color: '#ffffff' }} />
-                </button>
-              </div>
             </div>
 
             {/* Create Buttons */}
@@ -703,10 +645,10 @@ const SocialFeedPage = () => {
       </section>
 
         {/* Content Grid */}
-        <section style={{ padding: '0 24px', paddingBottom: '128px' }}>
-          {activeTab === 'trending' && (
-            <div style={{ marginBottom: '32px' }}>
-              {/* Mixed trending content */}
+        <section style={{ padding: '0 24px', paddingBottom: '0px' }}>
+        {activeTab === 'trending' && (
+            <div style={{ marginBottom: '16px' }}>
+              {/* Mixed trending content - Combined looks and reels */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
                   <h3 className="text-xl font-black text-gray-900 flex items-center">
@@ -719,11 +661,34 @@ const SocialFeedPage = () => {
                   </Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6" style={{ gap: '20px' }}>
-                {featuredLooks.length > 0 ? featuredLooks.slice(0, 8).map((look, index) => (
-                  <ContentCard key={`trending-look-${look.id || index}`} item={look} type="look" />
-                )) : generatePlaceholderContent('look', 8).map((item, index) => (
-                  <ContentCard key={`placeholder-look-${index}`} item={item} type="look" />
-                ))}
+                {(() => {
+                  // Combine looks and reels with type information
+                  const combinedContent = [
+                    ...featuredLooks.map(item => ({ ...item, contentType: 'look' })),
+                    ...featuredReels.map(item => ({ ...item, contentType: 'reel' }))
+                  ];
+                  
+                  // Sort by engagement (likes + comments) for trending
+                  const sortedContent = combinedContent.sort((a, b) => {
+                    const aEngagement = (a.likes?.length || 0) + (a.comments?.length || 0);
+                    const bEngagement = (b.likes?.length || 0) + (b.comments?.length || 0);
+                    return bEngagement - aEngagement;
+                  });
+                  
+                  // Show top 12 trending items
+                  const trendingItems = sortedContent.slice(0, 12);
+                  
+                  return trendingItems.length > 0 ? trendingItems.map((item, index) => (
+                    <ContentCard key={`trending-${item.contentType}-${item.id || index}`} item={item} type={item.contentType} />
+                  )) : [
+                    ...generatePlaceholderContent('look', 6).map((item, index) => (
+                      <ContentCard key={`placeholder-look-${index}`} item={item} type="look" />
+                    )),
+                    ...generatePlaceholderContent('reel', 6).map((item, index) => (
+                      <ContentCard key={`placeholder-reel-${index}`} item={item} type="reel" />
+                    ))
+                  ];
+                })()}
               </div>
             </div>
           </div>
