@@ -1,3 +1,4 @@
+/* Keep original container styling but add entrance animation */
 .hero-container {
     display: flex;
     align-items: center;
@@ -5,164 +6,428 @@
     padding: 6rem 5%;
     height: 100vh;
     position: relative;
-    z-index: 2;
-    background-image: url('/images/hero-bg.jpg');
+    background-image: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), url('/images/hero-bg.jpg');
     background-repeat: no-repeat;
     background-size: cover;
-    background-clip:border-box;
     background-position: center;
+    overflow: hidden; /* Prevents elements from spilling out during animations */
 }
 
+/* Animated background particles */
+.hero-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        radial-gradient(circle at 20% 80%, rgba(255, 77, 237, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(215, 70, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(255, 77, 237, 0.05) 0%, transparent 50%);
+    animation: float 20s ease-in-out infinite;
+    z-index: 0;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    33% { transform: translateY(-30px) rotate(1deg); }
+    66% { transform: translateY(-20px) rotate(-1deg); }
+}
+
+/* Enhanced hero text with entrance animation */
 .hero-text {
-    max-width: 45%; /* Adjusted for better spacing */
+    max-width: 45%;
     color: #3f0034;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adds depth and improves readability */
+    z-index: 2;
+    position: relative;
+    animation: slideInLeft 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+}
+
+@keyframes slideInLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-100px) translateY(30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) translateY(0);
+    }
 }
 
 .hero-text h1 {
-    font-size: 4rem;
-    font-weight: bold;
-    margin-bottom: 1rem;
+    font-size: 4.5rem; /* Slightly larger for more impact */
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #3f0034 0%, #6b1b57 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: titleGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes titleGlow {
+    0% { filter: drop-shadow(0 0 10px rgba(63, 0, 52, 0.3)); }
+    100% { filter: drop-shadow(0 0 20px rgba(63, 0, 52, 0.5)); }
 }
 
 .hero-text p {
-    font-size: 1.2rem;
-    margin-bottom: 3rem; /* Increased margin */
+    font-size: 1.25rem;
+    line-height: 1.6;
+    margin-bottom: 3rem;
+    color: rgba(63, 0, 52, 0.8);
+    animation: fadeInUp 1s ease-out 0.3s forwards;
+    opacity: 0;
+    transform: translateY(20px);
 }
 
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Improved CTA Button Layout --- */
 .cta-container {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    max-width: 560px;
+    display: flex;
+    flex-direction: row;
+    gap: 1.5rem;
     margin-top: 2rem;
+    animation: fadeInUp 1s ease-out 0.6s forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.cta-button, .cta-button-outlined {
+    padding: 0.8rem 1.8rem; /* Increased padding for a better feel */
     border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
+    position: relative;
+    overflow: hidden;
 }
 
 .cta-button {
-    background-color: #ff4df9;
     background-image: linear-gradient(to top right, #ff4ded, #d746ff);
     color: white;
-    padding: 0.8rem 1.2rem;
     border: none;
-    border-radius: 50px;
-    font-size: 1rem;
-    cursor: pointer;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    text-align: center;
-    white-space: nowrap;
-    font-weight: 600;
-    cursor: pointer;
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    transition: background 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 77, 237, 0.2);
+}
+
+/* Shimmer effect for primary button */
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: left 0.5s;
 }
 
 .cta-button:hover {
-    background-color: #ff758f;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 77, 237, 0.4);
+}
+
+.cta-button:hover::before {
+    left: 100%;
 }
 
 .cta-button-outlined {
   position: relative;
-  padding: 0.8rem 1.2rem;
   background-image: linear-gradient(to top right, #ff4ded, #d746ff); 
   color: transparent;
   background-clip: text;
-  border-radius: 50px;
-  font-size: 1rem;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  white-space: nowrap;
-  font-weight: 600;
-  text-align: center;
   z-index: 1;
   overflow: hidden;
 }
+
 .cta-button-outlined::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 3px; 
+  top: 0; left: 0; right: 0; bottom: 0;
+  padding: 2px; 
   background: linear-gradient(to top right, #ff4ded, #d746ff);
   border-radius: inherit;
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box, 
     linear-gradient(#fff 0 0);
   -webkit-mask-composite: destination-out;
-          mask-composite: exclude;
+  mask-composite: exclude;
   z-index: -1;
+  transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .cta-button-outlined:hover {
-    background-color: #ff758f;
-    background-clip: initial;
     color: white;
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+    background-clip: padding-box;
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
-
-.cta-button--up {
-    transform: translateY(-10px);
-    background-color: #ff758f;
+.cta-button-outlined:hover::before {
+    opacity: 0;
 }
 
-.cta-button--up:hover {
-    transform: translateY(-13px) scale(1.05);
-    background-color: #ff4d6d;
+/* Stats Counter Section */
+.stats-container {
+    display: flex;
+    gap: 2rem;
+    margin-top: 4rem;
+    animation: slideUpStats 1.5s ease-out 2s forwards;
+    opacity: 0;
+    transform: translateY(50px);
 }
 
+@keyframes slideUpStats {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stat-item {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 1.2rem 1.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.stat-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ff4ded;
+    display: block;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #ff4ded, #d746ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #8c4bff;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* --- Enhanced Image Styling and Animation --- */
 .hero-images {
     position: relative;
-    width: 40%;
+    width: 45%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    perspective: 1500px; /* Enhanced 3D perspective */
 }
 
 .hero-image {
     position: absolute;
     width: 300px;
-    height: 400px;
+    height: 500px;
     object-fit: cover;
-    border-radius: 10px;
-    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
-    transition: transform 0.3s ease, z-index 0s 0.15s; /* Delay z-index change on un-hover */
+    border-radius: 20px; /* Softer radius */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+    border: 3px solid #ffffff;
+    transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, box-shadow; /* Performance optimization */
+    transform-style: preserve-3d;
+    cursor: pointer;
 }
 
-.hero-image:hover {
-    transform: scale(1.05);
-    z-index: 4; /* Bring to front on hover */
-    transition-delay: 0s; /* Apply z-index change immediately on hover */
-}
-
+/* Enhanced Initial arrangement of images with 3D transforms */
 .image-1 {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-20%) translateY(-15%) rotateY(-25deg) rotateX(5deg) scale(0.9);
     z-index: 3;
+    animation: slideInImage1 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards;
+    opacity: 0;
 }
 
 .image-2 {
-    top: 50%;
-    left: 20%;
-    transform: translate(-50%, -50%) rotate(-15deg);
-    z-index: 2;
+    transform: translateX(15%) translateY(5%) rotateY(15deg) rotateX(-3deg) scale(1.05);
+    z-index: 4;
+    animation: slideInImage2 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.1s forwards;
+    opacity: 0;
 }
 
 .image-3 {
-    top: 50%;
-    left: 80%;
-    transform: translate(-50%, -50%) rotate(15deg);
+    transform: translateX(40%) translateY(20%) rotateY(35deg) rotateX(-8deg) scale(0.85);
     z-index: 2;
+    animation: slideInImage3 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.4s forwards;
+    opacity: 0;
 }
 
-.image-3:hover {
-    transform: translate(-60%, -50%) rotate(15deg) scale(1.05);
+/* Enhanced entrance animations with 3D effects */
+@keyframes slideInImage1 {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%) translateY(-50%) rotateY(-45deg) rotateX(15deg) scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(-20%) translateY(-15%) rotateY(-25deg) rotateX(5deg) scale(0.9);
+    }
+}
+
+@keyframes slideInImage2 {
+    0% {
+        opacity: 0;
+        transform: translateX(0%) translateY(-100%) rotateY(45deg) rotateX(-15deg) scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(15%) translateY(5%) rotateY(15deg) rotateX(-3deg) scale(1.05);
+    }
+}
+
+@keyframes slideInImage3 {
+    0% {
+        opacity: 0;
+        transform: translateX(100%) translateY(50%) rotateY(75deg) rotateX(-25deg) scale(0.5);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(40%) translateY(20%) rotateY(35deg) rotateX(-8deg) scale(0.85);
+    }
+}
+
+/* Removed hover effects - images just maintain their floating animation */
+
+/* Continuous 3D rotation animation from left to right */
+.image-1 {
+    animation: slideInImage1 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards,
+               rotate3D1 12s linear 2.5s infinite;
+}
+
+.image-2 {
+    animation: slideInImage2 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.1s forwards,
+               rotate3D2 15s linear 2.8s infinite;
+}
+
+.image-3 {
+    animation: slideInImage3 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1.4s forwards,
+               rotate3D3 18s linear 3.1s infinite;
+}
+
+@keyframes rotate3D1 {
+    0% { 
+        transform: translateX(-20%) translateY(-15%) rotateY(-25deg) rotateX(5deg) scale(0.9); 
+    }
+    25% { 
+        transform: translateX(-20%) translateY(-15%) rotateY(65deg) rotateX(5deg) scale(0.9); 
+    }
+    50% { 
+        transform: translateX(-20%) translateY(-15%) rotateY(155deg) rotateX(5deg) scale(0.9); 
+    }
+    75% { 
+        transform: translateX(-20%) translateY(-15%) rotateY(245deg) rotateX(5deg) scale(0.9); 
+    }
+    100% { 
+        transform: translateX(-20%) translateY(-15%) rotateY(335deg) rotateX(5deg) scale(0.9); 
+    }
+}
+
+@keyframes rotate3D2 {
+    0% { 
+        transform: translateX(15%) translateY(5%) rotateY(15deg) rotateX(-3deg) scale(1.05); 
+    }
+    25% { 
+        transform: translateX(15%) translateY(5%) rotateY(105deg) rotateX(-3deg) scale(1.05); 
+    }
+    50% { 
+        transform: translateX(15%) translateY(5%) rotateY(195deg) rotateX(-3deg) scale(1.05); 
+    }
+    75% { 
+        transform: translateX(15%) translateY(5%) rotateY(285deg) rotateX(-3deg) scale(1.05); 
+    }
+    100% { 
+        transform: translateX(15%) translateY(5%) rotateY(375deg) rotateX(-3deg) scale(1.05); 
+    }
+}
+
+@keyframes rotate3D3 {
+    0% { 
+        transform: translateX(40%) translateY(20%) rotateY(35deg) rotateX(-8deg) scale(0.85); 
+    }
+    25% { 
+        transform: translateX(40%) translateY(20%) rotateY(125deg) rotateX(-8deg) scale(0.85); 
+    }
+    50% { 
+        transform: translateX(40%) translateY(20%) rotateY(215deg) rotateX(-8deg) scale(0.85); 
+    }
+    75% { 
+        transform: translateX(40%) translateY(20%) rotateY(305deg) rotateX(-8deg) scale(0.85); 
+    }
+    100% { 
+        transform: translateX(40%) translateY(20%) rotateY(395deg) rotateX(-8deg) scale(0.85); 
+    }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .hero-container {
+        flex-direction: column;
+        padding: 4rem 3%;
+        text-align: center;
+    }
+
+    .hero-text {
+        max-width: 100%;
+        margin-bottom: 3rem;
+    }
+
+    .hero-text h1 {
+        font-size: 3rem;
+    }
+
+    .hero-images {
+        width: 100%;
+        height: 300px;
+    }
+
+    .hero-image {
+        width: 200px;
+        height: 280px;
+    }
+
+    .cta-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .stats-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-item {
+        min-width: 200px;
+    }
 }

@@ -1,4 +1,5 @@
 import OnboardingFlow from '@/components/OnboardingFlow';
+import '@/static/Onboarding.css';
 
 export const metadata = {
   title: 'Onboarding - Fashion Hub',

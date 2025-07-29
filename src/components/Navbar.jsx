@@ -26,13 +26,18 @@ export default function Navbar(fontFace) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   // Use the auth hook
   const { user, loading: authLoading, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1024); // Changed from 768 to 1024 for better tablet support
     };
 
     const handleScroll = () => {
@@ -172,23 +177,107 @@ export default function Navbar(fontFace) {
             FashionHub
           </Link>
 
-          {isMobile ? (
+          {isClient && (
+            isMobile ? (
             <>
-              <button className="mobile-menu-btn" onClick={toggleMenu}>
-                <i className={menuOpen ? "fas fa-times" : "fas fa-bars"}></i>
-              </button>
+              <div className="mobile-nav-actions">
+                <button 
+                  className="cart-icon-btn mobile-cart" 
+                  onClick={openCart}
+                >
+                  <ShoppingCart className="h-6 w-6" />
+                  {cartCount > 0 && (
+                    <span className="cart-badge">
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
+                <button className="mobile-menu-btn" onClick={toggleMenu}>
+                  <i className={menuOpen ? "fas fa-times" : "fas fa-bars"}></i>
+                </button>
+              </div>
 
               <div className={`mobile-menu ${menuOpen ? 'active' : ''}`}>
-                <ul className="mobile-nav-links">
-                  {navItems.map((item, index) => (
-                    <li key={index} className="mobile-nav-item">
-                      <Link href={`/${item.route.replace(/^\/+/, "")}`} className="mobile-nav-link">{item.name}</Link>
-                    </li>
-                  ))}
-                </ul>
-                <div className="mobile-auth-buttons">
-                  <Link href="/auth/login" className="login-btn">Login</Link>
-                  <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
+                <div className="mobile-menu-content">
+                  <ul className="mobile-nav-links">
+                    {navItems.map((item, index) => (
+                      <li key={index} className="mobile-nav-item">
+                        <Link 
+                          href={`/${item.route.replace(/^\/+/, "")}`} 
+                          className="mobile-nav-link"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          {item.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <div className="mobile-auth-section">
+                    {isAuthenticated && userProfile ? (
+                      <div className="mobile-profile-section">
+                        <div className="mobile-profile-info">
+                          <SmartAvatar 
+                            user={userProfile} 
+                            className="h-12 w-12" 
+                            fallbackClassName="bg-gray-200 text-gray-700"
+                          />
+                          <div className="mobile-profile-details">
+                            <p className="mobile-profile-name">
+                              {userProfile.name || 'User'}
+                            </p>
+                            <p className="mobile-profile-email">
+                              {userProfile.email}
+                            </p>
+                            <RoleBadge role={userProfile.role} size="sm" />
+                          </div>
+                        </div>
+                        
+                        <div className="mobile-profile-actions">
+                          <Link 
+                            href="/profile" 
+                            className="mobile-profile-link"
+                            onClick={() => setMenuOpen(false)}
+                          >
+                            <User className="h-4 w-4" />
+                            Profile
+                          </Link>
+                          <Link 
+                            href="/profile/blogs" 
+                            className="mobile-profile-link"
+                            onClick={() => setMenuOpen(false)}
+                          >
+                            <Settings className="h-4 w-4" />
+                            My Blogs
+                          </Link>
+                          <button 
+                            onClick={handleLogout}
+                            className="mobile-logout-btn"
+                          >
+                            <LogOut className="h-4 w-4" />
+                            Log out
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="mobile-auth-buttons">
+                        <Link 
+                          href="/auth/login" 
+                          className="login-btn mobile-auth-btn"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          Login
+                        </Link>
+                        <Link 
+                          href="/auth/signup" 
+                          className="signup-btn mobile-auth-btn"
+                          onClick={() => setMenuOpen(false)}
+                        >
+                          Sign Up
+                        </Link>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </>
@@ -249,6 +338,7 @@ export default function Navbar(fontFace) {
                 )}
               </div>
             </>
+          )
           )}
         </div>
       </nav>
