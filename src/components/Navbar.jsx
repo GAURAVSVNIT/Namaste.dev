@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import '../static/Navbar.css'
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getUserById } from '@/lib/user';
 import { logOut } from '@/lib/firebase';
@@ -29,10 +30,13 @@ export default function Navbar(fontFace) {
   
   // Use the auth hook
   const { user, loading: authLoading, isAuthenticated } = useAuth();
+  
+  // Get current pathname
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 768);
+      setIsMobile(window.innerWidth <= 1024); // Increased breakpoint for better tablet experience
     };
 
     const handleScroll = () => {
@@ -428,13 +432,80 @@ export default function Navbar(fontFace) {
                 <ul className="mobile-nav-links">
                   {navItems.map((item, index) => (
                     <li key={index} className="mobile-nav-item">
-                      <Link href={`/${item.route.replace(/^\/+/, "")}`} className="mobile-nav-link">{item.name}</Link>
+                      <Link 
+                        href={`/${item.route.replace(/^\/+/, "")}`} 
+                        className="mobile-nav-link"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
                     </li>
                   ))}
                 </ul>
+                
+                {/* Mobile Cart */}
+                {pathname.startsWith('/marketplace') && (
+                  <div className="mobile-cart-section">
+                    <button 
+                      className="mobile-cart-btn" 
+                      onClick={() => {
+                        openCart();
+                        setMenuOpen(false);
+                      }}
+                    >
+                      <ShoppingCart className="mobile-cart-icon" />
+                      <span>Shopping Cart</span>
+                      {cartCount > 0 && (
+                        <span className="mobile-cart-count">{cartCount}</span>
+                      )}
+                    </button>
+                  </div>
+                )}
+                
                 <div className="mobile-auth-buttons">
-                  <Link href="/auth/login" className="login-btn">Login</Link>
-                  <Link href="/auth/signup" className="signup-btn">Sign Up</Link>
+                  {isAuthenticated && userProfile ? (
+                    <>
+                      <Link 
+                        href="/profile" 
+                        className="mobile-profile-btn"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        <SmartAvatar 
+                          user={userProfile} 
+                          className="mobile-avatar" 
+                          fallbackClassName="bg-gray-200 text-gray-700"
+                        />
+                        <span>{userProfile.name || 'Profile'}</span>
+                      </Link>
+                      <button 
+                        onClick={() => {
+                          handleLogout();
+                          setMenuOpen(false);
+                        }}
+                        className="mobile-logout-btn"
+                      >
+                        <LogOut className="mobile-logout-icon" />
+                        <span>Logout</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link 
+                        href="/auth/login" 
+                        className="login-btn"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Login
+                      </Link>
+                      <Link 
+                        href="/auth/signup" 
+                        className="signup-btn"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </>
@@ -450,41 +521,43 @@ export default function Navbar(fontFace) {
                 ))}
               </ul>
               <div className="auth-buttons">
-                <button 
-                  className="cart-icon-btn" 
-                  onClick={openCart}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    position: 'relative', 
-                    cursor: 'pointer',
-                    marginRight: '1rem',
-                    padding: '0.5rem'
-                  }}
-                >
-                  <ShoppingCart className="h-6 w-6" style={{ color: '#333' }} />
-                  {cartCount > 0 && (
-                    <span 
-                      style={{
-                        position: 'absolute',
-                        top: '-5px',
-                        right: '-5px',
-                        backgroundColor: '#ef4444',
-                        color: 'white',
-                        borderRadius: '50%',
-                        width: '20px',
-                        height: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '12px',
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {cartCount}
-                    </span>
-                  )}
-                </button>
+                {pathname.startsWith('/marketplace') && (
+                  <button 
+                    className="cart-icon-btn" 
+                    onClick={openCart}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      position: 'relative', 
+                      cursor: 'pointer',
+                      marginRight: '1rem',
+                      padding: '0.5rem'
+                    }}
+                  >
+                    <ShoppingCart className="h-6 w-6" style={{ color: '#333' }} />
+                    {cartCount > 0 && (
+                      <span 
+                        style={{
+                          position: 'absolute',
+                          top: '-5px',
+                          right: '-5px',
+                          backgroundColor: '#ef4444',
+                          color: 'white',
+                          borderRadius: '50%',
+                          width: '20px',
+                          height: '20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {cartCount}
+                      </span>
+                    )}
+                  </button>
+                )}
                 {isAuthenticated && userProfile ? (
                   <ProfileMenu />
                 ) : (

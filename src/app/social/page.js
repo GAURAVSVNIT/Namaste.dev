@@ -444,7 +444,8 @@ const SocialFeedPage = () => {
               marginBottom: '20px',
               lineHeight: '1.1',
               textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-              letterSpacing: '-0.02em'
+              letterSpacing: '-0.02em',
+              fontFamily: 'var(--font-playfair-display), "Playfair Display", serif'
             }}>
 <SplitText 
                 text="Fashion Feed" 
@@ -696,7 +697,7 @@ const SocialFeedPage = () => {
           {activeTab === 'looks' && (
             <div>
               <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
-                <h3 className="text-xl font-black text-gray-900 flex items-center">
+                <h3 className="text-xl font-black text-gray-900 flex items-center" style={{ fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif' }}>
                   <Camera className="w-6 h-6" style={{ marginRight: '8px', color: '#ec4899' }} />
                   Fashion Looks
                 </h3>
@@ -718,7 +719,7 @@ const SocialFeedPage = () => {
           {activeTab === 'reels' && (
             <div>
               <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
-                <h3 className="text-xl font-black text-gray-900 flex items-center">
+                <h3 className="text-xl font-black text-gray-900 flex items-center" style={{ fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif' }}>
                   <Play className="w-6 h-6" style={{ marginRight: '8px', color: '#a855f7' }} />
                   Fashion TV
                 </h3>
@@ -740,7 +741,7 @@ const SocialFeedPage = () => {
           {activeTab === 'live' && (
             <div>
               <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
-                <h3 className="text-xl font-black text-gray-900 flex items-center">
+                <h3 className="text-xl font-black text-gray-900 flex items-center" style={{ fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif' }}>
                   <Tv className="w-6 h-6" style={{ marginRight: '8px', color: '#ec4899' }} />
                   Live Streams
                 </h3>

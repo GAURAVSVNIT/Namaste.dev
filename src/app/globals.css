@@ -6,6 +6,8 @@
   /* Fonts */
   --font-sans: var(--font-inter), "Inter", sans-serif;
   --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-header-title: var(--font-playfair-display), "Playfair Display", serif;
+  --font-header-nav: var(--font-montserrat), "Montserrat", sans-serif;
 
   /* Custom Colors */
   --color-cev-blue: #060136;
@@ -227,6 +229,10 @@
 }
 
 @layer utilities {
+  /* Header Font Classes */
+  .font-header-title { font-family: var(--font-header-title); }
+  .font-header-nav { font-family: var(--font-header-nav); }
+  
   /* Text Shadows */
   .text-shadow { text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); }
   .text-shadow-none { text-shadow: none; }

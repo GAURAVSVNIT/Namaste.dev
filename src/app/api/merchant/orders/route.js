@@ -32,7 +32,7 @@ export async function GET(request) {
     if (fetchShiprocket) {
       console.log('📡 Fetching from Shiprocket API...');
       try {
-        const shiprocketUrl = new URL('/api/shiprocket/orders', request.url);
+        const shiprocketUrl = new URL('/api/merchant/shiprocket/orders', request.url);
         shiprocketUrl.searchParams.set('page', '1');
         shiprocketUrl.searchParams.set('limit', '50'); // Fetch more to combine properly
         if (status && status !== 'all') {

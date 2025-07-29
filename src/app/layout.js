@@ -2,7 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import Script from 'next/script';
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Playfair_Display, Montserrat } from "next/font/google";
 import styles from "@/static/layout/chatbotButton.module.css"
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
@@ -27,6 +27,18 @@ const poppins = Poppins({
   weight: ['400', '600'],
 });
 
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair-display',
+  weight: ['400', '500', '600', '700', '800', '900'],
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+  weight: ['300', '400', '500', '600', '700'],
+});
+
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const isFashionTV = pathname?.startsWith('/social/fashiontv');
@@ -35,7 +47,7 @@ export default function RootLayout({ children }) {
     // Fashion TV gets full-screen experience without navbar/footer
     return (
       <html lang="en" suppressHydrationWarning={true}>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}>
           {children}
           <Script 
             src="https://checkout.razorpay.com/v1/checkout.js"
@@ -50,7 +62,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}
       >
         <LayoutWrapper>
           <ConditionalNavbar face={poppins.className} />

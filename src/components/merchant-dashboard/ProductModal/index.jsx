@@ -402,14 +402,10 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
                 className={styles.select}
               >
                 <option value="">Select a category</option>
-                <option value="Mens Clothing">Men's Clothing</option>
-                <option value="Womens Clothing">Women's Clothing</option>
-                <option value="Footwear">Footwear</option>
-                <option value="Accessories">Accessories</option>
-                <option value="Denim">Denim</option>
-                <option value="Activewear">Activewear</option>
-                <option value="Jewelry">Jewelry</option>
-                <option value="Bags">Bags & Backpacks</option>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Girls">Girls</option>
+                <option value="Boys">Boys</option>
               </select>
             </div>
           </div>

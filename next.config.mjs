@@ -13,12 +13,13 @@ const nextConfig = {
   // Optimize for better chunk loading and React 19 compatibility
   experimental: {
     optimizePackageImports: ['@radix-ui/react-icons', 'lucide-react'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+  // Turbopack configuration (moved from experimental.turbo)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
