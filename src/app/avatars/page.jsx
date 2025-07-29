@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import "@/static/avatars/avatars.css"; 
 import { Download, UploadCloud, Search, Camera, Play, Sparkle, Wand } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import AvatarExpressionPicker from "./select/page";
 
 export function AvatarBuilderHeader() {
   return (
@@ -50,6 +51,7 @@ export default function AvatarsGallery() {
   return (
     <div className="avatars-page">
       <AvatarBuilderHeader />
+      <AvatarExpressionPicker />
       <h1 className="avatars-title">Your Saved Looks</h1>
       <div className="avatars-container">
         {avatars.map((url, index) => (
