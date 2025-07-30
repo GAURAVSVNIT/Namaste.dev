@@ -13,7 +13,8 @@ import {
   startAfter,
   serverTimestamp, 
   arrayUnion, 
-  arrayRemove 
+  arrayRemove,
+  increment
 } from 'firebase/firestore';
 import { 
   ref, 
@@ -28,9 +29,10 @@ import { getUserById } from './user';
  * @param {string} userId - User ID
  * @param {File} file - Video file
  * @param {Object} videoData - Video metadata
+ * @param {Blob} thumbnailBlob - Optional thumbnail blob
  * @returns {Promise<Object>} Created video object
  */
-export const uploadVideo = async (userId, file, videoData) => {
+export const uploadVideo = async (userId, file, videoData, thumbnailBlob = null) => {
   if (!userId) {
     throw new Error('User ID is required');
   }
@@ -66,11 +68,22 @@ export const uploadVideo = async (userId, file, videoData) => {
     const userName = userData.name || userData.email || 'Unknown User';
 
     // Upload video to storage
-    const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
-    const storageRef = ref(storage, `fashiontv_videos/${userId}/${fileName}`);
+    const timestamp = Date.now();
+    const fileName = `${timestamp}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
+    const videoStorageRef = ref(storage, `fashiontv_videos/${userId}/${fileName}`);
     
-    const snapshot = await uploadBytes(storageRef, file);
-    const videoUrl = await getDownloadURL(snapshot.ref);
+    const videoSnapshot = await uploadBytes(videoStorageRef, file);
+    const videoUrl = await getDownloadURL(videoSnapshot.ref);
+
+    // Upload thumbnail if provided
+    let thumbnailUrl = null;
+    if (thumbnailBlob) {
+      const thumbnailFileName = `thumb_${timestamp}_${fileName.replace(/\.[^/.]+$/, '')}.jpg`;
+      const thumbnailStorageRef = ref(storage, `fashiontv_thumbnails/${userId}/${thumbnailFileName}`);
+      
+      const thumbnailSnapshot = await uploadBytes(thumbnailStorageRef, thumbnailBlob);
+      thumbnailUrl = await getDownloadURL(thumbnailSnapshot.ref);
+    }
 
     // Create video metadata
     const video = {
@@ -78,11 +91,13 @@ export const uploadVideo = async (userId, file, videoData) => {
       userName,
       userAvatar: userData.photoURL || null,
       videoUrl,
+      thumbnail: thumbnailUrl,
       caption: videoData.caption.trim(),
       tags: videoData.tags || [],
-      aspectRatio: '1:1',
+      aspectRatio: videoData.aspectRatio || '9:16',
       duration: videoData.duration || 0,
       fileSize: file.size,
+      dimensions: videoData.dimensions || null,
       likes: [],
       views: 0,
       createdAt: serverTimestamp(),
@@ -91,8 +106,20 @@ export const uploadVideo = async (userId, file, videoData) => {
 
     // Save to Firestore
     const docRef = await addDoc(collection(db, 'fashiontv_videos'), video);
+    
+    // Log activity for creating a reel/video
+    await addDoc(collection(db, 'user_activities'), {
+      userId,
+      type: 'created',
+      contentType: 'reel',
+      reelTitle: videoData.caption.trim(),
+      reelId: docRef.id,
+      timestamp: serverTimestamp()
+    });
+    
     return { id: docRef.id, ...video };
   } catch (error) {
+    console.error('Upload video error:', error);
     throw new Error('Failed to upload video');
   }
 };
@@ -201,6 +228,20 @@ export const toggleLikeVideo = async (videoId, userId) => {
         likes: arrayRemove(userId),
         updatedAt: serverTimestamp()
       });
+
+      // Remove from user_likes
+      const likeQuery = query(
+        collection(db, 'user_likes'),
+        where('userId', '==', userId),
+        where('contentId', '==', videoId)
+      );
+
+      const likeSnapshot = await getDocs(likeQuery);
+      if (!likeSnapshot.empty) {
+        const likeDoc = likeSnapshot.docs[0];
+        await deleteDoc(doc(db, 'user_likes', likeDoc.id));
+      }
+
       return { liked: false, likesCount: currentLikes.length - 1 };
     } else {
       // Add like
@@ -208,6 +249,26 @@ export const toggleLikeVideo = async (videoId, userId) => {
         likes: arrayUnion(userId),
         updatedAt: serverTimestamp()
       });
+
+      // Add to user_likes
+      await addDoc(collection(db, 'user_likes'), {
+        userId,
+        contentId: videoId,
+        contentType: 'reel',
+        caption: videoData.caption || 'Untitled Reel',
+        likedAt: serverTimestamp()
+      });
+
+      // Log activity for liking a reel/video
+      await addDoc(collection(db, 'user_activities'), {
+        userId,
+        type: 'liked',
+        contentType: 'reel',
+        reelTitle: videoData.caption || 'Untitled Reel',
+        reelId: videoId,
+        timestamp: serverTimestamp()
+      });
+
       return { liked: true, likesCount: currentLikes.length + 1 };
     }
   } catch (error) {
@@ -271,6 +332,79 @@ export const getUserVideos = async (userId) => {
     return videos;
   } catch (error) {
     throw new Error('Failed to fetch user videos');
+  }
+};
+
+/**
+ * Delete a video/reel
+ * @param {string} videoId - Video ID
+ * @param {string} userId - User ID (for permission check)
+ * @returns {Promise<void>}
+ */
+export const deleteVideo = async (videoId, userId) => {
+  if (!videoId) {
+    throw new Error('Video ID is required');
+  }  
+  if (!userId) {
+    throw new Error('User ID is required');
+  }
+
+  try {
+    // First, get the video to check ownership
+    const videoRef = doc(db, 'fashiontv_videos', videoId);
+    const videoSnap = await getDoc(videoRef);
+
+    if (!videoSnap.exists()) {
+      throw new Error('Video not found');
+    }
+
+    const videoData = videoSnap.data();
+    
+    // Check if user owns the video
+    if (videoData.userId !== userId) {
+      throw new Error('You can only delete your own videos');
+    }
+
+    // Delete the video document
+    await deleteDoc(videoRef);
+
+    // Clean up related data
+    // Delete all likes for this video
+    const likesQuery = query(
+      collection(db, 'user_likes'),
+      where('contentId', '==', videoId)
+    );
+    const likesSnapshot = await getDocs(likesQuery);
+    const deleteLikesPromises = likesSnapshot.docs.map(likeDoc => 
+      deleteDoc(doc(db, 'user_likes', likeDoc.id))
+    );
+    await Promise.all(deleteLikesPromises);
+
+    // Delete related activities
+    const activitiesQuery = query(
+      collection(db, 'user_activities'),
+      where('reelId', '==', videoId)
+    );
+    const activitiesSnapshot = await getDocs(activitiesQuery);
+    const deleteActivitiesPromises = activitiesSnapshot.docs.map(activityDoc => 
+      deleteDoc(doc(db, 'user_activities', activityDoc.id))
+    );
+    await Promise.all(deleteActivitiesPromises);
+
+    // Log deletion activity
+    await addDoc(collection(db, 'user_activities'), {
+      userId,
+      type: 'deleted',
+      contentType: 'reel',
+      reelTitle: videoData.caption || 'Untitled Reel',
+      reelId: videoId,
+      timestamp: serverTimestamp()
+    });
+
+    console.log('Video deleted successfully:', videoId);
+  } catch (error) {
+    console.error('Error deleting video:', error);
+    throw new Error(error.message || 'Failed to delete video');
   }
 };
 

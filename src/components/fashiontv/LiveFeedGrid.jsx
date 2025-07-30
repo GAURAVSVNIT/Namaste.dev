@@ -141,17 +141,21 @@ export default function LiveFeedGrid({ streams, currentUser, onStreamDeleted }) 
             border: '1px solid rgba(255, 255, 255, 0.2)',
             backdropFilter: 'blur(20px)'
           }}>
-            {/* Stream Preview */}
+{/* Stream Preview */}
             <div style={{ position: 'relative', aspectRatio: '16/9', backgroundColor: '#111827' }}>
               {stream.platform === 'youtube' ? (
-                <iframe
-                  src={getEmbedUrl(stream)}
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media"
-                  allowFullScreen
-                  style={{ width: '100%', height: '100%', borderRadius: '16px 16px 0 0' }}
-                  title={stream.title}
-                />
+                (() => {
+                  const videoIdMatch = stream.url.match(/(?:youtu.be\/|youtube.com\/(?:embed\/|v\/|watch\?v=|watch\?.+\&v=))((\w|-){11})/);
+                  const videoId = videoIdMatch ? videoIdMatch[1] : null;
+                  const thumbnailUrl = videoId ? `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg` : '';
+                  return videoId ? (
+                    <img
+                      src={thumbnailUrl}
+                      alt={stream.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '16px 16px 0 0' }}
+                    />
+                  ) : null;
+                })()
               ) : stream.platform === 'twitch' ? (
                 <div style={{ 
                   width: '100%', 
@@ -167,6 +171,52 @@ export default function LiveFeedGrid({ streams, currentUser, onStreamDeleted }) 
                     <p style={{ fontSize: '14px', margin: 0 }}>Click to watch on Twitch</p>
                   </div>
                 </div>
+              ) : stream.platform === 'local' ? (
+                <div style={{ 
+                  width: '100%', 
+                  height: '100%', 
+                  background: 'linear-gradient(135deg, #7c3aed 0%, #a855f7 30%, #d946ef 70%, #ec4899 100%)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  borderRadius: '16px 16px 0 0',
+                  position: 'relative'
+                }}>
+                  {/* Animated background effect */}
+                  <div style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%)',
+                    animation: 'pulse 3s ease-in-out infinite'
+                  }}></div>
+                  <div style={{ textAlign: 'center', color: 'white', zIndex: 1 }}>
+                    <div style={{
+                      width: '64px',
+                      height: '64px',
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 12px auto',
+                      backdropFilter: 'blur(10px)',
+                      border: '2px solid rgba(255, 255, 255, 0.3)'
+                    }}>
+                      <div style={{
+                        width: '8px',
+                        height: '8px',
+                        backgroundColor: '#ef4444',
+                        borderRadius: '50%',
+                        animation: 'pulse 2s infinite'
+                      }}></div>
+                    </div>
+                    <h4 style={{ fontSize: '16px', fontWeight: '600', margin: '0 0 4px 0' }}>Live Camera Stream</h4>
+                    <p style={{ fontSize: '13px', margin: 0, opacity: 0.9 }}>Click to watch live</p>
+                  </div>
+                </div>
               ) : null}
               
               {/* Platform Badge */}
@@ -179,6 +229,7 @@ export default function LiveFeedGrid({ streams, currentUser, onStreamDeleted }) 
                   color: 'white',
                   background: stream.platform === 'youtube' ? 'linear-gradient(135deg, #ff0000, #cc0000)' :
                            stream.platform === 'twitch' ? 'linear-gradient(135deg, #9146ff, #6441a4)' :
+                           stream.platform === 'local' ? 'linear-gradient(135deg, #7c3aed, #ec4899)' :
                            'linear-gradient(135deg, #6b7280, #4b5563)',
                   backdropFilter: 'blur(10px)',
                   border: '1px solid rgba(255, 255, 255, 0.2)'
@@ -306,23 +357,25 @@ export default function LiveFeedGrid({ streams, currentUser, onStreamDeleted }) 
                 >
                   Watch Live
                 </Link>
-                <a
-                  href={stream.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{
-                    padding: '12px',
-                    background: 'rgba(243, 244, 246, 0.8)',
-                    borderRadius: '12px',
-                    transition: 'all 0.3s ease',
-                    border: '1px solid rgba(209, 213, 219, 0.5)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <ExternalLink style={{ width: '16px', height: '16px', color: '#6b7280' }} />
-                </a>
+                {stream.platform !== 'local' && stream.url && (
+                  <a
+                    href={stream.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      padding: '12px',
+                      background: 'rgba(243, 244, 246, 0.8)',
+                      borderRadius: '12px',
+                      transition: 'all 0.3s ease',
+                      border: '1px solid rgba(209, 213, 219, 0.5)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <ExternalLink style={{ width: '16px', height: '16px', color: '#6b7280' }} />
+                  </a>
+                )}
                 {canDeleteStream(stream) && (
                   <button
                     onClick={() => confirmDelete(stream)}
@@ -452,37 +505,159 @@ export default function LiveFeedGrid({ streams, currentUser, onStreamDeleted }) 
 
       {/* Confirmation Dialog */}
       {confirmDeleteStream && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <AlertTriangle className="w-5 h-5 text-red-600" />
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0, 0, 0, 0.6)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 9999,
+          padding: '16px',
+          backdropFilter: 'blur(8px)'
+        }}>
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.9))',
+            borderRadius: '20px',
+            width: '100%',
+            maxWidth: '480px',
+            padding: '32px',
+            boxShadow: '0 25px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.18)',
+            transform: 'translateY(-10px)'
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '16px',
+              marginBottom: '24px'
+            }}>
+              <div style={{
+                width: '48px',
+                height: '48px',
+                background: 'linear-gradient(135deg, #fee2e2, #fecaca)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '2px solid rgba(239, 68, 68, 0.1)',
+                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.15)'
+              }}>
+                <AlertTriangle style={{ width: '22px', height: '22px', color: '#dc2626' }} />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">Delete Live Stream</h3>
+              <h3 style={{
+                fontSize: '20px',
+                fontWeight: '700',
+                color: '#111827',
+                margin: 0,
+                letterSpacing: '-0.025em'
+              }}>Delete Live Stream</h3>
             </div>
             
-            <p className="text-gray-600 mb-2">
-              Are you sure you want to delete <strong>"{confirmDeleteStream.title}"</strong>?
+            <p style={{
+              color: '#4b5563',
+              fontSize: '16px',
+              lineHeight: '1.6',
+              marginBottom: '12px',
+              margin: '0 0 12px 0'
+            }}>
+              Are you sure you want to delete <strong style={{ color: '#111827' }}>"{confirmDeleteStream.title}"</strong>?
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p style={{
+              fontSize: '14px',
+              color: '#6b7280',
+              lineHeight: '1.5',
+              marginBottom: '32px',
+              margin: '0 0 32px 0'
+            }}>
               This action cannot be undone and will permanently remove your live stream from the platform.
             </p>
             
-            <div className="flex space-x-3">
+            <div style={{
+              display: 'flex',
+              gap: '16px'
+            }}>
               <button
                 onClick={() => setConfirmDeleteStream(null)}
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-md font-medium transition-colors"
+                style={{
+                  flex: 1,
+                  background: 'linear-gradient(135deg, #f9fafb, #f3f4f6)',
+                  color: '#4b5563',
+                  padding: '14px 24px',
+                  borderRadius: '12px',
+                  fontWeight: '600',
+                  fontSize: '15px',
+                  border: '1px solid rgba(209, 213, 219, 0.8)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #f3f4f6, #e5e7eb)';
+                  e.target.style.transform = 'translateY(-1px)';
+                  e.target.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, #f9fafb, #f3f4f6)';
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.05)';
+                }}
               >
                 Cancel
               </button>
               <button
                 onClick={() => handleDeleteStream(confirmDeleteStream.id)}
                 disabled={deletingStream === confirmDeleteStream.id}
-                className="flex-1 bg-red-600 hover:bg-red-700 disabled:bg-red-400 text-white py-2 px-4 rounded-md font-medium transition-colors disabled:cursor-not-allowed"
+                style={{
+                  flex: 1,
+                  background: deletingStream === confirmDeleteStream.id 
+                    ? 'linear-gradient(135deg, #f87171, #ef4444)' 
+                    : 'linear-gradient(135deg, #dc2626, #b91c1c)',
+                  color: 'white',
+                  padding: '14px 24px',
+                  borderRadius: '12px',
+                  fontWeight: '600',
+                  fontSize: '15px',
+                  border: 'none',
+                  cursor: deletingStream === confirmDeleteStream.id ? 'not-allowed' : 'pointer',
+                  transition: 'all 0.2s ease',
+                  opacity: deletingStream === confirmDeleteStream.id ? 0.7 : 1,
+                  boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  if (deletingStream !== confirmDeleteStream.id) {
+                    e.target.style.background = 'linear-gradient(135deg, #b91c1c, #991b1b)';
+                    e.target.style.transform = 'translateY(-1px)';
+                    e.target.style.boxShadow = '0 6px 16px rgba(220, 38, 38, 0.4)';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (deletingStream !== confirmDeleteStream.id) {
+                    e.target.style.background = 'linear-gradient(135deg, #dc2626, #b91c1c)';
+                    e.target.style.transform = 'translateY(0)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
+                  }
+                }}
               >
                 {deletingStream === confirmDeleteStream.id ? (
-                  <span className="flex items-center justify-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  <span style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '8px'
+                  }}>
+                    <div style={{
+                      width: '16px',
+                      height: '16px',
+                      border: '2px solid white',
+                      borderTop: '2px solid transparent',
+                      borderRadius: '50%',
+                      animation: 'spin 1s linear infinite'
+                    }}></div>
                     <span>Deleting...</span>
                   </span>
                 ) : (

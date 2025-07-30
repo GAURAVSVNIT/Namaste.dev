@@ -33,7 +33,7 @@ body,
   opacity: 1;
   transform: scale(1);
 }
-
+ 
 .quiz-card h2 {
   color: var(--color-fashion-dark);
   margin-bottom: 1rem;
@@ -112,7 +112,7 @@ body,
 }
 
 .quiz-button, .quiz-submit-button {
-  background: var(--color-fashion-primary);
+  background-color: var(--color-fashion-primary);
   color: white;
   padding: 0.75rem 2rem;
   border-radius: 0.75rem;
@@ -124,10 +124,10 @@ body,
 }
 
 .quiz-submit-button {
-    background-color: var(--color-green-600);
+    background-color: rgb(30, 142, 30);
 }
 .quiz-submit-button:hover {
-    background-color: var(--color-green-500);
+    background-color: rgb(18, 177, 18);
 }
 
 .quiz-button:hover {

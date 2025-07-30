@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import '../static/Footer.css';
+import { useRouter } from 'next/navigation';
 import { FaInstagram, FaTwitter, FaLinkedin, FaTshirt, FaCamera, FaUserGraduate } from 'react-icons/fa';
 
 const Footer = (fontFace) => {

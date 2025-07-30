@@ -167,7 +167,7 @@ function AuthActionPageContent() {
       );
       setNewPassword("");
       setConfirmNewPassword("");
-      setTimeout(() => router.push("/auth/login?message=Password reset successfully"), 3000);
+      setTimeout(() => router.push("auth/login?message=Password reset successfully"), 3000);
     } catch (err) {
       console.error("Error confirming password reset:", err);
       setError(
@@ -213,7 +213,7 @@ function AuthActionPageContent() {
               </div>
               
               <Link 
-                href="/auth/login" 
+                href="auth/login" 
                 className="gradient-button inline-flex items-center justify-center px-6"
               >
                 Proceed to Login
@@ -250,7 +250,7 @@ function AuthActionPageContent() {
             )}
             
             <Link 
-              href="/auth/login" 
+              href="auth/login" 
               className="gradient-button inline-flex items-center justify-center px-6"
             >
               Back to Login
@@ -347,7 +347,7 @@ function AuthActionPageContent() {
             <p className="text-gray-600 text-sm">
               Remember your password?{" "}
               <Link 
-                href="/auth/login" 
+                href="auth/login" 
                 className="text-teal-600 hover:text-teal-700 transition-colors font-semibold"
               >
                 Back to Login

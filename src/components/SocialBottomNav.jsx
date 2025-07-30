@@ -3,10 +3,26 @@ import React, { useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Camera, Tv, Search, User, Home } from "lucide-react";
 
+// New import for styled-components if needed
+// import styled from 'styled-components';
+
 const SocialBottomNav = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [isVisible, setIsVisible] = useState(false); // Start hidden
+
+  const professionalStyles = {
+    gradientBackground: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    buttonText: {
+      color: '#F3F4F6',
+      fontWeight: 'bold',
+      fontSize: '14px'
+    },
+    boxShadows: {
+      default: '0 4px 8px rgba(0,0,0,0.2)',
+      active: '0 6px 12px rgba(0,0,0,0.3)'
+    }
+  };
 
   const navigateTo = (path) => {
     router.push(path);
@@ -94,6 +110,7 @@ const SocialBottomNav = () => {
           background: `linear-gradient(135deg, ${colors.glow})`,
           borderRadius: '14px',
           opacity: '0.3',
+          border: `2px solid ${professionalStyles.gradientBackground}`,
           animation: 'pulse 2s infinite'
         }} />
       )}
@@ -106,12 +123,12 @@ const SocialBottomNav = () => {
       icon: Home,
       label: "Feed",
       colors: {
-        active: '#ec4899',
-        bg: 'rgba(236, 72, 153, 0.15) 0%, rgba(168, 85, 247, 0.15) 100%',
-        hoverBg: 'rgba(236, 72, 153, 0.08)',
-        shadow: 'rgba(236, 72, 153, 0.25)',
-        indicator: 'linear-gradient(to right, #ec4899, #a855f7)',
-        glow: 'rgba(236, 72, 153, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%'
+        active: '#9333ea',
+        bg: 'rgba(147, 51, 234, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%',
+        hoverBg: 'rgba(147, 51, 234, 0.06)',
+        shadow: 'rgba(147, 51, 234, 0.2)',
+        indicator: 'linear-gradient(to right, #9333ea, #a855f7)',
+        glow: 'rgba(147, 51, 234, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%'
       }
     },
     {
@@ -119,12 +136,12 @@ const SocialBottomNav = () => {
       icon: Search,
       label: "Search",
       colors: {
-        active: '#3b82f6',
-        bg: 'rgba(59, 130, 246, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%',
-        hoverBg: 'rgba(59, 130, 246, 0.08)',
-        shadow: 'rgba(59, 130, 246, 0.25)',
-        indicator: 'linear-gradient(to right, #3b82f6, #06b6d4)',
-        glow: 'rgba(59, 130, 246, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%'
+        active: '#667eea',
+        bg: 'rgba(102, 126, 234, 0.12) 0%, rgba(147, 51, 234, 0.12) 100%',
+        hoverBg: 'rgba(102, 126, 234, 0.06)',
+        shadow: 'rgba(102, 126, 234, 0.2)',
+        indicator: 'linear-gradient(to right, #667eea, #9333ea)',
+        glow: 'rgba(102, 126, 234, 0.08) 0%, rgba(147, 51, 234, 0.08) 100%'
       }
     },
     {
@@ -132,12 +149,12 @@ const SocialBottomNav = () => {
       icon: Camera,
       label: "Look",
       colors: {
-        active: '#8b5cf6',
-        bg: 'rgba(139, 92, 246, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%',
-        hoverBg: 'rgba(139, 92, 246, 0.08)',
-        shadow: 'rgba(139, 92, 246, 0.25)',
-        indicator: 'linear-gradient(to right, #8b5cf6, #ec4899)',
-        glow: 'rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%'
+        active: '#a855f7',
+        bg: 'rgba(168, 85, 247, 0.12) 0%, rgba(147, 51, 234, 0.12) 100%',
+        hoverBg: 'rgba(168, 85, 247, 0.06)',
+        shadow: 'rgba(168, 85, 247, 0.2)',
+        indicator: 'linear-gradient(to right, #a855f7, #9333ea)',
+        glow: 'rgba(168, 85, 247, 0.08) 0%, rgba(147, 51, 234, 0.08) 100%'
       }
     },
     {
@@ -145,12 +162,12 @@ const SocialBottomNav = () => {
       icon: Tv,
       label: "TV",
       colors: {
-        active: '#ef4444',
-        bg: 'rgba(239, 68, 68, 0.15) 0%, rgba(249, 115, 22, 0.15) 100%',
-        hoverBg: 'rgba(239, 68, 68, 0.08)',
-        shadow: 'rgba(239, 68, 68, 0.25)',
-        indicator: 'linear-gradient(to right, #ef4444, #f97316)',
-        glow: 'rgba(239, 68, 68, 0.1) 0%, rgba(249, 115, 22, 0.1) 100%'
+        active: '#c084fc',
+        bg: 'rgba(192, 132, 252, 0.12) 0%, rgba(168, 85, 247, 0.12) 100%',
+        hoverBg: 'rgba(192, 132, 252, 0.06)',
+        shadow: 'rgba(192, 132, 252, 0.2)',
+        indicator: 'linear-gradient(to right, #c084fc, #a855f7)',
+        glow: 'rgba(192, 132, 252, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%'
       }
     },
     {
@@ -158,12 +175,12 @@ const SocialBottomNav = () => {
       icon: User,
       label: "Profile",
       colors: {
-        active: '#10b981',
-        bg: 'rgba(16, 185, 129, 0.15) 0%, rgba(52, 211, 153, 0.15) 100%',
-        hoverBg: 'rgba(16, 185, 129, 0.08)',
-        shadow: 'rgba(16, 185, 129, 0.25)',
-        indicator: 'linear-gradient(to right, #10b981, #34d399)',
-        glow: 'rgba(16, 185, 129, 0.1) 0%, rgba(52, 211, 153, 0.1) 100%'
+        active: '#ddd6fe',
+        bg: 'rgba(221, 214, 254, 0.12) 0%, rgba(192, 132, 252, 0.12) 100%',
+        hoverBg: 'rgba(221, 214, 254, 0.06)',
+        shadow: 'rgba(221, 214, 254, 0.2)',
+        indicator: 'linear-gradient(to right, #ddd6fe, #c084fc)',
+        glow: 'rgba(221, 214, 254, 0.08) 0%, rgba(192, 132, 252, 0.08) 100%'
       }
     }
   ];

@@ -1,0 +1,251 @@
+/* Profile Section */
+.profileSection {
+  position: relative;
+  padding: 0.75rem 1rem;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  margin-top: auto;
+  z-index: 50;
+  transition: all 0.2s ease;
+  overflow: hidden;
+}
+
+.profileSection.active {
+  background-color: #f1f5f9;
+}
+
+.profileContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  position: relative;
+}
+
+.profileButtonContainer {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+}
+
+.profileButton {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  position: relative;
+  z-index: 2;
+}
+
+.profileButton:hover {
+  background-color: #f1f5f9;
+}
+
+.avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #0ea5e9 0%, #3b82f6 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.profileName {
+  font-weight: 600;
+  color: #1f2937;
+  font-size: 0.875rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  line-height: 1.25rem;
+}
+
+.profileEmail {
+  font-size: 0.75rem;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  line-height: 1rem;
+}
+
+.chevron {
+  margin-left: 0.5rem;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* Sign Out Container */
+.signOutContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.signOutButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #fef2f2;
+  color: #dc2626;
+  border: none;
+  border-radius: 0.375rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.signOutButton:hover {
+  background: #fee2e2;
+}
+
+.settingsButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.375rem;
+  color: #4b5563;
+  transition: all 0.2s ease;
+}
+
+.settingsButton:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.dropdownItem {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: #374151;
+  font-size: 0.875rem;
+  transition: background-color 0.2s ease;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.875rem;
+  color: #4b5563;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  gap: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.dropdownItem:last-child {
+  border-bottom: none;
+}
+
+.dropdownItem:hover {
+  background-color: #f9fafb;
+  color: #0ea5e9;
+}
+
+.dropdownIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: #6b7280;
+  flex-shrink: 0;
+}
+
+.dropdownItem:hover .dropdownIcon {
+  color: #0ea5e9;
+}
+
+.dropdownDivider {
+  height: 1px;
+  background-color: #f3f4f6;
+  margin: 0.25rem 0;
+}
+
+.signOut {
+  color: #ef4444;
+}
+
+.signOut:hover {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.signOut .dropdownIcon {
+  color: #ef4444;
+}
+
+.signOut:hover .dropdownIcon {
+  color: #dc2626;
+}
+
+/* Collapsed State */
+:global(.collapsed) .profileSection {
+  padding: 0.75rem 0.5rem;
+}
+
+:global(.collapsed) .profileButton {
+  justify-content: center;
+  padding: 0.5rem;
+}
+
+:global(.collapsed) .profileInfo,
+:global(.collapsed) .chevron {
+  display: none;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1023px) {
+  .profileDropdown {
+    bottom: auto;
+    top: 100%;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+}

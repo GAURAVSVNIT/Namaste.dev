@@ -5,10 +5,13 @@ import { useAuth } from '@/hooks/useAuth';
 import { getUserProfile } from '@/lib/firebase';
 import BlogList from '@/components/blog/BlogList';
 import BlogForm from '@/components/blog/BlogForm';
+import BlogSearchBar from '@/components/blog/BlogSearchBar';
 import Footer from '@/components/Footer';
+import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingBlog, setEditingBlog] = useState(null);
@@ -39,14 +42,33 @@ const BlogPage = () => {
       if (response.ok) {
         const blogsData = await response.json();
         setBlogs(blogsData);
+        setFilteredBlogs(blogsData);
       } else {
-        // Failed to fetch blogs - will show empty state
+        // Failed to fetch blogs
       }
     } catch (error) {
-      // Error fetching blogs - will show empty state
+      // Error fetching blogs
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Handle blog search
+  const handleSearch = (query) => {
+    if (!query.trim()) {
+      setFilteredBlogs(blogs);
+      return;
+    }
+
+    const lowercaseQuery = query.toLowerCase();
+    const filtered = blogs.filter(blog => {
+      const titleMatch = blog.title?.toLowerCase().includes(lowercaseQuery);
+      const contentMatch = blog.content?.toLowerCase().includes(lowercaseQuery);
+      const tagsMatch = blog.tags?.some(tag => tag.toLowerCase().includes(lowercaseQuery));
+      return titleMatch || contentMatch || tagsMatch;
+    });
+    
+    setFilteredBlogs(filtered);
   };
 
   useEffect(() => {
@@ -298,7 +320,7 @@ const BlogPage = () => {
                 }}>✨ Welcome to Our Fashion Community</span>
               </div>
               
-              <h1 style={{
+              <div style={{
                 fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
                 fontWeight: '800',
                 color: '#ffffff',
@@ -307,8 +329,18 @@ const BlogPage = () => {
                 textShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
                 letterSpacing: '-0.02em'
               }}>
-                Fashion Blog
-              </h1>
+                <SplitText 
+                  text="Fashion Blog" 
+                  splitType="chars"
+                  delay={80}
+                  duration={0.8}
+                  ease="power3.out"
+                  from={{ opacity: 0, y: 60, rotateX: -90 }}
+                  to={{ opacity: 1, y: 0, rotateX: 0 }}
+                  threshold={0.2}
+                  className="fashion-blog-split"
+                />
+              </div>
               
               <p style={{
                 fontSize: 'clamp(1.125rem, 2.5vw, 1.375rem)',
@@ -408,6 +440,28 @@ const BlogPage = () => {
                   transform: translateY(-20px);
                 }
               }
+              
+              .fashion-blog-split {
+                color: inherit !important;
+                font-size: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+                text-shadow: inherit !important;
+                letter-spacing: inherit !important;
+                margin: 0 !important;
+                padding: 0 !important;
+              }
+              
+              .fashion-blog-subtitle {
+                color: inherit !important;
+                font-size: inherit !important;
+                font-weight: inherit !important;
+                line-height: inherit !important;
+                text-shadow: inherit !important;
+                letter-spacing: inherit !important;
+                margin: 0 !important;
+                padding: 0 !important;
+              }
             `}</style>
           </div>
 
@@ -434,8 +488,17 @@ const BlogPage = () => {
                 scrollMarginTop: '100px'
               }}
             >
+              {/* Search Bar */}
+              <div style={{
+                marginBottom: '32px',
+                display: 'flex',
+                justifyContent: 'center'
+              }}>
+                <BlogSearchBar onSearch={handleSearch} />
+              </div>
+              
               <BlogList
-                blogs={blogs}
+                blogs={filteredBlogs}
                 onEdit={handleEditBlog}
                 onDelete={handleDeleteBlog}
                 isLoading={isLoading}

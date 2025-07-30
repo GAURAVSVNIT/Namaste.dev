@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { 
   Camera, 
@@ -34,6 +34,7 @@ import { getAllVideos } from "@/lib/fashiontv";
 import { getApprovedLivestreams } from "@/lib/fashiontv";
 import { toast } from "@/hooks/use-toast";
 import { getPlaceholderImageUrl } from "@/components/ui/PlaceholderImage";
+import SplitText from "@/blocks/TextAnimations/SplitText/SplitText";
 
 const SocialFeedPage = () => {
   const router = useRouter();
@@ -99,29 +100,66 @@ const SocialFeedPage = () => {
     </Link>
   );
 
-  const ContentCard = ({ item, type }) => (
-    <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
-      <div className="relative">
-        <div className={`${type === 'reel' ? 'aspect-[9/16]' : type === 'stream' ? 'aspect-video' : 'aspect-square'} overflow-hidden`}>
-          <img
-            src={item.image || item.thumbnail || item.images?.[0] || `https://picsum.photos/${type === 'reel' ? '300/533' : '400/400'}?random=${Math.floor(Math.random() * 100)}`}
-            alt={item.title || item.caption}
-            className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-            onError={(e) => {
-              console.log('Image failed to load:', e.target.src);
-              // Multiple fallback options
-              const fallbacks = [
-                `https://picsum.photos/${type === 'reel' ? '300/533' : '400/400'}?random=${Math.floor(Math.random() * 1000)}`,
-                `https://placehold.co/${type === 'reel' ? '300x533' : '400x400'}/8b5cf6/white?text=Fashion+${type === 'reel' ? 'Reel' : 'Look'}`,
-                `https://via.placeholder.com/${type === 'reel' ? '300x533' : '400x400'}/8b5cf6/ffffff?text=Fashion`
-              ];
-              const currentIndex = e.target.dataset.fallbackIndex || 0;
-              if (currentIndex < fallbacks.length - 1) {
-                e.target.dataset.fallbackIndex = parseInt(currentIndex) + 1;
-                e.target.src = fallbacks[parseInt(currentIndex) + 1];
-              }
-            }}
-          />
+  const ContentCard = ({ item, type }) => {
+    // Generate YouTube thumbnail for live streams
+    const getStreamThumbnail = (stream) => {
+      if (type === 'stream' && stream.platform === 'youtube' && stream.url) {
+        const videoIdMatch = stream.url.match(/(?:youtu.be\/|youtube.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))((\w|-){11})/);
+        const videoId = videoIdMatch ? videoIdMatch[1] : null;
+        if (videoId) {
+          return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+        }
+      }
+      return null;
+    };
+
+    const getImageSrc = () => {
+      if (type === 'reel') {
+        // For fashion TV videos, prioritize thumbnail, then use video with poster, then placeholder
+        if (item.thumbnail) {
+          return item.thumbnail;
+        }
+        
+        // If no thumbnail, use a fashion-themed placeholder that looks more professional
+        // We'll use a consistent placeholder URL based on the video ID to avoid random changes
+        const videoId = item.id || 'default';
+        const seed = videoId.slice(-3); // Use last 3 chars of ID for consistent but varied placeholders
+        return `https://picsum.photos/seed/${seed}/300/533`;
+      } else if (type === 'stream') {
+        // Try YouTube thumbnail first, then fallback to existing logic
+        const youtubeThumbnail = getStreamThumbnail(item);
+        if (youtubeThumbnail) {
+          return youtubeThumbnail;
+        }
+        return item.image || item.thumbnail || item.images?.[0] || `https://picsum.photos/400/225?random=${Math.floor(Math.random() * 100)}`;
+      } else {
+        return item.image || item.thumbnail || item.images?.[0] || `https://picsum.photos/400/400?random=${Math.floor(Math.random() * 100)}`;
+      }
+    };
+
+    return (
+      <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
+        <div className="relative">
+          <div className={`${type === 'stream' ? 'aspect-video' : 'aspect-square'} overflow-hidden bg-gray-100`}>
+            <img
+              src={getImageSrc()}
+              alt={item.title || item.caption}
+              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              onError={(e) => {
+                console.log('Image failed to load:', e.target.src);
+                // Enhanced fallback system with better placeholder for reels
+                const fallbacks = [
+                  `https://picsum.photos/${type === 'reel' ? '300/533' : type === 'stream' ? '400/225' : '400/400'}?random=${Math.floor(Math.random() * 1000)}`,
+                  `https://placehold.co/${type === 'reel' ? '300x533' : type === 'stream' ? '400x225' : '400x400'}/667eea/white?text=${encodeURIComponent(type === 'reel' ? '📺 Fashion TV' : type === 'stream' ? '📺 Live Stream' : '👗 Fashion Look')}`,
+                  `https://via.placeholder.com/${type === 'reel' ? '300x533' : type === 'stream' ? '400x225' : '400x400'}/667eea/ffffff?text=${type === 'reel' ? 'Fashion TV' : type === 'stream' ? 'Live' : 'Look'}`
+                ];
+                const currentIndex = e.target.dataset.fallbackIndex || 0;
+                if (currentIndex < fallbacks.length - 1) {
+                  e.target.dataset.fallbackIndex = parseInt(currentIndex) + 1;
+                  e.target.src = fallbacks[parseInt(currentIndex) + 1];
+                }
+              }}
+            />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
         
@@ -149,7 +187,7 @@ const SocialFeedPage = () => {
                        'linear-gradient(135deg, rgba(239, 68, 68, 0.9), rgba(220, 38, 38, 0.9))'
           }}>
             {type === 'look' ? item.mood || 'Look' : 
-             type === 'reel' ? 'Reel' : 
+             type === 'reel' ? 'Fashion TV' : 
              'LIVE'}
           </span>
           <button style={{
@@ -184,53 +222,82 @@ const SocialFeedPage = () => {
           </div>
         )}
 
-        {/* Bottom overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-1">
-                <Heart className="w-4 h-4" />
-                <span className="text-sm">{item.likes?.length || Math.floor(Math.random() * 100)}</span>
-              </div>
-              <div className="flex items-center space-x-1">
-                <MessageCircle className="w-4 h-4" />
-                <span className="text-sm">{item.comments?.length || Math.floor(Math.random() * 50)}</span>
-              </div>
-              {type === 'reel' && (
-                <div className="flex items-center space-x-1">
-                  <Eye className="w-4 h-4" />
-                  <span className="text-sm">{item.views || Math.floor(Math.random() * 1000)}</span>
-                </div>
-              )}
-            </div>
-            <button className="bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition-colors">
-              <Share2 className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Card content */}
-      <div className="p-4">
-        <h3 className="font-semibold text-gray-900 line-clamp-2 mb-2 text-sm">
+      <div style={{ padding: '20px 24px' }}>
+        <h3 style={{
+          fontSize: '1rem',
+          fontWeight: '600',
+          color: '#1f2937',
+          marginBottom: '16px',
+          lineHeight: '1.4',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical'
+        }}>
           {item.title || item.caption || `Fashion ${type} #${Math.floor(Math.random() * 100)}`}
         </h3>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-3 text-xs text-gray-500">
-            <span className="flex items-center">
-              <Heart className="w-3 h-3 mr-1" />
-              {item.likes?.length || Math.floor(Math.random() * 100)}
-            </span>
-            <span className="flex items-center">
-              <MessageCircle className="w-3 h-3 mr-1" />
-              {item.comments?.length || Math.floor(Math.random() * 50)}
-            </span>
-          </div>
-          <span className="text-xs text-gray-400">{Math.floor(Math.random() * 24)}h</span>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          marginTop: '12px',
+          paddingTop: '12px',
+          borderTop: '1px solid rgba(229, 231, 235, 0.5)'
+        }}>
+          {type !== 'stream' && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px'
+            }}>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                borderRadius: '8px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                transition: 'all 0.2s ease'
+              }}>
+                <Heart style={{ width: '14px', height: '14px', color: '#ef4444' }} />
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  color: '#ef4444'
+                }}>{item.likes?.length || 0}</span>
+              </div>
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '4px 8px',
+                borderRadius: '8px',
+                background: 'rgba(59, 130, 246, 0.1)',
+                transition: 'all 0.2s ease'
+              }}>
+                <MessageCircle style={{ width: '14px', height: '14px', color: '#3b82f6' }} />
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  color: '#3b82f6'
+                }}>{item.comments?.length || 0}</span>
+              </div>
+            </div>
+          )}
+          <span style={{
+            fontSize: '11px',
+            color: '#9ca3af',
+            fontWeight: '500'
+          }}>{Math.floor(Math.random() * 24)}h</span>
         </div>
       </div>
     </div>
   );
+};
 
   const generatePlaceholderContent = (type, count) => {
     const fashionTitles = [
@@ -271,8 +338,8 @@ const SocialFeedPage = () => {
       caption: fashionTitles[index % fashionTitles.length],
       image: getPlaceholderImage(index, type),
       thumbnail: getPlaceholderImage(index, type),
-      likes: Array.from({ length: Math.floor(Math.random() * 150) + 20 }),
-      comments: Array.from({ length: Math.floor(Math.random() * 45) + 5 }),
+      likes: [],
+      comments: [],
       views: Math.floor(Math.random() * 5000) + 500,
       isPlaceholder: true
     }));
@@ -296,14 +363,13 @@ const SocialFeedPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Content Area with top padding for main navbar */}
-      <div className="pb-24" style={{ paddingTop: '100px' }}>
+      <div style={{ paddingTop: '100px' }}>
         
-        {/* Hero Section */}
         <section style={{
           position: 'relative',
           marginBottom: '60px',
           padding: '80px 24px',
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+          background: 'linear-gradient(135deg, #ec4899 0%, #be185d 25%, #a855f7 50%, #7c3aed 75%, #6366f1 100%)',
           borderRadius: '32px',
           margin: '0 20px 60px 20px',
           overflow: 'hidden',
@@ -378,9 +444,20 @@ const SocialFeedPage = () => {
               marginBottom: '20px',
               lineHeight: '1.1',
               textShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
-              letterSpacing: '-0.02em'
+              letterSpacing: '-0.02em',
+              fontFamily: 'var(--font-playfair-display), "Playfair Display", serif'
             }}>
-              Fashion Feed
+<SplitText 
+                text="Fashion Feed" 
+                splitType="chars"
+                delay={80}
+                duration={0.8}
+                ease="power3.out"
+                from={{ opacity: 0, y: 20, rotateX: 90 }}
+                to={{ opacity: 1, y: 0, rotateX: 0 }}
+                threshold={0.2}
+                className="shiny-fashion-feed"
+              />
             </h1>
 
             {/* Subtitle */}
@@ -404,64 +481,6 @@ const SocialFeedPage = () => {
               flexWrap: 'wrap',
               marginBottom: '20px'
             }}>
-              {/* Search Button */}
-              <div style={{ position: 'relative' }}>
-                <input
-                  type="text"
-                  placeholder="🔍 Search trends, looks, creators..."
-                  style={{
-                    width: 'min(400px, 80vw)',
-                    padding: '16px 60px 16px 24px',
-                    borderRadius: '50px',
-                    border: '2px solid rgba(255, 255, 255, 0.3)',
-                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(20px)',
-                    fontSize: '16px',
-                    outline: 'none',
-                    boxShadow: '0 10px 30px rgba(0, 0, 0, 0.2)',
-                    transition: 'all 0.3s ease',
-                    color: '#2d3748',
-                    fontWeight: '500'
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.transform = 'scale(1.02)';
-                    e.target.style.boxShadow = '0 15px 40px rgba(0, 0, 0, 0.3)';
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.6)';
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.transform = 'scale(1)';
-                    e.target.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.2)';
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                  }}
-                />
-                <button style={{
-                  position: 'absolute',
-                  right: '8px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  width: '40px',
-                  height: '40px',
-                  backgroundColor: '#667eea',
-                  border: 'none',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)'
-                }}
-                onMouseOver={(e) => {
-                  e.target.style.backgroundColor = '#5a67d8';
-                  e.target.style.transform = 'translateY(-50%) scale(1.1)';
-                }}
-                onMouseOut={(e) => {
-                  e.target.style.backgroundColor = '#667eea';
-                  e.target.style.transform = 'translateY(-50%) scale(1)';
-                }}>
-                  <Search style={{ width: '20px', height: '20px', color: '#ffffff' }} />
-                </button>
-              </div>
             </div>
 
             {/* Create Buttons */}
@@ -477,7 +496,7 @@ const SocialFeedPage = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                  background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
                   color: '#ffffff',
                   padding: '16px 32px',
                   borderRadius: '50px',
@@ -486,16 +505,16 @@ const SocialFeedPage = () => {
                   fontWeight: '700',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 10px 25px rgba(255, 107, 107, 0.4)',
+                  boxShadow: '0 10px 25px rgba(255, 77, 237, 0.3)',
                   outline: 'none'
                 }}
                 onMouseOver={(e) => {
                   e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                  e.target.style.boxShadow = '0 15px 35px rgba(255, 107, 107, 0.6)';
+                  e.target.style.boxShadow = '0 15px 35px rgba(255, 77, 237, 0.4)';
                 }}
                 onMouseOut={(e) => {
                   e.target.style.transform = 'translateY(0) scale(1)';
-                  e.target.style.boxShadow = '0 10px 25px rgba(255, 107, 107, 0.4)';
+                  e.target.style.boxShadow = '0 10px 25px rgba(255, 77, 237, 0.3)';
                 }}
               >
                 <Camera style={{ width: '20px', height: '20px' }} />
@@ -564,28 +583,28 @@ const SocialFeedPage = () => {
               icon={Camera}
               title="Explore Looks"
               subtitle="Browse fashion styles"
-              gradient="from-pink-500 to-rose-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/look"
             />
             <QuickActionCard
               icon={Play}
               title="Create Reel"
               subtitle="Make fashion videos"
-              gradient="from-purple-500 to-indigo-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/fashiontv"
             />
             <QuickActionCard
               icon={Tv}
-              title="Go Live"
-              subtitle="Stream fashion shows"
-              gradient="from-red-500 to-orange-600"
+              title="Live Streams"
+              subtitle="Watch fashion shows"
+              gradient="from-pink-500 to-purple-500"
               href="/social/fashiontv/live"
             />
             <QuickActionCard
               icon={Zap}
               title="Trending"
               subtitle="What's hot now"
-              gradient="from-yellow-500 to-amber-600"
+              gradient="from-pink-500 to-purple-500"
               href="/social/trending"
             />
           </div>
@@ -593,13 +612,13 @@ const SocialFeedPage = () => {
 
         {/* Tab Navigation */}
         <section style={{ padding: '0 24px', marginBottom: '32px' }}>
-          <div className="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg" style={{ padding: '8px' }}>
-            <div className="flex" style={{ gap: '4px' }}>
+          <div className="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg" style={{ padding: '12px' }}>
+            <div className="flex" style={{ gap: '12px' }}>
             {[
-              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-orange-500 to-red-500' },
+              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-pink-500 to-purple-500' },
               { id: 'looks', label: 'Looks', icon: Camera, color: 'from-pink-500 to-purple-500' },
-              { id: 'reels', label: 'Reels', icon: Play, color: 'from-purple-500 to-indigo-500' },
-              { id: 'live', label: 'Live', icon: Tv, color: 'from-red-500 to-orange-500' }
+              { id: 'reels', label: 'Fashion TV', icon: Play, color: 'from-pink-500 to-purple-500' },
+              { id: 'live', label: 'Live', icon: Tv, color: 'from-pink-500 to-purple-500' }
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -608,10 +627,10 @@ const SocialFeedPage = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 flex items-center justify-center rounded-xl font-bold text-sm transition-all duration-300 relative overflow-hidden ${
                     activeTab === tab.id
-                      ? `bg-gradient-to-r ${tab.color} text-white shadow-lg transform scale-105`
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/80'
+                      ? `bg-gradient-to-r ${tab.color} text-white shadow-lg transform scale-102`
+                      : 'text-gray-600 hover:text-gray-900 hover:bg-white/80 hover:scale-101'
                   }`}
-                  style={{ padding: '16px 16px', gap: '8px' }}
+                  style={{ padding: '16px 12px', gap: '8px', margin: '0 2px' }}
                 >
                   <Icon className="w-4 h-4" />
                   <span className="hidden sm:inline">{tab.label}</span>
@@ -626,27 +645,50 @@ const SocialFeedPage = () => {
       </section>
 
         {/* Content Grid */}
-        <section style={{ padding: '0 24px', paddingBottom: '128px' }}>
-          {activeTab === 'trending' && (
-            <div style={{ marginBottom: '32px' }}>
-              {/* Mixed trending content */}
+        <section style={{ padding: '0 24px', paddingBottom: '0px' }}>
+        {activeTab === 'trending' && (
+            <div style={{ marginBottom: '16px' }}>
+              {/* Mixed trending content - Combined looks and reels */}
               <div>
                 <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
                   <h3 className="text-xl font-black text-gray-900 flex items-center">
-                    <TrendingUp className="w-6 h-6" style={{ marginRight: '8px', color: '#f97316' }} />
+                    <TrendingUp className="w-6 h-6" style={{ marginRight: '8px', color: '#9333ea' }} />
                     Trending Now
                   </h3>
-                  <Link href="/social/trending" className="text-pink-600 font-semibold text-sm flex items-center hover:text-pink-700">
+                  <Link href="/social/trending" className="text-purple-600 font-semibold text-sm flex items-center hover:text-purple-700">
                     View All
                     <ChevronRight className="w-4 h-4" style={{ marginLeft: '4px' }} />
                   </Link>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6" style={{ gap: '20px' }}>
-                {featuredLooks.length > 0 ? featuredLooks.slice(0, 8).map((look, index) => (
-                  <ContentCard key={`trending-look-${look.id || index}`} item={look} type="look" />
-                )) : generatePlaceholderContent('look', 8).map((item, index) => (
-                  <ContentCard key={`placeholder-look-${index}`} item={item} type="look" />
-                ))}
+                {(() => {
+                  // Combine looks and reels with type information
+                  const combinedContent = [
+                    ...featuredLooks.map(item => ({ ...item, contentType: 'look' })),
+                    ...featuredReels.map(item => ({ ...item, contentType: 'reel' }))
+                  ];
+                  
+                  // Sort by engagement (likes + comments) for trending
+                  const sortedContent = combinedContent.sort((a, b) => {
+                    const aEngagement = (a.likes?.length || 0) + (a.comments?.length || 0);
+                    const bEngagement = (b.likes?.length || 0) + (b.comments?.length || 0);
+                    return bEngagement - aEngagement;
+                  });
+                  
+                  // Show top 12 trending items
+                  const trendingItems = sortedContent.slice(0, 12);
+                  
+                  return trendingItems.length > 0 ? trendingItems.map((item, index) => (
+                    <ContentCard key={`trending-${item.contentType}-${item.id || index}`} item={item} type={item.contentType} />
+                  )) : [
+                    ...generatePlaceholderContent('look', 6).map((item, index) => (
+                      <ContentCard key={`placeholder-look-${index}`} item={item} type="look" />
+                    )),
+                    ...generatePlaceholderContent('reel', 6).map((item, index) => (
+                      <ContentCard key={`placeholder-reel-${index}`} item={item} type="reel" />
+                    ))
+                  ];
+                })()}
               </div>
             </div>
           </div>
@@ -655,11 +697,11 @@ const SocialFeedPage = () => {
           {activeTab === 'looks' && (
             <div>
               <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
-                <h3 className="text-xl font-black text-gray-900 flex items-center">
+                <h3 className="text-xl font-black text-gray-900 flex items-center" style={{ fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif' }}>
                   <Camera className="w-6 h-6" style={{ marginRight: '8px', color: '#ec4899' }} />
                   Fashion Looks
                 </h3>
-                <Link href="/social/look" className="text-pink-600 font-semibold text-sm flex items-center hover:text-pink-700">
+                <Link href="/social/look" className="text-purple-600 font-semibold text-sm flex items-center hover:text-purple-700">
                   View All
                   <ChevronRight className="w-4 h-4" style={{ marginLeft: '4px' }} />
                 </Link>
@@ -677,9 +719,9 @@ const SocialFeedPage = () => {
           {activeTab === 'reels' && (
             <div>
               <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
-                <h3 className="text-xl font-black text-gray-900 flex items-center">
-                  <Play className="w-6 h-6" style={{ marginRight: '8px', color: '#8b5cf6' }} />
-                  Fashion Reels
+                <h3 className="text-xl font-black text-gray-900 flex items-center" style={{ fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif' }}>
+                  <Play className="w-6 h-6" style={{ marginRight: '8px', color: '#a855f7' }} />
+                  Fashion TV
                 </h3>
                 <Link href="/social/fashiontv" className="text-purple-600 font-semibold text-sm flex items-center hover:text-purple-700">
                   View All
@@ -699,11 +741,11 @@ const SocialFeedPage = () => {
           {activeTab === 'live' && (
             <div>
               <div className="flex items-center justify-between" style={{ marginBottom: '24px' }}>
-                <h3 className="text-xl font-black text-gray-900 flex items-center">
-                  <Tv className="w-6 h-6" style={{ marginRight: '8px', color: '#ef4444' }} />
+                <h3 className="text-xl font-black text-gray-900 flex items-center" style={{ fontFamily: 'var(--font-montserrat), "Montserrat", sans-serif' }}>
+                  <Tv className="w-6 h-6" style={{ marginRight: '8px', color: '#ec4899' }} />
                   Live Streams
                 </h3>
-                <Link href="/social/fashiontv/live" className="text-red-600 font-semibold text-sm flex items-center hover:text-red-700">
+                <Link href="/social/fashiontv/live" className="text-purple-600 font-semibold text-sm flex items-center hover:text-purple-700">
                   View All
                   <ChevronRight className="w-4 h-4" style={{ marginLeft: '4px' }} />
                 </Link>
@@ -716,23 +758,6 @@ const SocialFeedPage = () => {
               ))}
             </div>
 
-              {/* Call to Action for Live Streaming */}
-              <div className="text-center" style={{ marginTop: '40px' }}>
-                <div className="bg-gradient-to-r from-red-500 to-orange-600 rounded-2xl text-white" style={{ padding: '40px' }}>
-                  <div className="bg-white/20 backdrop-blur-sm rounded-full w-fit" style={{ padding: '20px', margin: '0 auto 20px' }}>
-                  <Tv className="w-10 h-10" />
-                </div>
-                  <h3 className="text-3xl font-bold" style={{ marginBottom: '12px' }}>Start Your Live Stream</h3>
-                  <p className="text-white/90 text-lg" style={{ marginBottom: '32px' }}>Share your fashion content with the world in real-time</p>
-                  <button 
-                    onClick={() => navigateTo('/social/fashiontv/live')}
-                    className="bg-white text-red-600 rounded-xl font-bold hover:bg-gray-100 transition-colors text-lg"
-                    style={{ padding: '16px 32px' }}
-                  >
-                  🎥 Go Live Now
-                </button>
-                </div>
-              </div>
             </div>
           )}
         </section>

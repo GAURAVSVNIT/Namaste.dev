@@ -1,0 +1,236 @@
+/* Sidebar Container */
+.sidebarContainer {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Card Styles */
+.card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-color: #cbd5e1;
+}
+
+.cardContent {
+  padding: 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Card Header */
+.cardHeader {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid #f1f5f9;
+  background: linear-gradient(90deg, #f8fafc 0%, #f1f5f9 100%);
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+}
+
+/* Activity Items */
+.activityList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.activityItem {
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  padding: 0.75rem;
+  margin: -0.75rem;
+}
+
+.activityItem:hover {
+  background-color: #f8fafc;
+}
+
+.activityItemContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  width: 100%;
+}
+
+.activityItemLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.activityIcon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.iconSize {
+  width: 1rem;
+  height: 1rem;
+}
+
+.activityInfo {
+  min-width: 0;
+  flex: 1;
+}
+
+.activityTitle {
+  font-weight: 500;
+  color: #1e293b;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9375rem;
+}
+
+.activitySubtitle {
+  font-size: 0.8125rem;
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.activityItemRight {
+  flex-shrink: 0;
+}
+
+.activityTime {
+  font-size: 0.875rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Card Footer */
+.cardFooter {
+  border-top: 1px solid #f1f5f9;
+  padding: 1rem 0 0 0;
+  margin-top: 1rem;
+}
+
+.cardFooterButton {
+  width: 100%;
+  color: #3b82f6;
+  font-weight: 500;
+}
+
+.cardFooterButton:hover {
+  background-color: #eff6ff;
+}
+
+/* Quick Actions */
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.quickActionButton {
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.quickActionButton:hover {
+  transform: translateY(-1px);
+}
+
+.quickActionIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin-right: 0.75rem;
+}
+
+/* Progress Section */
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.progressItem {
+  width: 100%;
+}
+
+.progressHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #475569;
+  font-weight: 500;
+}
+
+.progressBar {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #f1f5f9;
+  overflow: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .sidebarContainer {
+    order: 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .activityItemContent {
+    flex-direction: row;
+    align-items: center;
+  }
+  
+  .activityTitle {
+    font-size: 0.875rem;
+  }
+  
+  .activitySubtitle {
+    font-size: 0.75rem;
+  }
+  
+  .activityTime {
+    font-size: 0.8125rem;
+  }
+}

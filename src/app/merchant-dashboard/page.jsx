@@ -7,6 +7,7 @@ import { auth } from '@/lib/firebase';
 import { Line, Doughnut } from 'react-chartjs-2';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
+import { getMerchantDashboardSummary, subscribeToAnalyticsUpdates } from '@/lib/analytics';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,40 +22,6 @@ import {
 } from 'chart.js';
 import styles from './Dashboard.module.css';
 
-// Mock functions for dashboard data
-const getMerchantDashboardSummary = async (userId) => {
-  return {
-    todayRevenue: 2430.50,
-    activeOrders: 12,
-    totalProducts: 45,
-    unreadMessages: 3,
-    recentOrders: []
-  };
-};
-
-const getTopSellingProducts = async (limit) => {
-  return [
-    { id: 1, name: 'Product 1', sales: 120 },
-    { id: 2, name: 'Product 2', sales: 95 },
-    { id: 3, name: 'Product 3', sales: 87 },
-    { id: 4, name: 'Product 4', sales: 73 },
-    { id: 5, name: 'Product 5', sales: 65 }
-  ];
-};
-
-const subscribeToDashboardUpdates = (userId, callback) => {
-  // Mock subscription - returns unsubscribe function
-  const interval = setInterval(() => {
-    callback({
-      todayRevenue: 2430.50 + Math.random() * 100,
-      activeOrders: 12 + Math.floor(Math.random() * 5),
-      totalProducts: 45,
-      unreadMessages: Math.floor(Math.random() * 10)
-    });
-  }, 30000); // Update every 30 seconds
-  
-  return () => clearInterval(interval);
-};
 
 ChartJS.register(
   CategoryScale,
@@ -90,12 +57,8 @@ function MerchantDashboardContent() {
         
         // Fetch initial dashboard summary
         try {
-          const summary = await getMerchantDashboardSummary(user.uid);
+          const summary = await getMerchantDashboardSummary();
           setDashboardData(prev => ({ ...prev, ...summary }));
-          
-          // Fetch top selling products
-          const products = await getTopSellingProducts(5);
-          setTopProducts(products);
           
           setLoading(false);
         } catch (error) {
@@ -104,7 +67,7 @@ function MerchantDashboardContent() {
         }
         
         // Subscribe to real-time updates
-        const unsubscribeDashboard = subscribeToDashboardUpdates(user.uid, (updates) => {
+        const unsubscribeDashboard = subscribeToAnalyticsUpdates((updates) => {
           setDashboardData(prev => ({ ...prev, ...updates }));
         });
         
@@ -123,9 +86,9 @@ function MerchantDashboardContent() {
   const stats = [
     {
       title: 'Today\'s Revenue',
-      value: `$${dashboardData.todayRevenue?.toFixed(2) || '0.00'}`,
+      value: `₹${dashboardData.todayRevenue?.toFixed(2) || '0.00'}`,
       icon: DollarSign,
-      trend: 'up',
+      trend: dashboardData.todayRevenue > 0 ? 'up' : 'neutral',
       trendValue: 12.5,
       color: 'green'
     },
@@ -141,7 +104,7 @@ function MerchantDashboardContent() {
       title: 'Total Products',
       value: dashboardData.totalProducts?.toString() || '0',
       icon: Package,
-      trend: 'up',
+      trend: dashboardData.totalProducts > 0 ? 'up' : 'neutral',
       trendValue: 3.1,
       color: 'purple'
     },
@@ -557,7 +520,7 @@ function MerchantDashboardContent() {
 // Main component with role protection
 export default function MerchantDashboardPage() {
   return (
-    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT]}>
+    <RoleProtected allowedRoles={[USER_ROLES.MERCHANT, USER_ROLES.ADMIN]}>
       <MerchantDashboardContent />
     </RoleProtected>
   );

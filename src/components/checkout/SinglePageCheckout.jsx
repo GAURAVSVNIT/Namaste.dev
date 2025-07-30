@@ -112,7 +112,7 @@ const SinglePageCheckout = ({ onBack }) => {
         
         // Create Shiprocket order for COD as well
         try {
-          const shiprocketResponse = await fetch('/api/shiprocket/create-order', {
+          const shiprocketResponse = await fetch('/api/merchant/shiprocket/create-order', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -203,7 +203,7 @@ const SinglePageCheckout = ({ onBack }) => {
               
               // Create Shiprocket order after local order is created
               try {
-                const shiprocketResponse = await fetch('/api/shiprocket/create-order', {
+                const shiprocketResponse = await fetch('/api/merchant/shiprocket/create-order', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',

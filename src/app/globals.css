@@ -1,9 +1,13 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   /* Fonts */
   --font-sans: var(--font-inter), "Inter", sans-serif;
   --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
+  --font-header-title: var(--font-playfair-display), "Playfair Display", serif;
+  --font-header-nav: var(--font-montserrat), "Montserrat", sans-serif;
 
   /* Custom Colors */
   --color-cev-blue: #060136;
@@ -37,12 +41,12 @@
 }
 
 :root {
-  --background: #ffffff;
+  --background: #f9fafb;
   --foreground: #171717;
   --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
   
   /* Fashion Hub colors */
-  /* --color-blush: #fef2f2;
+  --color-blush: #fef2f2;
   --color-mint: #f0fdf4;
   --color-lavender: #faf5ff;
   --color-peach: #fefce8;
@@ -138,7 +142,7 @@
 ---break---*/
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.99 0.002 247.858);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -201,6 +205,13 @@
   --backdrop-blur-lg: blur(16px);
   --backdrop-blur-md: blur(12px);
   --backdrop-blur-sm: blur(4px);
+
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --white: #ffffff;
+  --white-80: rgba(255, 255, 255, 0.8);
+  --white-50: rgba(255, 255, 255, 0.5);
+  --white-10: rgba(255, 255, 255, 0.1);
+  --white-5: rgba(255, 255, 255, 0.05);
 }
 
 @layer base {
@@ -218,6 +229,10 @@
 }
 
 @layer utilities {
+  /* Header Font Classes */
+  .font-header-title { font-family: var(--font-header-title); }
+  .font-header-nav { font-family: var(--font-header-nav); }
+  
   /* Text Shadows */
   .text-shadow { text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2); }
   .text-shadow-none { text-shadow: none; }
@@ -297,3 +312,4 @@
     animation: shimmer 2s infinite; 
   }
 }
+

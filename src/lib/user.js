@@ -212,10 +212,45 @@ export const populateActivitiesFromExistingData = async (userId) => {
     userBlogs.forEach(blog => {
       activities.push({
         type: 'created',
+        contentType: 'blog',
         blogId: blog.id,
         blogTitle: blog.title,
         blogSlug: blog.slug,
         timestamp: blog.createdAt
+      });
+    });
+    
+    // Get user's looks and add 'created' activities
+    const looksQuery = query(
+      collection(db, 'looks'),
+      where('userId', '==', userId)
+    );
+    const looksSnapshot = await getDocs(looksQuery);
+    looksSnapshot.forEach((doc) => {
+      const lookData = doc.data();
+      activities.push({
+        type: 'created',
+        contentType: 'look',
+        lookId: doc.id,
+        lookTitle: lookData.text || 'Look',
+        timestamp: lookData.createdAt
+      });
+    });
+    
+    // Get user's reels and add 'created' activities
+    const reelsQuery = query(
+      collection(db, 'fashiontv_videos'),
+      where('userId', '==', userId)
+    );
+    const reelsSnapshot = await getDocs(reelsQuery);
+    reelsSnapshot.forEach((doc) => {
+      const reelData = doc.data();
+      activities.push({
+        type: 'created',
+        contentType: 'reel',
+        reelId: doc.id,
+        reelTitle: reelData.text || reelData.title || 'Reel',
+        timestamp: reelData.createdAt
       });
     });
     
@@ -228,6 +263,7 @@ export const populateActivitiesFromExistingData = async (userId) => {
         if (blog) {
           activities.push({
             type: 'liked',
+            contentType: 'blog',
             blogId: blog.id,
             blogTitle: blog.title,
             blogSlug: blog.slug,
@@ -236,6 +272,53 @@ export const populateActivitiesFromExistingData = async (userId) => {
         }
       } catch (error) {
         console.error('Error loading blog for activity:', error);
+      }
+    }
+    
+    // Get user data to find liked looks and reels
+    const userData = await getUserById(userId);
+    
+    // Get liked looks and add 'liked' activities
+    if (userData?.likedLooks?.length > 0) {
+      for (const lookId of userData.likedLooks) {
+        try {
+          const lookRef = doc(db, 'looks', lookId);
+          const lookSnap = await getDoc(lookRef);
+          if (lookSnap.exists()) {
+            const lookData = lookSnap.data();
+            activities.push({
+              type: 'liked',
+              contentType: 'look',
+              lookId: lookId,
+              lookTitle: lookData.text || 'Look',
+              timestamp: new Date() // We don't have exact like timestamp, use current
+            });
+          }
+        } catch (error) {
+          console.error('Error loading look for activity:', error);
+        }
+      }
+    }
+    
+    // Get liked reels and add 'liked' activities
+    if (userData?.likedReels?.length > 0) {
+      for (const reelId of userData.likedReels) {
+        try {
+          const reelRef = doc(db, 'fashiontv_videos', reelId);
+          const reelSnap = await getDoc(reelRef);
+          if (reelSnap.exists()) {
+            const reelData = reelSnap.data();
+            activities.push({
+              type: 'liked',
+              contentType: 'reel',
+              reelId: reelId,
+              reelTitle: reelData.text || reelData.title || 'Reel',
+              timestamp: new Date() // We don't have exact like timestamp, use current
+            });
+          }
+        } catch (error) {
+          console.error('Error loading reel for activity:', error);
+        }
       }
     }
     

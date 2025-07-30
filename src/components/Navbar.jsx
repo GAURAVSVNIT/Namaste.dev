@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Head from 'next/head';
 import '../static/Navbar.css'
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getUserById } from '@/lib/user';
 import { logOut } from '@/lib/firebase';
@@ -18,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, ShoppingCart } from 'lucide-react';
+import { User, LogOut, Settings, ShoppingCart, Sparkle, Sparkles } from 'lucide-react';
 import useCartStore from '@/store/cart-store';
 
 export default function Navbar(fontFace) {
@@ -34,10 +35,13 @@ export default function Navbar(fontFace) {
   
   // Use the auth hook
   const { user, loading: authLoading, isAuthenticated } = useAuth();
+  
+  // Get current pathname
+  const pathname = usePathname();
 
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth <= 1024); // Changed from 768 to 1024 for better tablet support
+      setIsMobile(window.innerWidth <= 1024); // Increased breakpoint for better tablet experience
     };
 
     const handleScroll = () => {
@@ -84,15 +88,16 @@ export default function Navbar(fontFace) {
 
   const navItems = [
     // { name: 'Home'},
-    { name: 'Social Media', route: "social" },
+    { name: 'StyleSphere', route: "social" },
     { name: 'Market Place', route: "marketplace" },
 { name: 'Quiz', route: "quiz" },
-    { name: 'Virtual Try-On', route: "virtual-tryon" },
+    { name: 'Avatarra', route: "virtual-tryon" },
+    { name: 'Consultation', route: "consultation" },
     { name: 'Blog', route: "blog" }
   ];
 
   const { openCart, getCartCount } = useCartStore();
-  const { cartCount, setCardCount } = getCartCount();
+  const cartCount = getCartCount();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -112,55 +117,295 @@ export default function Navbar(fontFace) {
             />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent 
-          className="w-56 bg-white border border-gray-200 shadow-lg rounded-md p-1" 
-          align="end" 
-          sideOffset={12}
-          style={{ zIndex: 10000 }}
-          container={typeof window !== 'undefined' ? document.body : undefined}
-        >
-          <div className="flex items-center justify-start gap-2 p-3 border-b border-gray-100">
-            <SmartAvatar 
-              user={userProfile} 
-              className="h-8 w-8" 
-              fallbackClassName="bg-gray-200 text-gray-700 text-sm"
-            />
-            <div className="flex flex-col space-y-1 leading-none flex-1 min-w-0">
-              <p className="font-medium text-sm text-gray-900 truncate">
-                {userProfile.name || 'User'}
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                {userProfile.email}
-              </p>
-              <div className="mt-1">
-                <RoleBadge role={userProfile.role} size="sm" />
+          <DropdownMenuContent 
+            align="end" 
+            sideOffset={12}
+            style={{ 
+              zIndex: 10000,
+              width: '320px',
+              background: 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,250,252,0.95) 100%)',
+              backdropFilter: 'blur(20px)',
+              WebkitBackdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255,255,255,0.2)',
+              borderRadius: '20px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255,255,255,0.05)',
+              padding: '8px'
+            }}
+            container={typeof window !== 'undefined' ? document.body : undefined}
+          >
+            {/* User Info Header */}
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              padding: '16px',
+              marginBottom: '8px',
+              borderRadius: '16px',
+              background: 'rgba(255,255,255,0.7)'
+            }}>
+              <div style={{ position: 'relative' }}>
+                <SmartAvatar 
+                  user={userProfile} 
+                  className="h-12 w-12" 
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    border: '3px solid rgba(255,255,255,0.8)',
+                    boxShadow: '0 8px 25px rgba(0,0,0,0.15)'
+                  }}
+                  fallbackClassName="bg-gradient-to-br from-purple-500 to-pink-500 text-white text-lg font-semibold"
+                />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '-2px',
+                  right: '-2px',
+                  width: '16px',
+                  height: '16px',
+                  background: '#10B981',
+                  borderRadius: '50%',
+                  border: '3px solid white',
+                  boxShadow: '0 2px 8px rgba(16,185,129,0.4)'
+                }}></div>
+              </div>
+              <div style={{
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '4px',
+                flex: '1',
+                minWidth: '0'
+              }}>
+                <p style={{
+                  fontWeight: '600',
+                  fontSize: '14px',
+                  color: '#111827',
+                  margin: '0',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {userProfile.name || 'User'}
+                </p>
+                <p style={{
+                  fontSize: '12px',
+                  color: '#6B7280',
+                  margin: '0',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}>
+                  {userProfile.email}
+                </p>
+                <div style={{ marginTop: '6px' }}>
+                  <RoleBadge role={userProfile.role} size="sm" style={{ padding: '6px 12px' }} />
+                </div>
               </div>
             </div>
-          </div>
-          
-          <DropdownMenuItem asChild className="focus:bg-gray-50">
-            <Link href="/profile" className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-              <User className="h-4 w-4" />
-              <span>Profile</span>
-            </Link>
-          </DropdownMenuItem>
-          
-          <DropdownMenuItem asChild className="focus:bg-gray-50">
-            <Link href="/profile/blogs" className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-gray-700 hover:bg-gray-50">
-              <Settings className="h-4 w-4" />
-              <span>My Blogs</span>
-            </Link>
-          </DropdownMenuItem>
-          
-          <div className="border-t border-gray-100 my-1"></div>
-          
-          <DropdownMenuItem 
-            onClick={handleLogout}
-            className="flex items-center gap-2 cursor-pointer px-3 py-2 text-sm text-red-600 hover:bg-red-50 focus:bg-red-50 focus:text-red-600"
-          >
-            <LogOut className="h-4 w-4" />
-            <span>Log out</span>
-          </DropdownMenuItem>
+
+            
+            {/* Navigation Links */}
+            <div style={{ padding: '0 4px' }}>
+              <DropdownMenuItem asChild>
+                <Link href="/profile" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  textDecoration: 'none',
+                  borderRadius: '12px',
+                  transition: 'all 0.2s ease',
+                  marginBottom: '4px',
+                  background: 'transparent'
+                }} onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(147, 51, 234, 0.1))';
+                  e.target.style.transform = 'translateY(-1px)';
+                }} onMouseLeave={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.transform = 'translateY(0px)';
+                }}>
+                  <div style={{
+                    padding: '10px',
+                    background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+                    color: 'white',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)',
+                    transition: 'all 0.2s ease'
+                  }}>
+                    <User style={{ width: '16px', height: '16px' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '500', fontSize: '14px', color: '#374151', marginBottom: '2px' }}>Profile</div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Manage your account</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem asChild>
+                <Link href="/profile/orders" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  textDecoration: 'none',
+                  borderRadius: '12px',
+                  transition: 'all 0.2s ease',
+                  marginBottom: '4px',
+                  background: 'transparent'
+                }} onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))';
+                  e.target.style.transform = 'translateY(-1px)';
+                }} onMouseLeave={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.transform = 'translateY(0px)';
+                }}>
+                  <div style={{
+                    padding: '10px',
+                    background: 'linear-gradient(135deg, #A855F7, #EC4899)',
+                    color: 'white',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4)',
+                    transition: 'all 0.2s ease'
+                  }}>
+                    <ShoppingCart style={{ width: '16px', height: '16px' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '500', fontSize: '14px', color: '#374151', marginBottom: '2px' }}>My Orders</div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Track your purchases</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link href="/avatars" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  textDecoration: 'none',
+                  borderRadius: '12px',
+                  transition: 'all 0.2s ease',
+                  marginBottom: '4px',
+                  background: 'transparent'
+                }} onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(236, 72, 153, 0.1))';
+                  e.target.style.transform = 'translateY(-1px)';
+                }} onMouseLeave={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.transform = 'translateY(0px)';
+                }}>
+                  <div style={{
+                    padding: '10px',
+                    background: 'linear-gradient(135deg, #FACC15, #F97316, #EF4444)',
+                    color: 'white',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(168, 85, 247, 0.4)',
+                    transition: 'all 0.2s ease'
+                  }}>
+                    <Sparkles style={{ width: '16px', height: '16px' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '500', fontSize: '14px', color: '#374151', marginBottom: '2px' }}>My Avatars</div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Express Yourself in 3D.</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem asChild>
+                <Link href="/profile/blogs" style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '12px 16px',
+                  textDecoration: 'none',
+                  borderRadius: '12px',
+                  transition: 'all 0.2s ease',
+                  marginBottom: '4px',
+                  background: 'transparent'
+                }} onMouseEnter={(e) => {
+                  e.target.style.background = 'linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(16, 185, 129, 0.1))';
+                  e.target.style.transform = 'translateY(-1px)';
+                }} onMouseLeave={(e) => {
+                  e.target.style.background = 'transparent';
+                  e.target.style.transform = 'translateY(0px)';
+                }}>
+                  <div style={{
+                    padding: '10px',
+                    background: 'linear-gradient(135deg, #22C55E, #10B981)',
+                    color: 'white',
+                    borderRadius: '10px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(34, 197, 94, 0.4)',
+                    transition: 'all 0.2s ease'
+                  }}>
+                    <Settings style={{ width: '16px', height: '16px' }} />
+                  </div>
+                  <div>
+                    <div style={{ fontWeight: '500', fontSize: '14px', color: '#374151', marginBottom: '2px' }}>My Blogs</div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Your published content</div>
+                  </div>
+                </Link>
+              </DropdownMenuItem>
+            </div>
+            
+            {/* Separator */}
+            <div style={{
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(156, 163, 175, 0.4), transparent)',
+              margin: '12px 8px'
+            }}></div>
+            
+            {/* Logout */}
+            <DropdownMenuItem 
+              onClick={handleLogout}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '12px 16px',
+                margin: '0 4px',
+                borderRadius: '12px',
+                transition: 'all 0.2s ease',
+                background: 'transparent',
+                cursor: 'pointer',
+                border: 'none'
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(236, 72, 153, 0.1))';
+                e.target.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.background = 'transparent';
+                e.target.style.transform = 'translateY(0px)';
+              }}
+            >
+              <div style={{
+                padding: '10px',
+                background: 'linear-gradient(135deg, #EF4444, #EC4899)',
+                color: 'white',
+                borderRadius: '10px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)',
+                transition: 'all 0.2s ease'
+              }}>
+                <LogOut style={{ width: '16px', height: '16px' }} />
+              </div>
+              <div>
+                <div style={{ fontWeight: '500', fontSize: '14px', color: '#DC2626', marginBottom: '2px' }}>Log out</div>
+                <div style={{ fontSize: '12px', color: '#F87171' }}>Sign out of your account</div>
+              </div>
+            </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     );
@@ -173,8 +418,13 @@ export default function Navbar(fontFace) {
       <nav className={`navbar ${scrolled ? 'scrolled' : ''} ` + fontFace}>
         <div className="navbar-container">
           <Link href="/" className="logo">
-            <i className="fas fa-tshirt logo-icon"></i>
-            FashionHub
+            <div className="logo-container">
+              <img 
+                src="/logo-home.png" 
+                alt="FashionHub Logo" 
+                className="logo-image"
+              />
+            </div>
           </Link>
 
           {isClient && (
@@ -198,86 +448,83 @@ export default function Navbar(fontFace) {
               </div>
 
               <div className={`mobile-menu ${menuOpen ? 'active' : ''}`}>
-                <div className="mobile-menu-content">
-                  <ul className="mobile-nav-links">
-                    {navItems.map((item, index) => (
-                      <li key={index} className="mobile-nav-item">
-                        <Link 
-                          href={`/${item.route.replace(/^\/+/, "")}`} 
-                          className="mobile-nav-link"
-                          onClick={() => setMenuOpen(false)}
-                        >
-                          {item.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                  
-                  <div className="mobile-auth-section">
-                    {isAuthenticated && userProfile ? (
-                      <div className="mobile-profile-section">
-                        <div className="mobile-profile-info">
-                          <SmartAvatar 
-                            user={userProfile} 
-                            className="h-12 w-12" 
-                            fallbackClassName="bg-gray-200 text-gray-700"
-                          />
-                          <div className="mobile-profile-details">
-                            <p className="mobile-profile-name">
-                              {userProfile.name || 'User'}
-                            </p>
-                            <p className="mobile-profile-email">
-                              {userProfile.email}
-                            </p>
-                            <RoleBadge role={userProfile.role} size="sm" />
-                          </div>
-                        </div>
-                        
-                        <div className="mobile-profile-actions">
-                          <Link 
-                            href="/profile" 
-                            className="mobile-profile-link"
-                            onClick={() => setMenuOpen(false)}
-                          >
-                            <User className="h-4 w-4" />
-                            Profile
-                          </Link>
-                          <Link 
-                            href="/profile/blogs" 
-                            className="mobile-profile-link"
-                            onClick={() => setMenuOpen(false)}
-                          >
-                            <Settings className="h-4 w-4" />
-                            My Blogs
-                          </Link>
-                          <button 
-                            onClick={handleLogout}
-                            className="mobile-logout-btn"
-                          >
-                            <LogOut className="h-4 w-4" />
-                            Log out
-                          </button>
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="mobile-auth-buttons">
-                        <Link 
-                          href="/auth/login" 
-                          className="login-btn mobile-auth-btn"
-                          onClick={() => setMenuOpen(false)}
-                        >
-                          Login
-                        </Link>
-                        <Link 
-                          href="/auth/signup" 
-                          className="signup-btn mobile-auth-btn"
-                          onClick={() => setMenuOpen(false)}
-                        >
-                          Sign Up
-                        </Link>
-                      </div>
-                    )}
+                <ul className="mobile-nav-links">
+                  {navItems.map((item, index) => (
+                    <li key={index} className="mobile-nav-item">
+                      <Link 
+                        href={`/${item.route.replace(/^\/+/, "")}`} 
+                        className="mobile-nav-link"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+                
+                {/* Mobile Cart */}
+                {pathname.startsWith('/marketplace') && (
+                  <div className="mobile-cart-section">
+                    <button 
+                      className="mobile-cart-btn" 
+                      onClick={() => {
+                        openCart();
+                        setMenuOpen(false);
+                      }}
+                    >
+                      <ShoppingCart className="mobile-cart-icon" />
+                      <span>Shopping Cart</span>
+                      {cartCount > 0 && (
+                        <span className="mobile-cart-count">{cartCount}</span>
+                      )}
+                    </button>
                   </div>
+                )}
+                
+                <div className="mobile-auth-buttons">
+                  {isAuthenticated && userProfile ? (
+                    <>
+                      <Link 
+                        href="/profile" 
+                        className="mobile-profile-btn"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        <SmartAvatar 
+                          user={userProfile} 
+                          className="mobile-avatar" 
+                          fallbackClassName="bg-gray-200 text-gray-700"
+                        />
+                        <span>{userProfile.name || 'Profile'}</span>
+                      </Link>
+                      <button 
+                        onClick={() => {
+                          handleLogout();
+                          setMenuOpen(false);
+                        }}
+                        className="mobile-logout-btn"
+                      >
+                        <LogOut className="mobile-logout-icon" />
+                        <span>Logout</span>
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link 
+                        href="/auth/login" 
+                        className="login-btn"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Login
+                      </Link>
+                      <Link 
+                        href="/auth/signup" 
+                        className="signup-btn"
+                        onClick={() => setMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </>
@@ -293,41 +540,43 @@ export default function Navbar(fontFace) {
                 ))}
               </ul>
               <div className="auth-buttons">
-                <button 
-                  className="cart-icon-btn" 
-                  onClick={openCart}
-                  style={{ 
-                    background: 'none', 
-                    border: 'none', 
-                    position: 'relative', 
-                    cursor: 'pointer',
-                    marginRight: '1rem',
-                    padding: '0.5rem'
-                  }}
-                >
-                  <ShoppingCart className="h-6 w-6" style={{ color: '#333' }} />
-                  {cartCount > 0 && (
-                    <span 
-                      style={{
-                        position: 'absolute',
-                        top: '-5px',
-                        right: '-5px',
-                        backgroundColor: '#ef4444',
-                        color: 'white',
-                        borderRadius: '50%',
-                        width: '20px',
-                        height: '20px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        fontSize: '12px',
-                        fontWeight: 'bold'
-                      }}
-                    >
-                      {cartCount}
-                    </span>
-                  )}
-                </button>
+                {pathname.startsWith('/marketplace') && (
+                  <button 
+                    className="cart-icon-btn" 
+                    onClick={openCart}
+                    style={{ 
+                      background: 'none', 
+                      border: 'none', 
+                      position: 'relative', 
+                      cursor: 'pointer',
+                      marginRight: '1rem',
+                      padding: '0.5rem'
+                    }}
+                  >
+                    <ShoppingCart className="h-6 w-6" style={{ color: '#333' }} />
+                    {cartCount > 0 && (
+                      <span 
+                        style={{
+                          position: 'absolute',
+                          top: '-5px',
+                          right: '-5px',
+                          backgroundColor: '#ef4444',
+                          color: 'white',
+                          borderRadius: '50%',
+                          width: '20px',
+                          height: '20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {cartCount}
+                      </span>
+                    )}
+                  </button>
+                )}
                 {isAuthenticated && userProfile ? (
                   <ProfileMenu />
                 ) : (

@@ -2,18 +2,24 @@
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Heart, FileText, Calendar, Activity as ActivityIcon } from 'lucide-react';
+import { Heart, FileText, Calendar, Activity as ActivityIcon, Image, Play, UserPlus, UserMinus } from 'lucide-react';
 import Link from 'next/link';
 
 const ActivityItem = ({ activity }) => {
-  const getIcon = (type) => {
+  const getIcon = (type, contentType) => {
     switch (type) {
       case 'liked':
         return <Heart className="w-4 h-4 text-red-500" />;
       case 'created':
+        if (contentType === 'look') return <Image className="w-4 h-4 text-purple-500" />;
+        if (contentType === 'reel') return <Play className="w-4 h-4 text-green-500" />;
         return <FileText className="w-4 h-4 text-blue-500" />;
       case 'updated':
         return <FileText className="w-4 h-4 text-green-500" />;
+      case 'follow':
+        return <UserPlus className="w-4 h-4 text-blue-500" />;
+      case 'unfollow':
+        return <UserMinus className="w-4 h-4 text-gray-500" />;
       default:
         return <ActivityIcon className="w-4 h-4 text-gray-500" />;
     }
@@ -65,37 +71,132 @@ const ActivityItem = ({ activity }) => {
   };
 
   return (
-    <div className="flex items-start gap-4 p-4 border-l-2 border-gray-100">
-      <div className="flex-shrink-0 w-8 h-8 bg-white border border-gray-200 rounded-full flex items-center justify-center">
-        {getIcon(activity.type)}
+    <div style={{
+      display: 'flex',
+      alignItems: 'flex-start',
+      gap: '16px',
+      padding: '16px',
+      borderLeft: '2px solid rgba(229, 231, 235, 0.5)'
+    }}>
+      <div style={{
+        flexShrink: 0,
+        width: '32px',
+        height: '32px',
+        background: 'rgba(255, 255, 255, 0.9)',
+        border: '1px solid rgba(229, 231, 235, 0.3)',
+        borderRadius: '50%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backdropFilter: 'blur(10px)'
+      }}>
+        {getIcon(activity.type, activity.contentType)}
       </div>
       
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
-          <Badge variant="secondary" className={`text-xs ${getTypeColor(activity.type)}`}>
+      <div style={{
+        flex: 1,
+        minWidth: 0
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          marginBottom: '4px'
+        }}>
+          <span style={{
+            fontSize: '12px',
+            padding: '4px 8px',
+            borderRadius: '9999px',
+            backgroundColor: activity.type === 'liked' ? 'rgba(239, 68, 68, 0.1)' : 
+                            activity.type === 'created' ? 'rgba(59, 130, 246, 0.1)' :
+                            activity.type === 'updated' ? 'rgba(34, 197, 94, 0.1)' : 'rgba(156, 163, 175, 0.1)',
+            color: activity.type === 'liked' ? 'rgb(153, 27, 27)' : 
+                   activity.type === 'created' ? 'rgb(30, 64, 175)' :
+                   activity.type === 'updated' ? 'rgb(21, 128, 61)' : 'rgb(75, 85, 99)',
+            fontWeight: '500',
+            textTransform: 'capitalize'
+          }}>
             {activity.type}
-          </Badge>
-          <span className="text-sm text-muted-foreground">
+          </span>
+          <span style={{
+            fontSize: '14px',
+            color: 'rgb(107, 114, 128)'
+          }}>
             {formatDate(activity.timestamp)}
           </span>
         </div>
         
-        <p className="text-sm">
-          You {getActionText(activity.type)}{' '}
-          {activity.blogTitle ? (
-            <Link 
-              href={`/blog/${activity.blogSlug || activity.blogId}`}
-              className="font-medium text-primary hover:underline"
-            >
-              "{activity.blogTitle}"
-            </Link>
+        <p style={{
+          fontSize: '14px',
+          color: 'rgb(55, 65, 81)',
+          lineHeight: '1.4'
+        }}>
+          {activity.type === 'follow' || activity.type === 'unfollow' ? (
+            activity.description || (
+              <>
+                You {activity.type === 'follow' ? 'started following' : 'unfollowed'}{' '}
+                <span style={{
+                  fontWeight: '500',
+                  color: 'rgb(59, 130, 246)'
+                }}>
+                  {activity.followingUsername || activity.details || 'a user'}
+                </span>
+              </>
+            )
           ) : (
-            <span className="font-medium">a blog post</span>
+            <>
+              You {getActionText(activity.type)}{' '}
+              {activity.blogTitle ? (
+                <Link 
+                  href={`/blog/${activity.blogSlug || activity.blogId}`}
+                  style={{
+                    fontWeight: '500',
+                    color: 'rgb(79, 70, 229)',
+                    textDecoration: 'none'
+                  }}
+                  onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
+                  onMouseOut={(e) => e.target.style.textDecoration = 'none'}
+                >
+                  "{activity.blogTitle}"
+                </Link>
+              ) : activity.lookTitle ? (
+                <span style={{
+                  fontWeight: '500',
+                  color: 'rgb(147, 51, 234)'
+                }}>
+                  look "{activity.lookTitle}"
+                </span>
+              ) : activity.reelTitle ? (
+                <span style={{
+                  fontWeight: '500',
+                  color: 'rgb(34, 197, 94)'
+                }}>
+                  reel "{activity.reelTitle}"
+                </span>
+              ) : activity.contentType === 'look' ? (
+                <span style={{
+                  fontWeight: '500',
+                  color: 'rgb(147, 51, 234)'
+                }}>a look</span>
+              ) : activity.contentType === 'reel' ? (
+                <span style={{
+                  fontWeight: '500',
+                  color: 'rgb(34, 197, 94)'
+                }}>a reel</span>
+              ) : (
+                <span style={{ fontWeight: '500' }}>a blog post</span>
+              )}
+            </>
           )}
         </p>
         
         {activity.description && (
-          <p className="text-sm text-muted-foreground mt-1">
+          <p style={{
+            fontSize: '14px',
+            color: 'rgb(107, 114, 128)',
+            marginTop: '4px',
+            lineHeight: '1.4'
+          }}>
             {activity.description}
           </p>
         )}
@@ -107,19 +208,63 @@ const ActivityItem = ({ activity }) => {
 export default function ActivityTimeline({ activities = [], loading = false }) {
   if (loading) {
     return (
-      <div className="space-y-4">
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '16px'
+      }}>
+        <style>
+          {`
+            @keyframes pulse {
+              0%, 100% { opacity: 1; }
+              50% { opacity: 0.5; }
+            }
+            .loading-pulse {
+              animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            }
+          `}
+        </style>
         {[...Array(5)].map((_, i) => (
-          <Card key={i} className="animate-pulse">
-            <CardContent className="p-4">
-              <div className="flex items-start gap-4">
-                <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                <div className="flex-1 space-y-2">
-                  <div className="h-4 bg-gray-200 rounded w-1/4"></div>
-                  <div className="h-3 bg-gray-200 rounded w-3/4"></div>
-                </div>
+          <div key={i} style={{
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdropFilter: 'blur(10px)',
+            borderRadius: '12px',
+            border: '1px solid rgba(229, 231, 235, 0.3)',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+          }} className="loading-pulse">
+            <div style={{
+              padding: '16px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px'
+            }}>
+              <div style={{
+                width: '32px',
+                height: '32px',
+                backgroundColor: 'rgba(229, 231, 235, 0.8)',
+                borderRadius: '50%'
+              }}></div>
+              <div style={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '8px'
+              }}>
+                <div style={{
+                  height: '16px',
+                  backgroundColor: 'rgba(229, 231, 235, 0.8)',
+                  borderRadius: '4px',
+                  width: '25%'
+                }}></div>
+                <div style={{
+                  height: '12px',
+                  backgroundColor: 'rgba(229, 231, 235, 0.8)',
+                  borderRadius: '4px',
+                  width: '75%'
+                }}></div>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
     );
@@ -127,17 +272,59 @@ export default function ActivityTimeline({ activities = [], loading = false }) {
 
   if (!activities || activities.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-          <ActivityIcon className="w-12 h-12 text-gray-400" />
+      <div style={{
+        textAlign: 'center',
+        padding: '48px 0'
+      }}>
+        <div style={{
+          margin: '0 auto 16px',
+          width: '96px',
+          height: '96px',
+          background: 'rgba(243, 244, 246, 0.8)',
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(229, 231, 235, 0.3)'
+        }}>
+          <ActivityIcon style={{ width: '48px', height: '48px', color: 'rgb(156, 163, 175)' }} />
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No Activity Yet</h3>
-        <p className="text-gray-500 mb-4">
-          Your activities will appear here as you interact with blogs.
+        <h3 style={{
+          fontSize: '18px',
+          fontWeight: '500',
+          color: 'rgb(17, 24, 39)',
+          marginBottom: '8px'
+        }}>No Activity Yet</h3>
+        <p style={{
+          color: 'rgb(107, 114, 128)',
+          marginBottom: '16px',
+          lineHeight: '1.5'
+        }}>
+          Start creating looks, reels, and interacting with content to see your activities here.
         </p>
-        <Link href="/blog">
-          <button className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90">
-            Explore Blogs
+        <Link href="/social/look/upload">
+          <button style={{
+            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.9), rgba(147, 51, 234, 0.9))',
+            color: 'white',
+            padding: '8px 16px',
+            borderRadius: '6px',
+            border: 'none',
+            fontWeight: '500',
+            cursor: 'pointer',
+            backdropFilter: 'blur(10px)',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.transform = 'translateY(-1px)';
+            e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.transform = 'translateY(0)';
+            e.target.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)';
+          }}>
+            Create a Look
           </button>
         </Link>
       </div>

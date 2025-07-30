@@ -231,23 +231,22 @@ export default function LookCard({ look, onEdit, onDelete }) {
         </div>
 
         {/* Author Info */}
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-2">
+        <div style={{ padding: '20px 24px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <SmartAvatar 
                 user={author} 
-                className="w-8 h-8"
-                fallbackClassName="text-xs"
+                style={{ width: '40px', height: '40px' }}
               />
               <div>
-                <p className="font-medium text-sm">{author?.name || 'Unknown User'}</p>
-                <p className="text-xs text-muted-foreground">{formatDate(look.createdAt)}</p>
+                <p style={{ fontWeight: '600', fontSize: '1rem', color: '#1f2937' }}>{author?.name || 'Unknown User'}</p>
+                <p style={{ fontSize: '0.875rem', color: '#6b7280' }}>{formatDate(look.createdAt)}</p>
               </div>
             </div>
           </div>
 
           {/* Caption */}
-          <Link href={`/look/${look.id}`}>
+          <Link href={`/social/look/${look.id}`}>
             <p className="text-sm text-gray-900 mb-3 line-clamp-2 cursor-pointer hover:text-gray-700">
               {look.caption}
             </p>
@@ -283,7 +282,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
                 <span className="ml-1 text-sm">{likesCount}</span>
               </Button>
               
-              <Link href={`/look/${look.id}`}>
+              <Link href={`/social/look/${look.id}`}>
                 <Button variant="ghost" size="sm" className="p-0 h-auto text-gray-500 hover:text-gray-700">
                   <MessageCircle className="h-5 w-5" />
                   <span className="ml-1 text-sm">{look.comments?.length || 0}</span>
@@ -291,7 +290,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
               </Link>
             </div>
 
-            <Link href={`/look/${look.id}`}>
+            <Link href={`/social/look/${look.id}`}>
               <Button variant="ghost" size="sm" className="text-xs text-gray-500 hover:text-gray-700">
                 View Details
               </Button>

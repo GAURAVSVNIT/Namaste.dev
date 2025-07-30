@@ -20,11 +20,7 @@ import { Textarea } from '@/components/ui/textarea';
 import styles from './Chat.module.css';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
-
-const formatTime = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-};
+import styles from './Chat.module.css';
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

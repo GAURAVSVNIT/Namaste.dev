@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   TrendingUp, 
@@ -37,62 +37,10 @@ import {
   AreaChart,
   Area
 } from 'recharts';
-import styles from './Analytics.module.css';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
+import { getAnalyticsData, subscribeToAnalyticsUpdates } from '@/lib/analytics';
 
-const salesData = [
-  { name: 'Jan', sales: 4200, orders: 240, visitors: 1200 },
-  { name: 'Feb', sales: 3800, orders: 139, visitors: 1100 },
-  { name: 'Mar', sales: 5200, orders: 980, visitors: 1800 },
-  { name: 'Apr', sales: 4780, orders: 390, visitors: 1500 },
-  { name: 'May', sales: 5890, orders: 480, visitors: 2000 },
-  { name: 'Jun', sales: 6390, orders: 380, visitors: 2200 },
-  { name: 'Jul', sales: 7490, orders: 430, visitors: 2500 },
-];
-
-const topProducts = [
-  { 
-    name: 'Classic T-Shirt', 
-    sales: 145, 
-    revenue: 4350,
-    category: 'T-Shirts',
-    stock: 24,
-    status: 'in_stock'
-  },
-  { 
-    name: 'Denim Jacket', 
-    sales: 89, 
-    revenue: 8009,
-    category: 'Jackets',
-    stock: 5,
-    status: 'low_stock'
-  },
-  { 
-    name: 'Summer Dress', 
-    sales: 67, 
-    revenue: 4020,
-    category: 'Dresses',
-    stock: 0,
-    status: 'out_of_stock'
-  },
-  { 
-    name: 'Sneakers', 
-    sales: 45, 
-    revenue: 5400,
-    category: 'Shoes',
-    stock: 12,
-    status: 'in_stock'
-  },
-];
-
-const categoryData = [
-  { name: 'T-Shirts', value: 35, color: '#3B82F6' },
-  { name: 'Jackets', value: 25, color: '#EF4444' },
-  { name: 'Dresses', value: 20, color: '#10B981' },
-  { name: 'Shoes', value: 12, color: '#8B5CF6' },
-  { name: 'Accessories', value: 8, color: '#F59E0B' },
-];
 
 // Custom tooltip for charts
 const CustomTooltip = ({ active, payload, label }) => {
@@ -146,39 +94,177 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
+// Inline styles objects
+const styles = {
+  container: {
+    maxWidth: '1200px',
+    margin: '0 auto',
+    padding: '24px',
+    backgroundColor: '#f8fafc'
+  },
+  header: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '32px',
+    paddingBottom: '24px',
+    borderBottom: '1px solid #e2e8f0'
+  },
+  title: {
+    fontSize: '32px',
+    fontWeight: '700',
+    color: '#1e293b',
+    marginBottom: '8px'
+  },
+  subtitle: {
+    fontSize: '16px',
+    color: '#64748b',
+    fontWeight: '400'
+  },
+  select: {
+    appearance: 'none',
+    backgroundColor: '#ffffff',
+    border: '1px solid #d1d5db',
+    borderRadius: '8px',
+    padding: '8px 40px 8px 12px',
+    fontSize: '14px',
+    color: '#374151',
+    cursor: 'pointer',
+    outline: 'none',
+    transition: 'all 0.2s ease',
+    minWidth: '120px'
+  },
+  statsGrid: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+    gap: '24px',
+    marginBottom: '32px'
+  },
+  chartsGrid: baseWindowWidth => ({
+    display: 'grid',
+    gridTemplateColumns: baseWindowWidth >= 1024 ? '2fr 1fr' : '1fr',
+    gap: '24px'
+  }),
+  chartCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: '12px',
+    border: '1px solid #e2e8f0',
+    padding: '24px',
+    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+    transition: 'all 0.2s ease'
+  },
+  chartHeader: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: '20px'
+  },
+  chartTitle: {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#1e293b',
+    display: 'flex',
+    alignItems: 'center'
+  },
+  chartContainer: {
+    height: '300px',
+    width: '100%'
+  },
+  legend: {
+    marginTop: '16px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px'
+  },
+  legendItem: {
+    display: 'flex',
+    alignItems: 'center',
+    fontSize: '14px',
+    color: '#64748b'
+  },
+  legendColor: {
+    width: '12px',
+    height: '12px',
+    borderRadius: '50%',
+    marginRight: '8px',
+    flexShrink: 0
+  }
+};
+
 function AnalyticsPageContent() {
   const [timeRange, setTimeRange] = useState('monthly');
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
-  
-  // Simulate loading state
-  const handleTimeRangeChange = (value) => {
-    setIsLoading(true);
-    setTimeRange(value);
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
+  const [analytics, setAnalytics] = useState({
+    salesData: [],
+    categoryData: [],
+    topProducts: [],
+    summary: {
+      totalSales: 0,
+      totalOrders: 0,
+      averageOrderValue: 0,
+      conversionRate: 0,
+    }
+  });
+
+  // Adjust window size dynamically
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const handleResize = () => setWindowWidth(window.innerWidth);
+      window.addEventListener('resize', handleResize);
+      return () => window.removeEventListener('resize', handleResize);
+    }
+  }, []);
+
+  // Fetch analytics data based on time range
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      try {
+        const data = await getAnalyticsData(timeRange);
+        setAnalytics(data);
+      } catch (error) {
+        console.error('Error fetching analytics:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 800);
+    fetchData();
+
+    // Subscribe to real-time updates
+    const unsubscribeUpdates = subscribeToAnalyticsUpdates((updates) => {
+      // Only update summary stats, not the time-based data
+      if (updates.summary) {
+        setAnalytics(prev => ({ 
+          ...prev, 
+          summary: { ...prev.summary, ...updates.summary }
+        }));
+      }
+    });
+    
+    return () => {
+      unsubscribeUpdates();
+    };
+  }, [timeRange]);
+
+  // Handle time range change
+  const handleTimeRangeChange = (value) => {
+    setTimeRange(value);
   };
   
-  // Calculate totals for summary cards
-  const totalSales = salesData.reduce((sum, item) => sum + item.sales, 0);
-  const totalOrders = salesData.reduce((sum, item) => sum + item.orders, 0);
-  const totalVisitors = salesData.reduce((sum, item) => sum + item.visitors, 0);
-  const conversionRate = ((totalOrders / totalVisitors) * 100).toFixed(1);
-  
   return (
-    <div className={styles.container}>
+    <div style={styles.container}>
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={styles.header}
+        style={styles.header}
       >
         <div>
-          <h1 className={styles.title}>Analytics Dashboard</h1>
-          <p className={styles.subtitle}>
+          <h1 style={styles.title}>Analytics Dashboard</h1>
+          <p style={styles.subtitle}>
             Track your store performance and gain valuable insights
           </p>
         </div>
@@ -187,7 +273,11 @@ function AnalyticsPageContent() {
             <select 
               value={timeRange}
               onChange={(e) => handleTimeRangeChange(e.target.value)}
-              className={styles.select}
+              style={{
+                ...styles.select,
+                opacity: isLoading ? 0.5 : 1,
+                cursor: isLoading ? 'not-allowed' : 'pointer'
+              }}
               disabled={isLoading}
             >
               <option value="daily">Today</option>
@@ -216,7 +306,7 @@ function AnalyticsPageContent() {
       {/* Stats Cards */}
       <AnimatePresence mode="wait">
         {isLoading ? (
-          <div className={styles.statsGrid}>
+          <div style={styles.statsGrid}>
             {[1, 2, 3, 4].map((i) => (
               <motion.div 
                 key={i}
@@ -240,11 +330,11 @@ function AnalyticsPageContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className={styles.statsGrid}
+            style={styles.statsGrid}
           >
             <StatsCard
               title="Total Sales"
-              value={`$${totalSales.toLocaleString()}`}
+              value={`₹${analytics.summary.totalSales.toLocaleString()}`}
               icon={ShoppingBag}
               change={timeRange === 'monthly' ? "+12% from last month" : "Viewing current period"}
               trend="up"
@@ -253,7 +343,7 @@ function AnalyticsPageContent() {
             />
             <StatsCard
               title="Total Orders"
-              value={totalOrders.toLocaleString()}
+              value={analytics.summary.totalOrders.toLocaleString()}
               icon={ShoppingBag}
               change={timeRange === 'monthly' ? "+8% from last month" : "Viewing current period"}
               trend="up"
@@ -262,7 +352,7 @@ function AnalyticsPageContent() {
             />
             <StatsCard
               title="Conversion Rate"
-              value={`${conversionRate}%`}
+              value={`${analytics.summary.conversionRate.toFixed(1)}%`}
               icon={TrendingUp}
               change={timeRange === 'monthly' ? "+1.2% from last month" : "Viewing current period"}
               trend="up"
@@ -271,7 +361,7 @@ function AnalyticsPageContent() {
             />
             <StatsCard
               title="Avg. Order Value"
-              value={`$${(totalSales / totalOrders).toFixed(2)}`}
+              value={`₹${analytics.summary.averageOrderValue.toFixed(2)}`}
               icon={DollarSign}
               change={timeRange === 'monthly' ? "+3.5% from last month" : "Viewing current period"}
               trend="up"
@@ -283,26 +373,60 @@ function AnalyticsPageContent() {
       </AnimatePresence>
 
       {/* Tabs */}
-      <div className="flex items-center gap-2 mb-6 border-b border-gray-200">
-        {[
-          { id: 'overview', label: 'Overview', icon: <BarChart2 size={16} /> },
-          { id: 'sales', label: 'Sales', icon: <DollarSign size={16} /> },
-          { id: 'products', label: 'Products', icon: <ShoppingBag size={16} /> },
-          { id: 'customers', label: 'Customers', icon: <Users size={16} /> },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? 'text-blue-600 border-b-2 border-blue-600 pb-2 -mb-[1px]'
-                : 'text-gray-500 hover:text-gray-700'
-            }`}
-          >
-            {tab.icon}
-            {tab.label}
-          </button>
-        ))}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '24px',
+        borderBottom: '1px solid #e5e7eb'
+      }}>
+        {
+          [
+            { id: 'overview', label: 'Overview', icon: <BarChart2 size={16} /> },
+            { id: 'sales', label: 'Sales', icon: <DollarSign size={16} /> },
+            { id: 'products', label: 'Products', icon: <ShoppingBag size={16} /> },
+            { id: 'customers', label: 'Customers', icon: <Users size={16} /> },
+          ].map((tab) => {
+            const isActive = activeTab === tab.id;
+            
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                onMouseEnter={(e) => {
+                  if (!isActive) {
+                    e.target.style.color = '#374151';
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) {
+                    e.target.style.color = '#6b7280';
+                  }
+                }}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  padding: '8px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  color: isActive ? '#2563eb' : '#6b7280',
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  borderBottom: isActive ? '2px solid #2563eb' : '2px solid transparent',
+                  paddingBottom: '6px',
+                  marginBottom: '-1px',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  outline: 'none'
+                }}
+              >
+                {tab.icon}
+                {tab.label}
+              </button>
+            );
+          })
+        }
       </div>
 
       {/* Charts Grid */}
@@ -331,7 +455,12 @@ function AnalyticsPageContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.3 }}
-            className={styles.chartsGrid}
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr',
+              gap: '24px'
+            }}
+            className="lg:grid-cols-[2fr_1fr]"
           >
             {/* Sales & Orders Chart */}
             <motion.div
@@ -339,15 +468,15 @@ function AnalyticsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
             >
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <h3 className={styles.chartTitle}>
+              <div style={styles.chartCard}>
+                <div style={styles.chartHeader}>
+                  <h3 style={styles.chartTitle}>
                     <BarChart2 size={20} className="inline-block mr-2 -mt-1" />
                     Sales & Orders
                   </h3>
                   <div className="flex items-center gap-2 text-sm">
                     <select 
-                      className={styles.select}
+                      style={styles.select}
                       value={timeRange}
                       onChange={(e) => handleTimeRangeChange(e.target.value)}
                     >
@@ -358,19 +487,9 @@ function AnalyticsPageContent() {
                     </select>
                   </div>
                 </div>
-                <div className={styles.chartContainer}>
+                <div style={styles.chartContainer}>
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={salesData}>
-                      <defs>
-                        <linearGradient id="salesGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.2}/>
-                          <stop offset="95%" stopColor="#3B82F6" stopOpacity={0.05}/>
-                        </linearGradient>
-                        <linearGradient id="ordersGradient" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#10B981" stopOpacity={0.2}/>
-                          <stop offset="95%" stopColor="#10B981" stopOpacity={0.05}/>
-                        </linearGradient>
-                      </defs>
+                    <LineChart data={analytics.salesData}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                       <XAxis 
                         dataKey="name" 
@@ -381,7 +500,6 @@ function AnalyticsPageContent() {
                       <YAxis 
                         yAxisId="left" 
                         orientation="left" 
-                        stroke="#3B82F6" 
                         axisLine={false}
                         tickLine={false}
                         tick={{ fill: '#6b7280', fontSize: 12 }}
@@ -390,22 +508,20 @@ function AnalyticsPageContent() {
                       <YAxis 
                         yAxisId="right" 
                         orientation="right" 
-                        stroke="#10B981" 
                         axisLine={false}
                         tickLine={false}
                         tick={{ fill: '#6b7280', fontSize: 12 }}
                       />
                       <Tooltip content={<CustomTooltip />} />
-                      <Area 
+                      <Line 
                         yAxisId="left"
                         type="monotone" 
                         dataKey="sales" 
                         name="Sales ($)"
                         stroke="#3B82F6" 
                         strokeWidth={2}
-                        fillOpacity={1}
-                        fill="url(#salesGradient)"
-                        activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
+                        dot={{ fill: '#3B82F6', strokeWidth: 0, r: 4 }}
+                        activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2, fill: '#3B82F6' }}
                       />
                       <Line 
                         yAxisId="right"
@@ -415,10 +531,10 @@ function AnalyticsPageContent() {
                         stroke="#10B981" 
                         strokeWidth={2} 
                         strokeDasharray="5 5"
-                        dot={false}
-                        activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2 }}
+                        dot={{ fill: '#10B981', strokeWidth: 0, r: 4 }}
+                        activeDot={{ r: 6, stroke: '#fff', strokeWidth: 2, fill: '#10B981' }}
                       />
-                    </AreaChart>
+                    </LineChart>
                   </ResponsiveContainer>
                 </div>
                 <div className="flex justify-between items-center mt-4 text-sm text-gray-500">
@@ -440,18 +556,18 @@ function AnalyticsPageContent() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
             >
-              <div className={styles.chartCard}>
-                <div className={styles.chartHeader}>
-                  <h3 className={styles.chartTitle}>
+              <div style={styles.chartCard}>
+                <div style={styles.chartHeader}>
+                  <h3 style={styles.chartTitle}>
                     <PieChartIcon size={20} className="inline-block mr-2 -mt-1" />
                     Category Distribution
                   </h3>
                 </div>
-                <div className={styles.chartContainer}>
+                <div style={styles.chartContainer}>
                   <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
                       <Pie
-                        data={categoryData}
+                        data={analytics.categoryData}
                         cx="50%"
                         cy="50%"
                         innerRadius={60}
@@ -461,7 +577,7 @@ function AnalyticsPageContent() {
                         label={renderCustomizedLabel}
                         labelLine={false}
                       >
-                        {categoryData.map((entry, index) => (
+                        {analytics.categoryData.map((entry, index) => (
                           <Cell 
                             key={`cell-${index}`} 
                             fill={entry.color} 
@@ -498,10 +614,10 @@ function AnalyticsPageContent() {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                <div className={styles.legend}>
-                  {categoryData.map((category, index) => (
-                    <div key={index} className={styles.legendItem}>
-                      <div className={styles.legendColor} style={{ backgroundColor: category.color }} />
+                <div style={styles.legend}>
+                  {analytics.categoryData.map((category, index) => (
+                    <div key={index} style={styles.legendItem}>
+                      <div style={{ ...styles.legendColor, backgroundColor: category.color }} />
                       <span>{category.name}</span>
                       <span className="ml-auto font-medium text-gray-900">{category.value}%</span>
                     </div>
@@ -518,18 +634,18 @@ function AnalyticsPageContent() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="mt-6"
+        style={{ marginTop: '24px' }}
       >
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-gray-900 flex items-center">
-              <ShoppingBag size={20} className="mr-2" />
+        <div style={{ backgroundColor: '#ffffff', borderRadius: '12px', border: '1px solid #e2e8f0', overflow: 'hidden' }}>
+          <div style={{ padding: '24px', borderBottom: '1px solid #e5e7eb', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#1e293b', display: 'flex', alignItems: 'center' }}>
+              <ShoppingBag size={20} style={{ marginRight: '8px' }} />
               Top Performing Products
             </h3>
-            <div className="flex items-center space-x-2">
-              <div className="relative">
-                <select 
-                  className="appearance-none bg-white border border-gray-200 rounded-lg pl-3 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ position: 'relative' }}>
+                <select
+                  style={{ appearance: 'none', backgroundColor: '#ffffff', border: '1px solid #d1d5db', borderRadius: '8px', padding: '8px 36px 8px 12px', fontSize: '14px', color: '#1e293b', outline: 'none' }}
                   value={timeRange}
                   onChange={(e) => handleTimeRangeChange(e.target.value)}
                 >
@@ -538,71 +654,65 @@ function AnalyticsPageContent() {
                   <option value="monthly">This Month</option>
                   <option value="yearly">This Year</option>
                 </select>
-                <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <ChevronDown style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', height: '16px', width: '16px', color: '#9ca3af' }} />
               </div>
-              <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+              <button style={{ padding: '8px', color: '#6b7280', borderRadius: '8px', transition: 'background-color 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}>
                 <Download size={18} />
               </button>
             </div>
           </div>
           
-          <div className="overflow-x-auto">
-            <table className="w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead style={{ backgroundColor: '#f3f4f6' }}>
                 <tr>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{ padding: '24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Product
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{ padding: '24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Category
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{ padding: '24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Sales
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{ padding: '24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Revenue
                   </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th style={{ padding: '24px', textAlign: 'left', fontSize: '12px', fontWeight: '500', color: '#6b7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     Status
                   </th>
-                  <th scope="col" className="relative px-6 py-3">
+                  <th style={{ padding: '24px', textAlign: 'left' }}>
                     <span className="sr-only">Actions</span>
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {topProducts.map((product, index) => (
-                  <tr key={index} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10 bg-gray-200 rounded-md flex items-center justify-center text-gray-500">
+              <tbody style={{ backgroundColor: '#ffffff' }}>
+                {analytics.topProducts.map((product, index) => (
+                  <tr key={index} style={{ transition: 'background-color 0.2s ease', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'} onMouseOut={(e) => e.currentTarget.style.backgroundColor = ''}>
+                    <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
+                      <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ flexShrink: 0, height: '40px', width: '40px', backgroundColor: '#e5e7eb', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#9ca3af' }}>
                           <ShoppingBag size={18} />
                         </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{product.name}</div>
-                          <div className="text-xs text-gray-500">SKU: {Math.floor(100000 + Math.random() * 900000)}</div>
+                        <div style={{ marginLeft: '16px' }}>
+                          <div style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>{product.name}</div>
+                          <div style={{ fontSize: '12px', color: '#9ca3af' }}>SKU: {Math.floor(100000 + Math.random() * 900000)}</div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                    <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
+                      <span style={{ padding: '4px 8px', fontSize: '12px', fontWeight: '600', borderRadius: '9999px', backgroundColor: '#dbeafe', color: '#1d4ed8' }}>
                         {product.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td style={{ padding: '16px', whiteSpace: 'nowrap', fontSize: '14px', color: '#1f2937' }}>
                       {product.sales.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td style={{ padding: '16px', whiteSpace: 'nowrap', fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>
                       ${product.revenue.toLocaleString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                        product.status === 'in_stock' 
-                          ? 'bg-green-100 text-green-800' 
-                          : product.status === 'low_stock'
-                          ? 'bg-yellow-100 text-yellow-800'
-                          : 'bg-red-100 text-red-800'
-                      }`}>
+                    <td style={{ padding: '16px', whiteSpace: 'nowrap' }}>
+                      <span style={{ padding: '4px 10px', fontSize: '12px', fontWeight: '600', borderRadius: '9999px', backgroundColor: product.status === 'in_stock' ? '#dcfce7' : product.status === 'low_stock' ? '#fef9c3' : '#fee2e2', color: product.status === 'in_stock' ? '#166534' : product.status === 'low_stock' ? '#92400e' : '#b91c1c' }}>
                         {product.status === 'in_stock' 
                           ? 'In Stock' 
                           : product.status === 'low_stock'
@@ -610,8 +720,8 @@ function AnalyticsPageContent() {
                           : 'Out of Stock'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <button className="text-blue-600 hover:text-blue-900">View</button>
+                    <td style={{ padding: '16px', textAlign: 'right', fontSize: '14px', fontWeight: '500', color: '#3b82f6' }}>
+                      <button style={{ backgroundColor: 'transparent', border: 'none', padding: 0, cursor: 'pointer', color: '#3b82f6' }} onMouseOver={(e) => e.currentTarget.style.color = '#1e40af'} onMouseOut={(e) => e.currentTarget.style.color = '#3b82f6'}>View</button>
                     </td>
                   </tr>
                 ))}
@@ -619,20 +729,20 @@ function AnalyticsPageContent() {
             </table>
           </div>
           
-          <div className="px-6 py-3 flex items-center justify-between border-t border-gray-200">
-            <div className="text-sm text-gray-500">
-              Showing <span className="font-medium">1</span> to <span className="font-medium">{topProducts.length}</span> of{' '}
-              <span className="font-medium">{topProducts.length}</span> results
+          <div style={{ padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #e5e7eb' }}>
+            <div style={{ fontSize: '14px', color: '#6b7280' }}>
+              Showing <span style={{ fontWeight: '500' }}>1</span> to <span style={{ fontWeight: '500' }}>{analytics.topProducts.length}</span> of{' '}
+              <span style={{ fontWeight: '500' }}>{analytics.topProducts.length}</span> results
             </div>
-            <div className="flex space-x-2">
-              <button 
-                className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <button
+                style={{ padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: '#6b7280', backgroundColor: '#ffffff', cursor: 'not-allowed', opacity: 0.5 }}
                 disabled
               >
                 Previous
               </button>
-              <button 
-                className="px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              <button
+                style={{ padding: '8px 12px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '14px', fontWeight: '500', color: '#6b7280', backgroundColor: '#ffffff', cursor: 'not-allowed', opacity: 0.5 }}
                 disabled
               >
                 Next

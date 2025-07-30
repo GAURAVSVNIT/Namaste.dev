@@ -31,27 +31,84 @@ export default function UploadLookPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-purple-50 flex items-center justify-center" style={{ paddingTop: '100px' }}>
-        <div className="text-center bg-white/70 backdrop-blur-lg rounded-3xl p-12 shadow-2xl border border-white/30 max-w-md mx-4">
-          <div className="w-20 h-20 bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-            <Camera className="w-10 h-10 text-white" />
+      <div style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom right, #fff1f2, #e8eaf6)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        <div style={{
+          textAlign: 'center',
+          backgroundColor: 'rgba(255, 255, 255, 0.9)',
+          padding: '40px',
+          borderRadius: '20px',
+          boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
+          maxWidth: '400px',
+          width: '90%'
+        }}>
+          <div style={{
+            width: '80px',
+            height: '80px',
+            background: 'linear-gradient(to right, #ec407a, #ab47bc)',
+            borderRadius: '15px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 20px',
+          }}>
+            <Camera style={{ width: '40px', height: '40px', color: 'white' }} />
           </div>
-          <h1 className="text-3xl font-bold mb-4 bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent">Authentication Required</h1>
-          <p className="text-gray-600 mb-8 leading-relaxed">Join our fashion community to share your amazing looks with style enthusiasts worldwide.</p>
-          <div className="space-y-3">
-            <Button
+          <h1 style={{
+            fontSize: '28px',
+            fontWeight: 'bold',
+            marginBottom: '20px',
+            background: 'linear-gradient(to right, #2c3e50, #34495e)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>Authentication Required</h1>
+          <p style={{
+            color: '#6b7280',
+            fontSize: '16px',
+            lineHeight: '1.6',
+            marginBottom: '20px'
+          }}>Join our fashion community to share your amazing looks with style enthusiasts worldwide.</p>
+          <div style={{ marginTop: '20px' }}>
+
+            <button
               onClick={() => router.push('/auth/login')}
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+              style={{
+                width: '100%',
+                background: 'linear-gradient(to right, #ec407a, #ab47bc)',
+                color: 'white',
+                fontWeight: '600',
+                padding: '12px',
+                borderRadius: '12px',
+                border: 'none',
+                boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                marginBottom: '10px'
+              }}
             >
               Sign In to Continue
-            </Button>
-            <Button
-              variant="ghost"
+            </button>
+            <button
               onClick={() => router.push('/social')}
-              className="w-full text-gray-600 hover:text-gray-800"
+              style={{
+                width: '100%',
+                color: '#374151',
+                fontWeight: '600',
+                padding: '12px',
+                borderRadius: '12px',
+                border: '2px solid #e5e7eb',
+                backgroundColor: 'white',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+              }}
             >
               Back to Feed
-            </Button>
+            </button>
           </div>
         </div>
       </div>

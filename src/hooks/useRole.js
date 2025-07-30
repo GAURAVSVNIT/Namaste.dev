@@ -75,6 +75,7 @@ export const useRole = () => {
   const isMember = () => hasRole(USER_ROLES.MEMBER);
   const isAdmin = () => hasRole(USER_ROLES.ADMIN);
   const isMerchant = () => hasRole(USER_ROLES.MERCHANT);
+  const isFashionCreator = () => hasRole(USER_ROLES.FASHION_CREATOR);
 
   // Check if user can access merchant features
   const canAccessMerchant = () => {
@@ -84,6 +85,11 @@ export const useRole = () => {
   // Check if user can access admin features
   const canAccessAdmin = () => {
     return hasRole(USER_ROLES.ADMIN);
+  };
+
+  // Check if user can access fashion creator features  
+  const canAccessFashionCreator = () => {
+    return hasAnyRole([USER_ROLES.FASHION_CREATOR, USER_ROLES.ADMIN]);
   };
 
   return {
@@ -100,7 +106,9 @@ export const useRole = () => {
     isMember,
     isAdmin,
     isMerchant,
+    isFashionCreator,
     canAccessMerchant,
     canAccessAdmin,
+    canAccessFashionCreator,
   };
 };

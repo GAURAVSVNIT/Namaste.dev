@@ -7,7 +7,8 @@ export default function RoleBadge({
   role, 
   showIcon = true, 
   size = 'default',
-  className = '' 
+  className = '',
+  style = {}
 }) {
   if (!role) return null;
 
@@ -34,6 +35,7 @@ export default function RoleBadge({
         border-0
         ${className}
       `}
+      style={style}
     >
       {showIcon && <span className="text-xs">{roleIcon}</span>}
       <span>{roleLabel}</span>

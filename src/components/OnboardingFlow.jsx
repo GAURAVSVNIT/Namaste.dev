@@ -14,8 +14,7 @@ const OnboardingFlow = () => {
   const roles = [
     { id: 'member', label: 'Member', icon: User, description: 'Fashion enthusiast' },
     { id: 'merchant', label: 'Merchant', icon: Store, description: 'Online seller' },
-    { id: 'tailor', label: 'Tailor', icon: Scissors, description: 'Clothing alteration' },
-    { id: 'designer', label: 'Fashion Designer', icon: Palette, description: 'Creative professional' }
+    { id: 'fashion_creator', label: 'Fashion Creator', icon: Scissors, description: 'Professional tailor, designer, or fashion creator' }
   ];
 
   const roleQuestions = {
@@ -59,44 +58,31 @@ const OnboardingFlow = () => {
         options: ['Yes, actively selling', 'Yes, but just started', 'No, but planning to', 'No, not interested']
       }
     ],
-    tailor: [
+    fashion_creator: [
       {
-        id: 'garment_types',
-        question: 'What garment types do you stitch?',
-        type: 'select',
-        options: ['Formal wear', 'Casual wear', 'Traditional wear', 'Bridal wear', 'All types']
-      },
-      {
-        id: 'home_visits',
-        question: 'Do you offer home visits?',
-        type: 'select',
-        options: ['Yes, regularly', 'Yes, occasionally', 'No, shop only', 'Planning to start']
+        id: 'skills',
+        question: 'What are your main skills?',
+        type: 'multi-select',
+        options: [
+          'Alterations & Repairs',
+          'Custom Tailoring', 
+          'Pattern Making',
+          'Fashion Design',
+          'Embellishment & Decoration',
+          'Upcycling & Reconstruction'
+        ]
       },
       {
         id: 'experience',
         question: 'How many years of experience do you have?',
         type: 'select',
         options: ['Less than 1 year', '1-3 years', '3-5 years', '5-10 years', 'Over 10 years']
-      }
-    ],
-    designer: [
+      },
       {
         id: 'portfolio',
-        question: 'Your portfolio link?',
+        question: 'Portfolio or work samples link (optional)',
         type: 'text',
-        placeholder: 'https://yourportfolio.com'
-      },
-      {
-        id: 'styles',
-        question: 'What styles do you work with?',
-        type: 'select',
-        options: ['Contemporary', 'Avant-garde', 'Sustainable', 'Luxury', 'Streetwear', 'Bridal']
-      },
-      {
-        id: 'clients',
-        question: 'Who are your typical clients?',
-        type: 'select',
-        options: ['Individual customers', 'Fashion brands', 'Celebrities', 'Retail stores', 'Mixed clientele']
+        placeholder: 'https://yourportfolio.com or Instagram handle'
       }
     ]
   };

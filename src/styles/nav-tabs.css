@@ -1,0 +1,10 @@
+/* Navigation tabs mobile scrollbar hiding */
+.nav-tabs-mobile {
+  /* Webkit browsers (Chrome, Safari, newer Edge) */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and older Edge */
+}
+
+.nav-tabs-mobile::-webkit-scrollbar {
+  display: none; /* Webkit browsers */
+}

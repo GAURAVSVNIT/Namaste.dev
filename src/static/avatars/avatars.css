@@ -1,0 +1,148 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.avatars-page {
+  background: #fefefe;
+  padding: 2rem;
+  min-height: 100vh;
+  margin-top: 4.2rem;
+}
+
+.avatars-title {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  background: linear-gradient(90deg, #ff7a18, #af002d 70%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 2rem;
+}
+
+.avatars-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+}
+
+.avatar-card {
+  position: relative;
+  width: 240px;
+  background: linear-gradient(145deg, #ffffff, #f1f1f1);
+  border-radius: 1.5rem;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  text-align: center;
+  transition: transform 0.3s;
+}
+
+.avatar-card:hover {
+  transform: translateY(-6px);
+}
+
+.avatar-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: radial-gradient(circle at center, #fefefe 20%, #ddd 100%);
+}
+
+.avatar-image {
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+}
+
+.download-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 3;
+  background: linear-gradient(135deg, #00f260, #0575e6);
+  color: white;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+  border-radius: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  text-decoration: none;
+  z-index: 10;
+}
+
+.avatar-image-wrapper:hover .download-btn {
+  opacity: 1;
+}
+
+.upload-btn {
+  margin-top: 1rem;
+  padding: 10px 18px;
+  background: linear-gradient(135deg, #ff6a00, #ee0979);
+  border: none;
+  color: white;
+  font-weight: bold;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.upload-btn:hover {
+  background: linear-gradient(135deg, #ee0979, #ff6a00);
+}
+
+
+
+
+/* for custom avatar builder header  */
+
+.header-section {
+  @apply w-full rounded-[2rem] text-center px-6 py-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 text-white shadow-xl;
+}
+
+.badge {
+  @apply inline-block px-4 py-1 mb-4 rounded-full bg-white/10 text-white text-sm font-medium backdrop-blur;
+}
+
+.headline {
+  @apply text-5xl font-extrabold mb-4;
+}
+
+.subtext {
+  @apply max-w-2xl mx-auto text-base md:text-lg text-white/90 mb-8;
+}
+
+.search-bar {
+  @apply flex items-center gap-2 max-w-md mx-auto bg-white rounded-full px-4 py-2 mb-6 shadow-md;
+}
+
+.search-input {
+  @apply flex-1 outline-none bg-transparent text-gray-800 placeholder-gray-400;
+}
+
+.search-btn {
+  @apply bg-gradient-to-br from-blue-500 to-purple-600 text-white p-2 rounded-full shadow-md;
+}
+
+.actions {
+  @apply flex justify-center gap-4 mt-4;
+}
+
+.btn-create-look {
+  @apply flex items-center gap-2 px-6 py-3 rounded-full font-semibold bg-gradient-to-r from-orange-400 to-pink-500 text-white shadow-md hover:scale-105 transition;
+}
+
+.btn-create-reel {
+  @apply flex items-center gap-2 px-6 py-3 rounded-full font-semibold border border-white/30 text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm transition;
+}
+
+
+.loading-div {
+    margin-top: 4rem;
+}
+
+
+
+
+
+

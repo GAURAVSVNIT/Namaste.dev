@@ -2,11 +2,14 @@
 
 import { usePathname } from 'next/navigation';
 import Script from 'next/script';
-import { Geist, Geist_Mono, Poppins } from "next/font/google";
+import { Geist, Geist_Mono, Poppins, Playfair_Display, Montserrat } from "next/font/google";
+import styles from "@/static/layout/chatbotButton.module.css"
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import ConditionalFooter from "@/components/ConditionalFooter";
+import Link from 'next/link';
+import { Bot } from 'lucide-react';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,6 +27,18 @@ const poppins = Poppins({
   weight: ['400', '600'],
 });
 
+const playfairDisplay = Playfair_Display({
+  subsets: ['latin'],
+  variable: '--font-playfair-display',
+  weight: ['400', '500', '600', '700', '800', '900'],
+});
+
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  variable: '--font-montserrat',
+  weight: ['300', '400', '500', '600', '700'],
+});
+
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const isFashionTV = pathname?.startsWith('/social/fashiontv');
@@ -31,8 +46,8 @@ export default function RootLayout({ children }) {
   if (isFashionTV) {
     // Fashion TV gets full-screen experience without navbar/footer
     return (
-      <html lang="en">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <html lang="en" suppressHydrationWarning={true}>
+        <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}>
           {children}
           <Script 
             src="https://checkout.razorpay.com/v1/checkout.js"
@@ -45,15 +60,22 @@ export default function RootLayout({ children }) {
 
   // All other pages get normal layout
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased`}
       >
         <LayoutWrapper>
           <ConditionalNavbar face={poppins.className} />
           {children}
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
+
+        {/* Chatbot Button */}
+        <Link href="/chatbot" className={styles.chatbotBtn}>
+          <Bot size={20} className={styles.icon} />
+          <span className={styles.label}>AI Fashion Advicer</span>
+        </Link>
+
         <Script 
           src="https://checkout.razorpay.com/v1/checkout.js"
           strategy="afterInteractive"

@@ -22,7 +22,7 @@ export default function ProfileLikedPage() {
     if (authLoading) return;
     
     if (!currentUser) {
-      router.push('/auth/login');
+      router.push('auth/login');
       return;
     }
     
@@ -114,33 +114,101 @@ export default function ProfileLikedPage() {
   }
   
   return (
-    <div className="container mx-auto px-4 py-8 max-w-6xl">
-      <div className="space-y-6">
+    <div style={{
+      minHeight: '100vh',
+      background: '#ffffff',
+      marginTop: '80px'
+    }}>
+      <div style={{
+        maxWidth: '1280px',
+        margin: '0 auto',
+        padding: '2rem 1rem'
+      }}>
         {/* Profile Header */}
-        {user && (
-          <ProfileHeader user={user} onUpdateProfile={handleUpdateProfile} />
-        )}
-        
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          borderRadius: '24px',
+          padding: '0',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          marginBottom: '2rem',
+          overflow: 'hidden'
+        }}>
+          {user && (
+            <ProfileHeader user={user} onUpdateProfile={handleUpdateProfile} />
+          )}
+        </div>
+
         {/* Navigation Tabs */}
-        <ProfileTabs />
-        
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          borderRadius: '24px',
+          padding: '1.5rem',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          marginBottom: '2rem'
+        }}>
+          <ProfileTabs />
+        </div>
+
         {/* Page Header */}
-        <div className="flex items-center gap-3 mb-6">
-          <Heart className="w-6 h-6 text-red-500" />
-          <div>
-            <h1 className="text-2xl font-bold">Liked Blogs</h1>
-            <p className="text-muted-foreground">
-              {likedBlogs.length} {likedBlogs.length === 1 ? 'blog' : 'blogs'} you've liked
-            </p>
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          borderRadius: '24px',
+          padding: '2rem',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+          marginBottom: '2rem'
+        }}>
+          <div className="flex items-center gap-3">
+            <div style={{
+              background: 'linear-gradient(135deg, #ff6b6b, #ff8e8e)',
+              padding: '12px',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <Heart className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 style={{
+                fontSize: '2rem',
+                fontWeight: '800',
+                background: 'linear-gradient(135deg, #1a1a1a, #4a4a4a)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                marginBottom: '8px'
+              }}>Liked Blogs</h1>
+              <p style={{
+                color: 'rgba(0, 0, 0, 0.6)',
+                fontSize: '1.1rem'
+              }}>
+                {likedBlogs.length} {likedBlogs.length === 1 ? 'blog' : 'blogs'} you've liked
+              </p>
+            </div>
           </div>
         </div>
-        
-        {/* Blogs Grid */}
-        <BlogGrid 
-          blogs={likedBlogs}
-          loading={blogsLoading}
-          emptyMessage="You haven't liked any blogs yet. Explore blogs and show some love!"
-        />
+          
+        {/* Blogs Grid Container */}
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(0, 0, 0, 0.05)',
+          borderRadius: '24px',
+          padding: '2rem',
+          boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
+        }}>
+          <BlogGrid 
+            blogs={likedBlogs}
+            loading={blogsLoading}
+            emptyMessage="You haven't liked any blogs yet. Explore blogs and show some love!"
+          />
+        </div>
       </div>
     </div>
   );
