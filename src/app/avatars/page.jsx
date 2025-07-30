@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import "@/static/avatars/avatars.css"; 
 import { Download, UploadCloud, Search, Camera, Play, Sparkle, Wand } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import AvatarExpressionPicker from "./select/page";
 
 export function AvatarBuilderHeader() {
   return (
@@ -43,13 +44,14 @@ export default function AvatarsGallery() {
   }, [user]);
 
   const handleUpload = (url) => {
-    router.push(`/avatars/upload?avatar=${url.split("/").pop()}`);
+    router.push(`/avatars/select?avatar=${url.split("/").pop().split(".png")[0]}`);
 
   }
 
   return (
     <div className="avatars-page">
       <AvatarBuilderHeader />
+      
       <h1 className="avatars-title">Your Saved Looks</h1>
       <div className="avatars-container">
         {avatars.map((url, index) => (
