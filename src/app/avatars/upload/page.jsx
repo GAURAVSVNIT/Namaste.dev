@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from "@/hooks/useAuth";
 import LookForm from "@/components/look/LookForm";
 import { toast } from '@/hooks/use-toast';
+import { rgbToHex } from "@/lib/avatar-utils";
 import { createLook } from '@/lib/look';
 
 function UploadAvatarContent() {
@@ -14,11 +15,13 @@ function UploadAvatarContent() {
     const searchParams = useSearchParams();
 
     const avatarUrl = "https://models.readyplayer.me/" + searchParams.get('avatar').replaceAll("~", "&");
+    const bgColorOfAvatar = rgbToHex(searchParams.get('avatar').split("background=")[1].split("~")[0]);
 
     const initialData = {
         images: [avatarUrl],
         caption: "Proudly presenting my custom made avatar 💫",
-        tags: ["avatar"]
+        tags: ["avatar"],
+        colorPalette: [ bgColorOfAvatar ]
     };
 
     const handleSubmit = async (lookData) => {
@@ -62,7 +65,7 @@ function UploadAvatarContent() {
 
 export default function UploadAvatar() {
   return (
-    <Suspense fallback={<div className="p-4">Loading...</div>}>
+    <Suspense fallback={<div className="p-4 loading-div">Loading...</div>}>
       <UploadAvatarContent />
     </Suspense>
   );
