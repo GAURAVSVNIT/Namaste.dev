@@ -168,7 +168,7 @@ export function SignupForm() {
             0 4px 8px rgba(0, 0, 0, 0.05),
             inset 0 0 0 1px rgba(255, 255, 255, 0.5);
           border-radius: 24px;
-          padding: 2.5rem;
+          padding: 1.25rem;
           width: 100%;
           max-width: 500px;
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
@@ -191,7 +191,7 @@ export function SignupForm() {
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           transition: all 0.3s ease !important;
-          height: 48px !important;
+          height: 40px !important;
           padding-left: 48px !important;
           font-size: 0.95rem !important;
           letter-spacing: 0.025em !important;
@@ -231,7 +231,7 @@ export function SignupForm() {
           border: none !important;
           transition: all 0.3s ease !important;
           color: white !important;
-          height: 48px !important;
+          height: 40px !important;
           font-size: 1rem !important;
           font-weight: 600 !important;
           letter-spacing: 0.025em !important;
@@ -321,7 +321,7 @@ export function SignupForm() {
       <div className="w-full max-w-lg">
         {/* Floating Signup Card */}
         <div className="glass-card">
-            <div className="text-center mb-8">
+            <div className="text-center mb-4">
               <h1 id="signup-title" className="text-3xl font-bold gradient-text mb-2">
                 Create Account
               </h1>
@@ -345,10 +345,10 @@ export function SignupForm() {
               </div>
             )}
 
-            <form onSubmit={handleSignup} className="space-y-6">
+            <form onSubmit={handleSignup} className="space-y-3">
               {/* Name Fields */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
                   <Label htmlFor="firstName" className="text-sm font-medium">
                     First Name
                   </Label>
@@ -366,7 +366,7 @@ export function SignupForm() {
                   </div>
                 </div>
                 
-                <div className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="lastName" className="text-sm font-medium">
                     Last Name
                   </Label>
@@ -387,7 +387,7 @@ export function SignupForm() {
               
               
               {/* Email Field */}
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="email" className="text-sm font-medium">
                   Email Address
                 </Label>
@@ -406,7 +406,7 @@ export function SignupForm() {
               </div>
 
               {/* Password Field */}
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="password" className="text-sm font-medium">
                   Password
                 </Label>
@@ -433,7 +433,7 @@ export function SignupForm() {
               </div>
               
               {/* Confirm Password Field */}
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <Label htmlFor="confirmPassword" className="text-sm font-medium">
                   Confirm Password
                 </Label>
@@ -476,8 +476,8 @@ export function SignupForm() {
               </Button>
             </form>
 
-            <div className="mt-8">
-              <div className="relative mb-6">
+            <div className="mt-4">
+              <div className="relative mb-4">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200/60"></div>
                 </div>
@@ -499,7 +499,7 @@ export function SignupForm() {
               </Button>
 
             {/* Sign In Link */}
-            <div className="text-center mt-8">
+            <div className="text-center mt-4">
               <p className="text-gray-600 text-sm">
                 Already have an account?{' '}
                 <Link 
@@ -515,7 +515,7 @@ export function SignupForm() {
             </div>
             
             {/* Terms */}
-            <div className="text-center mt-8 pt-6 border-t border-gray-100">
+            <div className="text-center mt-4 pt-3 border-t border-gray-100">
               <p className="text-xs text-gray-500">
                 By creating an account, you agree to our{" "}
                 <Link href="/terms" className="text-teal-600 hover:text-teal-700 transition-colors underline decoration-teal-600/30 hover:decoration-teal-600">

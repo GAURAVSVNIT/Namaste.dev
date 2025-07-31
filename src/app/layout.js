@@ -42,6 +42,7 @@ const montserrat = Montserrat({
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const isFashionTV = pathname?.startsWith('/social/fashiontv');
+  const isAuthPage = pathname?.startsWith('/auth');
 
   if (isFashionTV) {
     // Fashion TV gets full-screen experience without navbar/footer
@@ -70,11 +71,13 @@ export default function RootLayout({ children }) {
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
 
-        {/* Chatbot Button */}
-        <Link href="/chatbot" className={styles.chatbotBtn}>
-          <Bot size={20} className={styles.icon} />
-          <span className={styles.label}>AI Fashion Advicer</span>
-        </Link>
+        {/* Chatbot Button - Hidden on auth pages */}
+        {!isAuthPage && (
+          <Link href="/chatbot" className={styles.chatbotBtn}>
+            <Bot size={20} className={styles.icon} />
+            <span className={styles.label}>AI Fashion Advicer</span>
+          </Link>
+        )}
 
         <Script 
           src="https://checkout.razorpay.com/v1/checkout.js"

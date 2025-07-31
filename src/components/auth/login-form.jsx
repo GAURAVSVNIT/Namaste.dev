@@ -168,14 +168,14 @@ export function LoginForm() {
             0 4px 8px rgba(0, 0, 0, 0.05),
             inset 0 0 0 1px rgba(255, 255, 255, 0.5);
           border-radius: 24px;
-          padding: 2.5rem 2rem;
+          padding: 1.5rem 1.5rem;
           width: 100%;
           max-width: 420px;
           animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
           overflow: hidden;
           transform-style: preserve-3d;
           transition: transform 0.3s ease, box-shadow 0.3s ease;
-          margin: 1.5rem 0;
+          margin: 0.75rem 0;
         }
 
         .glass-card:hover {
@@ -192,12 +192,12 @@ export function LoginForm() {
           backdrop-filter: blur(12px);
           -webkit-backdrop-filter: blur(12px);
           transition: all 0.3s ease !important;
-          height: 52px !important;
-          padding: 0.75rem 1rem 0.75rem 48px !important;
+          height: 44px !important;
+          padding: 0.5rem 1rem 0.5rem 48px !important;
           font-size: 0.95rem !important;
           letter-spacing: 0.025em !important;
           border-radius: 12px !important;
-          margin-bottom: 1.25rem;
+          margin-bottom: 0.75rem;
           width: 100%;
         }
         
@@ -242,7 +242,7 @@ export function LoginForm() {
           position: relative;
           overflow: hidden;
           width: 100%;
-          margin: 1.5rem 0 1rem 0;
+          margin: 1rem 0 0.75rem 0;
           padding: 0.75rem 1.5rem;
         }
         
@@ -336,8 +336,8 @@ export function LoginForm() {
       `}</style>
       <div className="w-full max-w-md px-4 sm:px-6">
         {/* Floating Login Card */}
-        <div className="glass-card p-8 sm:p-10 rounded-2xl shadow-2xl">
-            <div className="text-center mb-10">
+        <div className="glass-card p-4 sm:p-6 rounded-2xl shadow-2xl">
+            <div className="text-center mb-6">
               <h1 id="login-title" className="text-3xl font-bold gradient-text mb-2">
                 Welcome Back
               </h1>
@@ -361,7 +361,7 @@ export function LoginForm() {
               </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-6">
+            <form onSubmit={handleLogin} className="space-y-4">
               {/* Email Field */}
               <div className="space-y-2">
                 <Label htmlFor="email" className="text-sm font-medium">
@@ -408,7 +408,7 @@ export function LoginForm() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -444,7 +444,7 @@ export function LoginForm() {
               </Button>
             </form>
 
-            <div className="mt-8">
+            <div className="mt-6">
               <div className="relative mb-6">
                 <div className="absolute inset-0 flex items-center">
                   <div className="w-full border-t border-gray-200/60"></div>
@@ -468,7 +468,7 @@ export function LoginForm() {
 
 
             {/* Sign Up Link */}
-            <div className="text-center mt-8">
+            <div className="text-center mt-6">
               <p className="text-gray-600 text-sm">
                 Don't have an account?{' '}
                 <Link 
@@ -484,7 +484,7 @@ export function LoginForm() {
             </div>
             
             {/* Terms */}
-            <div className="text-center mt-8 pt-6 border-t border-gray-100">
+            <div className="text-center mt-6 pt-4 border-t border-gray-100">
               <p className="text-xs text-gray-500">
                 By signing in, you agree to our{" "}
                 <Link href="/terms" className="text-teal-600 hover:text-teal-700 transition-colors underline decoration-teal-600/30 hover:decoration-teal-600">
