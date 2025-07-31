@@ -58,12 +58,22 @@ if (!admin.apps.length) {
     
     // For development environment, we can use a fallback configuration
     if (process.env.NODE_ENV !== 'production' && process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+      console.warn('Firebase Admin SDK not properly configured, using fallback for development');
       admin.initializeApp({
         projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
       });
       console.log('Firebase Admin initialized with fallback configuration for development');
     } else {
-      throw error;
+      // In production or when no fallback available, log the error but don't throw
+      console.error('Firebase Admin SDK configuration error:', error.message);
+      console.warn('Some server-side features may not work properly');
+      
+      // Initialize with minimal config to prevent build failures
+      if (process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID) {
+        admin.initializeApp({
+          projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID
+        });
+      }
     }
   }
 }

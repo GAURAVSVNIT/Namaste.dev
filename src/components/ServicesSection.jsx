@@ -6,10 +6,10 @@ import '../static/ServicesSection.css';
 const ServicesSection = () => {
   return (
     <div className="services-container">
-      <h2 className="services-title">Fashion Services</h2>
+      <h2 className="services-title">Our Signature Services</h2>
       <p className="services-subtitle">
         We offer complementary styling on all orders, carefully curated 
-        by our fashion experts in elegant packaging.
+        by our fashion experts and presented in elegant packaging.
       </p>
       
       <div className="services-grid">
@@ -21,7 +21,7 @@ const ServicesSection = () => {
             />
           </div>
           <div className="service-content">
-            <h3 className="service-title">Personal Styling</h3>
+            <h3 className="service-content-title">Personal Styling</h3>
             <div className="service-links">
               <a href="#" className="service-link">Book Consultation</a>
             </div>
@@ -36,7 +36,7 @@ const ServicesSection = () => {
             />
           </div>
           <div className="service-content">
-            <h3 className="service-title">Custom Tailoring</h3>
+            <h3 className="service-content-title">Custom Tailoring</h3>
             <div className="service-links">
               <a href="#" className="service-link">For Women</a>
               <a href="#" className="service-link">For Men</a>
@@ -52,7 +52,7 @@ const ServicesSection = () => {
             />
           </div>
           <div className="service-content">
-            <h3 className="service-title">Become Partners</h3>
+            <h3 className="service-content-title">Become a Partner</h3>
             <div className="service-links">
               <a href="#" className="service-link">Explore Services</a>
             </div>

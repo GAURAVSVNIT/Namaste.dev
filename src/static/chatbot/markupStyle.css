@@ -1,0 +1,21 @@
+/* Make bold text semibold */
+.chatbot-chat-msg strong {
+  font-weight: 600; 
+}
+
+/* Make italic text normal weight */
+.chatbot-chat-msg em {
+  font-style: italic;
+  font-weight: 400; /* Normal weight */
+}
+
+/* Customize all heading tags */
+.chatbot-chat-msg h1 {
+  font-size: 2rem;
+  font-weight: 700; /* Bold */
+}
+
+.chatbot-chat-msg h2 {
+  font-size: 1.75rem;
+  font-weight: 600; /* Semibold */
+}

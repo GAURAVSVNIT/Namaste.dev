@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { toggleLike } from '@/lib/blog';
+import RoleBadge from '@/components/ui/role-badge';
 
 const BlogCard = ({ blog, onEdit, onDelete }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -12,9 +13,29 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
   
   const formatDate = (timestamp) => {
     if (!timestamp) return 'Unknown date';
-    
-    // Handle Firestore timestamp
-    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+
+    // Handle Firestore timestamp with toDate()
+    if (timestamp.toDate) {
+      return timestamp.toDate().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Handle Firestore-like timestamp object with seconds/nanoseconds
+    if (timestamp.seconds) {
+      return new Date(timestamp.seconds * 1000).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+    }
+
+    // Fallback: try parsing as Date
+    const date = new Date(timestamp);
+    if (isNaN(date)) return 'Invalid date';
+
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -40,45 +61,154 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
   const canEditDelete = user && user.uid === blog.authorId;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      {/* Blog Image */}
-      {blog.imageUrl && (
-        <div className="mb-4">
+    <div style={{
+      backgroundColor: '#ffffff',
+      borderRadius: '12px',
+      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
+      padding: '20px',
+      transition: 'all 0.3s ease',
+      border: '1px solid #f3f4f6',
+      width: '100%',
+      maxWidth: '350px',
+      minHeight: '520px',
+      height: '520px',
+      display: 'flex',
+      flexDirection: 'column'
+    }}
+    onMouseOver={(e) => {
+      e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
+      e.currentTarget.style.transform = 'translateY(-2px)';
+    }}
+    onMouseOut={(e) => {
+      e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+      e.currentTarget.style.transform = 'translateY(0)';
+    }}>
+      {/* Blog Image - Fixed height for consistency */}
+      <div style={{
+        marginBottom: '16px',
+        borderRadius: '8px',
+        overflow: 'hidden',
+        height: '180px',
+        backgroundColor: blog.imageUrl ? 'transparent' : '#f3f4f6',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
+      }}>
+        {blog.imageUrl ? (
           <img
             src={blog.imageUrl}
             alt={blog.title}
-            className="w-full h-48 object-cover rounded-md"
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              transition: 'transform 0.3s ease'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'scale(1.05)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'scale(1)';
+            }}
           />
-        </div>
-      )}
+        ) : (
+          <div style={{
+            color: '#9ca3af',
+            fontSize: '14px',
+            textAlign: 'center'
+          }}>
+            📝 No Image
+          </div>
+        )}
+      </div>
       
-      {/* Blog Header */}
-      <div className="mb-4">
+      {/* Blog Header - Fixed height for consistency */}
+      <div style={{ marginBottom: '12px' }}>
         <Link href={`/blog/${blog.slug}`}>
-          <h2 className="text-xl font-bold text-gray-900 hover:text-blue-600 cursor-pointer mb-2">
+          <h2 style={{
+            fontSize: '1.1rem',
+            fontWeight: '700',
+            color: '#111827',
+            cursor: 'pointer',
+            marginBottom: '8px',
+            lineHeight: '1.3',
+            transition: 'color 0.2s ease',
+            textDecoration: 'none',
+            height: '50px',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}
+          onMouseOver={(e) => {
+            e.target.style.color = '#3b82f6';
+          }}
+          onMouseOut={(e) => {
+            e.target.style.color = '#111827';
+          }}>
             {blog.title}
           </h2>
         </Link>
         
-        <div className="flex items-center text-sm text-gray-500 mb-2">
-          <span>By {blog.authorName}</span>
-          <span className="mx-2">•</span>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          fontSize: '0.8rem',
+          color: '#6b7280',
+          marginBottom: '8px',
+          flexWrap: 'wrap',
+          gap: '6px',
+          minHeight: '24px'
+        }}>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
+          }}>
+            <span>By {blog.authorName}</span>
+            {blog.authorRole && <RoleBadge role={blog.authorRole} size="sm" />}
+          </div>
+          <span style={{ margin: '0 2px' }}>•</span>
           <span>{formatDate(blog.createdAt)}</span>
         </div>
       </div>
       
       {/* Blog Snippet */}
-      <p className="text-gray-700 mb-4 line-clamp-3">
+      <p style={{
+        color: '#374151',
+        marginBottom: '16px',
+        lineHeight: '1.6',
+        fontSize: '0.9rem',
+        display: '-webkit-box',
+        WebkitLineClamp: 3,
+        WebkitBoxOrient: 'vertical',
+        overflow: 'hidden',
+        textOverflow: 'ellipsis'
+      }}>
         {blog.snippet}
       </p>
       
       {/* Tags */}
       {blog.tags && blog.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '8px',
+          marginBottom: '16px'
+        }}>
           {blog.tags.map((tag, index) => (
             <span
               key={index}
-              className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full"
+              style={{
+                backgroundColor: '#dbeafe',
+                color: '#1e40af',
+                fontSize: '0.75rem',
+                padding: '4px 12px',
+                borderRadius: '20px',
+                fontWeight: '500',
+                border: '1px solid #bfdbfe'
+              }}
             >
               {tag}
             </span>
@@ -87,13 +217,40 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
       )}
       
       {/* Actions */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginTop: '16px'
+      }}>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '16px'
+        }}>
           <button
             onClick={handleLike}
-            className={`flex items-center space-x-1 text-sm ${
-              isLiked ? 'text-red-500' : 'text-gray-500'
-            } hover:text-red-500`}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px',
+              fontSize: '0.875rem',
+              color: isLiked ? '#ef4444' : '#6b7280',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'color 0.2s ease',
+              padding: '4px 8px',
+              borderRadius: '4px'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = '#ef4444';
+              e.target.style.backgroundColor = '#fef2f2';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = isLiked ? '#ef4444' : '#6b7280';
+              e.target.style.backgroundColor = 'transparent';
+            }}
           >
             <span>{isLiked ? '❤️' : '🤍'}</span>
             <span>{likesCount}</span>
@@ -101,23 +258,79 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
           
           <Link
             href={`/blog/${blog.slug}`}
-            className="text-blue-600 hover:text-blue-800 text-sm font-medium"
+            style={{
+              color: '#3b82f6',
+              fontSize: '0.875rem',
+              fontWeight: '500',
+              textDecoration: 'none',
+              padding: '4px 8px',
+              borderRadius: '4px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.color = '#1d4ed8';
+              e.target.style.backgroundColor = '#eff6ff';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.color = '#3b82f6';
+              e.target.style.backgroundColor = 'transparent';
+            }}
           >
             Read More
           </Link>
         </div>
         
         {canEditDelete && (
-          <div className="flex items-center space-x-2">
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
             <button
               onClick={() => onEdit(blog)}
-              className="text-green-600 hover:text-green-800 text-sm font-medium"
+              style={{
+                color: '#059669',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.color = '#047857';
+                e.target.style.backgroundColor = '#ecfdf5';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.color = '#059669';
+                e.target.style.backgroundColor = 'transparent';
+              }}
             >
               Edit
             </button>
             <button
               onClick={() => onDelete(blog.id)}
-              className="text-red-600 hover:text-red-800 text-sm font-medium"
+              style={{
+                color: '#dc2626',
+                fontSize: '0.875rem',
+                fontWeight: '500',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: '4px 8px',
+                borderRadius: '4px',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.color = '#b91c1c';
+                e.target.style.backgroundColor = '#fef2f2';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.color = '#dc2626';
+                e.target.style.backgroundColor = 'transparent';
+              }}
             >
               Delete
             </button>

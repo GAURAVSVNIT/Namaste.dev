@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
-import { SignupForm } from "@/components/ui/signup-form";
+import { SignupForm } from "@/components/auth/signup-form";
 
 
 function SignupPageContent() {

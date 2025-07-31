@@ -27,7 +27,17 @@ import {
   getDocs,
   arrayUnion,
   deleteDoc,
+  arrayRemove,
+  onSnapshot,
 } from "firebase/firestore";
+
+import {
+  getStorage,
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
 // Type imports removed for JavaScript conversion
 
 const firebaseConfig = {
@@ -55,6 +65,7 @@ if (!firebaseConfig.apiKey) {
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const db = getFirestore(app);
+const storage = getStorage(app);
 const googleProvider = new GoogleAuthProvider();
 
 // ProfileUpdateData interface removed for JavaScript conversion
@@ -69,7 +80,7 @@ export const createUser = async (email, password, userData) => {
   const profileToCreate = {
     ...userData,
     email: userCredential.user.email,
-    role: userData.role || "user",
+    role: userData.role || "member",
     created_at: serverTimestamp(),
     updated_at: serverTimestamp(),
   };
@@ -98,19 +109,23 @@ export const signInWithGoogle = async () => {
       if (!userExists) {
         const profileData = {
           email: user.email,
+          name: user.displayName || "",
           first_name: user.displayName?.split(" ")[0] || "",
           last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
-          avatar_url: user.photoURL,
-          role: "user",
+          photoURL: user.photoURL,
+          avatar_url: user.photoURL, // Keep both for compatibility
+          role: "member",
+          likedBlogs: [],
+          activity: [],
+          blogCount: 0,
           created_at: serverTimestamp(),
           updated_at: serverTimestamp(),
           last_sign_in_at: serverTimestamp(),
         };
         await createUserProfile(user.uid, profileData);
         
-        // For consistency with email signup flow, we'll send users to the verify page
-        // Note: Most Google sign-ins already have a verified email, but we'll maintain the flow
-        window.location.href = `/auth/verify?email=${encodeURIComponent(user.email)}`;
+        // For new Google users, redirect to onboarding
+        window.location.href = `/onboarding`;
         return userCredential;
       }
       
@@ -150,10 +165,27 @@ export const logOut = async () => {
 export const createUserProfile = async (userId, data) => {
   const userRef = doc(db, "users", userId);
 
+  // Initialize with multiavatar if no photoURL provided
+  let avatarData = {};
+  if (!data.photoURL) {
+    try {
+      const { generateUserMultiavatar } = await import('./multiavatar');
+      const multiavatar = generateUserMultiavatar(data);
+      avatarData = {
+        photoURL: multiavatar.dataUrl,
+        avatarSeed: multiavatar.seed
+      };
+    } catch (error) {
+      console.error('Error generating initial multiavatar:', error);
+      // Continue without avatar if generation fails
+    }
+  }
+
   const profileDataToSet = {
     id: userId,
-    role: "user",
+    role: data.role || "member",
     ...data,
+    ...avatarData, // Add multiavatar data if generated
     created_at:
       data.created_at &&
       (data.created_at instanceof Timestamp ||
@@ -208,10 +240,15 @@ if (typeof window !== "undefined") {
         if (!exists) {
           const profileData = {
             email: user.email,
+            name: user.displayName || "",
             first_name: user.displayName?.split(" ")[0] || "",
             last_name: user.displayName?.split(" ").slice(1).join(" ") || "",
-            avatar_url: user.photoURL,
-            role: "user",
+            photoURL: user.photoURL,
+            avatar_url: user.photoURL, // Keep both for compatibility
+            role: "member",
+            likedBlogs: [],
+            activity: [],
+            blogCount: 0,
             created_at: serverTimestamp(),
             updated_at: serverTimestamp(),
             last_sign_in_at: serverTimestamp(),
@@ -245,7 +282,77 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { app, auth, db };
+export async function addProduct(product) {
+  const productData = {
+    ...product,
+    price: parseFloat(product.price),
+    stock: parseInt(product.stock, 10),
+    createdAt: serverTimestamp(),
+    updatedAt: serverTimestamp(),
+  };
+  const docRef = await addDoc(collection(db, 'products'), productData);
+  return docRef.id;
+}
+
+export async function updateProduct(productId, product) {
+  const productRef = doc(db, 'products', productId);
+  const productData = {
+    ...product,
+    price: parseFloat(product.price),
+    stock: parseInt(product.stock, 10),
+    updatedAt: serverTimestamp(),
+  };
+  await updateDoc(productRef, productData);
+}
+
+export async function deleteProduct(productId) {
+  await deleteDoc(doc(db, 'products', productId));
+}
+
+export function subscribeToRealtimeStats(update) {
+  return onSnapshot(collection(db, 'stats'), snapshot => {
+    const stats = [];
+    snapshot.forEach(doc => {
+      stats.push({ id: doc.id, ...doc.data() });
+    });
+    update(stats);
+  });
+}
+
+export function subscribeToRealtimeOrders(update) {
+  const orderQuery = query(collection(db, 'orders'), orderBy('createdAt', 'desc'));
+  return onSnapshot(orderQuery, snapshot => {
+    const orders = [];
+    snapshot.forEach(doc => {
+      orders.push({ id: doc.id, ...doc.data() });
+    });
+    update(orders);
+  });
+}
+
+export { 
+  app, 
+  auth, 
+  db, 
+  storage,
+  // Firestore functions
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  setDoc,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  orderBy,
+  limit,
+  serverTimestamp,
+  onSnapshot,
+  Timestamp,
+  arrayUnion
+};
 
 // FirestoreConversationData interface removed for JavaScript conversion
 

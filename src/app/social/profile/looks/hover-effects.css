@@ -1,0 +1,134 @@
+/* Look card hover effects */
+.look-card {
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,250,252,0.95));
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.3);
+}
+
+.look-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Look image hover effects */
+.look-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.look-image:hover {
+  transform: scale(1.05);
+}
+
+/* Look overlay hover effects */
+.look-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.look-overlay:hover {
+  opacity: 1;
+}
+
+/* Action buttons container hover effects */
+.action-buttons {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  gap: 8px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.action-buttons:hover {
+  opacity: 1;
+}
+
+/* Share button hover effects */
+.share-button {
+  background: rgba(255,255,255,0.9);
+  border: none;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(10px);
+}
+
+.share-button:hover {
+  background: rgba(255,255,255,1);
+  transform: scale(1.1);
+}
+
+/* Stats button hover effects */
+.stats-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.stats-button.likes {
+  background: rgba(239, 68, 68, 0.1);
+}
+
+.stats-button.likes:hover {
+  background: rgba(239, 68, 68, 0.15);
+  transform: scale(1.05);
+}
+
+.stats-button.comments {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.stats-button.comments:hover {
+  background: rgba(59, 130, 246, 0.15);
+  transform: scale(1.05);
+}
+
+.stats-button.views {
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.stats-button.views:hover {
+  background: rgba(16, 185, 129, 0.15);
+  transform: scale(1.05);
+}
+
+/* Empty state button hover effects */
+.empty-state-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  border: none;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 12px 28px rgba(102, 126, 234, 0.3);
+}
+
+.empty-state-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 36px rgba(102, 126, 234, 0.4);
+}

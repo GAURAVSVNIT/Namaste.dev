@@ -1,0 +1,82 @@
+:root {
+  --color-fashion-primary: #ff4d6d;
+  --color-fashion-secondary: #ff758f;
+  --color-fashion-accent: #FF9F1C;
+  --color-fashion-dark: #1A1A2E;
+  --color-fashion-light: #F8F4FF;
+}
+
+.leaderboard-container {
+  margin-top: 5rem;
+  padding: 2rem 1rem;
+  background: var(--color-fashion-light);
+  font-family: 'Segoe UI', sans-serif;
+  min-height: 100vh;
+}
+
+.leaderboard-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.leaderboard-header h1 {
+  font-size: 2rem;
+  color: var(--color-fashion-dark);
+}
+
+.subtle-text {
+  color: #666;
+  font-size: 0.95rem;
+  margin-top: 0.3rem;
+}
+
+.leaderboard-table-wrapper {
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+}
+
+.leaderboard-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.leaderboard-table thead {
+  background: var(--color-fashion-secondary);
+  color: white;
+}
+
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+.leaderboard-table tr:nth-child(even) {
+  background-color: #fafafa;
+}
+
+
+.leaderboard-table tr:hover {
+  background-color: #fff4f7;
+}
+.leaderboard-table .header-row:hover {
+  background-color: var(--color-fashion-secondary);
+}
+
+.score-cell {
+  font-weight: bold;
+  color: var(--color-fashion-primary);
+}
+
+@media (max-width: 600px) {
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+  }
+}

@@ -1,0 +1,102 @@
+/* Dropdown Menu Styling Improvements */
+
+/* Ensure dropdown menus have proper contrast */
+[data-radix-dropdown-menu-content] {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 6px !important;
+  padding: 4px !important;
+  color: #1f2937 !important;
+  z-index: 1000 !important;
+}
+
+[data-radix-dropdown-menu-item] {
+  border-radius: 4px !important;
+  padding: 6px 8px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-radix-dropdown-menu-item]:hover {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
+}
+
+[data-radix-dropdown-menu-item]:focus {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
+  outline: none !important;
+}
+
+/* Special styling for destructive actions */
+[data-radix-dropdown-menu-item][data-destructive="true"] {
+  color: #dc2626 !important;
+}
+
+[data-radix-dropdown-menu-item][data-destructive="true"]:hover {
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+}
+
+[data-radix-dropdown-menu-item][data-destructive="true"]:focus {
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+}
+
+/* Select dropdown styling */
+[data-radix-select-content] {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border-radius: 6px !important;
+  padding: 4px !important;
+  color: #1f2937 !important;
+  z-index: 1000 !important;
+}
+
+[data-radix-select-item] {
+  border-radius: 4px !important;
+  padding: 6px 8px !important;
+  font-size: 14px !important;
+  transition: all 0.2s ease !important;
+}
+
+[data-radix-select-item]:hover {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
+}
+
+[data-radix-select-item]:focus {
+  background-color: #f3f4f6 !important;
+  color: #1f2937 !important;
+  outline: none !important;
+}
+
+/* Remove any conflicting popover styles */
+[data-radix-dropdown-menu-content][data-side="top"],
+[data-radix-dropdown-menu-content][data-side="bottom"],
+[data-radix-dropdown-menu-content][data-side="left"],
+[data-radix-dropdown-menu-content][data-side="right"] {
+  background-color: white !important;
+}
+
+/* Ensure proper text color inheritance */
+[data-radix-dropdown-menu-content] * {
+  color: inherit !important;
+}
+
+[data-radix-select-content] * {
+  color: inherit !important;
+}
+
+/* Animation improvements */
+[data-radix-dropdown-menu-content] {
+  animation-duration: 150ms !important;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-radix-select-content] {
+  animation-duration: 150ms !important;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1) !important;
+}

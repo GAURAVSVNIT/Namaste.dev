@@ -1,90 +1,214 @@
-.scrolling-cards-container {
+/* Horizontal Scrolling Cards Section */
+.scrolling-cards-section {
     position: relative;
-    height: 300vh; /* Adjust height based on the number of cards and desired scroll length */
-    background-color: #f8f4ff; /* Light background to complement the theme */
-}
-
-.sticky-container {
-    position: sticky;
-    top: 0;
-    height: 100vh;
+    height: 100vh; /* Takes up exactly the viewport height */
+    padding: 0; /* No extra padding needed */
+    background: linear-gradient(135deg, #f8f4ff 0%, #e8e4f3 30%, #f0f8ff 70%, #faf8ff 100%);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
 }
 
+/* Section Header */
+.section-header {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 20px; /* Add padding here */
+    position: relative;
+    z-index: 10;
+}
+
+.header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(20px);
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 1px solid rgba(255, 77, 237, 0.2);
+    color: #ff4ded;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 8px 32px rgba(255, 77, 237, 0.1);
+}
+
+.section-title {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #2b2d42 0%, #3f0034 50%, #ff4ded 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.title-accent {
+    display: block;
+    background: linear-gradient(135deg, #ff4ded 0%, #d746ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.section-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #64748b;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Cards Wrapper - now takes up remaining space */
 .cards-wrapper {
     position: relative;
-    height: 100%;
+    width: 100%;
+    flex-grow: 1; /* This is important */
     display: flex;
     align-items: center;
     justify-content: center;
-    perspective: 1000px; /* Add perspective for 3D effect */
-    transform-style: preserve-3d; /* This is important for 3D stacking */
+    perspective: 1500px;
 }
 
+/* Elegant Card Styling */
 .card {
     position: absolute;
-    width: 90vw; /* Wider card */
-    height: 85vh; /* Shorter, more rectangular card */
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: min(90vw, 1000px);
+    height: min(75vh, 600px);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(30px);
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     overflow: hidden;
-    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.7s ease;
-    display: flex; /* Changed to flex */
-    flex-direction: row; /* Arrange content side-by-side */
-    align-items: center; /* Center content vertically */
-    backface-visibility: hidden; /* Hide back of card during 3D transform */
+    display: flex;
+    align-items: center;
+    will-change: transform, opacity, scale;
+    transform: translateX(110%);
 }
 
-/* Assigning solid background colors based on the website's theme */
-.card-1 {
-    background-color: #c07e2d; /* Primary color */
-}
-
-.card-2 {
-    background-color: #dde93f; /* Secondary color */
-}
-
-.card-3 {
-    background-color: #FF9F1C; /* Accent color */
-}
-
-.card.visible {
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-    transform: translateZ(0) translateY(0) !important; /* Ensure visible card is at the front */
+.card:first-child {
+    transform: translateX(0);
 }
 
 .card-image-container {
-    width: 55%; /* Image takes up more than half */
+    width: 55%;
     height: 100%;
     overflow: hidden;
+    position: relative;
+    border-radius: 26px 0 0 26px;
 }
 
 .card-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.5s ease;
 }
 
-.card:hover .card-image {
-    transform: scale(1.05);
+.image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(43, 45, 66, 0.1) 0%, transparent 60%);
+}
+
+.category-badge {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: white;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 }
 
 .card-content {
     width: 45%;
-    padding: 2rem 3rem;
-    text-align: left; /* Align text to the left */
+    padding: 40px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.content-inner {
+    width: 100%;
 }
 
 .card-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: #2b2d42; /* Dark text color from theme */
-    margin-bottom: 0.5rem;
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
 }
 
 .card-description {
-    font-size: 1rem;
-    color: #485264; /* Softer text color */
+    font-size: 1.05rem;
+    color: #64748b;
+    line-height: 1.6;
+    margin-bottom: 28px;
+    max-width: 400px;
+}
+
+.card-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.explore-btn {
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn {
+    background: transparent;
+    border: 2px solid;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 900px) {
+    .card {
+        flex-direction: column;
+        width: 90vw;
+        height: 80vh;
+    }
+    .card-image-container {
+        width: 100%;
+        height: 55%;
+        border-radius: 26px 26px 0 0;
+    }
+    .card-content {
+        width: 100%;
+        height: 45%;
+        padding: 24px;
+        justify-content: center;
+        text-align: center;
+    }
+    .card-actions {
+        justify-content: center;
+    }
 }

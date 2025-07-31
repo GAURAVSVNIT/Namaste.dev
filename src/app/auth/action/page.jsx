@@ -98,12 +98,31 @@ function AuthActionPageContent() {
     } else if (mode === "verifyEmail" && oobCode) {
       console.log("Handling verifyEmail action with code:", oobCode);
       applyActionCode(auth, oobCode)
-        .then(() => {
+        .then(async () => {
           console.log("Email verification successful");
           setMessage(
-            "Your email address has been verified successfully! You can now log in."
+            "Your email address has been verified successfully! Setting up your profile..."
           );
           setIsVerifying(false);
+          
+          // Check if user has completed onboarding
+          try {
+            const { getUserById } = await import('@/lib/user');
+            const user = auth.currentUser;
+            
+            if (user) {
+              const userProfile = await getUserById(user.uid);
+              
+              // If user doesn't have a role (new user), redirect to onboarding
+              if (!userProfile?.role) {
+                setTimeout(() => router.push("/onboarding"), 2000);
+                return;
+              }
+            }
+          } catch (error) {
+            console.error('Error checking user profile:', error);
+          }
+          
           setTimeout(() => router.push("/"), 3000);
         })
         .catch((err) => {
@@ -148,7 +167,7 @@ function AuthActionPageContent() {
       );
       setNewPassword("");
       setConfirmNewPassword("");
-      setTimeout(() => router.push("/auth/login?message=Password reset successfully"), 3000);
+      setTimeout(() => router.push("auth/login?message=Password reset successfully"), 3000);
     } catch (err) {
       console.error("Error confirming password reset:", err);
       setError(
@@ -194,7 +213,7 @@ function AuthActionPageContent() {
               </div>
               
               <Link 
-                href="/auth/login" 
+                href="auth/login" 
                 className="gradient-button inline-flex items-center justify-center px-6"
               >
                 Proceed to Login
@@ -231,7 +250,7 @@ function AuthActionPageContent() {
             )}
             
             <Link 
-              href="/auth/login" 
+              href="auth/login" 
               className="gradient-button inline-flex items-center justify-center px-6"
             >
               Back to Login
@@ -328,7 +347,7 @@ function AuthActionPageContent() {
             <p className="text-gray-600 text-sm">
               Remember your password?{" "}
               <Link 
-                href="/auth/login" 
+                href="auth/login" 
                 className="text-teal-600 hover:text-teal-700 transition-colors font-semibold"
               >
                 Back to Login

@@ -1,0 +1,233 @@
+:root {
+  --color-fashion-primary: #ff4d6d;
+  --color-fashion-secondary: #ff758f;
+  --color-fashion-accent: #FF9F1C;
+  --color-fashion-dark: #1A1A2E;
+  --color-fashion-light: #F8F4FF;
+}
+
+.result-container {
+  padding: 1.5rem;
+  padding-top: 7rem;
+  background: var(--color-fashion-light);
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.result-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.result-header h1 {
+  font-size: 2rem;
+  color: var(--color-fashion-dark);
+  font-weight: 700;
+}
+
+.score-badge {
+  font-size: 2.5rem;
+  font-weight: bold;
+  background: var(--color-fashion-primary);
+  color: white;
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  border-radius: 2rem;
+  margin: 1rem 0;
+}
+
+.time-info {
+  color: #444;
+  font-weight: 500;
+  margin-bottom: 1rem;
+}
+
+.coupon-banner {
+  background: var(--color-fashion-accent);
+  color: white;
+  padding: 1rem;
+  font-weight: bold;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.coupon-code {
+  background: white;
+  color: var(--color-fashion-dark);
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.3rem;
+  margin-left: 0.6rem;
+  font-family: monospace;
+}
+
+.leaderboard-link {
+  display: inline-block;
+  margin-top: 1rem;
+  text-decoration: none;
+  color: white;
+  background: var(--color-fashion-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 1rem;
+  font-weight: 600;
+  transition: background 0.3s ease-in-out;
+}
+.leaderboard-link:hover {
+  background: var(--color-fashion-primary);
+}
+
+.response-list {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.5rem;
+}
+
+.response-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.response-card.correct {
+  border-left: 6px solid #2ecc71;
+}
+
+.response-card.incorrect {
+  border-left: 6px solid #e74c3c;
+}
+
+.response-question {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-fashion-dark);
+}
+
+.response-image {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  margin: 0.5rem 0;
+  border-radius: 0.5rem;
+}
+
+.response-answer,
+.response-correct,
+.response-explanation {
+  font-size: 0.95rem;
+  margin: 0.4rem 0;
+  color: #444;
+}
+
+.label {
+  font-weight: 600;
+  color: var(--color-fashion-dark);
+}
+
+.icon-correct {
+  color: #2ecc71;
+  width: 1.2rem;
+  height: 1.2rem;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+.icon-wrong {
+  color: #e74c3c;
+  width: 1.2rem;
+  height: 1.2rem;
+  vertical-align: middle;
+  margin-left: 0.5rem;
+}
+
+@media (max-width: 640px) {
+  .score-badge {
+    font-size: 2rem;
+  }
+
+  .coupon-banner {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .response-question {
+    font-size: 1rem;
+  }
+
+  .response-card {
+    padding: 1rem;
+  }
+}
+
+
+
+
+
+
+
+
+.circular-score {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 1rem auto;
+}
+.circular-score svg {
+  transform: rotate(-90deg);
+}
+.circular-score-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-weight: bold;
+  color: var(--color-fashion-dark);
+}
+.circular-score-text span {
+  font-size: 1.8rem;
+  display: block;
+}
+.circular-score-text small {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.responses-heading {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-fashion-dark);
+  margin-bottom: .6rem;
+}
+
+.response-list {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.response-card {
+  background: white;
+  width: 100%;
+  max-width: 800px;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+
+ hr {
+    border: none;
+    height: 1px;
+    background-color: #aaa;
+    width: 60%;
+    margin: 1rem auto;
+  }

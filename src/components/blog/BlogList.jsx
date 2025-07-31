@@ -5,19 +5,48 @@ import BlogCard from './BlogCard';
 const BlogList = ({ blogs, onEdit, onDelete, isLoading = false }) => {
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: '48px 0'
+      }}>
+        <div style={{
+          animation: 'spin 1s linear infinite',
+          borderRadius: '50%',
+          height: '48px',
+          width: '48px',
+          border: '3px solid #e5e7eb',
+          borderBottomColor: '#3b82f6'
+        }}></div>
+        <style jsx>{`
+          @keyframes spin {
+            to {
+              transform: rotate(360deg);
+            }
+          }
+        `}</style>
       </div>
     );
   }
 
   if (!blogs || blogs.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-gray-500 text-lg mb-4">
+      <div style={{
+        textAlign: 'center',
+        padding: '48px 0'
+      }}>
+        <div style={{
+          color: '#6b7280',
+          fontSize: '1.125rem',
+          marginBottom: '16px'
+        }}>
           No blogs found
         </div>
-        <p className="text-gray-400">
+        <p style={{
+          color: '#9ca3af',
+          fontSize: '1rem'
+        }}>
           Be the first to create a blog post!
         </p>
       </div>
@@ -25,15 +54,27 @@ const BlogList = ({ blogs, onEdit, onDelete, isLoading = false }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {blogs.map((blog) => (
-        <BlogCard
-          key={blog.id}
-          blog={blog}
-          onEdit={onEdit}
-          onDelete={onDelete}
-        />
-      ))}
+    <div style={{
+      width: '100%',
+      padding: '0 16px'
+    }}>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: '24px',
+        justifyItems: 'center',
+        maxWidth: '1200px',
+        margin: '0 auto'
+      }}>
+        {blogs.map((blog) => (
+          <BlogCard
+            key={blog.id}
+            blog={blog}
+            onEdit={onEdit}
+            onDelete={onDelete}
+          />
+        ))}
+      </div>
     </div>
   );
 };

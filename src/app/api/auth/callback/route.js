@@ -5,7 +5,7 @@ export async function GET(request) {
   const requestUrl = new URL(request.url);
   const idToken = requestUrl.searchParams.get("token");
   // Default redirect target
-  let redirectTarget = "/chat";
+  let redirectTarget = "/";
 
   if (!idToken) {
     return NextResponse.redirect(
