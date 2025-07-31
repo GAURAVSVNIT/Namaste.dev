@@ -185,6 +185,10 @@ export default function ChatBot() {
   return (
     <div className="chatbot-container">
       <div className="chatbot-messages">
+        {/* Logo Watermark */}
+        <div className="chatbot-watermark">
+          <img src="/logo-home.png" alt="Namaste.dev Logo" />
+        </div>
         {messages.map((msg, idx) => (
           <div key={idx} className={`chatbot-message ${msg.role}`}>
 {/*             - <span dangerouslySetInnerHTML={{ __html: marked(msg.content) }} /> */}

@@ -9,6 +9,8 @@ import {
   query, 
   where, 
   orderBy, 
+  limit, 
+  startAfter, 
   serverTimestamp 
 } from 'firebase/firestore';
 import { db } from './firebase';
@@ -61,7 +63,59 @@ export const createBlog = async (blogData, authorId, authorName) => {
   }
 };
 
-// Get all blogs
+// Get blogs with pagination
+export const getBlogs = async (pageSize, lastVisibleId) => {
+  try {
+    let q;
+    if (lastVisibleId) {
+      // Get the document reference for the last visible document
+      const lastDoc = await getDoc(doc(db, 'blogs', lastVisibleId));
+      if (lastDoc.exists()) {
+        q = query(
+          collection(db, 'blogs'),
+          orderBy('createdAt', 'desc'),
+          startAfter(lastDoc),
+          limit(pageSize)
+        );
+      } else {
+        // If document doesn't exist, start from beginning
+        q = query(
+          collection(db, 'blogs'),
+          orderBy('createdAt', 'desc'),
+          limit(pageSize)
+        );
+      }
+    } else {
+      q = query(
+        collection(db, 'blogs'),
+        orderBy('createdAt', 'desc'),
+        limit(pageSize)
+      );
+    }
+    
+    const querySnapshot = await getDocs(q);
+    const last = querySnapshot.docs[querySnapshot.docs.length - 1];
+    
+    const blogs = [];
+    querySnapshot.forEach((doc) => {
+      blogs.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    
+    return { 
+      blogs, 
+      lastId: last?.id || null, 
+      hasMore: querySnapshot.docs.length === pageSize 
+    };
+  } catch (error) {
+    console.error('Error getting blogs with pagination:', error);
+    throw error;
+  }
+};
+
+// Get all blogs (fallback for existing functionality)
 export const getAllBlogs = async () => {
   try {
     // Try with orderBy first, fallback to no ordering if index doesn't exist

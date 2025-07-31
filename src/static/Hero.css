@@ -3,7 +3,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 6rem 5%;
-    height: 100vh;
+    height: 80vh;
     position: relative;
     z-index: 2;
     background-image: url('/images/hero-bg.jpg');

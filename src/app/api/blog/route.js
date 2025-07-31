@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
-import { createBlog, getAllBlogs, updateBlog, deleteBlog, getBlogById } from '@/lib/blog';
+import { createBlog, getAllBlogs, getBlogs, updateBlog, deleteBlog, getBlogById } from '@/lib/blog';
 import { auth } from '@/lib/firebase';
 
-// GET - Fetch all blogs
+// GET - Fetch blogs with optional pagination
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     const blogId = searchParams.get('id');
+    const pageSize = parseInt(searchParams.get('pageSize')) || null;
+    const lastVisible = searchParams.get('lastVisible') || null;
     
     if (blogId) {
       const blog = await getBlogById(blogId);
@@ -16,6 +18,13 @@ export async function GET(request) {
       return NextResponse.json(blog);
     }
     
+    // If pageSize is provided, use pagination
+    if (pageSize) {
+      const result = await getBlogs(pageSize, lastVisible);
+      return NextResponse.json(result);
+    }
+    
+    // Fallback to get all blogs
     const blogs = await getAllBlogs();
     return NextResponse.json(blogs);
   } catch (error) {
