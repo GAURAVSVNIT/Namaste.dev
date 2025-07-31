@@ -138,21 +138,79 @@ const ScrollingCards = () => {
     const section = sectionRef.current;
     if (!section) return;
 
-    const handleWheel = (e) => {
-      e.preventDefault();
-      const scrollDelta = e.deltaY;
-      const scrollSensitivity = 0.0007; 
+    // Touch/swipe handling for mobile
+    let touchStartY = 0;
+    let touchStartX = 0;
+    let isTouching = false;
 
-      const currentProgress = scrollProgress.get();
-      const newProgress = currentProgress + scrollDelta * scrollSensitivity;
-      
-      scrollProgress.set(Math.max(0, Math.min(1, newProgress)));
+    const handleTouchStart = (e) => {
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+      isTouching = true;
     };
 
+    const handleTouchMove = (e) => {
+      if (!isTouching) return;
+      
+      const touchY = e.touches[0].clientY;
+      const touchX = e.touches[0].clientX;
+      const deltaY = touchStartY - touchY;
+      const deltaX = Math.abs(touchStartX - touchX);
+      
+      // Only handle vertical swipes (ignore horizontal swipes)
+      if (deltaX > Math.abs(deltaY)) return;
+      
+      const currentProgress = scrollProgress.get();
+      const scrollSensitivity = 0.002;
+      const newProgress = currentProgress + deltaY * scrollSensitivity;
+      
+      const isInHorizontalRange = currentProgress > 0 && currentProgress < 1;
+      const isAtStartAndScrollingDown = currentProgress === 0 && deltaY > 0;
+      const isAtEndAndScrollingUp = currentProgress === 1 && deltaY < 0;
+      
+      if (isInHorizontalRange || isAtStartAndScrollingDown || isAtEndAndScrollingUp) {
+        e.preventDefault();
+        scrollProgress.set(Math.max(0, Math.min(1, newProgress)));
+        touchStartY = touchY; // Update touch start for continuous scrolling
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isTouching = false;
+    };
+
+    // Mouse wheel handling for desktop
+    const handleWheel = (e) => {
+      const currentProgress = scrollProgress.get();
+      const scrollDelta = e.deltaY;
+      const scrollSensitivity = 0.0007;
+      const newProgress = currentProgress + scrollDelta * scrollSensitivity;
+      
+      // Only prevent default if:
+      // 1. We're currently in the middle of horizontal animation (0 < progress < 1)
+      // 2. OR we're at the boundaries and scrolling would continue the horizontal animation
+      const isInHorizontalRange = currentProgress > 0 && currentProgress < 1;
+      const isAtStartAndScrollingDown = currentProgress === 0 && scrollDelta > 0;
+      const isAtEndAndScrollingUp = currentProgress === 1 && scrollDelta < 0;
+      
+      if (isInHorizontalRange || isAtStartAndScrollingDown || isAtEndAndScrollingUp) {
+        e.preventDefault();
+        scrollProgress.set(Math.max(0, Math.min(1, newProgress)));
+      }
+      // Allow normal vertical scrolling when at boundaries and scrolling away from horizontal range
+    };
+
+    // Add event listeners
     section.addEventListener('wheel', handleWheel, { passive: false });
+    section.addEventListener('touchstart', handleTouchStart, { passive: false });
+    section.addEventListener('touchmove', handleTouchMove, { passive: false });
+    section.addEventListener('touchend', handleTouchEnd);
 
     return () => {
       section.removeEventListener('wheel', handleWheel);
+      section.removeEventListener('touchstart', handleTouchStart);
+      section.removeEventListener('touchmove', handleTouchMove);
+      section.removeEventListener('touchend', handleTouchEnd);
     };
   }, [scrollProgress]);
   

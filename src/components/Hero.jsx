@@ -1,38 +1,8 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import '../static/Hero.css';
 
 const Hero = () => {
-  const statsRef = useRef([]);
-
-  useEffect(() => {
-    // Animated counter function
-    const animateCounter = (element) => {
-      const target = parseInt(element.getAttribute('data-target'));
-      const duration = 2000; // 2 seconds
-      const step = target / (duration / 16); // 60 FPS
-      let current = 0;
-      
-      const updateCounter = () => {
-        current += step;
-        if (current < target) {
-          element.textContent = Math.floor(current).toLocaleString();
-          requestAnimationFrame(updateCounter);
-        } else {
-          element.textContent = target.toLocaleString();
-        }
-      };
-      
-      updateCounter();
-    };
-
-    // Start counters after component mounts
-    const timer = setTimeout(() => {
-      statsRef.current.forEach(animateCounter);
-    }, 2500);
-
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="hero-container">
@@ -48,39 +18,6 @@ const Hero = () => {
           <a href="/quiz" className="cta-button-outlined">Test your fashion</a>
         </div>
 
-        {/* Stats Counter Section */}
-        <div className="stats-container">
-          <div className="stat-item">
-            <span 
-              className="stat-number" 
-              data-target="25000"
-              ref={el => statsRef.current[0] = el}
-            >
-              0
-            </span>
-            <span className="stat-label">Products</span>
-          </div>
-          <div className="stat-item">
-            <span 
-              className="stat-number" 
-              data-target="150000"
-              ref={el => statsRef.current[1] = el}
-            >
-              0
-            </span>
-            <span className="stat-label">Happy Customers</span>
-          </div>
-          <div className="stat-item">
-            <span 
-              className="stat-number" 
-              data-target="500000"
-              ref={el => statsRef.current[2] = el}
-            >
-              0
-            </span>
-            <span className="stat-label">Social Followers</span>
-          </div>
-        </div>
       </div>
 
       <div className="hero-images">

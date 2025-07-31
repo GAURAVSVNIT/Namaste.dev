@@ -190,25 +190,248 @@
     transition: all 0.3s ease;
 }
 
+/* Tablet styles */
 @media (max-width: 900px) {
+    .scrolling-cards-section {
+        height: auto;
+        min-height: 100vh;
+        padding: 2rem 0;
+    }
+    
+    .section-header {
+        padding: 1rem 16px;
+    }
+    
+    .header-badge {
+        font-size: 0.8rem;
+        padding: 6px 16px;
+        margin-bottom: 1rem;
+    }
+    
+    .section-title {
+        font-size: clamp(1.8rem, 6vw, 2.5rem);
+    }
+    
+    .section-description {
+        font-size: 1rem;
+        padding: 0 16px;
+    }
+    
     .card {
         flex-direction: column;
         width: 90vw;
-        height: 80vh;
+        height: 85vh;
+        border-radius: 24px;
     }
+    
     .card-image-container {
         width: 100%;
-        height: 55%;
-        border-radius: 26px 26px 0 0;
+        height: 50%;
+        border-radius: 24px 24px 0 0;
     }
+    
+    .category-badge {
+        top: 16px;
+        left: 16px;
+        font-size: 0.7rem;
+        padding: 6px 12px;
+    }
+    
     .card-content {
         width: 100%;
-        height: 45%;
-        padding: 24px;
+        height: 50%;
+        padding: 20px;
         justify-content: center;
         text-align: center;
     }
+    
+    .card-title {
+        font-size: clamp(1.3rem, 5vw, 1.8rem);
+        margin-bottom: 12px;
+    }
+    
+    .card-description {
+        font-size: 0.95rem;
+        margin-bottom: 20px;
+        max-width: none;
+    }
+    
     .card-actions {
+        flex-direction: row;
+        gap: 12px;
         justify-content: center;
+    }
+    
+    .explore-btn {
+        padding: 12px 20px;
+        font-size: 0.85rem;
+    }
+    
+    .wishlist-btn {
+        padding: 10px;
+    }
+}
+
+/* Mobile styles */
+@media (max-width: 640px) {
+    .scrolling-cards-section {
+        padding: 0;
+        height: 100vh;
+        justify-content: flex-start;
+        gap: 0;
+    }
+    
+    .section-header {
+        padding: 1rem 16px 0.5rem 16px;
+        margin-bottom: 0;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 20;
+        background: transparent;
+    }
+    
+    .header-badge {
+        font-size: 0.65rem;
+        padding: 3px 10px;
+        gap: 3px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .section-title {
+        font-size: clamp(1.1rem, 6vw, 1.4rem);
+        margin-bottom: 0.3rem;
+        line-height: 1.1;
+    }
+    
+    .section-description {
+        font-size: 0.7rem;
+        line-height: 1.3;
+        padding: 0 4px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .cards-wrapper {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding-top: 0.5rem;
+    }
+    
+    .card {
+        width: 95vw;
+        height: 75vh;
+        max-height: 600px;
+        border-radius: 20px;
+    }
+    
+    .card-image-container {
+        height: 45%;
+        border-radius: 20px 20px 0 0;
+    }
+    
+    .category-badge {
+        top: 12px;
+        left: 12px;
+        font-size: 0.65rem;
+        padding: 4px 8px;
+        gap: 4px;
+    }
+    
+    .card-content {
+        height: 55%;
+        padding: 16px;
+    }
+    
+    .card-title {
+        font-size: clamp(1.2rem, 6vw, 1.5rem);
+        margin-bottom: 10px;
+    }
+    
+    .card-description {
+        font-size: 0.85rem;
+        line-height: 1.4;
+        margin-bottom: 16px;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+        gap: 8px;
+        align-items: stretch;
+    }
+    
+    .explore-btn {
+        padding: 10px 16px;
+        font-size: 0.8rem;
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .wishlist-btn {
+        align-self: center;
+        padding: 8px;
+    }
+}
+
+/* Extra small mobile screens */
+@media (max-width: 480px) {
+    .section-header {
+        padding: 0.5rem 12px 0.25rem 12px;
+        margin-bottom: 0;
+    }
+    
+    .header-badge {
+        font-size: 0.6rem;
+        padding: 2px 8px;
+        margin-bottom: 0.25rem;
+        gap: 2px;
+    }
+    
+    .section-title {
+        font-size: clamp(1rem, 5vw, 1.2rem);
+        margin-bottom: 0.2rem;
+        line-height: 1.1;
+    }
+    
+    .section-description {
+        font-size: 0.65rem;
+        line-height: 1.2;
+        padding: 0 4px;
+        margin-bottom: 0.25rem;
+    }
+    
+    .cards-wrapper {
+        padding-top: 0.25rem;
+    }
+    
+    .card {
+        width: 98vw;
+        height: 70vh;
+        max-height: 550px;
+    }
+    
+    .card-content {
+        padding: 10px;
+    }
+    
+    .card-title {
+        font-size: clamp(0.9rem, 4vw, 1.1rem);
+        margin-bottom: 6px;
+    }
+    
+    .card-description {
+        font-size: 0.75rem;
+        line-height: 1.2;
+        margin-bottom: 10px;
+    }
+    
+    .explore-btn {
+        padding: 6px 10px;
+        font-size: 0.7rem;
+    }
+    
+    .wishlist-btn {
+        padding: 6px;
     }
 }
