@@ -241,11 +241,46 @@
     outline-color: color-mix(in srgb, var(--ring) 50%, transparent);
   }
   
+  html {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    scroll-behavior: smooth;
+  }
+  
   body {
     background: var(--background);
     color: var(--foreground);
     font-family: var(--font-sans);
     margin: 0;
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    width: 100%;
+    max-width: 100vw;
+  }
+  
+  /* Hide scrollbars globally while keeping functionality */
+  ::-webkit-scrollbar {
+    width: 0px;
+    background: transparent;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+  
+  /* For Firefox */
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  /* Prevent content from overflowing horizontally */
+  * {
+    box-sizing: border-box;
+  }
+  
+  /* Container overflow management */
+  .container, .max-w-\[\d+\] {
+    max-width: 100%;
+    overflow-x: hidden;
   }
 }
 

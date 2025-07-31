@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 6rem 5%;
-    height: 100vh;
+    height: 80vh;
     position: relative;
     background-image: linear-gradient(rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.3)), url('/images/hero-bg.jpg');
     background-repeat: no-repeat;

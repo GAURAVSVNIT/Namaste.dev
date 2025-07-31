@@ -65,7 +65,7 @@ const BlogList = ({ blogs, onEdit, onDelete, isLoading = false }) => {
         justifyItems: 'center',
         maxWidth: '1200px',
         margin: '0 auto'
-      }}>
+      }} className="blog-grid">
         {blogs.map((blog) => (
           <BlogCard
             key={blog.id}

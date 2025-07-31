@@ -4,51 +4,110 @@ import { useEffect, useState, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { getDocs, collection, db, query, orderBy } from '../../lib/firebase';
-import { Search, Filter, ShoppingCart, Star, Heart, Eye, X, ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, Star, Heart } from 'lucide-react';
 import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
+// import { Input } from '../../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
 import { Checkbox } from '../../components/ui/checkbox';
 import useCartStore from '../../store/cart-store';
 import { formatCurrency } from '../../lib/utils';
+import { brands, categories, promoCards } from '../../lib/constants';
+import PromoSection from '../../components/PromoSection';
+import VisualSearch from '../../components/VisualSearch';
 import '../../static/Marketplace.css';
 
-const brands = ["U.S. POLO ASSN.", "Majestic Man", "CHKOKKO", "London Hills", "EIO", "Hopscotch"];
-const categories = ["Fashion", "Women", "Men", "Girls", "Boys"];
+// Memoized ProductGrid component (moved outside main component)
+const ProductGrid = memo(({ products, onViewProduct, onAddToCart }) => (
+  <div className="products-grid">
+    {products.map((product) => (
+      <ProductCard 
+        key={product.id} 
+        product={product} 
+        onViewProduct={onViewProduct}
+        onAddToCart={onAddToCart}
+      />
+    ))}
+  </div>
+));
 
-// Move promoCards outside component to prevent recreation
-const promoCards = [
-  {
-    id: 1,
-    image: "https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?w=600&h=400&fit=crop",
-    title: "Men's Collection",
-    description: "Discover our latest men's fashion trends"
-  },
-  {
-    id: 2,
-    image: "https://images.unsplash.com/photo-1581044777550-4cfa6ce6702e?w=600&h=400&fit=crop",
-    title: "Women's Style",
-    description: "Elegant and modern women's clothing"
-  },
-  {
-    id: 3,
-    image: "https://images.unsplash.com/photo-1519241977459-1f03635f10c2?w=600&h=400&fit=crop",
-    title: "Accessories",
-    description: "Complete your look with perfect accessories"
-  },
-  {
-    id: 4,
-    image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&h=400&fit=crop",
-    title: "Kids Collection",
-    description: "Comfortable and stylish clothing for kids"
-  },
-  {
-    id: 5,
-    image: "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=600&h=400&fit=crop",
-    title: "Summer Essentials",
-    description: "Beat the heat with our summer collection"
-  }
-];
+// Memoized ProductCard component (moved outside main component)
+const ProductCard = memo(({ product, onViewProduct, onAddToCart }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="product-card"
+    onClick={() => onViewProduct(product.id)}
+  >
+    <div className="product-card-image-container">
+      <img src={product.image || '/api/placeholder/300/400'} alt={product.name} className="product-card-image" />
+      <div className="product-card-actions">
+        <button className="product-card-action-button">
+          <Heart className="w-5 h-5 text-gray-600" />
+        </button>
+      </div>
+      <button className="product-card-add-to-cart" onClick={(e) => onAddToCart(e, product)}>
+        Add to Cart
+      </button>
+    </div>
+    <div className="product-card-content">
+      <h3 className="product-card-name truncate">{product.name}</h3>
+      <p className="product-card-description">{product.shortDescription || 'No description'}</p>
+      <div className="flex items-center gap-1 mb-2">
+        <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+        <span className="text-sm font-medium text-gray-700">{product.rating || '4.5'}</span>
+      </div>
+      <p className="product-card-price">{formatCurrency(product.price || 0)}</p>
+    </div>
+  </motion.div>
+));
+
+// Memoized FilterSidebar component (moved outside main component)
+const FilterSidebar = memo(({ 
+  categories, 
+  brands, 
+  selectedCategory, 
+  selectedBrands, 
+  onCategoryChange, 
+  onBrandChange, 
+  onVisualSearchResults 
+}) => (
+  <aside className="filter-sidebar">
+    <div className="filter-section">
+      <VisualSearch onResults={onVisualSearchResults} />
+    </div>
+    <div className="filter-section">
+      <h3>Category</h3>
+      <ul>
+        {categories.map(cat => (
+          <li key={cat}>
+            <button 
+              className={selectedCategory === cat ? 'active' : ''} 
+              onClick={() => onCategoryChange(cat)}
+            >
+              {cat}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div className="filter-section">
+      <h3>Brands</h3>
+      <ul>
+        {brands.map(brand => (
+          <li key={brand} className="filter-option">
+            <Checkbox 
+              id={`brand-${brand}`} 
+              onCheckedChange={(checked) => onBrandChange(brand, checked)}
+              checked={selectedBrands.includes(brand)}
+            />
+            <label htmlFor={`brand-${brand}`}>{brand}</label>
+          </li>
+        ))}
+      </ul>
+      <a href="#" className="text-sm text-blue-600 mt-3 inline-block">See more</a>
+    </div>
+  </aside>
+));
 
 const MarketPlacePage = () => {
   const router = useRouter();
@@ -63,6 +122,7 @@ const MarketPlacePage = () => {
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [sortBy, setSortBy] = useState('newest');
+  const [visualSearchResults, setVisualSearchResults] = useState(null);
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
   
   // Promo carousel state
@@ -82,19 +142,25 @@ const MarketPlacePage = () => {
     return () => clearInterval(interval);
   }, [isAutoRotating]);
 
-  const nextPromo = useCallback(() => {
+  const nextPromo = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentPromoIndex((prev) => (prev + 1) % promoCards.length);
     setIsAutoRotating(false);
     setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
   }, []);
 
-  const prevPromo = useCallback(() => {
+  const prevPromo = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentPromoIndex((prev) => (prev - 1 + promoCards.length) % promoCards.length);
     setIsAutoRotating(false);
     setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
   }, []);
 
-  const goToPromo = useCallback((index) => {
+  const goToPromo = useCallback((index, e) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentPromoIndex(index);
     setIsAutoRotating(false);
     setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
@@ -168,37 +234,13 @@ const MarketPlacePage = () => {
     openCart();
   }, [addToCart, openCart]);
 
-  // Memoized ProductCard component
-  const ProductCard = memo(({ product }) => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="product-card"
-      onClick={() => handleViewProductMemo(product.id)}
-    >
-      <div className="product-card-image-container">
-        <img src={product.image || '/api/placeholder/300/400'} alt={product.name} className="product-card-image" />
-        <div className="product-card-actions">
-          <button className="product-card-action-button">
-            <Heart className="w-5 h-5 text-gray-600" />
-          </button>
-        </div>
-        <button className="product-card-add-to-cart" onClick={(e) => handleAddToCartMemo(e, product)}>
-          Add to Cart
-        </button>
-      </div>
-      <div className="product-card-content">
-        <h3 className="product-card-name truncate">{product.name}</h3>
-        <p className="product-card-description">{product.shortDescription || 'No description'}</p>
-        <div className="flex items-center gap-1 mb-2">
-          <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-          <span className="text-sm font-medium text-gray-700">{product.rating || '4.5'}</span>
-        </div>
-        <p className="product-card-price">{formatCurrency(product.price || 0)}</p>
-      </div>
-    </motion.div>
-  ));
+  // Handler for visual search results
+  const handleVisualSearchResults = useCallback((results) => {
+    setVisualSearchResults(results);
+    setFilteredProducts(results);
+  }, []);
 
+<<<<<<< HEAD
   const getActiveFilterCount = () => {
     let count = 0;
     if (selectedCategory && selectedCategory !== 'Fashion') count++;
@@ -433,6 +475,13 @@ const MarketPlacePage = () => {
       </div>
     </div>
   ));
+=======
+  // Handler for category change
+  const handleCategoryChange = useCallback((category) => {
+    setSelectedCategory(category);
+  }, []);
+
+>>>>>>> main
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
 
@@ -440,6 +489,7 @@ const MarketPlacePage = () => {
     <div className="marketplace-container">
       <MobileFilterModal />
       <div className="marketplace-content-wrapper">
+<<<<<<< HEAD
         <PromoSection />
         {/* Add the divider line here */}
         <div className="section-divider"></div>
@@ -451,6 +501,25 @@ const MarketPlacePage = () => {
           transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
         >
           <FilterSidebar />
+=======
+        <PromoSection 
+          currentPromoIndex={currentPromoIndex}
+          isAutoRotating={isAutoRotating}
+          onPrev={prevPromo}
+          onNext={nextPromo}
+          onGoTo={goToPromo}
+        />
+        <div className="marketplace-body">
+          <FilterSidebar 
+            categories={categories}
+            brands={brands}
+            selectedCategory={selectedCategory}
+            selectedBrands={selectedBrands}
+            onCategoryChange={handleCategoryChange}
+            onBrandChange={handleBrandChange}
+            onVisualSearchResults={handleVisualSearchResults}
+          />
+>>>>>>> main
           <main className="main-content">
             <div className="results-header">
               <p className="text-sm text-gray-600">Showing {filteredProducts.length} of {products.length} results</p>
@@ -476,11 +545,11 @@ const MarketPlacePage = () => {
                 </Select>
               </div>
             </div>
-            <div className="products-grid">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            <ProductGrid 
+              products={filteredProducts}
+              onViewProduct={handleViewProductMemo}
+              onAddToCart={handleAddToCartMemo}
+            />
           </main>
         </motion.div>
       </div>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Send } from 'lucide-react';
 import { Dialog, DialogContent, DialogTrigger, DialogHeader, DialogTitle } from '../ui/dialog';
 import { useAuthState } from 'react-firebase-hooks/auth';
+import { usePathname } from 'next/navigation';
 import { auth, db, collection, addDoc, query, where, orderBy, onSnapshot, serverTimestamp } from '../../lib/firebase';
 
 const ChatButton = ({ product }) => {
@@ -12,8 +13,14 @@ const ChatButton = ({ product }) => {
   const [newMessage, setNewMessage] = useState('');
   const [user] = useAuthState(auth);
   const messagesEndRef = useRef(null);
+  const pathname = usePathname();
   
   const roomId = `product_${product?.id}_merchant_${product?.merchantId || 'default'}`;
+
+  // Don't render the button on the chatbot page
+  if (pathname === '/chatbot') {
+    return null;
+  }
 
   // Real-time listener for messages
   useEffect(() => {

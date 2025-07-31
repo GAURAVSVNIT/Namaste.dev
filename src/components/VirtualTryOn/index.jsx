@@ -195,6 +195,8 @@ function handleFileUpload(file, type) {
         }
       } catch (apiError) {
         console.warn('API not available, running in demo mode:', apiError.message);
+        console.error('Failed to resolve API endpoint:', `${API_BASE_URL}/virtual-tryon`);
+        console.error('Please check if the API_BASE_URL is correct and accessible.');
         
         await new Promise(resolve => setTimeout(resolve, 3000));
         

@@ -295,14 +295,34 @@ export async function addProduct(product) {
 }
 
 export async function updateProduct(productId, product) {
-  const productRef = doc(db, 'products', productId);
-  const productData = {
-    ...product,
-    price: parseFloat(product.price),
-    stock: parseInt(product.stock, 10),
-    updatedAt: serverTimestamp(),
-  };
-  await updateDoc(productRef, productData);
+  // Validate productId
+  if (!productId || typeof productId !== 'string') {
+    throw new Error(`Invalid productId: ${productId}. Must be a non-empty string.`);
+  }
+  
+  // Validate product data
+  if (!product || typeof product !== 'object') {
+    throw new Error('Invalid product data. Must be an object.');
+  }
+  
+  console.log('updateProduct called with:', { productId, product });
+  
+  try {
+    const productRef = doc(db, 'products', productId);
+    const productData = {
+      ...product,
+      price: parseFloat(product.price) || 0,
+      stock: parseInt(product.stock, 10) || 0,
+      updatedAt: serverTimestamp(),
+    };
+    
+    console.log('Updating product with data:', productData);
+    await updateDoc(productRef, productData);
+    console.log('Product updated successfully');
+  } catch (error) {
+    console.error('Error in updateProduct:', error);
+    throw error;
+  }
 }
 
 export async function deleteProduct(productId) {

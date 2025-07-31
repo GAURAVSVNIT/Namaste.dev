@@ -244,6 +244,12 @@
   text-decoration: none;
   font-size: 0.9rem;
   border: 1px solid transparent;
+  min-width: 80px;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
 }
 
 .login-btn {
@@ -517,101 +523,95 @@
   .logo-text {
     font-size: 1.3rem;
   }
+  /* Tablet specific styles */
+  @media (max-width: 1024px) and (min-width: 769px) {
+    .navbar {
+      padding: 0.6rem 1.2rem;
 
-  .nav-links, .auth-buttons {
-    display: none;
+    }
+    
+    .logo {
+      font-size: 1.4rem;
+    }
+    
+    .mobile-menu {
+      padding: 5rem 2.5rem 2.5rem;
+    }
+    
+    .mobile-nav-link {
+      font-size: 1.3rem;
+      padding: 0.6rem;
+    }
   }
 
-/* Tablet specific styles */
-@media (max-width: 1024px) and (min-width: 769px) {
-  .navbar {
-    padding: 0.6rem 1.2rem;
+  /* Mobile specific styles */
+  @media (max-width: 768px) {
+    .navbar {
+      padding: 0.4rem 0.8rem;
+      top: 0.3rem;
+      border-radius: 0.8rem;
+      width: calc(100% - 0.6rem);
+    }
+    
+    .logo {
+      font-size: 1.2rem;
+    }
+    
+    .logo-icon {
+      font-size: 1.4rem;
+      margin-right: 0.3rem;
+    }
+    
+    .mobile-menu-btn {
+      font-size: 1.3rem;
+      padding: 0.3rem;
+    }
+    
+    .mobile-menu {
+      padding: 4rem 1.5rem 2rem;
+    }
+    
+    .mobile-nav-link {
+      font-size: 1.1rem;
+      padding: 0.5rem;
+    }
+  }
 
+  /* Small mobile devices */
+  @media (max-width: 480px) {
+    .navbar {
+      padding: 0.3rem 0.6rem;
+      top: 0.2rem;
+      width: calc(100% - 0.4rem);
+    }
+    
+    .logo {
+      font-size: 1rem;
+    }
+    
+    .logo-icon {
+      font-size: 1.2rem;
+      margin-right: 0.2rem;
+    }
+    
+    .mobile-menu {
+      padding: 3.5rem 1rem 1.5rem;
+    }
+    
+    .mobile-nav-link {
+      font-size: 1rem;
+      padding: 0.4rem;
+    }
   }
-  
-  .logo {
-    font-size: 1.4rem;
-  }
-  
-  .mobile-menu {
-    padding: 5rem 2.5rem 2.5rem;
-  }
-  
-  .mobile-nav-link {
-    font-size: 1.3rem;
-    padding: 0.6rem;
-  }
-}
 
-/* Mobile specific styles */
-@media (max-width: 768px) {
-  .navbar {
-    padding: 0.4rem 0.8rem;
-    top: 0.3rem;
-    border-radius: 0.8rem;
-    width: calc(100% - 0.6rem);
+  /* Ensure dropdown menus appear above other content */
+  [data-radix-popper-content-wrapper] {
+    z-index: 10001 !important;
   }
-  
-  .logo {
-    font-size: 1.2rem;
-  }
-  
-  .logo-icon {
-    font-size: 1.4rem;
-    margin-right: 0.3rem;
-  }
-  
-  .mobile-menu-btn {
-    font-size: 1.3rem;
-    padding: 0.3rem;
-  }
-  
-  .mobile-menu {
-    padding: 4rem 1.5rem 2rem;
-  }
-  
-  .mobile-nav-link {
-    font-size: 1.1rem;
-    padding: 0.5rem;
-  }
-}
 
-/* Small mobile devices */
-@media (max-width: 480px) {
-  .navbar {
-    padding: 0.3rem 0.6rem;
-    top: 0.2rem;
-    width: calc(100% - 0.4rem);
+  [role="menu"], [role="dialog"] {
+    z-index: 10001 !important;
   }
-  
-  .logo {
-    font-size: 1rem;
-  }
-  
-  .logo-icon {
-    font-size: 1.2rem;
-    margin-right: 0.2rem;
-  }
-  
-  .mobile-menu {
-    padding: 3.5rem 1rem 1.5rem;
-  }
-  
-  .mobile-nav-link {
-    font-size: 1rem;
-    padding: 0.4rem;
-  }
-}
-
-/* Ensure dropdown menus appear above other content */
-[data-radix-popper-content-wrapper] {
-  z-index: 10001 !important;
-}
-
-[role="menu"], [role="dialog"] {
-  z-index: 10001 !important;
-}
-
 /* Tablet optimizations */
 @media (max-width: 1200px) {
   .navbar {
