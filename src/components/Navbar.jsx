@@ -86,7 +86,8 @@ export default function Navbar(fontFace) {
     { name: 'StyleSphere', route: "social" },
     { name: 'Market Place', route: "marketplace" },
 { name: 'Quiz', route: "quiz" },
-    { name: 'Avatarra', route: "virtual-tryon" },
+    { name: 'Avataraa', route: "avatars" },
+    { name: 'Virtual Try-On', route: "virtual-tryon" },
     { name: 'Consultation', route: "consultation" },
     { name: 'Blog', route: "blog" }
   ];
@@ -424,88 +425,145 @@ export default function Navbar(fontFace) {
 
           {isMobile ? (
             <>
-              <button className="mobile-menu-btn" onClick={toggleMenu}>
-                <i className={menuOpen ? "fas fa-times" : "fas fa-bars"}></i>
+              <button
+                onClick={toggleMenu}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  padding: '8px',
+                  position: 'relative',
+                  zIndex: 1001,
+                  color: '#333'
+                }}
+              >
+                <i className={menuOpen ? "fas fa-times" : "fas fa-bars"} style={{ fontSize: '24px' }}></i>
               </button>
 
-              <div className={`mobile-menu ${menuOpen ? 'active' : ''}`}>
-                <ul className="mobile-nav-links">
+              <div
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  right: menuOpen ? 0 : '-100%',
+                  width: '100vw',
+                  height: '100vh',
+                  background: 'rgba(255, 255, 255, 0.95)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  transition: 'right 0.3s ease-in-out',
+                  zIndex: 1000,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  padding: '80px 20px 40px',
+                  overflowY: 'auto'
+                }}
+              >
+                <ul style={{ listStyle: 'none', padding: 0, margin: 0, textAlign: 'center' }}>
                   {navItems.map((item, index) => (
-                    <li key={index} className="mobile-nav-item">
-                      <Link 
-                        href={`/${item.route.replace(/^\/+/, "")}`} 
-                        className="mobile-nav-link"
+                    <li key={index} style={{ marginBottom: '20px' }}>
+                      <Link
+                        href={`/${item.route.replace(/^\/+/, "")}`}
                         onClick={() => setMenuOpen(false)}
+                        style={{
+                          textDecoration: 'none',
+                          color: '#333',
+                          fontSize: '24px',
+                          fontWeight: 'bold',
+                          display: 'block',
+                          padding: '10px'
+                        }}
                       >
                         {item.name}
                       </Link>
                     </li>
                   ))}
                 </ul>
-                
-                {/* Mobile Cart */}
-                {pathname.startsWith('/marketplace') && (
-                  <div className="mobile-cart-section">
-                    <button 
-                      className="mobile-cart-btn" 
-                      onClick={() => {
-                        openCart();
-                        setMenuOpen(false);
-                      }}
-                    >
-                      <ShoppingCart className="mobile-cart-icon" />
-                      <span>Shopping Cart</span>
-                      {cartCount > 0 && (
-                        <span className="mobile-cart-count">{cartCount}</span>
-                      )}
-                    </button>
-                  </div>
-                )}
-                
-                <div className="mobile-auth-buttons">
-                  {isAuthenticated && userProfile ? (
-                    <>
-                      <Link 
-                        href="/profile" 
-                        className="mobile-profile-btn"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        <SmartAvatar 
-                          user={userProfile} 
-                          className="mobile-avatar" 
-                          fallbackClassName="bg-gray-200 text-gray-700"
-                        />
-                        <span>{userProfile.name || 'Profile'}</span>
-                      </Link>
-                      <button 
+
+                <div>
+                  {pathname.startsWith('/marketplace') && (
+                    <div style={{ marginBottom: '20px' }}>
+                      <button
                         onClick={() => {
-                          handleLogout();
+                          openCart();
                           setMenuOpen(false);
                         }}
-                        className="mobile-logout-btn"
+                        style={{
+                          background: '#333',
+                          color: 'white',
+                          border: 'none',
+                          padding: '15px 20px',
+                          borderRadius: '30px',
+                          cursor: 'pointer',
+                          width: '100%',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '16px'
+                        }}
                       >
-                        <LogOut className="mobile-logout-icon" />
-                        <span>Logout</span>
+                        <ShoppingCart style={{ marginRight: '10px' }} />
+                        Shopping Cart
+                        {cartCount > 0 && (
+                          <span style={{ marginLeft: '10px', background: '#ef4444', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px' }}>
+                            {cartCount}
+                          </span>
+                        )}
                       </button>
-                    </>
-                  ) : (
-                    <>
-                      <Link 
-                        href="/auth/login" 
-                        className="login-btn"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        Login
-                      </Link>
-                      <Link 
-                        href="/auth/signup" 
-                        className="signup-btn"
-                        onClick={() => setMenuOpen(false)}
-                      >
-                        Sign Up
-                      </Link>
-                    </>
+                    </div>
                   )}
+
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                    {isAuthenticated && userProfile ? (
+                      <>
+                        <Link
+                          href="/profile"
+                          onClick={() => setMenuOpen(false)}
+                          style={{
+                            textDecoration: 'none',
+                            color: '#333',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '10px',
+                            padding: '10px',
+                            borderRadius: '30px',
+                            background: 'rgba(0,0,0,0.05)',
+                            width: '100%',
+                            justifyContent: 'center'
+                          }}
+                        >
+                          <SmartAvatar
+                            user={userProfile}
+                            style={{ width: '30px', height: '30px' }}
+                            fallbackClassName="bg-gray-200 text-gray-700"
+                          />
+                          <span>{userProfile.name || 'Profile'}</span>
+                        </Link>
+                        <button
+                          onClick={() => {
+                            handleLogout();
+                            setMenuOpen(false);
+                          }}
+                          style={{
+                            background: 'none',
+                            border: '1px solid #333',
+                            padding: '10px 20px',
+                            borderRadius: '30px',
+                            cursor: 'pointer',
+                            color: '#333',
+                            width: '100%'
+                          }}
+                        >
+                          Logout
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link href="/auth/login" onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none', color: '#333', border: '1px solid #333', padding: '10px 20px', borderRadius: '30px', width: '100%', textAlign: 'center' }}>Login</Link>
+                        <Link href="/auth/signup" onClick={() => setMenuOpen(false)} style={{ textDecoration: 'none', color: 'white', background: '#333', padding: '10px 20px', borderRadius: '30px', width: '100%', textAlign: 'center' }}>Sign Up</Link>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
             </>
