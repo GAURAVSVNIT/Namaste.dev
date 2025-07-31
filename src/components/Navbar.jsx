@@ -27,6 +27,11 @@ export default function Navbar(fontFace) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
   
   // Use the auth hook
   const { user, loading: authLoading, isAuthenticated } = useAuth();
@@ -423,22 +428,37 @@ export default function Navbar(fontFace) {
             </div>
           </Link>
 
-          {isMobile ? (
+          {isClient && (
+            isMobile ? (
             <>
-              <button
-                onClick={toggleMenu}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  padding: '8px',
-                  position: 'relative',
-                  zIndex: 1001,
-                  color: '#333'
-                }}
-              >
-                <i className={menuOpen ? "fas fa-times" : "fas fa-bars"} style={{ fontSize: '24px' }}></i>
-              </button>
+              <div className="mobile-nav-actions">
+                <button 
+                  className="cart-icon-btn mobile-cart" 
+                  onClick={openCart}
+                >
+                  <ShoppingCart className="h-6 w-6" />
+                  {cartCount > 0 && (
+                    <span className="cart-badge">
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
+                <button 
+                  className="mobile-menu-btn" 
+                  onClick={toggleMenu}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    cursor: 'pointer',
+                    padding: '8px',
+                    position: 'relative',
+                    zIndex: 1001,
+                    color: '#333'
+                  }}
+                >
+                  <i className={menuOpen ? "fas fa-times" : "fas fa-bars"} style={{ fontSize: '24px' }}></i>
+                </button>
+              </div>
 
               <div
                 style={{
@@ -626,6 +646,7 @@ export default function Navbar(fontFace) {
                 )}
               </div>
             </>
+          )
           )}
         </div>
       </nav>

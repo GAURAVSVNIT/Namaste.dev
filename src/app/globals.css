@@ -52,7 +52,6 @@
   --color-peach: #fefce8;
   --color-sage: #f7fee7;
 
-  /* Glass morphism utilities */
   --backdrop-blur-lg: blur(16px);
   --backdrop-blur-md: blur(12px);
   --backdrop-blur-sm: blur(4px);
@@ -102,6 +101,28 @@
 /*  
 ---break---*/
 :root {
+   --color-cev-blue: #060136;
+  --color-cev-green: #036209;
+  --color-background: #fff2e0;
+  --color-foreground: #000000;
+  --font-sans: var(--font-inter), "Inter", sans-serif;
+  --font-mono: var(--font-montserrat), "Montserrat", sans-serif;
+
+   /* Custom Colors */
+  --color-fashion-primary: #ff4d6d;
+  --color-fashion-secondary: #ff758f;
+  --color-fashion-accent: #FF9F1C;
+  --color-fashion-dark: #1A1A2E;
+  --color-fashion-light: #F8F4FF;
+
+  /* Transitions */
+  --transition-max-height: max-height;
+  --transition-spacing: margin, padding;
+
+  /* Animation Utilities */
+  --animate-fade-in: fadeIn 0.3s ease-in-out;
+
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

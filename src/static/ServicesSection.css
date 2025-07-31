@@ -1,129 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@300;400;600&display=swap');
+
+:root {
+    /* Define a primary color inspired by the uploaded image */
+    --color-fashion-primary: #a476b3; 
+}
+
 .services-container {
-    padding: 5rem 6rem;
+    padding: 8rem 2rem;
     background-color: #fff8fd;
-    background-image: linear-gradient(to top right, #fff5ff, #ffd0fb);
     text-align: center;
     max-width: 100vw;
     margin: 0 auto;
 }
 
 .services-title {
-    font-size: 2.5rem;
-    font-weight: 300;
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 600;
     color: #2b2d42;
     margin-bottom: 1.5rem;
-    font-family: 'Garamond', serif;
-    letter-spacing: 0.5px;
 }
 
 .services-subtitle {
-    font-size: 1rem;
-    color: #666;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    color: #555;
     max-width: 600px;
     margin: 0 auto 4rem auto;
-    line-height: 1.6;
+    line-height: 1.7;
     font-weight: 300;
 }
 
 .services-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 3rem;
-    margin-top: 3rem;
+    gap: 2.5rem;
+    max-width: 1200px;
+    margin: 3rem auto 0;
+    align-items: center; /* Align items for zig-zag */
+}
+
+/* Zig-Zag layout for desktop */
+@media (min-width: 992px) {
+    .service-card:nth-child(2) {
+        margin-top: 5rem;
+    }
 }
 
 .service-card {
-    background: #fafafa;
+    background: #ffffff;
     overflow: hidden;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
     border-radius: 16px;
-    transition: 1s;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    text-align: center;
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
-    transition: .2s;
-}
-
-.service-card:nth-child(1):hover {
-  box-shadow: -1rem 2rem 16px #ff8a9f53;
-}
-
-.service-card:nth-child(2):hover {
-  box-shadow: 0 2rem 16px #ff8a9f53;
-}
-
-.service-card:nth-child(3):hover {
-  box-shadow: 1rem 2rem 16px #ff869c61;
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(164, 118, 179, 0.2);
 }
 
 .service-image {
     width: 100%;
-    height: 300px;
+    height: 350px;
     overflow: hidden;
-    margin-bottom: 2rem;
 }
 
 .service-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .service-card:hover .service-image img {
-    transform: scale(1.05);
+    transform: scale(1.08);
 }
 
 .service-content {
-    padding: 0 1rem 1rem 1rem;
+    padding: 2rem 1.5rem 2.5rem;
 }
 
-.service-title {
-    font-size: 1.3rem;
-    font-weight: 400;
+.service-content-title {
+    font-size: 1.75rem;
+    font-weight: 600;
     color: #2b2d42;
     margin-bottom: 1.5rem;
-    font-family: 'Garamond', serif;
+    font-family: 'Playfair Display', serif;
 }
 
 .service-links {
     display: flex;
-    flex-direction: row;
-    gap: 0.5rem;
+    gap: 1rem;
     align-items: center;
     justify-content: center;
+    flex-wrap: wrap; /* Allow links to wrap on smaller cards */
 }
 
 .service-link {
     color: var(--color-fashion-primary);
+    background-color: transparent;
     border: 1px solid var(--color-fashion-primary);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
     font-weight: 400;
-    transition: color 0.3s ease;
-    padding: 0.25rem .5rem;
-    border-radius: 16px;
-    transition: .2s;
+    transition: all 0.3s ease;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px; /* Pill-shaped buttons */
+    text-decoration: none;
 }
 
 .service-link:hover {
     color: white;
     background-color: var(--color-fashion-primary);
-    transition: .6s;
+    transform: translateY(-2px);
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
+    .services-container {
+        padding: 5rem 1rem;
+    }
     .services-grid {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 2.5rem;
     }
-    
     .services-title {
-        font-size: 2rem;
+        font-size: 2.5rem;
     }
-    
     .service-image {
-        height: 250px;
+        height: 300px;
     }
 }

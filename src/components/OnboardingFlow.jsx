@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, Check, User, Store, Scissors, Palette } from 'lucide-react';
+import { ChevronRight, Check, User, Store, Scissors, Palette, ArrowLeft } from 'lucide-react';
+import '../static/Onboarding.css';
 
 const OnboardingFlow = () => {
   const [currentStep, setCurrentStep] = useState(1);
@@ -86,8 +87,9 @@ const OnboardingFlow = () => {
     ]
   };
 
-  const handleRoleSelect = (role) => {
-    setSelectedRole(role);
+  const handleRoleSelect = (roleId) => {
+    setSelectedRole(roleId);
+    setTimeout(() => handleContinue(), 400);
   };
 
   const handleContinue = () => {
@@ -98,46 +100,27 @@ const OnboardingFlow = () => {
     }
   };
 
-  const handleAnswerChange = (questionId, value) => {
-    setAnswers(prev => ({ ...prev, [questionId]: value }));
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
   };
 
-  const handleMultiSelectChange = (questionId, option) => {
-    setAnswers(prev => {
-      const currentAnswers = prev[questionId] || [];
-      const isSelected = currentAnswers.includes(option);
-      
-      if (isSelected) {
-        // Remove from selection
-        return {
-          ...prev,
-          [questionId]: currentAnswers.filter(item => item !== option)
-        };
-      } else {
-        // Add to selection
-        return {
-          ...prev,
-          [questionId]: [...currentAnswers, option]
-        };
-      }
-    });
+  const handleAnswerChange = (questionId, value) => {
+    setAnswers(prev => ({ ...prev, [questionId]: value }));
+    if(roleQuestions[selectedRole][currentStep - 2]?.type === 'select') {
+        setTimeout(() => handleContinue(), 300);
+    }
   };
 
   const handleFinish = async () => {
     setIsSubmitting(true);
-    
     try {
-      // Get current user
       const { auth } = await import('@/lib/firebase');
       const { updateUser } = await import('@/lib/user');
-      
       const user = auth.currentUser;
+      if (!user) throw new Error('No authenticated user found');
       
-      if (!user) {
-        throw new Error('No authenticated user found');
-      }
-      
-      // Prepare profile data
       const profileData = {
         role: selectedRole,
         onboardingCompleted: true,
@@ -145,20 +128,12 @@ const OnboardingFlow = () => {
         onboardingCompletedAt: new Date().toISOString(),
       };
       
-      // Update user profile
       await updateUser(user.uid, profileData);
-      
       console.log('Onboarding completed successfully:', { role: selectedRole, answers });
-      
-      // Redirect to home page
-      setTimeout(() => {
-        window.location.href = '/';
-      }, 1000);
-      
+      setTimeout(() => { window.location.href = '/'; }, 1000);
     } catch (error) {
       console.error('Error completing onboarding:', error);
       setIsSubmitting(false);
-      // You might want to show an error message to the user
     }
   };
 
@@ -177,7 +152,9 @@ const OnboardingFlow = () => {
   };
 
   const getProgressPercentage = () => {
-    return (currentStep / 4) * 100;
+    const totalSteps = (roleQuestions[selectedRole]?.length || 0) + 1;
+    if (currentStep === 1) return 10;
+    return ((currentStep) / (totalSteps + 1)) * 100;
   };
 
   const currentQuestions = selectedRole ? roleQuestions[selectedRole] : [];
@@ -185,22 +162,11 @@ const OnboardingFlow = () => {
   const currentQuestion = currentQuestions[questionIndex];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-misty_rose via-pink to-cherry_blossom_pink flex items-center justify-center p-4">
+    <div className="onboarding-background min-h-screen flex items-center justify-center p-4">
       <div className="w-full max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
           {/* Left Side - Main Content */}
           <div className="space-y-8">
-            {/* Progress Bar */}
-            <div className="w-full bg-white/30 rounded-full h-2">
-              <motion.div
-                className="bg-gradient-to-r from-baker-miller_pink to-rose_pompadour h-2 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${getProgressPercentage()}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-
-            {/* Step Content */}
             <AnimatePresence mode="wait">
               {currentStep === 1 && (
                 <motion.div
@@ -209,7 +175,7 @@ const OnboardingFlow = () => {
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ duration: 0.3 }}
-                  className="space-y-6"
+                  className="glass-card space-y-6 p-8"
                 >
                   <div className="text-center space-y-4">
                     <h1 className="text-4xl font-bold text-gray-800">Welcome!</h1>
@@ -223,217 +189,133 @@ const OnboardingFlow = () => {
                         <motion.button
                           key={role.id}
                           onClick={() => handleRoleSelect(role.id)}
-                          className={`p-6 rounded-2xl border-2 transition-all duration-300 relative overflow-hidden ${
-                            selectedRole === role.id
-                              ? 'border-rose_pompadour bg-gradient-to-r from-rose_pompadour/20 to-baker-miller_pink/20 shadow-lg'
-                              : 'border-white/50 bg-white/30 hover:bg-white/40'
+                          className={`role-card theme-${role.id} ${
+                            selectedRole === role.id ? 'selected' : ''
                           }`}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          {selectedRole === role.id && (
-                            <motion.div
-                              className="absolute inset-0 bg-gradient-to-r from-rose_pompadour/10 to-baker-miller_pink/10"
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: 1 }}
-                              transition={{ duration: 0.3 }}
-                            />
-                          )}
-                          <div className="relative z-10 text-center space-y-3">
-                            <div className={`w-16 h-16 mx-auto rounded-full flex items-center justify-center ${
-                              selectedRole === role.id 
-                                ? 'bg-rose_pompadour text-white shadow-lg' 
-                                : 'bg-white/50 text-gray-600'
-                            }`}>
-                              <Icon size={24} />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-800">{role.label}</h3>
-                            <p className="text-sm text-gray-600">{role.description}</p>
+                          <div className="icon-wrapper">
+                            <Icon size={24} />
                           </div>
+                          <h3>{role.label}</h3>
+                          <p>{role.description}</p>
                         </motion.button>
                       );
                     })}
                   </div>
-
-                  {selectedRole && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-center"
-                    >
-                      <button
-                        onClick={handleContinue}
-                        className="bg-gradient-to-r from-rose_pompadour to-baker-miller_pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-shadow duration-300 flex items-center gap-2 mx-auto"
-                      >
-                        Continue
-                        <ChevronRight size={20} />
-                      </button>
-                    </motion.div>
-                  )}
                 </motion.div>
               )}
 
-              {(currentStep === 2 || currentStep === 3) && currentQuestion && (
+              {(currentStep >= 2 && currentStep <= (currentQuestions.length + 1)) && (
                 <motion.div
                   key={`step${currentStep}`}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-6"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="glass-card questionnaire-container p-8"
                 >
-                  <div className="text-center space-y-4">
-                    <h2 className="text-3xl font-bold text-gray-800">{currentQuestion.question}</h2>
-                    <p className="text-lg text-gray-600">Step {currentStep} of 4</p>
+                  <div className="progress-bar-container">
+                    <motion.div
+                      className="progress-bar"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${getProgressPercentage()}%` }}
+                      transition={{ duration: 0.5, ease: "easeInOut" }}
+                    />
                   </div>
-
-                  <div className="max-w-md mx-auto">
-                    {currentQuestion.type === 'multi-select' ? (
-                      <div className="space-y-3">
-                        <p className="text-sm text-gray-600 mb-4 text-center">Select all that apply</p>
-                        {currentQuestion.options.map((option) => {
-                          const isSelected = (answers[currentQuestion.id] || []).includes(option);
-                          return (
-                            <motion.button
-                              key={option}
-                              onClick={() => handleMultiSelectChange(currentQuestion.id, option)}
-                              className={`w-full p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                                isSelected
-                                  ? 'border-rose_pompadour bg-gradient-to-r from-rose_pompadour/20 to-baker-miller_pink/20'
-                                  : 'border-white/50 bg-white/30 hover:bg-white/40'
-                              }`}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <div className="flex items-center justify-between">
-                                <span className="text-gray-800">{option}</span>
-                                {isSelected && (
-                                  <Check size={20} className="text-rose_pompadour" />
-                                )}
-                              </div>
-                            </motion.button>
-                          );
-                        })}
+                  {currentQuestion ? (
+                    <>
+                      <div className="question-header">
+                        <h2 className="question-title">{currentQuestion.question}</h2>
+                        <p className="question-subtitle">Step {currentStep - 1} of {currentQuestions.length}</p>
                       </div>
-                    ) : currentQuestion.type === 'select' ? (
-                      <div className="space-y-3">
-                        {currentQuestion.options.map((option) => (
-                          <motion.button
-                            key={option}
-                            onClick={() => handleAnswerChange(currentQuestion.id, option)}
-                            className={`w-full p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                              answers[currentQuestion.id] === option
-                                ? 'border-rose_pompadour bg-gradient-to-r from-rose_pompadour/20 to-baker-miller_pink/20'
-                                : 'border-white/50 bg-white/30 hover:bg-white/40'
-                            }`}
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                          >
-                            <div className="flex items-center justify-between">
-                              <span className="text-gray-800">{option}</span>
-                              {answers[currentQuestion.id] === option && (
-                                <Check size={20} className="text-rose_pompadour" />
-                              )}
+
+                      {currentQuestion.type === 'select' ? (
+                        <div className="answers-grid">
+                          {currentQuestion.options.map((option) => (
+                            <motion.div
+                              key={option}
+                              onClick={() => handleAnswerChange(currentQuestion.id, option)}
+                              className={`answer-card ${answers[currentQuestion.id] === option ? 'selected' : ''}`}
+                              whileHover={{ y: -5 }}
+                              transition={{ type: 'spring', stiffness: 300 }}
+                            >
+                              <div className="answer-card-header">
+                                <div className="answer-card-icon">
+                                  <Check size={20} />
+                                </div>
+                                <span className="answer-card-label">{option}</span>
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+                      ) : (
+                        <input
+                          type="text"
+                          placeholder={currentQuestion.placeholder}
+                          value={answers[currentQuestion.id] || ''}
+                          onChange={(e) => handleAnswerChange(currentQuestion.id, e.target.value)}
+                          className="input-field"
+                        />
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="question-header">
+                        <h2 className="question-title">Review Your Answers</h2>
+                        <p className="question-subtitle">Please confirm your information is correct.</p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="answer-card selected">
+                          <div className="answer-card-header">
+                            <div className="answer-card-icon"><User size={20} /></div>
+                            <div className="w-full">
+                              <span className="answer-card-label">Your Role</span>
+                              <p className="text-primary-100">{roles.find(r => r.id === selectedRole)?.label}</p>
                             </div>
-                          </motion.button>
+                          </div>
+                        </div>
+                        {currentQuestions.map((question) => (
+                          <div key={question.id} className="answer-card">
+                            <div className="answer-card-header">
+                              <div className="answer-card-icon"><Check size={20} /></div>
+                              <div className="w-full">
+                                <span className="answer-card-label">{question.question}</span>
+                                <p className="text-primary-100">{answers[question.id] || 'Not answered'}</p>
+                              </div>
+                            </div>
+                          </div>
                         ))}
                       </div>
-                    ) : (
-                      <input
-                        type="text"
-                        placeholder={currentQuestion.placeholder}
-                        value={answers[currentQuestion.id] || ''}
-                        onChange={(e) => handleAnswerChange(currentQuestion.id, e.target.value)}
-                        className="w-full p-4 rounded-xl border-2 border-white/50 bg-white/30 placeholder-gray-500 text-gray-800 focus:border-rose_pompadour focus:outline-none"
-                      />
-                    )}
-                  </div>
-
-                  {((currentQuestion.type === 'multi-select' && answers[currentQuestion.id]?.length > 0) || 
-                    (currentQuestion.type !== 'multi-select' && answers[currentQuestion.id]) ||
-                    (currentQuestion.type === 'text' && currentQuestion.id === 'portfolio')) && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="text-center"
-                    >
-                      <button
-                        onClick={handleContinue}
-                        className="bg-gradient-to-r from-rose_pompadour to-baker-miller_pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-shadow duration-300 flex items-center gap-2 mx-auto"
-                      >
-                        {currentStep === 3 ? 'Review' : 'Next'}
-                        <ChevronRight size={20} />
-                      </button>
-                    </motion.div>
+                    </>
                   )}
-                </motion.div>
-              )}
 
-              {currentStep === 4 && (
-                <motion.div
-                  key="step4"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: 20 }}
-                  transition={{ duration: 0.3 }}
-                  className="space-y-6"
-                >
-                  <div className="text-center space-y-4">
-                    <h2 className="text-3xl font-bold text-gray-800">Review Your Answers</h2>
-                    <p className="text-lg text-gray-600">Please confirm your information</p>
-                  </div>
-
-                  <div className="bg-white/30 rounded-2xl p-6 space-y-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-rose_pompadour flex items-center justify-center">
-                        <User size={16} className="text-white" />
-                      </div>
-                      <div>
-                        <span className="font-semibold text-gray-800">Role: </span>
-                        <span className="text-gray-600">{roles.find(r => r.id === selectedRole)?.label}</span>
-                      </div>
-                    </div>
-
-                    {currentQuestions.map((question) => (
-                      <div key={question.id} className="flex items-start gap-3">
-                        <div className="w-8 h-8 rounded-full bg-baker-miller_pink flex items-center justify-center mt-1">
-                          <Check size={16} className="text-white" />
-                        </div>
-                        <div>
-                          <p className="font-semibold text-gray-800">{question.question}</p>
-                          <p className="text-gray-600">
-                            {Array.isArray(answers[question.id]) 
-                              ? answers[question.id].join(', ') 
-                              : answers[question.id] || 'Not answered'
-                            }
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="text-center">
-                    <motion.button
-                      onClick={handleFinish}
-                      disabled={isSubmitting}
-                      className="bg-gradient-to-r from-rose_pompadour to-baker-miller_pink text-white px-8 py-3 rounded-full font-semibold hover:shadow-lg transition-shadow duration-300 flex items-center gap-2 mx-auto disabled:opacity-50"
-                      whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
-                      whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
-                          Finishing...
-                        </>
-                      ) : (
-                        <>
-                          <Check size={20} />
-                          Finish
-                        </>
-                      )}
-                    </motion.button>
+                  <div className="questionnaire-nav">
+                    <button onClick={handleBack} className="back-button flex items-center gap-2">
+                      <ArrowLeft size={16} />
+                      Back
+                    </button>
+                    {currentQuestion && currentQuestion.type === 'text' && answers[currentQuestion.id] ? (
+                      <button onClick={handleContinue} className="onboarding-button">
+                        Continue
+                      </button>
+                    ) : !currentQuestion ? (
+                      <motion.button
+                        onClick={handleFinish}
+                        disabled={isSubmitting}
+                        className="onboarding-button"
+                        whileHover={{ scale: isSubmitting ? 1 : 1.05 }}
+                        whileTap={{ scale: isSubmitting ? 1 : 0.95 }}
+                      >
+                        {isSubmitting ? (
+                          <div className="onboarding-loading" />
+                        ) : (
+                          'Finish Setup'
+                        )}
+                      </motion.button>
+                    ) : null}
                   </div>
                 </motion.div>
               )}

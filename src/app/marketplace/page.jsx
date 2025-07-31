@@ -119,9 +119,10 @@ const MarketPlacePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Fashion');
   const [selectedBrands, setSelectedBrands] = useState([]);
+  const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [selectedRating, setSelectedRating] = useState(0);
   const [sortBy, setSortBy] = useState('newest');
   const [visualSearchResults, setVisualSearchResults] = useState(null);
-  
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
   
   // Promo carousel state
@@ -239,17 +240,268 @@ const MarketPlacePage = () => {
     setFilteredProducts(results);
   }, []);
 
+<<<<<<< HEAD
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (selectedCategory && selectedCategory !== 'Fashion') count++;
+    if (selectedBrands.length > 0) count += selectedBrands.length;
+    if (searchTerm) count++;
+    if (sortBy !== 'newest') count++;
+    return count;
+  };
+
+  const FilterSidebar = () => (
+    <aside className="filter-sidebar">
+      <div className="filter-section">
+        <h3>Category</h3>
+        <ul>
+          {categories.map(cat => (
+            <li key={cat}>
+              <button 
+                className={selectedCategory === cat ? 'active' : ''} 
+                onClick={() => setSelectedCategory(cat)}
+              >
+                {cat}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div className="filter-section">
+        <h3>Brands</h3>
+        <ul>
+          {brands.map(brand => (
+            <li key={brand} className="filter-option">
+              <Checkbox 
+                id={`brand-${brand}`} 
+                onCheckedChange={(checked) => handleBrandChange(brand, checked)}
+                checked={selectedBrands.includes(brand)}
+              />
+              <label htmlFor={`brand-${brand}`}>{brand}</label>
+            </li>
+          ))}
+        </ul>
+        <a href="#" className="text-sm text-blue-600 mt-3 inline-block">See more</a>
+      </div>
+    </aside>
+  ));
+
+  const MobileFilterModal = () => (
+    <AnimatePresence>
+      {isFilterSidebarOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="mobile-filter-backdrop"
+            onClick={() => setIsFilterSidebarOpen(false)}
+          />
+          
+          {/* Modal */}
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
+            className="mobile-filter-modal"
+          >
+            <div className="mobile-filter-header">
+              <h2>Filters</h2>
+              <button 
+                onClick={() => setIsFilterSidebarOpen(false)}
+                className="mobile-filter-close"
+              >
+                <X className="w-6 h-6" />
+              </button>
+            </div>
+            
+            <div className="mobile-filter-content">
+              <div className="mobile-filter-section">
+                <h3>Search</h3>
+                <Input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="mobile-search-input"
+                />
+              </div>
+              
+              <div className="mobile-filter-section">
+                <h3>Category</h3>
+                <div className="mobile-filter-options">
+                  {categories.map(cat => (
+                    <button 
+                      key={cat}
+                      className={`mobile-filter-option ${selectedCategory === cat ? 'active' : ''}`}
+                      onClick={() => setSelectedCategory(cat)}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="mobile-filter-section">
+                <h3>Brands</h3>
+                <div className="mobile-filter-brands">
+                  {brands.map(brand => (
+                    <label key={brand} className="mobile-brand-option">
+                      <Checkbox 
+                        id={`mobile-brand-${brand}`} 
+                        onCheckedChange={(checked) => handleBrandChange(brand, checked)}
+                        checked={selectedBrands.includes(brand)}
+                      />
+                      <span>{brand}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              
+              <div className="mobile-filter-section">
+                <h3>Sort By</h3>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger className="mobile-sort-select">
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="newest">Newest</SelectItem>
+                    <SelectItem value="price-low">Price: Low to High</SelectItem>
+                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+            
+            <div className="mobile-filter-footer">
+              <button 
+                onClick={() => {
+                  setSelectedCategory('Fashion');
+                  setSelectedBrands([]);
+                  setSortBy('newest');
+                  setSearchTerm('');
+                }}
+                className="mobile-filter-clear"
+              >
+                Clear All
+              </button>
+              <button 
+                onClick={() => setIsFilterSidebarOpen(false)}
+                className="mobile-filter-apply"
+              >
+                Apply Filters
+              </button>
+            </div>
+          </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+
+  const PromoSection = () => (
+    <div className="promo-section-wrapper relative">
+      {/* Navigation Buttons */}
+      <button 
+        onClick={onPrev}
+        className="absolute left-6 top-1/2 transform -translate-y-1/2 z-30 bg-white/95 hover:bg-white border border-gray-300 rounded-full p-3 shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+      >
+        <ChevronLeft className="w-6 h-6 text-gray-800" />
+      </button>
+      
+      <button 
+        onClick={onNext}
+        className="absolute right-6 top-1/2 transform -translate-y-1/2 z-30 bg-white/95 hover:bg-white border border-gray-300 rounded-full p-3 shadow-xl transition-all duration-300 hover:scale-110 backdrop-blur-sm"
+      >
+        <ChevronRight className="w-6 h-6 text-gray-800" />
+      </button>
+
+      {/* Enhanced Cards Container */}
+      <div className="promo-carousel-container">
+        <div className="promo-carousel-track">
+          <div 
+            className="promo-slides-wrapper"
+            style={{ 
+              transform: `translate3d(-${currentPromoIndex * 20}%, 0, 0)`,
+            }}
+          >
+            {promoCards.map((card, index) => (
+              <div key={card.id} className="promo-slide">
+                <div className="promo-card-enhanced">
+                  <div className="promo-image-wrapper">
+                    <img 
+                      src={card.image} 
+                      alt={card.title}
+                      className="promo-image"
+                      loading="lazy"
+                    />
+                    <div className="promo-overlay" />
+                  </div>
+                  
+                  <div className="promo-content-wrapper">
+                    <div className="promo-content">
+                      <h3 className="promo-title">{card.title}</h3>
+                      <p className="promo-description">{card.description}</p>
+                      <button className="promo-cta-button">
+                        Explore Collection
+                      </button>
+                    </div>
+                    
+                    {/* Progress indicator for current slide */}
+                    {index === currentPromoIndex && isAutoRotating && (
+                      <div className="promo-progress-bar">
+                        <div className="promo-progress-fill" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Enhanced Dot Indicators */}
+      <div className="promo-indicators">
+        {promoCards.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => onGoTo(index)}
+            className={`promo-dot ${index === currentPromoIndex ? 'active' : ''}`}
+          />
+        ))}
+      </div>
+    </div>
+  ));
+=======
   // Handler for category change
   const handleCategoryChange = useCallback((category) => {
     setSelectedCategory(category);
   }, []);
 
+>>>>>>> main
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
 
-  return (
+    return (
     <div className="marketplace-container">
+      <MobileFilterModal />
       <div className="marketplace-content-wrapper">
+<<<<<<< HEAD
+        <PromoSection />
+        {/* Add the divider line here */}
+        <div className="section-divider"></div>
+        
+        <motion.div 
+          className="marketplace-body"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+        >
+          <FilterSidebar />
+=======
         <PromoSection 
           currentPromoIndex={currentPromoIndex}
           isAutoRotating={isAutoRotating}
@@ -267,13 +519,22 @@ const MarketPlacePage = () => {
             onBrandChange={handleBrandChange}
             onVisualSearchResults={handleVisualSearchResults}
           />
+>>>>>>> main
           <main className="main-content">
             <div className="results-header">
               <p className="text-sm text-gray-600">Showing {filteredProducts.length} of {products.length} results</p>
               <div className="flex items-center gap-4">
-                <Button variant="ghost" className="lg:hidden" onClick={() => setIsFilterSidebarOpen(true)}><Filter className="w-4 h-4 mr-2" />Filters</Button>
+                <Button variant="ghost" className="lg:hidden filter-toggle-btn" onClick={() => setIsFilterSidebarOpen(true)}>
+                  <Filter className="w-4 h-4 mr-2" />
+                  Filters
+                  {getActiveFilterCount() > 0 && (
+                    <span className="filter-count-badge">
+                      {getActiveFilterCount()}
+                    </span>
+                  )}
+                </Button>
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-[160px] bg-white border-gray-300">
+                  <SelectTrigger className="w-[160px] bg-white border-gray-300 hidden lg:flex">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -290,7 +551,7 @@ const MarketPlacePage = () => {
               onAddToCart={handleAddToCartMemo}
             />
           </main>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
