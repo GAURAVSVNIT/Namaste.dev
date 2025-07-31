@@ -22,6 +22,14 @@ import {
 import { User, LogOut, Settings, ShoppingCart, Sparkle, Sparkles } from 'lucide-react';
 import useCartStore from '@/store/cart-store';
 
+/**
+ * Renders a responsive navigation bar with authentication, user profile, and shopping cart features.
+ *
+ * Displays navigation links, a shopping cart button with item count, and authentication controls. Adapts layout for mobile and desktop views, conditionally rendering elements based on authentication state and current route. Shows a user profile dropdown menu when authenticated.
+ *
+ * @param {string} fontFace - Additional CSS class for font styling.
+ * @returns {JSX.Element} The rendered navigation bar component.
+ */
 export default function Navbar(fontFace) {
   const [isMobile, setIsMobile] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);

@@ -6,6 +6,9 @@ export const metadata = {
   description: 'Complete your profile setup to get started',
 };
 
+/**
+ * Renders the onboarding page with the profile setup flow.
+ */
 export default function OnboardingPage() {
   return (
     <OnboardingFlow />

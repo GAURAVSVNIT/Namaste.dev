@@ -37,6 +37,11 @@ const formatDate = (dateString) => {
   }
 };
 
+/**
+ * Renders the main customer support chat interface with real-time messaging, typing indicators, and enhanced input controls.
+ *
+ * Provides a chat UI where users can send messages, view grouped message history by date, and receive simulated support team responses. Includes features such as animated message transitions, typing indicators, emoji picker toggling, and role-based access control.
+ */
 function ChatPageContent() {
   const { state, dispatch } = useDashboard();
   const [newMessage, setNewMessage] = useState('');
