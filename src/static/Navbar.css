@@ -520,6 +520,7 @@
 
   .nav-links, .auth-buttons {
     display: none;
+  }
 
 /* Tablet specific styles */
 @media (max-width: 1024px) and (min-width: 769px) {
