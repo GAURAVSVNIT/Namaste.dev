@@ -19,8 +19,10 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
     price: product?.price || '',
     stock: product?.stock || '',
     category: product?.category || '',
-    imageUrl: product?.imageUrl || ''
+    imageUrl: product?.imageUrl || '',
+    tags: product?.tags || []
   });
+  const [newTag, setNewTag] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(product?.imageUrl || '');
   const [loading, setLoading] = useState(false);
@@ -79,6 +81,47 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
     const file = e.target.files[0];
     if (file) {
       handleImageFile(file);
+    }
+  };
+
+  // Tag management functions
+  const addTag = () => {
+    if (newTag.trim() && !formData.tags.includes(newTag.trim().toLowerCase())) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, newTag.trim().toLowerCase()]
+      }));
+      setNewTag('');
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    setFormData(prev => ({
+      ...prev,
+      tags: prev.tags.filter(tag => tag !== tagToRemove)
+    }));
+  };
+
+  const handleTagKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addTag();
+    }
+  };
+
+  // Suggested tags based on common visual search terms
+  const suggestedTags = [
+    'shirt', 'jacket', 'dress', 'pants', 'jeans', 'top', 'coat', 'blazer',
+    'outerwear', 'casual', 'formal', 'cotton', 'denim', 'summer', 'winter',
+    'black', 'white', 'blue', 'red', 'striped', 'solid', 'floral'
+  ];
+
+  const addSuggestedTag = (tag) => {
+    if (!formData.tags.includes(tag)) {
+      setFormData(prev => ({
+        ...prev,
+        tags: [...prev.tags, tag]
+      }));
     }
   };
 
@@ -176,8 +219,14 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
         imageUrl = await uploadImage();
       }
 
-      const productData = {
-        ...formData,
+      // Validate and clean the product data
+      const cleanProductData = {
+        name: formData.name?.trim() || '',
+        description: formData.description?.trim() || '',
+        price: parseFloat(formData.price) || 0,
+        stock: parseInt(formData.stock) || 0,
+        category: formData.category?.trim() || '',
+        tags: Array.isArray(formData.tags) ? formData.tags : [],
         imageUrl,
         image: imageUrl, // Also set 'image' field for marketplace compatibility
         merchantId: 'current_merchant_001', // TODO: Get from auth context
@@ -185,20 +234,27 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
         views: 0,
       };
 
-      if (product) {
-        // Update existing product
-        await updateProduct(product.id, productData);
+      console.log('Product data to save:', cleanProductData);
+
+      if (product && product.id && typeof product.id === 'string') {
+        // Update existing product - validate productId
+        console.log('Updating product with ID:', product.id);
+        await updateProduct(product.id, cleanProductData);
       } else {
         // Add new product to Firebase
-        await addProduct(productData);
+        console.log('Adding new product');
+        const newProductId = await addProduct(cleanProductData);
+        console.log('New product created with ID:', newProductId);
         
         // Also create product in Shiprocket
-        await createProductInShiprocket(productData);
+        await createProductInShiprocket(cleanProductData);
       }
 
       onClose();
     } catch (error) {
       console.error('Error saving product:', error);
+      // Show user-friendly error message
+      alert('Failed to save product. Please check the console for details and try again.');
     } finally {
       setLoading(false);
     }
@@ -407,6 +463,77 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
                 <option value="Girls">Girls</option>
                 <option value="Boys">Boys</option>
               </select>
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              Tags for Visual Search
+              <span className={styles.optional}>(helps customers find your product)</span>
+            </label>
+            <div className={styles.inputContainer}>
+              <div className={styles.tagInputWrapper}>
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={handleTagKeyPress}
+                  placeholder="Add a tag (e.g., shirt, blue, casual)"
+                  className={styles.input}
+                />
+                <button
+                  type="button"
+                  onClick={addTag}
+                  className={styles.addTagButton}
+                  disabled={!newTag.trim()}
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
+            
+            {/* Current Tags */}
+            {formData.tags.length > 0 && (
+              <div className={styles.currentTags}>
+                <p className={styles.tagsLabel}>Current tags:</p>
+                <div className={styles.tagsList}>
+                  {formData.tags.map((tag, index) => (
+                    <span key={index} className={styles.tag}>
+                      {tag}
+                      <button
+                        type="button"
+                        onClick={() => removeTag(tag)}
+                        className={styles.removeTagButton}
+                        aria-label={`Remove ${tag} tag`}
+                      >
+                        <X size={12} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* Suggested Tags */}
+            <div className={styles.suggestedTags}>
+              <p className={styles.suggestedLabel}>Suggested tags:</p>
+              <div className={styles.suggestedTagsList}>
+                {suggestedTags
+                  .filter(tag => !formData.tags.includes(tag))
+                  .slice(0, 12)
+                  .map((tag, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => addSuggestedTag(tag)}
+                      className={styles.suggestedTag}
+                    >
+                      {tag}
+                    </button>
+                  ))
+                }
+              </div>
             </div>
           </div>
 

@@ -398,3 +398,166 @@
     transform: rotate(360deg);
   }
 }
+
+/* Tags Section */
+.tagInputWrapper {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tagInputWrapper .input {
+  flex: 1;
+}
+
+.addTagButton {
+  padding: 0.625rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  background-color: #f9fafb;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  min-width: 2.5rem;
+}
+
+.addTagButton:hover:not(:disabled) {
+  background-color: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.addTagButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.dark .addTagButton {
+  background-color: #1f2937;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .addTagButton:hover:not(:disabled) {
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+/* Current Tags */
+.currentTags {
+  margin-top: 1rem;
+}
+
+.tagsLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.dark .tagsLabel {
+  color: #9ca3af;
+}
+
+.tagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #bfdbfe;
+}
+
+.dark .tag {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.removeTagButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  padding: 0.125rem;
+  color: #1e40af;
+  transition: all 0.2s;
+}
+
+.removeTagButton:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+}
+
+.dark .removeTagButton {
+  color: #93c5fd;
+}
+
+.dark .removeTagButton:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+}
+
+/* Suggested Tags */
+.suggestedTags {
+  margin-top: 1rem;
+}
+
+.suggestedLabel {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  margin-bottom: 0.5rem;
+}
+
+.dark .suggestedLabel {
+  color: #9ca3af;
+}
+
+.suggestedTagsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+}
+
+.suggestedTag {
+  padding: 0.25rem 0.5rem;
+  background-color: #f3f4f6;
+  color: #4b5563;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 400;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.suggestedTag:hover {
+  background-color: #e5e7eb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.dark .suggestedTag {
+  background-color: #374151;
+  color: #d1d5db;
+  border-color: #4b5563;
+}
+
+.dark .suggestedTag:hover {
+  background-color: #4b5563;
+  color: #f3f4f6;
+  border-color: #6b7280;
+}
