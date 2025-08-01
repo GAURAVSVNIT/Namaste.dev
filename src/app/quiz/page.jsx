@@ -95,6 +95,16 @@ export default function QuizPage() {
         userProfile?.role === "merchant" && <MerchantPromo />
       }
 
+      {/* Admin-only Add Quiz button */}
+      {
+        userProfile?.role === "admin" && (
+          <div className="admin-add-quiz-section" style={{ textAlign: 'center', margin: '2rem 0' }}>
+            <Link href="/create" className="merchant-cta-btn">
+              <PenLine size={18} className='mr-2' /> &nbsp; Add Quiz &nbsp;<ArrowRight size={18} className="ml-2" />
+            </Link>
+          </div>
+        )
+      }
 
       <h1 className="quiz-heading">All Quizzes</h1>
         {/* <div className="quiz-card-grid"> */}

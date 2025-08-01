@@ -810,22 +810,22 @@ export default function ConsultationPage() {
                 fontWeight: '600',
                 borderRadius: '12px',
                 border: 'none',
-                background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                 color: 'white',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
                 textDecoration: 'none',
                 display: 'inline-block',
                 textAlign: 'center'
               }}
               onMouseEnter={(e) => {
                 e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.4)';
+                e.target.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.4)';
               }}
               onMouseLeave={(e) => {
                 e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
               }}>Login</Button>
             </Link>
           </CardContent>
@@ -909,8 +909,8 @@ export default function ConsultationPage() {
                   borderRadius: '20px',
                   fontSize: '12px',
                   fontWeight: '500',
-                  backgroundColor: provider.role === 'fashion_designer' ? '#dbeafe' : '#e0e7ff',
-                  color: provider.role === 'fashion_designer' ? '#1e40af' : '#3730a3'
+                  backgroundColor: provider.role === 'fashion_designer' ? '#fce7f3' : '#fdf2f8',
+                  color: provider.role === 'fashion_designer' ? '#be185d' : '#a21caf'
                 }}>
                   {provider.role === 'fashion_designer' ? 'Designer' : 'Tailor'}
                 </span>
@@ -1077,7 +1077,7 @@ export default function ConsultationPage() {
                   fontWeight: '500',
                   borderRadius: '8px',
                   border: 'none',
-                  background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                  background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                   color: 'white',
                   cursor: 'pointer',
                   transition: 'all 0.2s ease',
@@ -1116,7 +1116,7 @@ export default function ConsultationPage() {
       }}>
         {/* Hero Section */}
         <div style={{
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          background: 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)',
           margin: '0',
           padding: '80px 40px',
           textAlign: 'center',
@@ -1125,6 +1125,38 @@ export default function ConsultationPage() {
           position: 'relative',
           overflow: 'hidden'
         }}>
+          {/* Floating Elements - Match Blog Page Style */}
+          <div style={{
+            position: 'absolute',
+            top: '20px',
+            left: '10%',
+            width: '80px',
+            height: '80px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            animation: 'float 6s ease-in-out infinite'
+          }}></div>
+          <div style={{
+            position: 'absolute',
+            top: '40px',
+            right: '15%',
+            width: '60px',
+            height: '60px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            animation: 'float 4s ease-in-out infinite reverse'
+          }}></div>
+          <div style={{
+            position: 'absolute',
+            bottom: '30px',
+            left: '20%',
+            width: '40px',
+            height: '40px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            borderRadius: '50%',
+            animation: 'float 5s ease-in-out infinite'
+          }}></div>
+          
           {/* Decorative background pattern */}
           <div style={{
             position: 'absolute',
@@ -1133,7 +1165,8 @@ export default function ConsultationPage() {
             right: 0,
             bottom: 0,
             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            opacity: 0.4
+            opacity: 0.4,
+            zIndex: 1
           }} />
           
           {/* Content */}
@@ -1879,21 +1912,21 @@ export default function ConsultationPage() {
                     fontWeight: '700',
                     borderRadius: '12px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                     color: 'white',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    boxShadow: '0 8px 25px rgba(102, 126, 234, 0.4)',
+                    boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4)',
                     position: 'relative',
                     overflow: 'hidden'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px) scale(1.02)';
-                    e.target.style.boxShadow = '0 12px 35px rgba(102, 126, 234, 0.6)';
+                    e.target.style.boxShadow = '0 12px 35px rgba(239, 68, 68, 0.6)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0) scale(1)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.4)';
+                    e.target.style.boxShadow = '0 8px 25px rgba(239, 68, 68, 0.4)';
                   }}
                   >
                     Continue to Book
@@ -2134,22 +2167,22 @@ export default function ConsultationPage() {
                     fontWeight: '600',
                     borderRadius: '12px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                     color: 'white',
                     cursor: 'pointer',
                     transition: 'all 0.2s ease',
-                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
                     display: 'flex',
                     alignItems: 'center',
                     gap: '8px'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.4)';
+                    e.target.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.4)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)';
+                    e.target.style.boxShadow = '0 4px 12px rgba(239, 68, 68, 0.3)';
                   }}
                 >
                   <Calendar style={{ width: '18px', height: '18px' }} />

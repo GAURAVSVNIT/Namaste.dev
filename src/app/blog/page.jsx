@@ -411,7 +411,7 @@ const BlogPage = () => {
                   <button
                     onClick={() => setShowForm(true)}
                     style={{
-background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+                      background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                       color: '#ffffff',
                       padding: '16px 32px',
                       borderRadius: '50px',

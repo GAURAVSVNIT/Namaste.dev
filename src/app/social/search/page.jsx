@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Search, Filter } from "lucide-react";
 import SocialBottomNav from "@/components/SocialBottomNav";
-import { searchUsers, toggleFollow } from "@/lib/social";
+import { searchUsers, toggleFollow, getUserSocialData } from "@/lib/social";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -128,6 +128,24 @@ const SearchPage = () => {
       setIsLoading(false);
     }
   };
+
+  // Initialize current user's following list
+  useEffect(() => {
+    const initializeFollowing = async () => {
+      if (currentUser?.uid) {
+        try {
+          const userSocialData = await getUserSocialData(currentUser.uid);
+          if (userSocialData.following) {
+            setFollowingUsers(new Set(userSocialData.following));
+          }
+        } catch (error) {
+          console.error('Error fetching user following data:', error);
+        }
+      }
+    };
+
+    initializeFollowing();
+  }, [currentUser]);
 
   // Effect to trigger search when query or category changes
   useEffect(() => {

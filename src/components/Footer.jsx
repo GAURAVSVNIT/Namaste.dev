@@ -30,9 +30,9 @@ const Footer = (fontFace) => {
           <div className="footer-section floating">
             <h3>Social Feed</h3>
             <ul>
-              <li><a href="#">Explore Posts</a></li>
-              <li><a href="#">Trending Looks</a></li>
-              <li><a href="#">Fashion Battles</a></li>
+              <li><a href="/social/looks">Explore Looks</a></li>
+              <li><a href="/social/trending">Trending</a></li>
+              <li><a href="/social/fashion-tv">Fashion TV</a></li>
             </ul>
           </div>
 
@@ -55,7 +55,7 @@ const Footer = (fontFace) => {
           </div>
 
           <div className="footer-cta">
-            <button className="cta-button-footer"><FaCamera /> Upload Your Look</button>
+            <button className="cta-button-footer" onClick={() => window.location.href = '/social/look/upload'}><FaCamera /> Upload Your Look</button>
             <button className="cta-button-footer secondary"><FaUserGraduate /> Join the Community</button>
           </div>
 

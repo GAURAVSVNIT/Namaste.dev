@@ -171,7 +171,7 @@ const TrendingPage = () => {
         zIndex: 10,
         background: rank <= 3 
           ? 'linear-gradient(135deg, #ffd700 0%, #ffb347 100%)' 
-          : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          : 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)',
         color: '#ffffff',
         padding: '6px 12px',
         borderRadius: '20px',
@@ -193,10 +193,10 @@ const TrendingPage = () => {
         right: '12px',
         zIndex: 10,
         background: item.type === 'look' 
-          ? 'linear-gradient(135deg, #9333ea 0%, #7c3aed 100%)'
+          ? 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)'
           : item.type === 'reel' 
-          ? 'linear-gradient(135deg, #a855f7 0%, #9333ea 100%)'
-          : 'linear-gradient(135deg, #c084fc 0%, #a855f7 100%)',
+          ? 'linear-gradient(135deg, var(--color-fashion-secondary) 0%, var(--color-fashion-primary) 100%)'
+          : 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)',
         color: '#ffffff',
         padding: '6px 12px',
         borderRadius: '20px',
@@ -327,7 +327,7 @@ const TrendingPage = () => {
               width: '24px',
               height: '24px',
               borderRadius: '50%',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -345,7 +345,7 @@ const TrendingPage = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)',
             color: '#ffffff',
             padding: '4px 8px',
             borderRadius: '12px',
@@ -446,8 +446,8 @@ const TrendingPage = () => {
             transition: 'all 0.3s ease'
           }}
           onMouseOver={(e) => {
-            e.target.style.borderColor = '#667eea';
-            e.target.style.color = '#667eea';
+            e.target.style.borderColor = '#ef4444';
+            e.target.style.color = '#ef4444';
             e.target.style.transform = 'translateY(-2px)';
           }}
           onMouseOut={(e) => {
@@ -480,8 +480,8 @@ const TrendingPage = () => {
             transition: 'all 0.3s ease'
           }}
           onMouseOver={(e) => {
-            e.target.style.borderColor = '#667eea';
-            e.target.style.color = '#667eea';
+            e.target.style.borderColor = '#ef4444';
+            e.target.style.color = '#ef4444';
             e.target.style.transform = 'translateY(-2px)';
           }}
           onMouseOut={(e) => {
@@ -510,9 +510,9 @@ const TrendingPage = () => {
             padding: '12px 16px',
             margin: '0 4px',
             borderRadius: '12px',
-            border: currentPage === i ? '2px solid #667eea' : '2px solid #e5e7eb',
+            border: currentPage === i ? '2px solid #ef4444' : '2px solid #e5e7eb',
             background: currentPage === i 
-              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+              ? 'linear-gradient(135deg, #ef4444, #dc2626)' 
               : '#ffffff',
             color: currentPage === i ? '#ffffff' : '#6b7280',
             fontSize: '14px',
@@ -520,12 +520,12 @@ const TrendingPage = () => {
             cursor: 'pointer',
             transition: 'all 0.3s ease',
             transform: currentPage === i ? 'translateY(-2px)' : 'translateY(0)',
-            boxShadow: currentPage === i ? '0 8px 20px rgba(102, 126, 234, 0.3)' : 'none'
+            boxShadow: currentPage === i ? '0 8px 20px rgba(239, 68, 68, 0.3)' : 'none'
           }}
           onMouseOver={(e) => {
             if (currentPage !== i) {
-              e.target.style.borderColor = '#667eea';
-              e.target.style.color = '#667eea';
+              e.target.style.borderColor = '#ef4444';
+              e.target.style.color = '#ef4444';
               e.target.style.transform = 'translateY(-2px)';
             }
           }}
@@ -566,8 +566,8 @@ const TrendingPage = () => {
             transition: 'all 0.3s ease'
           }}
           onMouseOver={(e) => {
-            e.target.style.borderColor = '#667eea';
-            e.target.style.color = '#667eea';
+            e.target.style.borderColor = '#ef4444';
+            e.target.style.color = '#ef4444';
             e.target.style.transform = 'translateY(-2px)';
           }}
           onMouseOut={(e) => {
@@ -600,8 +600,8 @@ const TrendingPage = () => {
             transition: 'all 0.3s ease'
           }}
           onMouseOver={(e) => {
-            e.target.style.borderColor = '#667eea';
-            e.target.style.color = '#667eea';
+            e.target.style.borderColor = '#ef4444';
+            e.target.style.color = '#ef4444';
             e.target.style.transform = 'translateY(-2px)';
           }}
           onMouseOut={(e) => {
@@ -621,12 +621,12 @@ const TrendingPage = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)'
+      background: '#ffffff'
     }}>
       <section style={{
         position: 'relative',
         padding: '120px 20px 80px',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+        background: 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)',
         overflow: 'hidden'
       }}>
         {/* Animated Background Elements */}
@@ -764,7 +764,7 @@ const TrendingPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '10px',
-                background: 'linear-gradient(135deg, #9333ea 0%, #a855f7 100%)',
+                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                 color: '#ffffff',
                 padding: '16px 32px',
                 borderRadius: '50px',
@@ -773,15 +773,15 @@ const TrendingPage = () => {
                 fontWeight: '700',
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
-                boxShadow: '0 10px 25px rgba(147, 51, 234, 0.3)'
+                boxShadow: '0 10px 25px rgba(239, 68, 68, 0.3)'
               }}
               onMouseOver={(e) => {
                 e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                e.target.style.boxShadow = '0 15px 35px rgba(147, 51, 234, 0.5)';
+                e.target.style.boxShadow = '0 15px 35px rgba(239, 68, 68, 0.5)';
               }}
               onMouseOut={(e) => {
                 e.target.style.transform = 'translateY(0) scale(1)';
-                e.target.style.boxShadow = '0 10px 25px rgba(147, 51, 234, 0.3)';
+                e.target.style.boxShadow = '0 10px 25px rgba(239, 68, 68, 0.3)';
               }}>
                 <Camera style={{ width: '20px', height: '20px' }} />
                 Create Trending Look
@@ -806,9 +806,10 @@ const TrendingPage = () => {
 
       {/* Search and Filter Section */}
       <section style={{
-        padding: '60px 20px',
+        padding: '60px 20px 0',
         maxWidth: '1400px',
-        margin: '0 auto'
+        margin: '0 auto',
+        background: '#ffffff'
       }}>
         <div style={{
           display: 'flex',
@@ -851,7 +852,7 @@ const TrendingPage = () => {
               right: '12px',
               top: '50%',
               transform: 'translateY(-50%)',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
               borderRadius: '50%',
               width: '40px',
               height: '40px',
@@ -966,6 +967,7 @@ const TrendingPage = () => {
                 flexWrap: 'wrap',
                 gap: '8px',
                 marginTop: '48px',
+                marginBottom: '0',
                 padding: '32px',
                 background: 'rgba(255, 255, 255, 0.9)',
                 borderRadius: '20px',
@@ -981,6 +983,7 @@ const TrendingPage = () => {
               <div style={{
                 textAlign: 'center',
                 marginTop: '24px',
+                marginBottom: '0',
                 color: '#6b7280',
                 fontSize: '14px',
                 fontWeight: '600'
@@ -1152,33 +1155,6 @@ const TrendingPage = () => {
           </div>
         )}
 
-        {/* Load More Button */}
-        <div style={{ textAlign: 'center', marginTop: '48px' }}>
-          <button
-            style={{
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-              color: '#ffffff',
-              padding: '16px 32px',
-              borderRadius: '50px',
-              border: 'none',
-              fontSize: '16px',
-              fontWeight: '700',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 10px 25px rgba(102, 126, 234, 0.3)'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 15px 35px rgba(102, 126, 234, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.transform = 'translateY(0)';
-              e.target.style.boxShadow = '0 10px 25px rgba(102, 126, 234, 0.3)';
-            }}
-          >
-            Load More Trending Content
-          </button>
-        </div>
       </section>
     </div>
   );

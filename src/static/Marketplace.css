@@ -88,8 +88,8 @@ body {
   width: 100%; /* Extend to full wrapper size */
   max-width: none; /* Remove max-width constraint */
   margin: 0; /* Remove auto margins */
-  height: 90vh; /* Cover most of viewport height */
-  min-height: 600px; /* Minimum height for smaller screens */
+  height: 50vh; /* Reduced from 90vh to 50vh */
+  min-height: 350px; /* Reduced from 600px to 350px */
   border-radius: 2rem; /* Round all corners */
   overflow: hidden;
   background: var(--card-bg);
@@ -356,8 +356,8 @@ body {
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
   .promo-carousel-container {
-    height: 75vh;
-    min-height: 500px;
+    height: 45vh; /* Reduced from 75vh to 45vh */
+    min-height: 320px; /* Reduced from 500px to 320px */
     width: 90%;
   }
   
@@ -380,8 +380,8 @@ body {
 
 @media (max-width: 768px) {
   .promo-carousel-container {
-    height: 70vh;
-    min-height: 450px;
+    height: 40vh; /* Reduced from 70vh to 40vh */
+    min-height: 280px; /* Reduced from 450px to 280px */
     width: 95%;
     border-radius: 1.5rem;
   }
@@ -413,8 +413,8 @@ body {
 
 @media (max-width: 640px) {
   .promo-carousel-container {
-    height: 65vh;
-    min-height: 400px;
+    height: 35vh; /* Reduced from 65vh to 35vh */
+    min-height: 250px; /* Reduced from 400px to 250px */
     width: 98%;
   }
   

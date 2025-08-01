@@ -464,7 +464,7 @@ export default function Navbar(fontFace) {
                 style={{
                   position: 'fixed',
                   top: 0,
-                  right: menuOpen ? 0 : '-100%',
+                  right: menuOpen ? 0 : '-100vw',
                   width: '100vw',
                   height: '100vh',
                   background: 'rgba(255, 255, 255, 0.95)',
@@ -472,11 +472,13 @@ export default function Navbar(fontFace) {
                   WebkitBackdropFilter: 'blur(20px)',
                   transition: 'right 0.3s ease-in-out',
                   zIndex: 1000,
-                  display: 'flex',
+                  display: menuOpen ? 'flex' : 'none',
                   flexDirection: 'column',
                   justifyContent: 'space-between',
                   padding: '80px 20px 40px',
-                  overflowY: 'auto'
+                  overflowY: 'auto',
+                  visibility: menuOpen ? 'visible' : 'hidden',
+                  opacity: menuOpen ? 1 : 0
                 }}
               >
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, textAlign: 'center' }}>

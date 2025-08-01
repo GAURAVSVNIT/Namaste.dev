@@ -272,16 +272,16 @@ const NavigationTabs = ({ activeTab = 'looks' }) => {
               transition: 'all 0.3s ease',
               cursor: 'pointer',
               background: isActive 
-                ? 'linear-gradient(135deg, #ef4444, #dc2626)' 
+                ? 'linear-gradient(135deg, #3b82f6, #2563eb)' 
                 : hoveredTab === tab.id 
-                  ? 'rgba(239, 68, 68, 0.1)' 
+                  ? 'rgba(59, 130, 246, 0.1)' 
                   : 'transparent',
               color: isActive 
                 ? 'white' 
                 : hoveredTab === tab.id 
-                  ? '#ef4444' 
+                  ? '#3b82f6' 
                   : '#6b7280',
-              boxShadow: isActive ? '0 8px 20px rgba(239, 68, 68, 0.4)' : 'none',
+              boxShadow: isActive ? '0 8px 20px rgba(59, 130, 246, 0.4)' : 'none',
               transform: isActive 
                 ? 'translateY(-2px)' 
                 : hoveredTab === tab.id 

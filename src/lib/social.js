@@ -627,37 +627,71 @@ export const updateSocialProfile = async (userId, profileData) => {
  */
 export const getUserByUsername = async (username) => {
   try {
-    // Search for user by name (which serves as username in our system)
-    const usersQuery = query(
+    // First try searching for exact username field
+    let usersQuery = query(
+      collection(db, 'users'),
+      where('username', '==', username)
+    );
+    let usersSnapshot = await getDocs(usersQuery);
+    
+    if (!usersSnapshot.empty) {
+      const userDoc = usersSnapshot.docs[0];
+      return {
+        id: userDoc.id,
+        ...userDoc.data()
+      };
+    }
+    
+    // If no username field match, try searching by name field
+    usersQuery = query(
       collection(db, 'users'),
       where('name', '==', username)
     );
-    const usersSnapshot = await getDocs(usersQuery);
+    usersSnapshot = await getDocs(usersQuery);
     
-    if (usersSnapshot.empty) {
-      // Also try searching by email prefix (fallback username)
-      const allUsersQuery = query(collection(db, 'users'));
-      const allUsersSnapshot = await getDocs(allUsersQuery);
-      
-      for (const userDoc of allUsersSnapshot.docs) {
-        const userData = userDoc.data();
-        const emailUsername = userData.email?.split('@')[0];
-        if (emailUsername === username) {
-          return {
-            id: userDoc.id,
-            ...userData
-          };
-        }
-      }
-      
-      return null;
+    if (!usersSnapshot.empty) {
+      const userDoc = usersSnapshot.docs[0];
+      return {
+        id: userDoc.id,
+        ...userDoc.data()
+      };
     }
     
-    const userDoc = usersSnapshot.docs[0];
-    return {
-      id: userDoc.id,
-      ...userDoc.data()
-    };
+    // If still no match, do a comprehensive search through all users
+    const allUsersQuery = query(collection(db, 'users'));
+    const allUsersSnapshot = await getDocs(allUsersQuery);
+    
+    for (const userDoc of allUsersSnapshot.docs) {
+      const userData = userDoc.data();
+      const emailUsername = userData.email?.split('@')[0];
+      const displayName = userData.displayName;
+      const usernameLower = username.toLowerCase();
+      
+      // Create URL-friendly versions for comparison
+      const nameUrlFriendly = userData.name?.toLowerCase().replace(/\s+/g, '') || '';
+      const displayNameUrlFriendly = displayName?.toLowerCase().replace(/\s+/g, '') || '';
+      
+      // Check multiple fields for username match
+      if (
+        emailUsername === username ||
+        emailUsername === usernameLower ||
+        userData.name === username ||
+        userData.name?.toLowerCase() === usernameLower ||
+        displayName === username ||
+        displayName?.toLowerCase() === usernameLower ||
+        userData.username === username ||
+        userData.username?.toLowerCase() === usernameLower ||
+        nameUrlFriendly === usernameLower ||
+        displayNameUrlFriendly === usernameLower
+      ) {
+        return {
+          id: userDoc.id,
+          ...userData
+        };
+      }
+    }
+    
+    return null;
   } catch (error) {
     console.error('Error getting user by username:', error);
     return null;

@@ -2,10 +2,11 @@
 
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, X } from 'lucide-react';
+import { Upload, X, ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from './ui/button';
 
 export default function VisualSearch({ onResults }) {
+  const [isExpanded, setIsExpanded] = useState(false);
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,114 +99,205 @@ export default function VisualSearch({ onResults }) {
     setImagePreview(null);
   };
 
-  return (
-    <div style={{ 
-      padding: '16px', 
-      border: '2px dashed #ccc', 
-      borderRadius: '8px', 
-      textAlign: 'center',
-      backgroundColor: 'white',
-      margin: '10px 0'
-    }}>
-      <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '8px' }}>Visual Search TEST</h3>
-      <p style={{ fontSize: '14px', color: '#666', marginBottom: '16px' }}>Upload an image to find similar products.</p>
+return (
+    <div>
+      <h3 
+        onClick={() => setIsExpanded(!isExpanded)}
+        style={{ 
+          cursor: 'pointer', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          margin: '0 0 1.25rem 0',
+          fontSize: '0.95rem',
+          fontWeight: '800',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em',
+          color: '#ff4d6d'
+        }}
+      >
+        <span>
+          Visual Search
+        </span>
+        {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+      </h3>
+    
+      {isExpanded && (
+        <div style={{ 
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          borderRadius: '0.75rem',
+          padding: '1.25rem',
+          marginBottom: '1rem',
+          border: '1px solid rgba(255, 77, 109, 0.1)',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 2px 8px rgba(255, 77, 109, 0.1)'
+        }}>
+          <p style={{ 
+            fontSize: '0.875rem', 
+            color: '#6c757d', 
+            marginBottom: '1rem', 
+            textAlign: 'center',
+            fontWeight: '500'
+          }}>
+            Upload an image to find similar products
+          </p>
       
-      {imagePreview ? (
-        <div style={{ marginBottom: '16px' }}>
-          <img 
-            src={imagePreview} 
-            alt="Preview" 
-            style={{ width: '128px', height: '128px', objectFit: 'cover', borderRadius: '8px' }} 
-          />
-          <br />
+          {imagePreview ? (
+            <div style={{ 
+              marginBottom: '1rem', 
+              textAlign: 'center',
+              padding: '1rem',
+              backgroundColor: 'rgba(248, 250, 252, 0.8)',
+              borderRadius: '0.5rem',
+              border: '1px solid rgba(255, 77, 109, 0.1)'
+            }}>
+              <img 
+                src={imagePreview} 
+                alt="Preview" 
+                style={{ 
+                  width: '100px', 
+                  height: '100px', 
+                  objectFit: 'cover', 
+                  borderRadius: '0.5rem',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                }} 
+              />
+              <br />
+              <button 
+                onClick={clearImage}
+                style={{ 
+                  marginTop: '0.75rem',
+                  padding: '0.5rem 1rem', 
+                  backgroundColor: '#ef4444', 
+                  color: 'white', 
+                  border: 'none', 
+                  borderRadius: '0.375rem',
+                  cursor: 'pointer',
+                  fontSize: '0.75rem',
+                  fontWeight: '600',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 2px 4px rgba(239, 68, 68, 0.2)'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#dc2626'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#ef4444'}
+              >
+                Clear Image
+              </button>
+            </div>
+          ) : (
+            <div style={{ marginBottom: '1rem', textAlign: 'center' }}>
+              <div 
+                style={{
+                  width: '120px',
+                  height: '120px',
+                  backgroundColor: 'rgba(248, 250, 252, 0.9)',
+                  borderRadius: '0.75rem',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  margin: '0 auto',
+                  border: '2px dashed rgba(255, 77, 109, 0.3)',
+                  fontSize: '0.75rem',
+                  fontWeight: '500',
+                  color: '#6c757d',
+                  transition: 'all 0.3s ease',
+                  gap: '0.5rem'
+                }}
+                onClick={() => {
+                  document.getElementById('visual-search-input')?.click();
+                }}
+                onMouseOver={(e) => {
+                  e.target.style.borderColor = '#ff4d6d';
+                  e.target.style.backgroundColor = 'rgba(255, 77, 109, 0.05)';
+                  e.target.style.transform = 'scale(1.02)';
+                }}
+                onMouseOut={(e) => {
+                  e.target.style.borderColor = 'rgba(255, 77, 109, 0.3)';
+                  e.target.style.backgroundColor = 'rgba(248, 250, 252, 0.9)';
+                  e.target.style.transform = 'scale(1)';
+                }}
+              >
+                <Upload size={24} color="#ff4d6d" />
+                <span>Click to Upload</span>
+                <span style={{ fontSize: '0.625rem', opacity: '0.7' }}>JPG, PNG, GIF</span>
+              </div>
+              
+              <input
+                id="visual-search-input"
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleImageChange}
+              />
+            </div>
+          )}
+
           <button 
-            onClick={clearImage}
-            style={{ 
-              marginTop: '8px',
-              padding: '4px 8px', 
-              backgroundColor: '#ef4444', 
-              color: 'white', 
-              border: 'none', 
-              borderRadius: '4px',
-              cursor: 'pointer'
-            }}
-          >
-            Clear Image
-          </button>
-        </div>
-      ) : (
-        <div style={{ marginBottom: '16px' }}>
-          <div 
+            onClick={handleSearch} 
+            disabled={!image || isLoading}
             style={{
-              width: '128px',
-              height: '128px',
-              backgroundColor: '#f3f4f6',
-              borderRadius: '8px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              cursor: 'pointer',
-              margin: '0 auto 8px',
-              border: '1px solid #ddd'
+              padding: '0.75rem 1rem',
+              backgroundColor: (!image || isLoading) ? '#d1d5db' : 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '0.5rem',
+              cursor: (!image || isLoading) ? 'not-allowed' : 'pointer',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              width: '100%',
+              marginBottom: '0.75rem',
+              transition: 'all 0.3s ease',
+              boxShadow: (!image || isLoading) ? 'none' : '0 4px 12px rgba(255, 77, 109, 0.3)',
+              textTransform: 'uppercase',
+              letterSpacing: '0.025em'
             }}
-            onClick={() => {
-              console.log('Upload area clicked');
-              document.getElementById('simple-file-input')?.click();
+            onMouseOver={(e) => {
+              if (!(!image || isLoading)) {
+                e.target.style.transform = 'translateY(-1px)';
+                e.target.style.boxShadow = '0 6px 20px rgba(255, 77, 109, 0.4)';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!(!image || isLoading)) {
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 4px 12px rgba(255, 77, 109, 0.3)';
+              }
             }}
           >
-            📷 Click to Upload
-          </div>
+            {isLoading ? (
+              <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                <span style={{ 
+                  width: '16px', 
+                  height: '16px', 
+                  border: '2px solid rgba(255,255,255,0.3)', 
+                  borderTop: '2px solid white', 
+                  borderRadius: '50%', 
+                  animation: 'spin 1s linear infinite'
+                }}></span>
+                Searching...
+              </span>
+            ) : 'Search Similar Products'}
+          </button>
           
-          <input
-            id="simple-file-input"
-            type="file"
-            accept="image/*"
-            style={{ display: 'none' }}
-            onChange={handleImageChange}
-          />
-          
-          <br />
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            style={{ margin: '8px 0' }}
-          />
+          {error && (
+            <div style={{ 
+              color: '#ef4444', 
+              fontSize: '0.75rem', 
+              textAlign: 'center',
+              padding: '0.5rem',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              borderRadius: '0.375rem',
+              border: '1px solid rgba(239, 68, 68, 0.2)',
+              fontWeight: '500'
+            }}>
+              {error}
+            </div>
+          )}
+
         </div>
       )}
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center' }}>
-        <button 
-          onClick={handleSearch} 
-          disabled={!image || isLoading}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: (!image || isLoading) ? '#ccc' : '#3b82f6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: (!image || isLoading) ? 'not-allowed' : 'pointer'
-          }}
-        >
-          {isLoading ? 'Searching...' : 'Search with Image'}
-        </button>
-        
-        <button 
-          onClick={checkApiStatus}
-          style={{
-            padding: '6px 12px',
-            backgroundColor: '#f9fafb',
-            color: '#374151',
-            border: '1px solid #d1d5db',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Test API Status
-        </button>
-      </div>
-
-      {error && <p style={{ color: '#ef4444', fontSize: '14px', marginTop: '8px' }}>{error}</p>}
     </div>
   );
 }

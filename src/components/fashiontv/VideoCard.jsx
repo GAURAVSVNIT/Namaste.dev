@@ -110,6 +110,7 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
       });
       return;
     }
+    console.log('Opening comments modal...');
     setShowComments(true);
     onCommentsToggle?.(true);
   };
@@ -242,8 +243,8 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
           </div>
         )}
 
-        {/* Mute Button - Top Left */}
-        <div className={`absolute top-4 left-4 z-20 transition-opacity duration-300 ${
+        {/* Mute Button - Top Left, same height as action buttons */}
+        <div className={`absolute top-12 md:top-6 left-3 md:left-4 z-20 transition-opacity duration-300 ${
           showComments ? 'opacity-0 pointer-events-none' : 'opacity-100'
         }`}>
           <button
@@ -273,10 +274,10 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
           </button>
         </div>
 
-        {/* Right Side Action Buttons */}
-        <div className={`absolute right-4 bottom-12 flex flex-col items-center space-y-4 z-20 transition-opacity duration-300 ${
+        {/* Right Side Action Buttons - Raised much higher from profile and description */}
+        <div className={`absolute right-3 md:right-4 bottom-32 md:bottom-28 lg:bottom-24 flex flex-col items-center justify-end z-20 transition-opacity duration-300 ${
           showComments ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`}>
+        }`} style={{ height: '220px', gap: '8px' }}>
           {/* Like Button */}
           <button
             onClick={handleLike}
@@ -482,26 +483,31 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
       {/* Comments Modal - Enhanced with Inline CSS */}
       {showComments && (
         <div style={{
-          position: 'absolute',
-          inset: '0',
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
           zIndex: 30,
           backgroundColor: 'rgba(0, 0, 0, 0.6)',
           backdropFilter: 'blur(10px)',
-          display: 'flex',
-          alignItems: 'flex-end',
           animation: 'fadeIn 0.3s ease-out'
         }}>
           <div style={{
+            position: 'absolute',
+            top: 0,
+            left: '50%',
+            transform: 'translateX(-50%)',
             width: '100%',
+            maxWidth: '500px',
             backgroundColor: '#ffffff',
-            borderTopLeftRadius: '24px',
-            borderTopRightRadius: '24px',
-            maxHeight: '85vh',
+            borderRadius: '20px',
+            maxHeight: '100vh',
+            minHeight: '50vh',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.15)',
-            transform: 'translateY(0)',
-            animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.25)',
+            animation: 'slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }}>
             
             {/* Header */}
@@ -509,9 +515,11 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              padding: '20px 24px 16px 24px',
+              padding: '16px 20px 12px 20px',
               borderBottom: '1px solid #f1f5f9',
-              background: 'linear-gradient(135deg, #fafbfc 0%, #ffffff 100%)'
+              background: 'linear-gradient(135deg, #fafbfc 0%, #ffffff 100%)',
+              borderTopLeftRadius: '20px',
+              borderTopRightRadius: '20px'
             }}>
               <div style={{
                 display: 'flex',
@@ -577,7 +585,8 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
             <div style={{
               flex: '1',
               overflowY: 'auto',
-              background: 'linear-gradient(180deg, #ffffff 0%, #fafbfc 100%)'
+              background: 'linear-gradient(180deg, #ffffff 0%, #fafbfc 100%)',
+              minHeight: '200px'
             }}>
               {comments.length === 0 ? (
                 <div style={{
@@ -756,10 +765,11 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
             {/* Comment Input */}
             <div style={{
               borderTop: '1px solid #f1f5f9',
-              padding: '20px 24px',
+              padding: '16px 20px',
               backgroundColor: '#ffffff',
               borderBottomLeftRadius: '24px',
-              borderBottomRightRadius: '24px'
+              borderBottomRightRadius: '24px',
+              flexShrink: 0
             }}>
               <div style={{
                 display: 'flex',
@@ -1045,6 +1055,17 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
         @keyframes slideUp {
           from { 
             transform: translateY(100%);
+            opacity: 0;
+          }
+          to { 
+            transform: translateY(0);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes slideDown {
+          from { 
+            transform: translateY(-50px);
             opacity: 0;
           }
           to { 

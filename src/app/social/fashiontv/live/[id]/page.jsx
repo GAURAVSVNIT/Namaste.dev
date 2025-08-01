@@ -14,7 +14,8 @@ import {
   Calendar,
   Play,
   Users,
-  Eye
+  Eye,
+  Volume2
 } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from '@/hooks/use-toast';
@@ -581,11 +582,11 @@ export default function IndividualLiveStreamPage({ params }) {
                     </div>
                   )}
                   
-                  {/* Live indicator overlay */}
+                  {/* Live indicator overlay - Positioned to avoid overlap with mute button on mobile */}
                   <div style={{
                     position: 'absolute',
                     top: '16px',
-                    left: '16px',
+                    right: '16px', // Changed from left to right to avoid mute button
                     background: 'rgba(220, 38, 38, 0.9)',
                     color: 'white',
                     padding: '8px 16px',
@@ -1033,7 +1034,7 @@ export default function IndividualLiveStreamPage({ params }) {
         </div>
       </div>
 
-      {/* Back Button */}
+      {/* Back Button - Positioned to avoid overlap with live indicator */}
       <Link href="/social/fashiontv/live">
         <button style={{
           position: 'absolute',
@@ -1052,6 +1053,42 @@ export default function IndividualLiveStreamPage({ params }) {
           <ArrowLeft style={{ width: '20px', height: '20px' }} />
         </button>
       </Link>
+      
+      {/* Mobile Audio Controls Overlay - Positioned separately for better mobile interaction */}
+      <div style={{
+        position: 'absolute',
+        bottom: '24px',
+        left: '24px',
+        zIndex: 15,
+        display: 'flex',
+        gap: '12px'
+      }}>
+        {/* Volume/Mute Button for mobile - Larger touch target */}
+        <button
+          style={{
+            background: 'rgba(0, 0, 0, 0.7)',
+            color: 'white',
+            padding: '14px',
+            borderRadius: '50%',
+            border: '1px solid rgba(255, 255, 255, 0.3)',
+            backdropFilter: 'blur(10px)',
+            cursor: 'pointer',
+            transition: 'all 0.3s ease',
+            minWidth: '48px',
+            minHeight: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}
+          onClick={() => {
+            // This would control the iframe's audio if accessible
+            // For now, it's a placeholder for future audio control implementation
+            console.log('Mute/unmute clicked');
+          }}
+        >
+          <Volume2 style={{ width: '20px', height: '20px' }} />
+        </button>
+      </div>
     </div>
   );
 }

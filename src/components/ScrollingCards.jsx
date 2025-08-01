@@ -49,22 +49,46 @@ const cardData = [
 // Reusable Card Component
 const Card = ({ card, index, progress }) => {
   const totalCards = cardData.length;
-  const lastCardIndex = totalCards - 1;
-
-  // For all cards except the last one, they slide in and then slide out.
-  // The last card slides in and stays.
-  const input = [
-    (index - 1) / totalCards, 
-    index / totalCards, 
-    (index + 1) / totalCards
-  ];
   
-  const output = index === lastCardIndex 
-    ? ['110%', '0%', '0%'] // Last card stays
-    : ['110%', '0%', '-110%']; // Others slide out
-
-  const x = useTransform(progress, input, output);
-  const scale = useTransform(progress, input, [0.95, 1, 0.95]);
+  // Each card gets 1/totalCards of the progress range
+  const cardProgress = 1 / totalCards;
+  const startProgress = index * cardProgress;
+  const endProgress = (index + 1) * cardProgress;
+  const nextCardStart = (index + 1) * cardProgress;
+  
+  let x, scale;
+  
+  if (index === 0) {
+    // First card: visible at start, completely slides out as next card slides in
+    x = useTransform(progress, 
+      [0, cardProgress], 
+      ['0%', '-120%']
+    );
+    scale = useTransform(progress, 
+      [0, cardProgress], 
+      [1, 0.8]
+    );
+  } else if (index === totalCards - 1) {
+    // Last card: slides in completely and slides out completely on reverse
+    x = useTransform(progress, 
+      [startProgress - cardProgress, startProgress], 
+      ['120%', '0%']
+    );
+    scale = useTransform(progress, 
+      [startProgress - cardProgress, startProgress], 
+      [0.8, 1]
+    );
+  } else {
+    // Middle cards: slide in from right as previous slides out, then completely slide out as next slides in
+    x = useTransform(progress, 
+      [startProgress - cardProgress, startProgress, endProgress], 
+      ['120%', '0%', '-120%']
+    );
+    scale = useTransform(progress, 
+      [startProgress - cardProgress, startProgress, endProgress], 
+      [0.8, 1, 0.8]
+    );
+  }
 
   return (
     <motion.div
@@ -232,9 +256,6 @@ const ScrollingCards = () => {
           Discover Your Style
           <span className="title-accent">Journey</span>
         </h2>
-        <p className="section-description">
-          Scroll to explore our carefully curated collections designed to match every mood, occasion, and personal style.
-        </p>
       </motion.div>
 
       <div className="cards-wrapper">
