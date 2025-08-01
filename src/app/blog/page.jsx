@@ -6,7 +6,6 @@ import { getUserProfile } from '@/lib/firebase';
 import BlogList from '@/components/blog/BlogList';
 import BlogForm from '@/components/blog/BlogForm';
 import BlogSearchBar from '@/components/blog/BlogSearchBar';
-import Footer from '@/components/Footer';
 import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
 
 const BlogPage = () => {
@@ -272,12 +271,12 @@ const BlogPage = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#ffffff'
+      backgroundColor: 'var(--background)'
     }}>
       <div style={{
-        paddingTop: '80px',
+        paddingTop: '40px',
         paddingBottom: '80px',
-        marginTop: '100px'
+        marginTop: '40px'
       }}>
         <div style={{
           width: '100%',
@@ -289,8 +288,13 @@ const BlogPage = () => {
             position: 'relative',
             textAlign: 'center',
             marginBottom: '80px',
-            padding: '60px 20px',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            padding: '20px',
+            height: '60vh',
+            minHeight: '450px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)',
             borderRadius: '24px',
             overflow: 'hidden',
             boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)'
@@ -352,8 +356,7 @@ const BlogPage = () => {
                 backdropFilter: 'blur(10px)',
                 padding: '8px 20px',
                 borderRadius: '50px',
-                marginBottom: '24px',
-                border: '1px solid rgba(255, 255, 255, 0.3)'
+                marginBottom: '24px'
               }}>
                 <span style={{
                   fontSize: '0.875rem',
@@ -368,7 +371,7 @@ const BlogPage = () => {
                 color: '#ffffff',
                 marginBottom: '24px',
                 lineHeight: '1.1',
-                textShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                textShadow: 'none',
                 letterSpacing: '-0.02em'
               }}>
                 <SplitText 
@@ -386,12 +389,12 @@ const BlogPage = () => {
               
               <p style={{
                 fontSize: 'clamp(1.125rem, 2.5vw, 1.375rem)',
-                color: 'rgba(255, 255, 255, 0.9)',
+                color: '#ffffff',
                 margin: '0 auto',
                 marginBottom: '40px',
                 lineHeight: '1.6',
                 maxWidth: '600px',
-                textShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+                textShadow: 'none'
               }}>
                 Discover the latest trends, share your style insights, and connect with fashion enthusiasts worldwide
               </p>
@@ -408,14 +411,14 @@ const BlogPage = () => {
                   <button
                     onClick={() => setShowForm(true)}
                     style={{
-                      background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                       color: '#ffffff',
                       padding: '16px 32px',
                       borderRadius: '50px',
                       border: 'none',
-                      fontWeight: '600',
+                      fontWeight: '700',
                       fontSize: 'clamp(1rem, 2vw, 1.125rem)',
-                      boxShadow: '0 10px 20px rgba(238, 90, 36, 0.3)',
+                      boxShadow: '0 10px 20px rgba(100, 100, 100, 0.3)',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       outline: 'none',
@@ -424,11 +427,11 @@ const BlogPage = () => {
                     }}
                     onMouseOver={(e) => {
                       e.target.style.transform = 'translateY(-3px) scale(1.05)';
-                      e.target.style.boxShadow = '0 15px 30px rgba(238, 90, 36, 0.4)';
+                      e.target.style.boxShadow = '0 15px 30px rgba(100, 100, 100, 0.4)';
                     }}
                     onMouseOut={(e) => {
                       e.target.style.transform = 'translateY(0) scale(1)';
-                      e.target.style.boxShadow = '0 10px 20px rgba(238, 90, 36, 0.3)';
+                      e.target.style.boxShadow = '0 10px 20px rgba(100, 100, 100, 0.3)';
                     }}
                   >
                     <span style={{ position: 'relative', zIndex: 1 }}>✨ Create New Blog</span>
@@ -444,27 +447,28 @@ const BlogPage = () => {
                     });
                   }}
                   style={{
-                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    background: 'rgba(255, 255, 255, 0.2)',
                     backdropFilter: 'blur(10px)',
                     color: '#ffffff',
                     padding: '16px 32px',
                     borderRadius: '50px',
-                    border: '1px solid rgba(255, 255, 255, 0.3)',
-                    fontWeight: '600',
+                    border: 'none',
+                    fontWeight: '700',
                     fontSize: 'clamp(1rem, 2vw, 1.125rem)',
                     cursor: 'pointer',
                     transition: 'all 0.3s ease',
-                    outline: 'none'
+                    outline: 'none',
+                    boxShadow: 'none'
                   }}
                   onMouseOver={(e) => {
-                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.3)';
-                    e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.5)';
+                    e.target.style.background = 'rgba(255, 255, 255, 0.3)';
+                    e.target.style.transform = 'translateY(-3px) scale(1.05)';
+                    e.target.style.boxShadow = 'none';
                   }}
                   onMouseOut={(e) => {
-                    e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                    e.target.style.background = 'rgba(255, 255, 255, 0.2)';
+                    e.target.style.transform = 'translateY(0) scale(1)';
+                    e.target.style.boxShadow = 'none';
                   }}
                 >
                   🚀 Explore Blogs
@@ -565,25 +569,25 @@ const BlogPage = () => {
                       padding: '12px 16px',
                       borderRadius: '12px',
                       border: 'none',
-                      background: currentPage === 1 ? '#f8f9fa' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      background: currentPage === 1 ? '#f8f9fa' : 'linear-gradient(135deg, #ef4444, #dc2626)',
                       color: currentPage === 1 ? '#cbd5e0' : 'white',
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
                       transition: 'all 0.3s ease',
                       opacity: currentPage === 1 ? 0.5 : 1,
-                      boxShadow: currentPage === 1 ? 'none' : '0 4px 12px rgba(102, 126, 234, 0.25)'
+                      boxShadow: currentPage === 1 ? 'none' : '0 4px 12px rgba(255, 77, 109, 0.25)'
                     }}
                     onMouseEnter={(e) => {
                       if (currentPage !== 1) {
                         e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.35)';
+                        e.target.style.boxShadow = '0 6px 16px rgba(255, 77, 109, 0.35)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (currentPage !== 1) {
                         e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.25)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(255, 77, 109, 0.25)';
                       }
                     }}
                   >
@@ -625,8 +629,8 @@ const BlogPage = () => {
                           padding: '12px 16px',
                           borderRadius: '12px',
                           border: 'none',
-                          background: currentPage === page 
-                            ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+                        background: currentPage === page 
+                            ? 'linear-gradient(135deg, #ef4444, #dc2626)' 
                             : '#ffffff',
                           color: currentPage === page ? 'white' : '#6b7280',
                           fontSize: '14px',
@@ -635,15 +639,15 @@ const BlogPage = () => {
                           transition: 'all 0.3s ease',
                           border: currentPage === page ? 'none' : '2px solid #e5e7eb',
                           boxShadow: currentPage === page 
-                            ? '0 4px 12px rgba(102, 126, 234, 0.25)'
+                            ? '0 4px 12px rgba(255, 77, 109, 0.25)'
                             : '0 2px 8px rgba(0, 0, 0, 0.06)',
                           minWidth: '44px'
                         }}
                         onMouseEnter={(e) => {
                           if (currentPage !== page) {
-                            e.target.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)';
-                            e.target.style.borderColor = '#667eea';
-                            e.target.style.color = '#667eea';
+                            e.target.style.background = 'linear-gradient(135deg, rgba(255, 77, 109, 0.1) 0%, rgba(255, 117, 143, 0.1) 100%)';
+                            e.target.style.borderColor = 'var(--color-fashion-primary)';
+                            e.target.style.color = 'var(--color-fashion-primary)';
                             e.target.style.transform = 'translateY(-2px)';
                           }
                         }}
@@ -669,25 +673,25 @@ const BlogPage = () => {
                       padding: '12px 16px',
                       borderRadius: '12px',
                       border: 'none',
-                      background: currentPage === totalPages ? '#f8f9fa' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                      background: currentPage === totalPages ? '#f8f9fa' : 'linear-gradient(135deg, #ef4444, #dc2626)',
                       color: currentPage === totalPages ? '#cbd5e0' : 'white',
                       fontSize: '14px',
                       fontWeight: '600',
                       cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
                       transition: 'all 0.3s ease',
                       opacity: currentPage === totalPages ? 0.5 : 1,
-                      boxShadow: currentPage === totalPages ? 'none' : '0 4px 12px rgba(102, 126, 234, 0.25)'
+                      boxShadow: currentPage === totalPages ? 'none' : '0 4px 12px rgba(255, 77, 109, 0.25)'
                     }}
                     onMouseEnter={(e) => {
                       if (currentPage !== totalPages) {
                         e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.35)';
+                        e.target.style.boxShadow = '0 6px 16px rgba(255, 77, 109, 0.35)';
                       }
                     }}
                     onMouseLeave={(e) => {
                       if (currentPage !== totalPages) {
                         e.target.style.transform = 'translateY(0)';
-                        e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.25)';
+                        e.target.style.boxShadow = '0 4px 12px rgba(255, 77, 109, 0.25)';
                       }
                     }}
                   >
@@ -762,7 +766,7 @@ const BlogPage = () => {
                       style={{
                         display: 'block',
                         width: '100%',
-                        backgroundColor: '#3b82f6',
+                        backgroundColor: 'var(--color-fashion-primary)',
                         color: '#ffffff',
                         padding: '16px 32px',
                         borderRadius: '8px',
@@ -774,11 +778,11 @@ const BlogPage = () => {
                         border: 'none'
                       }}
                       onMouseOver={(e) => {
-                        e.target.style.backgroundColor = '#2563eb';
+                        e.target.style.backgroundColor = 'var(--color-fashion-secondary)';
                         e.target.style.boxShadow = '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)';
                       }}
                       onMouseOut={(e) => {
-                        e.target.style.backgroundColor = '#3b82f6';
+                        e.target.style.backgroundColor = 'var(--color-fashion-primary)';
                         e.target.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
                       }}
                     >
@@ -825,9 +829,6 @@ const BlogPage = () => {
             </div>
           )}
         </div>
-      </div>
-      <div style={{ marginTop: '4rem' }}>
-        <Footer />
       </div>
     </div>
   );

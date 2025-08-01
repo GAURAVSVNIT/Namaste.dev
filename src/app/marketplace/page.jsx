@@ -128,26 +128,55 @@ const MarketPlacePage = () => {
   // Promo carousel state
   const [currentPromoIndex, setCurrentPromoIndex] = useState(0);
   const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const [actualSlideIndex, setActualSlideIndex] = useState(0); // Track the actual slide (0-4)
+  const totalSlides = promoCards.length; // 5 slides
   
   const { addToCart, openCart } = useCartStore();
 
-  // Auto-rotation for promo cards
+  // Auto-rotation for promo cards with infinite forward scrolling
   useEffect(() => {
     if (!isAutoRotating) return;
 
     const interval = setInterval(() => {
-      setCurrentPromoIndex((prev) => (prev + 1) % promoCards.length);
-    }, 4000);
+      setCurrentPromoIndex((prev) => {
+        const nextIndex = prev + 1;
+        
+        // If we reach the end of original slides (index 5), reset to beginning with duplicates
+        if (nextIndex >= totalSlides) {
+          // Use setTimeout to reset position after animation completes
+          setTimeout(() => {
+            // Add no-transition class and reset to first slide
+            const slidesWrapper = document.querySelector('.promo-slides-wrapper');
+            if (slidesWrapper) {
+              slidesWrapper.classList.add('no-transition');
+              setCurrentPromoIndex(0);
+              setActualSlideIndex(0);
+              
+              // Remove no-transition class after a brief moment to re-enable animations
+              setTimeout(() => {
+                slidesWrapper.classList.remove('no-transition');
+              }, 50);
+            }
+          }, 800); // Wait for transition to complete (matches CSS transition duration)
+          
+          setActualSlideIndex(0); // Reset actual slide index
+          return nextIndex; // Continue with the transition first
+        }
+        
+        setActualSlideIndex(nextIndex);
+        return nextIndex;
+      });
+    }, 5000); // Increased interval for smoother auto-rotation
 
     return () => clearInterval(interval);
-  }, [isAutoRotating]);
+  }, [isAutoRotating, totalSlides]);
 
   const nextPromo = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
     setCurrentPromoIndex((prev) => (prev + 1) % promoCards.length);
     setIsAutoRotating(false);
-    setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
+    setTimeout(() => setIsAutoRotating(true), 8000); // Resume auto-rotation after 8 seconds for better balance
   }, []);
 
   const prevPromo = useCallback((e) => {
@@ -155,7 +184,7 @@ const MarketPlacePage = () => {
     e.stopPropagation();
     setCurrentPromoIndex((prev) => (prev - 1 + promoCards.length) % promoCards.length);
     setIsAutoRotating(false);
-    setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
+    setTimeout(() => setIsAutoRotating(true), 8000); // Resume auto-rotation after 8 seconds for better balance
   }, []);
 
   const goToPromo = useCallback((index, e) => {
@@ -163,7 +192,7 @@ const MarketPlacePage = () => {
     e.stopPropagation();
     setCurrentPromoIndex(index);
     setIsAutoRotating(false);
-    setTimeout(() => setIsAutoRotating(true), 10000); // Resume auto-rotation after 10 seconds
+    setTimeout(() => setIsAutoRotating(true), 8000); // Resume auto-rotation after 8 seconds for better balance
   }, []);
 
   useEffect(() => {
@@ -257,57 +286,56 @@ const MarketPlacePage = () => {
   if (loading) return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
 
     return (
-    <div className="marketplace-container">
-      <div className="marketplace-content-wrapper">
-        <PromoSection 
-          currentPromoIndex={currentPromoIndex}
-          isAutoRotating={isAutoRotating}
-          onPrev={prevPromo}
-          onNext={nextPromo}
-          onGoTo={goToPromo}
+    <div className="marketplace-container" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
+      <PromoSection 
+        currentPromoIndex={currentPromoIndex}
+        actualSlideIndex={actualSlideIndex}
+        isAutoRotating={isAutoRotating}
+        onPrev={prevPromo}
+        onNext={nextPromo}
+        onGoTo={goToPromo}
+      />
+      <div className="marketplace-body">
+        <FilterSidebar 
+          categories={categories}
+          brands={brands}
+          selectedCategory={selectedCategory}
+          selectedBrands={selectedBrands}
+          onCategoryChange={handleCategoryChange}
+          onBrandChange={handleBrandChange}
+          onVisualSearchResults={handleVisualSearchResults}
         />
-        <div className="marketplace-body">
-          <FilterSidebar 
-            categories={categories}
-            brands={brands}
-            selectedCategory={selectedCategory}
-            selectedBrands={selectedBrands}
-            onCategoryChange={handleCategoryChange}
-            onBrandChange={handleBrandChange}
-            onVisualSearchResults={handleVisualSearchResults}
-          />
-          <main className="main-content">
-            <div className="results-header">
-              <p className="text-sm text-gray-600">Showing {filteredProducts.length} of {products.length} results</p>
-              <div className="flex items-center gap-4">
-                <Button variant="ghost" className="lg:hidden filter-toggle-btn" onClick={() => setIsFilterSidebarOpen(true)}>
-                  <Filter className="w-4 h-4 mr-2" />
-                  Filters
-                  {getActiveFilterCount() > 0 && (
-                    <span className="filter-count-badge">
-                      {getActiveFilterCount()}
-                    </span>
-                  )}
-                </Button>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-[160px] bg-white border-gray-300 hidden lg:flex">
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">Newest</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+        <main className="main-content">
+          <div className="results-header">
+            <p className="text-sm text-gray-600">Showing {filteredProducts.length} of {products.length} results</p>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" className="lg:hidden filter-toggle-btn" onClick={() => setIsFilterSidebarOpen(true)}>
+                <Filter className="w-4 h-4 mr-2" />
+                Filters
+                {getActiveFilterCount() > 0 && (
+                  <span className="filter-count-badge">
+                    {getActiveFilterCount()}
+                  </span>
+                )}
+              </Button>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[160px] bg-white border-gray-300 hidden lg:flex">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest</SelectItem>
+                  <SelectItem value="price-low">Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-            <ProductGrid 
-              products={filteredProducts}
-              onViewProduct={handleViewProductMemo}
-              onAddToCart={handleAddToCartMemo}
-            />
-          </main>
-        </div>
+          </div>
+          <ProductGrid 
+            products={filteredProducts}
+            onViewProduct={handleViewProductMemo}
+            onAddToCart={handleAddToCartMemo}
+          />
+        </main>
       </div>
     </div>
   );

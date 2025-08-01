@@ -70,8 +70,8 @@ const BlogSearchBar = ({ onSearch, placeholder = "Search blogs by title or tags.
             boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
           }}
           onFocus={(e) => {
-            e.target.style.borderColor = '#3b82f6';
-            e.target.style.boxShadow = '0 0 0 3px rgba(59, 130, 246, 0.1)';
+            e.target.style.borderColor = 'var(--color-fashion-primary)';
+            e.target.style.boxShadow = '0 0 0 3px rgba(255, 77, 109, 0.1)';
           }}
           onBlur={(e) => {
             e.target.style.borderColor = '#e5e7eb';

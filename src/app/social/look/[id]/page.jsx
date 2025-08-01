@@ -196,7 +196,7 @@ export default function LookDetailPage({ params }) {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
         paddingTop: '100px',
         paddingBottom: '2rem'
       }}>
@@ -268,7 +268,7 @@ export default function LookDetailPage({ params }) {
     return (
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -297,7 +297,7 @@ export default function LookDetailPage({ params }) {
           }}>The look you're looking for doesn't exist.</p>
       <Link href="/social/look">
         <Button style={{
-          background: 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
           color: 'white',
           border: 'none',
           padding: '0.75rem 2rem',
@@ -343,7 +343,7 @@ export default function LookDetailPage({ params }) {
       `}</style>
       <div style={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 40%, #f093fb 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 40%, #f093fb 100%)',
         paddingTop: '100px',
         paddingBottom: '60px',
         position: 'relative',
@@ -356,7 +356,7 @@ export default function LookDetailPage({ params }) {
         left: 0,
         right: 0,
         bottom: 0,
-        background: 'radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.15) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(120, 119, 198, 0.2) 0%, transparent 50%)',
+background: 'radial-gradient(circle at 20% 80%, rgba(239, 68, 68, 0.3) 0%, transparent 50%), radial-gradient(circle at 80% 20%, rgba(239, 68, 68, 0.15) 0%, transparent 50%), radial-gradient(circle at 40% 40%, rgba(239, 68, 68, 0.2) 0%, transparent 50%)',
         animation: 'float 20s ease-in-out infinite',
         zIndex: 0
       }}></div>
@@ -387,7 +387,7 @@ export default function LookDetailPage({ params }) {
               fontSize: '16px',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 20px 40px rgba(103, 126, 234, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
+boxShadow: '0 20px 40px rgba(239, 68, 68, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)',
               backdropFilter: 'blur(20px)',
               transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
               fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
@@ -396,28 +396,28 @@ export default function LookDetailPage({ params }) {
             }}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-4px) scale(1.05)';
-              e.target.style.boxShadow = '0 30px 60px rgba(103, 126, 234, 0.25), 0 15px 30px rgba(0, 0, 0, 0.15)';
+e.target.style.boxShadow = '0 30px 60px rgba(239, 68, 68, 0.25), 0 15px 30px rgba(0, 0, 0, 0.15)';
               e.target.style.background = 'rgba(255, 255, 255, 1)';
-              e.target.style.borderColor = 'rgba(139, 92, 246, 0.5)';
+              e.target.style.borderColor = 'rgba(239, 68, 68, 0.5)';
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0) scale(1)';
-              e.target.style.boxShadow = '0 20px 40px rgba(103, 126, 234, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)';
+e.target.style.boxShadow = '0 20px 40px rgba(239, 68, 68, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1)';
               e.target.style.background = 'rgba(255, 255, 255, 0.98)';
               e.target.style.borderColor = 'rgba(255, 255, 255, 0.3)';
             }}>
               <ArrowLeft style={{
                 width: '22px',
                 height: '22px',
-                color: '#8b5cf6',
-                filter: 'drop-shadow(0 2px 4px rgba(139, 92, 246, 0.3))'
+color: '#dc2626',
+                filter: 'drop-shadow(0 2px 4px rgba(220, 38, 38, 0.3))'
               }} />
               <span style={{
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 50%, #8b5cf6 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 backgroundClip: 'text',
-                textShadow: '0 2px 4px rgba(103, 126, 234, 0.2)'
+textShadow: '0 2px 4px rgba(239, 68, 68, 0.2)'
               }}>← Back to Looks</span>
             </button>
           </Link>
@@ -435,7 +435,7 @@ export default function LookDetailPage({ params }) {
             background: 'rgba(255, 255, 255, 0.98)',
             borderRadius: '32px',
             padding: '0',
-            boxShadow: '0 40px 80px rgba(103, 126, 234, 0.15), 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+boxShadow: '0 40px 80px rgba(239, 68, 68, 0.15), 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
             backdropFilter: 'blur(40px)',
             border: '2px solid rgba(255, 255, 255, 0.3)',
             overflow: 'hidden',
@@ -445,11 +445,11 @@ export default function LookDetailPage({ params }) {
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.transform = 'translateY(-8px)';
-            e.currentTarget.style.boxShadow = '0 50px 100px rgba(103, 126, 234, 0.2), 0 30px 60px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9)';
+e.currentTarget.style.boxShadow = '0 50px 100px rgba(239, 68, 68, 0.2), 0 30px 60px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.9)';
           }}
           onMouseLeave={(e) => {
             e.currentTarget.style.transform = 'translateY(0)';
-            e.currentTarget.style.boxShadow = '0 40px 80px rgba(103, 126, 234, 0.15), 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)';
+e.currentTarget.style.boxShadow = '0 40px 80px rgba(239, 68, 68, 0.15), 0 20px 40px rgba(0, 0, 0, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)';
           }}>
             <div style={{
               display: 'grid',
@@ -471,7 +471,7 @@ export default function LookDetailPage({ params }) {
                   minHeight: '550px',
                   overflow: 'hidden',
                   borderRadius: '0',
-                  background: 'linear-gradient(45deg, #667eea, #764ba2)'
+background: 'linear-gradient(45deg, #ef4444, #dc2626)'
                 }}>
                   <img
                     src={look.images[currentImageIndex]}
@@ -553,13 +553,13 @@ export default function LookDetailPage({ params }) {
                             borderRadius: '12px',
                             overflow: 'hidden',
                             border: index === currentImageIndex 
-                              ? '3px solid #6366f1' 
+? '3px solid #ef4444' 
                               : '3px solid transparent',
                             cursor: 'pointer',
                             transition: 'all 0.3s ease',
                             transform: index === currentImageIndex ? 'scale(1.05)' : 'scale(1)',
                             boxShadow: index === currentImageIndex 
-                              ? '0 8px 25px rgba(99, 102, 241, 0.3)' 
+? '0 8px 25px rgba(239, 68, 68, 0.3)' 
                               : '0 4px 12px rgba(0, 0, 0, 0.1)'
                           }}
                         >
@@ -609,7 +609,7 @@ export default function LookDetailPage({ params }) {
                         width: '48px',
                         height: '48px',
                         borderRadius: '50%',
-                        border: '2px solid rgba(103, 126, 234, 0.2)'
+border: '2px solid rgba(239, 68, 68, 0.2)'
                       }}
                     />
                     <div>
@@ -641,12 +641,12 @@ export default function LookDetailPage({ params }) {
                       borderRadius: '12px',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
-                      color: '#6b7280'
+color: '#ef4444'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(103, 126, 234, 0.1)';
-                      e.target.style.borderColor = 'rgba(103, 126, 234, 0.3)';
-                      e.target.style.color = '#667eea';
+e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                      e.target.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+                      e.target.style.color = '#ef4444';
                       e.target.style.transform = 'scale(1.05)';
                     }}
                     onMouseLeave={(e) => {
@@ -682,8 +682,8 @@ export default function LookDetailPage({ params }) {
                       background: 'transparent'
                     }}
                     onMouseEnter={(e) => {
-                      e.target.style.background = 'rgba(59, 130, 246, 0.1)';
-                      e.target.style.color = '#3b82f6';
+e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                      e.target.style.color = '#ef4444';
                       e.target.style.transform = 'translateX(4px)';
                     }}
                     onMouseLeave={(e) => {
@@ -773,7 +773,7 @@ export default function LookDetailPage({ params }) {
                   fontWeight: '500'
                 }}>Mood:</span>
                 <span style={{
-                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                   color: 'white',
                   padding: '6px 12px',
                   borderRadius: '20px',
@@ -791,13 +791,13 @@ export default function LookDetailPage({ params }) {
                 }}>
                   {look.tags.map((tag, index) => (
                     <span key={index} style={{
-                      background: 'rgba(103, 126, 234, 0.1)',
-                      color: '#667eea',
+background: 'rgba(239, 68, 68, 0.1)',
+                      color: '#ef4444',
                       padding: '4px 8px',
                       borderRadius: '12px',
                       fontSize: '12px',
                       fontWeight: '500',
-                      border: '1px solid rgba(103, 126, 234, 0.2)'
+border: '1px solid rgba(239, 68, 68, 0.2)'
                     }}>
                       #{tag}
                     </span>
@@ -969,7 +969,7 @@ export default function LookDetailPage({ params }) {
               <div style={{
                 padding: '20px 24px 16px 24px',
                 borderBottom: '1px solid rgba(226, 232, 240, 0.4)',
-                background: 'linear-gradient(135deg, rgba(103, 126, 234, 0.02), rgba(255, 255, 255, 0.8))'
+background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.02), rgba(255, 255, 255, 0.8))'
               }}>
                 <div style={{
                   display: 'flex',
@@ -986,7 +986,7 @@ export default function LookDetailPage({ params }) {
                     gap: '8px'
                   }}>
                     <span style={{
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                       WebkitBackgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
                       backgroundClip: 'text'
@@ -994,13 +994,13 @@ export default function LookDetailPage({ params }) {
                     Discussion
                   </h3>
                   <div style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                     color: 'white',
                     padding: '6px 12px',
                     borderRadius: '20px',
                     fontSize: '13px',
                     fontWeight: '600',
-                    boxShadow: '0 4px 12px rgba(103, 126, 234, 0.25)'
+                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.25)'
                   }}>
                     {comments.length} {comments.length === 1 ? 'Comment' : 'Comments'}
                   </div>
@@ -1028,8 +1028,8 @@ export default function LookDetailPage({ params }) {
                           width: '44px',
                           height: '44px',
                           borderRadius: '50%',
-                          border: '2px solid rgba(103, 126, 234, 0.2)',
-                          boxShadow: '0 2px 8px rgba(103, 126, 234, 0.15)'
+border: '2px solid rgba(239, 68, 68, 0.2)',
+                          boxShadow: '0 2px 8px rgba(239, 68, 68, 0.15)'
                         }}
                       />
                     </div>
@@ -1063,8 +1063,8 @@ export default function LookDetailPage({ params }) {
                             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
                           }}
                           onFocus={(e) => {
-                            e.target.style.borderColor = 'rgba(103, 126, 234, 0.5)';
-                            e.target.style.boxShadow = '0 0 0 3px rgba(103, 126, 234, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)';
+e.target.style.borderColor = 'rgba(239, 68, 68, 0.5)';
+                            e.target.style.boxShadow = '0 0 0 3px rgba(239, 68, 68, 0.1), 0 2px 8px rgba(0, 0, 0, 0.1)';
                           }}
                           onBlur={(e) => {
                             e.target.style.borderColor = 'rgba(226, 232, 240, 0.6)';
@@ -1110,7 +1110,7 @@ export default function LookDetailPage({ params }) {
                           style={{
                             background: isSubmittingComment || !commentInput.trim() 
                               ? 'rgba(156, 163, 175, 0.5)' 
-                              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                             color: 'white',
                             padding: '10px 20px',
                             borderRadius: '12px',
@@ -1123,20 +1123,20 @@ export default function LookDetailPage({ params }) {
                             gap: '8px',
                             boxShadow: isSubmittingComment || !commentInput.trim() 
                               ? 'none' 
-                              : '0 4px 12px rgba(103, 126, 234, 0.3)',
+: '0 4px 12px rgba(239, 68, 68, 0.3)',
                             transition: 'all 0.3s ease',
                             opacity: isSubmittingComment || !commentInput.trim() ? '0.6' : '1'
                           }}
                           onMouseEnter={(e) => {
                             if (!isSubmittingComment && commentInput.trim()) {
                               e.target.style.transform = 'translateY(-2px)';
-                              e.target.style.boxShadow = '0 12px 30px rgba(103, 126, 234, 0.4)';
+e.target.style.boxShadow = '0 12px 30px rgba(239, 68, 68, 0.4)';
                             }
                           }}
                           onMouseLeave={(e) => {
                             if (!isSubmittingComment && commentInput.trim()) {
                               e.target.style.transform = 'translateY(0)';
-                              e.target.style.boxShadow = '0 8px 20px rgba(103, 126, 234, 0.3)';
+e.target.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.3)';
                             }
                           }}
                         >
@@ -1196,7 +1196,7 @@ export default function LookDetailPage({ params }) {
                     margin: '0 auto 20px auto'
                   }}>Sign in to share your thoughts and connect with the community</p>
                   <button style={{
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                     color: 'white',
                     padding: '12px 24px',
                     borderRadius: '12px',
@@ -1204,16 +1204,16 @@ export default function LookDetailPage({ params }) {
                     fontWeight: '600',
                     border: 'none',
                     cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(103, 126, 234, 0.3)',
+                    boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 12px 30px rgba(103, 126, 234, 0.4)';
+e.target.style.boxShadow = '0 12px 30px rgba(239, 68, 68, 0.4)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 8px 20px rgba(103, 126, 234, 0.3)';
+e.target.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.3)';
                   }}>
                     Sign In to Comment
                   </button>
@@ -1243,7 +1243,7 @@ export default function LookDetailPage({ params }) {
                       }}
                       onMouseEnter={(e) => {
                         e.currentTarget.style.background = 'rgba(255, 255, 255, 0.8)';
-                        e.currentTarget.style.borderColor = 'rgba(103, 126, 234, 0.3)';
+e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.3)';
                         e.currentTarget.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.08)';
                       }}
                       onMouseLeave={(e) => {
@@ -1262,7 +1262,7 @@ export default function LookDetailPage({ params }) {
                               width: '36px',
                               height: '36px',
                               borderRadius: '50%',
-                              border: '2px solid rgba(103, 126, 234, 0.2)',
+border: '2px solid rgba(239, 68, 68, 0.2)',
                               flexShrink: 0
                             }}
                           />
@@ -1347,13 +1347,13 @@ export default function LookDetailPage({ params }) {
                     <div style={{
                       width: '100px',
                       height: '100px',
-                      background: 'linear-gradient(135deg, rgba(103, 126, 234, 0.1), rgba(118, 75, 162, 0.1))',
+background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1))',
                       borderRadius: '50%',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       margin: '0 auto 24px auto',
-                      border: '2px solid rgba(103, 126, 234, 0.2)'
+border: '2px solid rgba(239, 68, 68, 0.2)'
                     }}>
                       <MessageCircle style={{ width: '40px', height: '40px', color: '#667eea' }} />
                     </div>

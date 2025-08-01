@@ -480,24 +480,48 @@ export default function Navbar(fontFace) {
                 }}
               >
                 <ul style={{ listStyle: 'none', padding: 0, margin: 0, textAlign: 'center' }}>
-                  {navItems.map((item, index) => (
-                    <li key={index} style={{ marginBottom: '20px' }}>
-                      <Link
-                        href={`/${item.route.replace(/^\/+/, "")}`}
-                        onClick={() => setMenuOpen(false)}
-                        style={{
-                          textDecoration: 'none',
-                          color: '#333',
-                          fontSize: '24px',
-                          fontWeight: 'bold',
-                          display: 'block',
-                          padding: '10px'
-                        }}
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
+                  {navItems.map((item, index) => {
+                    // Check if current route matches the nav item for mobile too
+                    const isActive = pathname === `/${item.route}` || 
+                                   (pathname.startsWith(`/${item.route}/`) && item.route !== '');
+                    
+                    return (
+                      <li key={index} style={{ marginBottom: '20px' }}>
+                        <Link
+                          href={`/${item.route.replace(/^\/+/, "")}`}
+                          onClick={() => setMenuOpen(false)}
+                          style={{
+                            textDecoration: 'none',
+                            color: isActive ? 'var(--primary)' : '#333',
+                            fontSize: '24px',
+                            fontWeight: 'bold',
+                            display: 'block',
+                            padding: '15px 20px',
+                            borderRadius: '15px',
+                            background: isActive ? 'rgba(255, 77, 109, 0.15)' : 'transparent',
+                            border: isActive ? '2px solid rgba(255, 77, 109, 0.3)' : '2px solid transparent',
+                            transition: 'all 0.3s ease',
+                            position: 'relative'
+                          }}
+                        >
+                          {item.name}
+                          {isActive && (
+                            <div style={{
+                              position: 'absolute',
+                              right: '15px',
+                              top: '50%',
+                              transform: 'translateY(-50%)',
+                              width: '8px',
+                              height: '8px',
+                              background: 'var(--primary)',
+                              borderRadius: '50%',
+                              boxShadow: '0 0 10px rgba(255, 77, 109, 0.6)'
+                            }} />
+                          )}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
 
                 <div>
@@ -590,13 +614,22 @@ export default function Navbar(fontFace) {
           ) : (
             <>
               <ul className="nav-links">
-                {navItems.map((item, index) => (
-                  <li key={index} className="nav-item">
-                    <Link href={`/${item.route.replace(/^\/+/, "")}`} className="nav-link">
-                      {item.name}
-                    </Link>
-                  </li>
-                ))}
+                {navItems.map((item, index) => {
+                  // Check if current route matches the nav item
+                  const isActive = pathname === `/${item.route}` || 
+                                 (pathname.startsWith(`/${item.route}/`) && item.route !== '');
+                  
+                  return (
+                    <li key={index} className="nav-item">
+                      <Link 
+                        href={`/${item.route.replace(/^\/+/, "")}`} 
+                        className={`nav-link ${isActive ? 'active' : ''}`}
+                      >
+                        {item.name}
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
               <div className="auth-buttons">
                 {pathname.startsWith('/marketplace') && (

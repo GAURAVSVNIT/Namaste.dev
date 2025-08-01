@@ -361,17 +361,18 @@ const SocialFeedPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Content Area with top padding for main navbar */}
-      <div style={{ paddingTop: '100px' }}>
+    <div className="min-h-screen" style={{ background: 'var(--background)' }}>
+      <div style={{
+        paddingTop: '40px',
+        paddingBottom: '80px',
+        marginTop: '40px'
+      }}>
         
         <section style={{
           position: 'relative',
           marginBottom: '60px',
-          padding: '80px 24px',
-          background: 'linear-gradient(135deg, #ec4899 0%, #be185d 25%, #a855f7 50%, #7c3aed 75%, #6366f1 100%)',
-          borderRadius: '32px',
-          margin: '0 20px 60px 20px',
+          padding: '140px 4% 100px 4%',
+          background: 'linear-gradient(135deg, var(--color-fashion-primary) 0%, var(--color-fashion-secondary) 100%)',
           overflow: 'hidden',
           boxShadow: '0 25px 50px -12px rgba(102, 126, 234, 0.4)'
         }}>
@@ -496,7 +497,7 @@ const SocialFeedPage = () => {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '10px',
-                  background: 'linear-gradient(135deg, #ec4899 0%, #be185d 100%)',
+                    background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                   color: '#ffffff',
                   padding: '16px 32px',
                   borderRadius: '50px',
@@ -572,6 +573,12 @@ const SocialFeedPage = () => {
           `}</style>
         </section>
 
+        <div style={{
+          width: '100%',
+          paddingLeft: '8%',
+          paddingRight: '8%'
+        }}>
+        
         {/* Quick Actions */}
         <section style={{ padding: '32px 24px' }}>
           <div style={{ marginBottom: '32px' }}>
@@ -583,28 +590,28 @@ const SocialFeedPage = () => {
               icon={Camera}
               title="Explore Looks"
               subtitle="Browse fashion styles"
-              gradient="from-pink-500 to-purple-500"
+              gradient="from-pink-500 to-red-500"
               href="/social/look"
             />
             <QuickActionCard
               icon={Play}
               title="Create Reel"
               subtitle="Make fashion videos"
-              gradient="from-pink-500 to-purple-500"
+              gradient="from-pink-500 to-red-500"
               href="/social/fashiontv"
             />
             <QuickActionCard
               icon={Tv}
               title="Live Streams"
               subtitle="Watch fashion shows"
-              gradient="from-pink-500 to-purple-500"
+              gradient="from-pink-500 to-red-500"
               href="/social/fashiontv/live"
             />
             <QuickActionCard
               icon={Zap}
               title="Trending"
               subtitle="What's hot now"
-              gradient="from-pink-500 to-purple-500"
+              gradient="from-pink-500 to-red-500"
               href="/social/trending"
             />
           </div>
@@ -615,10 +622,10 @@ const SocialFeedPage = () => {
           <div className="bg-white/70 backdrop-blur-lg rounded-2xl border border-white/30 shadow-lg" style={{ padding: '12px' }}>
             <div className="flex" style={{ gap: '12px' }}>
             {[
-              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-pink-500 to-purple-500' },
-              { id: 'looks', label: 'Looks', icon: Camera, color: 'from-pink-500 to-purple-500' },
-              { id: 'reels', label: 'Fashion TV', icon: Play, color: 'from-pink-500 to-purple-500' },
-              { id: 'live', label: 'Live', icon: Tv, color: 'from-pink-500 to-purple-500' }
+              { id: 'trending', label: 'Trending', icon: TrendingUp, color: 'from-pink-500 to-red-500' },
+              { id: 'looks', label: 'Looks', icon: Camera, color: 'from-pink-500 to-red-500' },
+              { id: 'reels', label: 'Fashion TV', icon: Play, color: 'from-pink-500 to-red-500' },
+              { id: 'live', label: 'Live', icon: Tv, color: 'from-pink-500 to-red-500' }
             ].map((tab) => {
               const Icon = tab.icon;
               return (
@@ -761,6 +768,7 @@ const SocialFeedPage = () => {
             </div>
           )}
         </section>
+        </div>
       </div>
     </div>
   );

@@ -142,7 +142,7 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
             textOverflow: 'ellipsis'
           }}
           onMouseOver={(e) => {
-            e.target.style.color = '#3b82f6';
+            e.target.style.color = 'var(--color-fashion-primary)';
           }}
           onMouseOut={(e) => {
             e.target.style.color = '#111827';
@@ -201,13 +201,13 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
             <span
               key={index}
               style={{
-                backgroundColor: '#dbeafe',
-                color: '#1e40af',
+                backgroundColor: 'rgba(255, 77, 109, 0.1)',
+                color: 'var(--color-fashion-primary)',
                 fontSize: '0.75rem',
                 padding: '4px 12px',
                 borderRadius: '20px',
                 fontWeight: '500',
-                border: '1px solid #bfdbfe'
+                border: '1px solid rgba(255, 77, 109, 0.2)'
               }}
             >
               {tag}
@@ -259,7 +259,7 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
           <Link
             href={`/blog/${blog.slug}`}
             style={{
-              color: '#3b82f6',
+              color: 'var(--color-fashion-primary)',
               fontSize: '0.875rem',
               fontWeight: '500',
               textDecoration: 'none',
@@ -268,11 +268,11 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
               transition: 'all 0.2s ease'
             }}
             onMouseOver={(e) => {
-              e.target.style.color = '#1d4ed8';
+              e.target.style.color = 'var(--color-fashion-secondary)';
               e.target.style.backgroundColor = '#eff6ff';
             }}
             onMouseOut={(e) => {
-              e.target.style.color = '#3b82f6';
+              e.target.style.color = 'var(--color-fashion-primary)';
               e.target.style.backgroundColor = 'transparent';
             }}
           >

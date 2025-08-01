@@ -116,7 +116,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background: linear-gradient(135deg, #ef4444, #dc2626);
   color: white;
   border: none;
   padding: 16px 32px;
@@ -125,10 +125,10 @@
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 12px 28px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 12px 28px rgba(239, 68, 68, 0.3);
 }
 
 .empty-state-button:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 36px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 16px 36px rgba(239, 68, 68, 0.4);
 }

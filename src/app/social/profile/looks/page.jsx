@@ -45,8 +45,8 @@ const ProfileHeader = ({ profileData, onScrollToLooks }) => {
             height: '120px',
             borderRadius: '50%',
             padding: '4px',
-            background: 'linear-gradient(135deg, #667eea, #764ba2)',
-            boxShadow: '0 8px 32px rgba(102, 126, 234, 0.3)'
+            background: 'linear-gradient(135deg, #ef4444, #dc2626)',
+            boxShadow: '0 8px 32px rgba(239, 68, 68, 0.3)'
           }}>
             <img
               src={profileData?.avatar || "/api/placeholder/150/150"}
@@ -126,7 +126,7 @@ const ProfileHeader = ({ profileData, onScrollToLooks }) => {
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
-                color: '#667eea',
+                color: '#ef4444',
                 marginBottom: '8px'
               }}>
                 {profileData?.looks?.length || 0}
@@ -158,7 +158,7 @@ const ProfileHeader = ({ profileData, onScrollToLooks }) => {
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
-                color: '#667eea',
+                color: '#ef4444',
                 marginBottom: '8px'
               }}>
                 {profileData?.followers?.length || 0}
@@ -190,7 +190,7 @@ const ProfileHeader = ({ profileData, onScrollToLooks }) => {
               <div style={{
                 fontSize: '2rem',
                 fontWeight: '800',
-                color: '#667eea',
+                color: '#ef4444',
                 marginBottom: '8px'
               }}>
                 {profileData?.following?.length || 0}
@@ -272,16 +272,16 @@ const NavigationTabs = ({ activeTab = 'looks' }) => {
               transition: 'all 0.3s ease',
               cursor: 'pointer',
               background: isActive 
-                ? 'linear-gradient(135deg, #667eea, #764ba2)' 
+                ? 'linear-gradient(135deg, #ef4444, #dc2626)' 
                 : hoveredTab === tab.id 
-                  ? 'rgba(102, 126, 234, 0.1)' 
+                  ? 'rgba(239, 68, 68, 0.1)' 
                   : 'transparent',
               color: isActive 
                 ? 'white' 
                 : hoveredTab === tab.id 
-                  ? '#667eea' 
+                  ? '#ef4444' 
                   : '#6b7280',
-              boxShadow: isActive ? '0 8px 20px rgba(102, 126, 234, 0.4)' : 'none',
+              boxShadow: isActive ? '0 8px 20px rgba(239, 68, 68, 0.4)' : 'none',
               transform: isActive 
                 ? 'translateY(-2px)' 
                 : hoveredTab === tab.id 
@@ -362,7 +362,7 @@ const LooksPage = () => {
             style={{
               width: '60px',
               height: '60px',
-              border: '4px solid #667eea',
+                border: '4px solid #ef4444',
               borderTop: '4px solid transparent',
               borderRadius: '50%',
               margin: '0 auto 20px'
@@ -411,7 +411,7 @@ const LooksPage = () => {
           <button
             onClick={() => window.location.reload()}
             style={{
-              background: 'linear-gradient(135deg, #667eea, #764ba2)',
+              background: 'linear-gradient(135deg, #ef4444, #dc2626)',
               color: 'white',
               border: 'none',
               padding: '12px 24px',
@@ -423,7 +423,7 @@ const LooksPage = () => {
             }}
             onMouseEnter={(e) => {
               e.target.style.transform = 'translateY(-2px)';
-              e.target.style.boxShadow = '0 8px 20px rgba(102, 126, 234, 0.4)';
+              e.target.style.boxShadow = '0 8px 20px rgba(239, 68, 68, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'translateY(0)';
@@ -480,12 +480,12 @@ const LooksPage = () => {
             }}>
               <div style={{
                 padding: '12px',
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                 borderRadius: '16px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                boxShadow: '0 8px 20px rgba(102, 126, 234, 0.3)'
+                boxShadow: '0 8px 20px rgba(239, 68, 68, 0.3)'
               }}>
                 <Grid3X3 size={24} style={{ color: 'white' }} />
               </div>
@@ -513,7 +513,7 @@ const LooksPage = () => {
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                background: 'linear-gradient(135deg, #10b981, #059669)',
+                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                 color: 'white',
                 border: 'none',
                 padding: '12px 20px',
@@ -523,8 +523,8 @@ const LooksPage = () => {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 boxShadow: hoveredButton === 'create' 
-                  ? '0 12px 28px rgba(16, 185, 129, 0.4)' 
-                  : '0 8px 20px rgba(16, 185, 129, 0.3)',
+                  ? '0 12px 28px rgba(239, 68, 68, 0.4)' 
+                  : '0 8px 20px rgba(239, 68, 68, 0.3)',
                 transform: hoveredButton === 'create' ? 'translateY(-2px)' : 'translateY(0)'
               }}
               onMouseEnter={() => setHoveredButton('create')}
@@ -751,18 +751,18 @@ const LooksPage = () => {
               padding: '60px 20px',
               background: 'linear-gradient(135deg, rgba(255,255,255,0.5), rgba(248,250,252,0.5))',
               borderRadius: '20px',
-              border: '2px dashed rgba(102, 126, 234, 0.3)'
+              border: '2px dashed rgba(239, 68, 68, 0.3)'
             }}>
               <div style={{
                 width: '120px',
                 height: '120px',
-                background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                 borderRadius: '50%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 margin: '0 auto 24px',
-                boxShadow: '0 20px 40px rgba(102, 126, 234, 0.2)'
+                boxShadow: '0 20px 40px rgba(239, 68, 68, 0.2)'
               }}>
                 <Camera size={48} style={{ color: 'white' }} />
               </div>
@@ -793,7 +793,7 @@ const LooksPage = () => {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '8px',
-                  background: 'linear-gradient(135deg, #667eea, #764ba2)',
+                  background: 'linear-gradient(135deg, #ef4444, #dc2626)',
                   color: 'white',
                   border: 'none',
                   padding: '16px 32px',
@@ -802,15 +802,15 @@ const LooksPage = () => {
                   fontWeight: '600',
                   cursor: 'pointer',
                   transition: 'all 0.3s ease',
-                  boxShadow: '0 12px 28px rgba(102, 126, 234, 0.3)'
+                  boxShadow: '0 12px 28px rgba(239, 68, 68, 0.3)'
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.transform = 'translateY(-3px)';
-                  e.target.style.boxShadow = '0 16px 36px rgba(102, 126, 234, 0.4)';
+                  e.target.style.boxShadow = '0 16px 36px rgba(239, 68, 68, 0.4)';
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = '0 12px 28px rgba(102, 126, 234, 0.3)';
+                  e.target.style.boxShadow = '0 12px 28px rgba(239, 68, 68, 0.3)';
                 }}>
                   <Plus size={20} />
                   Create Your First Look

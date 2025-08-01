@@ -132,11 +132,33 @@
   border-radius: 0.75rem;
   white-space: nowrap; /* Prevent text wrapping */
   font-size: 0.9rem; /* Slightly smaller font for better fit */
+  border: none;
+  outline: none;
+  box-shadow: none;
 }
 
 .nav-link:hover {
   color: var(--primary);
   background-color: rgba(255, 77, 109, 0.08);
+}
+
+.nav-link.active {
+  color: var(--primary);
+  background-color: rgba(255, 77, 109, 0.12);
+  position: relative;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary), var(--secondary));
+  border-radius: 2px;
+  box-shadow: 0 2px 8px rgba(255, 77, 109, 0.4);
 }
 
 .nav-link i {
@@ -691,14 +713,40 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Focus states for accessibility */
+/* Focus states for accessibility - remove unwanted browser defaults */
 .nav-link:focus,
+.nav-link:active,
+.nav-link:focus-visible,
 .mobile-nav-link:focus,
+.mobile-nav-link:active,
 .mobile-profile-link:focus,
 .login-btn:focus,
 .signup-btn:focus {
+  outline: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Custom focus indication for accessibility */
+.nav-link:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
+  border-radius: 0.75rem;
+}
+
+/* Remove all browser default active/focus styles */
+a, button, input, select, textarea {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-focus-ring-color: transparent;
+}
+
+.nav-link, .nav-link * {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none !important;
+  outline: none !important;
 }
 
 /* High contrast mode support */

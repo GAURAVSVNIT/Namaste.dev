@@ -54,15 +54,15 @@ const SocialBottomNav = () => {
         background: isActive(path) 
           ? `linear-gradient(135deg, ${colors.bg})` 
           : 'transparent',
-        color: isActive(path) ? colors.active : '#9ca3af',
+      color: isActive(path) ? 'var(--color-fashion-primary)' : '#9ca3af',
         border: 'none',
         cursor: 'pointer',
         transform: isActive(path) ? 'scale(1.08)' : 'scale(1)',
-        boxShadow: isActive(path) ? `0 6px 20px ${colors.shadow}` : 'none'
+    boxShadow: isActive(path) ? '0 6px 20px rgba(255, 77, 109, 0.3)' : 'none'
       }}
       onMouseEnter={(e) => {
         if (!isActive(path)) {
-          e.target.style.color = colors.active;
+          e.target.style.color = 'var(--color-fashion-primary)';
           e.target.style.background = colors.hoverBg;
           e.target.style.transform = 'scale(1.05)';
         }

@@ -200,36 +200,45 @@ export default function LookPage() {
       paddingTop: '80px' // Add space for navbar
     }}>
       <div style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-        margin: '0 20px',
-        marginBottom: '40px',
+background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))',
+        margin: '0 20px 60px 20px',
         borderRadius: '24px',
-        padding: '50px 0 40px 0',
+        padding: '60px 24px',
         position: 'relative',
         overflow: 'hidden',
-        boxShadow: '0 10px 30px rgba(102, 126, 234, 0.2)'
+boxShadow: '0 10px 30px rgba(255, 77, 237, 0.3)'
       }}>
-        {/* Decorative background elements */}
+        {/* Animated Background Elements */}
         <div style={{
           position: 'absolute',
-          top: '-200px',
-          right: '-200px',
-          width: '500px',
-          height: '500px',
-          background: 'rgba(255, 255, 255, 0.1)',
+          top: '-50%',
+          left: '-10%',
+          width: '300px',
+          height: '300px',
+          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 70%)',
           borderRadius: '50%',
-          filter: 'blur(100px)'
-        }} />
+          animation: 'float 8s ease-in-out infinite'
+        }}></div>
         <div style={{
           position: 'absolute',
-          bottom: '-150px',
-          left: '-150px',
-          width: '400px',
-          height: '400px',
+          bottom: '-30%',
+          right: '-5%',
+          width: '250px',
+          height: '250px',
+          background: 'radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%)',
+          borderRadius: '50%',
+          animation: 'float 6s ease-in-out infinite reverse'
+        }}></div>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          right: '15%',
+          width: '100px',
+          height: '100px',
           background: 'rgba(255, 255, 255, 0.08)',
           borderRadius: '50%',
-          filter: 'blur(80px)'
-        }} />
+          animation: 'float 10s ease-in-out infinite'
+        }}></div>
 
         <div style={{
           maxWidth: '1200px',
@@ -240,7 +249,7 @@ export default function LookPage() {
           zIndex: 2
         }}>
           <h1 style={{
-            fontSize: '64px',
+          fontSize: 'clamp(3rem, 8vw, 5rem)',
             fontWeight: '800',
             color: 'white',
             marginBottom: '20px',
@@ -256,13 +265,13 @@ export default function LookPage() {
           </h1>
           
           <p style={{
-            fontSize: '18px',
+          fontSize: 'clamp(1.125rem, 3vw, 1.5rem)',
             color: 'rgba(255, 255, 255, 0.95)',
-            marginBottom: '30px',
+            marginBottom: '40px',
             fontWeight: '400',
             textShadow: '0 2px 10px rgba(0, 0, 0, 0.5)',
             maxWidth: '700px',
-            margin: '0 auto 30px',
+            margin: '0 auto 40px',
             lineHeight: '1.5'
           }}>
             Discover, create, and share the latest fashion trends with a vibrant community of style enthusiasts
@@ -272,8 +281,8 @@ export default function LookPage() {
           {user && (
             <Link href="/social/look/upload" style={{ textDecoration: 'none' }}>
               <button style={{
-                background: 'rgba(255, 255, 255, 0.9)',
-                color: '#667eea',
+background: 'rgba(255, 255, 255, 0.9)',
+color: '#ec4899',
                 border: 'none',
                 borderRadius: '16px',
                 padding: '18px 40px',
@@ -300,6 +309,21 @@ export default function LookPage() {
             </Link>
           )}
         </div>
+        
+        {/* Floating Animation Keyframes */}
+        <style jsx>{`
+          @keyframes float {
+            0%, 100% {
+              transform: translateY(0px) rotate(0deg);
+            }
+            33% {
+              transform: translateY(-20px) rotate(1deg);
+            }
+            66% {
+              transform: translateY(-10px) rotate(-1deg);
+            }
+          }
+        `}</style>
       </div>
 
       {/* Main Content */}
@@ -332,24 +356,24 @@ export default function LookPage() {
                 padding: '22px 60px 22px 24px',
                 borderRadius: '25px',
                 border: '2px solid transparent',
-                background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box',
+background: 'linear-gradient(white, white) padding-box, linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9)) border-box',
                 fontSize: '16px',
                 outline: 'none',
-                boxShadow: '0 8px 30px rgba(102, 126, 234, 0.15)',
+boxShadow: '0 8px 30px rgba(255, 77, 237, 0.2)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
                 color: '#2d3748',
                 fontWeight: '500'
               }}
               onFocus={(e) => {
-                e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.25), 0 0 0 3px rgba(102, 126, 234, 0.1)';
+e.target.style.boxShadow = '0 12px 40px rgba(255, 77, 237, 0.3), 0 0 0 3px rgba(236, 72, 153, 0.1)';
                 e.target.style.transform = 'scale(1.03) translateY(-2px)';
-                e.target.style.background = 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #764ba2 0%, #667eea 100%) border-box';
+e.target.style.background = 'linear-gradient(white, white) padding-box, linear-gradient(135deg, rgba(219, 39, 119, 0.9) 0%, rgba(236, 72, 153, 0.9) 100%) border-box';
               }}
               onBlur={(e) => {
-                e.target.style.boxShadow = '0 8px 30px rgba(102, 126, 234, 0.15)';
+e.target.style.boxShadow = '0 8px 30px rgba(255, 77, 237, 0.2)';
                 e.target.style.transform = 'scale(1) translateY(0)';
-                e.target.style.background = 'linear-gradient(white, white) padding-box, linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box';
+e.target.style.background = 'linear-gradient(white, white) padding-box, linear-gradient(135deg, rgba(236, 72, 153, 0.9) 0%, rgba(219, 39, 119, 0.9) 100%) border-box';
               }}
             />
             <div style={{
@@ -357,14 +381,14 @@ export default function LookPage() {
               right: '20px',
               top: '50%',
               transform: 'translateY(-50%)',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))',
               borderRadius: '50%',
               width: '32px',
               height: '32px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 2px 8px rgba(102, 126, 234, 0.3)',
+boxShadow: '0 2px 8px rgba(255, 77, 237, 0.3)',
               pointerEvents: 'none'
             }}>
               <span style={{
@@ -384,23 +408,23 @@ export default function LookPage() {
               padding: '22px 32px',
               borderRadius: '25px',
               border: 'none',
-              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))',
               color: 'white',
               fontSize: '16px',
               fontWeight: '600',
               cursor: 'pointer',
-              boxShadow: '0 8px 30px rgba(102, 126, 234, 0.3)',
+boxShadow: '0 8px 30px rgba(255, 77, 237, 0.3)',
               transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
               fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
               minWidth: '120px'
             }}
             onMouseEnter={(e) => {
               e.target.style.transform = 'scale(1.03) translateY(-2px)';
-              e.target.style.boxShadow = '0 12px 40px rgba(102, 126, 234, 0.4)';
+e.target.style.boxShadow = '0 12px 40px rgba(255, 77, 237, 0.4)';
             }}
             onMouseLeave={(e) => {
               e.target.style.transform = 'scale(1) translateY(0)';
-              e.target.style.boxShadow = '0 8px 30px rgba(102, 126, 234, 0.3)';
+e.target.style.boxShadow = '0 8px 30px rgba(255, 77, 237, 0.3)';
             }}
           >
             🎨 Filter
@@ -459,7 +483,7 @@ export default function LookPage() {
                 marginBottom: '30px',
                 textAlign: 'center',
                 color: '#2d3748',
-                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent'
               }}>🎨 Select Filters</h3>
@@ -483,7 +507,7 @@ export default function LookPage() {
                       fontSize: '16px',
                       fontWeight: '500'
                     }}
-                      onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(102, 126, 234, 0.05)'}
+onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(239, 68, 68, 0.05)'}
                       onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
                     >
                       <input
@@ -493,7 +517,7 @@ export default function LookPage() {
                         style={{
                           width: '18px',
                           height: '18px',
-                          accentColor: '#667eea'
+accentColor: '#ec4899'
                         }}
                       />
                       <span style={{ color: '#374151' }}>{mood}</span>
@@ -522,8 +546,8 @@ export default function LookPage() {
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
-                    e.target.style.borderColor = '#667eea';
-                    e.target.style.color = '#667eea';
+e.target.style.borderColor = '#ec4899';
+                    e.target.style.color = '#ec4899';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.borderColor = '#e5e7eb';
@@ -539,21 +563,21 @@ export default function LookPage() {
                     padding: '15px 24px',
                     borderRadius: '12px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))',
                     color: 'white',
                     fontSize: '16px',
                     fontWeight: '600',
                     cursor: 'pointer',
-                    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+boxShadow: '0 4px 15px rgba(255, 77, 237, 0.4)',
                     transition: 'all 0.3s ease'
                   }}
                   onMouseEnter={(e) => {
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 8px 25px rgba(102, 126, 234, 0.5)';
+e.target.style.boxShadow = '0 8px 25px rgba(255, 77, 237, 0.5)';
                   }}
                   onMouseLeave={(e) => {
                     e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+e.target.style.boxShadow = '0 4px 15px rgba(239, 68, 68, 0.4)';
                   }}
                 >
                   Apply Filters
@@ -583,16 +607,16 @@ export default function LookPage() {
                 padding: '10px 20px',
                 borderRadius: '15px',
                 border: 'none',
-                background: sortBy === option.key 
-                  ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+background: sortBy === option.key 
+                  ? 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))' 
                   : '#ffffff',
                 color: sortBy === option.key ? 'white' : '#6b7280',
                 fontSize: '14px',
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
-                boxShadow: sortBy === option.key 
-                  ? '0 4px 12px rgba(102, 126, 234, 0.3)'
+boxShadow: sortBy === option.key 
+                  ? '0 4px 12px rgba(255, 77, 237, 0.3)'
                   : '0 2px 8px rgba(0, 0, 0, 0.06)',
                 border: sortBy === option.key ? 'none' : '1px solid #e5e7eb'
               }}
@@ -711,7 +735,7 @@ export default function LookPage() {
                 {user && (
                   <Link href="/social/look/upload" style={{ textDecoration: 'none' }}>
                     <button style={{
-                      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))',
                       color: 'white',
                       border: 'none',
                       borderRadius: '16px',
@@ -796,25 +820,25 @@ export default function LookPage() {
                   padding: '12px 16px',
                   borderRadius: '12px',
                   border: 'none',
-                  background: currentPage === 1 ? '#f8f9fa' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: currentPage === 1 ? '#f8f9fa' : 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))',
                   color: currentPage === 1 ? '#cbd5e0' : 'white',
                   fontSize: '14px',
                   fontWeight: '600',
                   cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s ease',
                   opacity: currentPage === 1 ? 0.5 : 1,
-                  boxShadow: currentPage === 1 ? 'none' : '0 4px 12px rgba(102, 126, 234, 0.25)'
+boxShadow: currentPage === 1 ? 'none' : '0 4px 12px rgba(255, 77, 237, 0.3)'
                 }}
                 onMouseEnter={(e) => {
                   if (currentPage !== 1) {
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.35)';
+e.target.style.boxShadow = '0 6px 16px rgba(255, 77, 237, 0.4)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (currentPage !== 1) {
                     e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.25)';
+e.target.style.boxShadow = '0 4px 12px rgba(255, 77, 237, 0.3)';
                   }
                 }}
               >
@@ -856,8 +880,8 @@ export default function LookPage() {
                       padding: '12px 16px',
                       borderRadius: '12px',
                       border: 'none',
-                      background: currentPage === page 
-                        ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
+background: currentPage === page 
+                        ? 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))' 
                         : '#ffffff',
                       color: currentPage === page ? 'white' : '#6b7280',
                       fontSize: '14px',
@@ -865,16 +889,16 @@ export default function LookPage() {
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
                       border: currentPage === page ? 'none' : '2px solid #e5e7eb',
-                      boxShadow: currentPage === page 
-                        ? '0 4px 12px rgba(102, 126, 234, 0.25)'
+boxShadow: currentPage === page 
+                        ? '0 4px 12px rgba(255, 77, 237, 0.3)'
                         : '0 2px 8px rgba(0, 0, 0, 0.06)',
                       minWidth: '44px'
                     }}
                     onMouseEnter={(e) => {
                       if (currentPage !== page) {
-                        e.target.style.background = 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)';
-                        e.target.style.borderColor = '#667eea';
-                        e.target.style.color = '#667eea';
+e.target.style.background = 'linear-gradient(135deg, rgba(236, 72, 153, 0.1) 0%, rgba(219, 39, 119, 0.1) 100%)';
+e.target.style.borderColor = '#ec4899';
+                        e.target.style.color = '#ec4899';
                         e.target.style.transform = 'translateY(-2px)';
                       }
                     }}
@@ -900,25 +924,25 @@ export default function LookPage() {
                   padding: '12px 16px',
                   borderRadius: '12px',
                   border: 'none',
-                  background: currentPage === totalPages ? '#f8f9fa' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+background: currentPage === totalPages ? '#f8f9fa' : 'linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(219, 39, 119, 0.9))',
                   color: currentPage === totalPages ? '#cbd5e0' : 'white',
                   fontSize: '14px',
                   fontWeight: '600',
                   cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
                   transition: 'all 0.3s ease',
                   opacity: currentPage === totalPages ? 0.5 : 1,
-                  boxShadow: currentPage === totalPages ? 'none' : '0 4px 12px rgba(102, 126, 234, 0.25)'
+boxShadow: currentPage === totalPages ? 'none' : '0 4px 12px rgba(255, 77, 237, 0.3)'
                 }}
                 onMouseEnter={(e) => {
                   if (currentPage !== totalPages) {
                     e.target.style.transform = 'translateY(-2px)';
-                    e.target.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.35)';
+e.target.style.boxShadow = '0 6px 16px rgba(255, 77, 237, 0.4)';
                   }
                 }}
                 onMouseLeave={(e) => {
                   if (currentPage !== totalPages) {
                     e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.25)';
+e.target.style.boxShadow = '0 4px 12px rgba(255, 77, 237, 0.3)';
                   }
                 }}
               >

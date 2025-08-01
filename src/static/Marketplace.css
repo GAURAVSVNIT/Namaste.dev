@@ -54,36 +54,44 @@ body {
 }
 
 .marketplace-content-wrapper {
-  max-width: 1600px;
+  max-width: 1800px; /* Increased from 1600px to allow wider hero slider */
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem;
   padding-right: 2rem;
   position: relative;
   z-index: 1;
+  border-radius: 2rem; /* Add rounded corners to the wrapper */
+  overflow: hidden; /* Ensure content respects the rounded corners */
+  background: var(--card-bg); /* Add background to wrapper */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); /* Add subtle shadow */
 }
 
 /* FIXED: Enhanced Promo Carousel - Zero Page Jerk */
 .promo-section-wrapper {
   position: relative;
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
   width: 100%;
-  /* Extend to full marketplace width to match filter + content area */
-  max-width: 100%;
+  /* Make it separate from wrapper */
+  max-width: 1400px;
   margin-left: auto;
   margin-right: auto;
   /* CRITICAL: Prevent layout shifts */
   contain: layout style paint;
   isolation: isolate;
+  /* Add some spacing from wrapper */
+  margin-top: 2rem;
 }
 
 .promo-carousel-container {
   position: relative;
-  width: 100%;
-  height: 350px;
-  border-radius: 2rem;
+  width: 100%; /* Extend to full wrapper size */
+  max-width: none; /* Remove max-width constraint */
+  margin: 0; /* Remove auto margins */
+  height: 90vh; /* Cover most of viewport height */
+  min-height: 600px; /* Minimum height for smaller screens */
+  border-radius: 2rem; /* Round all corners */
   overflow: hidden;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
   background: var(--card-bg);
   /* CRITICAL: Prevent repaints and layout shifts */
   contain: strict;
@@ -104,19 +112,27 @@ body {
 
 .promo-slides-wrapper {
   display: flex;
-  width: 500%; /* 5 slides × 100% */
+  width: 1000%; /* 10 slides (5 original + 5 duplicated for infinite effect) */
   height: 100%;
-  /* CRITICAL: Smoother transition with proper easing */
-  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  /* CRITICAL: Ultra-smooth transition with optimized easing */
+  transition: transform 0.8s cubic-bezier(0.4, 0.0, 0.2, 1);
   will-change: transform;
   /* CRITICAL: Prevent subpixel rendering issues */
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
   perspective: 1000px;
+  /* Additional smoothness optimizations */
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+/* Special class for instant reset without animation */
+.promo-slides-wrapper.no-transition {
+  transition: none;
 }
 
 .promo-slide {
-  width: 20%; /* 100% / 5 slides */
+  width: 10%; /* 100% / 10 slides (5 original + 5 duplicated) */
   height: 100%;
   position: relative;
   flex-shrink: 0;
@@ -149,6 +165,8 @@ body {
   /* CRITICAL: Prevent image reflow */
   contain: layout style paint;
   transform: translate3d(0, 0, 0);
+  border-radius: 2rem; /* Add rounded corners to image wrapper */
+  overflow: hidden; /* Ensure images respect the rounded corners */
 }
 
 .promo-image {
@@ -169,28 +187,6 @@ body {
   transform: translate3d(0, 0, 0) scale(1.05);
 }
 
-.promo-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    135deg,
-    rgba(0, 0, 0, 0.4) 0%,
-    rgba(0, 0, 0, 0.2) 50%,
-    rgba(0, 0, 0, 0.6) 100%
-  );
-  z-index: 2;
-  /* CRITICAL: Smoother opacity transition */
-  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform: translate3d(0, 0, 0);
-  contain: layout style paint;
-}
-
-.promo-card-enhanced:hover .promo-overlay {
-  opacity: 0.8;
-}
 
 .promo-content-wrapper {
   position: relative;
@@ -286,19 +282,7 @@ body {
 }
 
 .promo-indicators {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 0.5rem 1rem;
-  border-radius: 1rem;
-  backdrop-filter: blur(8px);
-  z-index: 10;
+  display: none;
 }
 
 .promo-dot {
@@ -372,7 +356,9 @@ body {
 /* Mobile Responsiveness */
 @media (max-width: 1024px) {
   .promo-carousel-container {
-    height: 300px;
+    height: 75vh;
+    min-height: 500px;
+    width: 90%;
   }
   
   .promo-title {
@@ -394,7 +380,9 @@ body {
 
 @media (max-width: 768px) {
   .promo-carousel-container {
-    height: 250px;
+    height: 70vh;
+    min-height: 450px;
+    width: 95%;
     border-radius: 1.5rem;
   }
   
@@ -425,7 +413,9 @@ body {
 
 @media (max-width: 640px) {
   .promo-carousel-container {
-    height: 220px;
+    height: 65vh;
+    min-height: 400px;
+    width: 98%;
   }
   
   .promo-title {
@@ -959,11 +949,11 @@ body {
   height: 1rem;
 }
 
-/* Product Grid - Optimized for 4 Cards Per Row */
+/* Product Grid - Optimized for 3 Cards Per Row (Larger Cards) */
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
   padding: 0;
   width: 100%;
   min-width: 0; /* Prevent grid overflow */
@@ -972,14 +962,14 @@ body {
 /* Fallback for smaller content areas */
 @media (max-width: 1600px) {
   .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
 
 @media (min-width: 1400px) {
   .products-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2.5rem;
   }
 }
 
@@ -1009,7 +999,8 @@ body {
   position: relative;
   background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   overflow: hidden;
-  aspect-ratio: 4/3;
+  aspect-ratio: 3/4; /* Taller aspect ratio for fashion products */
+  min-height: 350px; /* Minimum height for better product display */
 }
 
 .product-card-image {
@@ -1115,17 +1106,17 @@ body {
 }
 
 .product-card-content {
-  padding: 1.25rem;
+  padding: 1.5rem;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.75rem;
 }
 
 .product-card-name {
   font-weight: 600;
   color: var(--text-primary);
-  font-size: 1rem;
+  font-size: 1.125rem; /* Larger font size */
   line-height: 1.4;
   letter-spacing: -0.025em;
   overflow: hidden;
@@ -1134,10 +1125,15 @@ body {
 }
 
 .product-card-description {
-  font-size: 0.875rem;
+  font-size: 0.95rem; /* Slightly larger font */
   color: var(--text-secondary);
   line-height: 1.5;
   flex-grow: 1;
+  max-height: 3em; /* Limit to 2 lines */
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 
 .product-card-price-section {
@@ -1155,7 +1151,7 @@ body {
 }
 
 .product-card-price-current {
-  font-size: 1.125rem;
+  font-size: 1.25rem; /* Larger price font */
   font-weight: 700;
   color: var(--accent-color);
 }
