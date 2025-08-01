@@ -245,12 +245,19 @@ const MarketPlacePage = () => {
     setSelectedCategory(category);
   }, []);
 
+  // Function to count active filters
+  const getActiveFilterCount = () => {
+    let count = 0;
+    if (selectedCategory && selectedCategory !== 'Fashion') count++;
+    if (selectedBrands.length > 0) count++;
+    if (searchTerm) count++;
+    return count;
+  };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
 
     return (
     <div className="marketplace-container">
-      <MobileFilterModal />
       <div className="marketplace-content-wrapper">
         <PromoSection 
           currentPromoIndex={currentPromoIndex}
