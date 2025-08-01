@@ -1,6 +1,31 @@
 import { filterRealProducts } from './shiprocket-utils';
 
 /**
+ * Parse Shiprocket date format: "28 Jul 2025, 01:16 PM"
+ */
+function parseDateString(dateString) {
+  try {
+    // Handle format like "28 Jul 2025, 01:16 PM"
+    const [datePart, timePart] = dateString.split(', ');
+    if (!datePart || !timePart) return null;
+    
+    // Convert to a format that Date constructor can handle
+    const standardFormat = `${datePart} ${timePart}`;
+    const parsed = new Date(standardFormat);
+    
+    // Check if the date is valid
+    if (isNaN(parsed.getTime())) {
+      return null;
+    }
+    
+    return parsed;
+  } catch (error) {
+    console.error('Error parsing date string:', dateString, error);
+    return null;
+  }
+}
+
+/**
  * Fetches real merchant dashboard data
  */
 export async function getMerchantDashboardSummary() {
@@ -46,12 +71,42 @@ export async function getMerchantDashboardSummary() {
     
     const todayOrders = orders.filter(order => {
       if (!order.createdAt && !order.orderDate) return false;
-      const orderDate = new Date(order.createdAt || order.orderDate);
+      
+      let orderDate;
+      const dateString = order.createdAt || order.orderDate;
+      
+      // Handle Shiprocket date format: "28 Jul 2025, 01:16 PM"
+      if (typeof dateString === 'string') {
+        // Try to parse the Shiprocket format
+        const shiprocketDate = parseDateString(dateString);
+        if (shiprocketDate) {
+          orderDate = shiprocketDate;
+        } else {
+          // Fallback to regular Date parsing
+          orderDate = new Date(dateString);
+        }
+      } else {
+        orderDate = new Date(dateString);
+      }
+      
+      console.log('Order date parsing:', {
+        original: dateString,
+        parsed: orderDate,
+        todayStart,
+        isToday: orderDate >= todayStart
+      });
+      
       return orderDate >= todayStart;
     });
 
     // Calculate today's revenue
     const todayRevenue = todayOrders.reduce((sum, order) => {
+      const amount = parseFloat(order.total || order.amount || 0);
+      return sum + amount;
+    }, 0);
+
+    // Calculate total revenue (all-time)
+    const totalRevenue = orders.reduce((sum, order) => {
       const amount = parseFloat(order.total || order.amount || 0);
       return sum + amount;
     }, 0);
@@ -62,6 +117,14 @@ export async function getMerchantDashboardSummary() {
       return !['delivered', 'cancelled', 'completed'].includes(status);
     }).length;
 
+    console.log('Revenue calculations:', {
+      todayRevenue,
+      totalRevenue,
+      todayOrdersCount: todayOrders.length,
+      totalOrdersCount: orders.length,
+      activeOrders
+    });
+
     // Calculate total inventory value
     const totalInventoryValue = realProducts.reduce((sum, product) => {
       const price = parseFloat(product.mrp || 0);
@@ -71,7 +134,9 @@ export async function getMerchantDashboardSummary() {
 
     return {
       todayRevenue,
+      totalRevenue, // Add total revenue for all-time stats
       activeOrders,
+      totalOrders: orders.length, // Add total orders count
       totalProducts: realProducts.length,
       totalInventoryValue,
       unreadMessages: Math.floor(Math.random() * 10), // Mock for now
@@ -209,7 +274,22 @@ function generateTimeBasedData(orders, timeRange) {
   const data = periods.map((period, index) => {
     const periodOrders = orders.filter(order => {
       if (!order.createdAt && !order.orderDate) return false;
-      const orderDate = new Date(order.createdAt || order.orderDate);
+      
+      let orderDate;
+      const dateString = order.createdAt || order.orderDate;
+      
+      // Handle Shiprocket date format
+      if (typeof dateString === 'string') {
+        const shiprocketDate = parseDateString(dateString);
+        if (shiprocketDate) {
+          orderDate = shiprocketDate;
+        } else {
+          orderDate = new Date(dateString);
+        }
+      } else {
+        orderDate = new Date(dateString);
+      }
+      
       return orderDate >= period.start && orderDate < period.end;
     });
 
@@ -301,10 +381,11 @@ export function subscribeToAnalyticsUpdates(callback) {
       const summary = await getMerchantDashboardSummary();
       // Pass summary data with proper structure for analytics dashboard
       callback({ 
+        ...summary, // Include all summary data including recentOrders
         summary: {
-          totalSales: summary.todayRevenue || 0,
-          totalOrders: summary.activeOrders || 0,
-          averageOrderValue: summary.todayRevenue && summary.activeOrders ? summary.todayRevenue / summary.activeOrders : 0,
+          totalSales: summary.totalRevenue || 0, // Use total revenue instead of today's
+          totalOrders: summary.totalOrders || 0, // Use total orders instead of active
+          averageOrderValue: summary.totalRevenue && summary.totalOrders ? summary.totalRevenue / summary.totalOrders : 0,
           conversionRate: 10 // Mock conversion rate
         }
       });
