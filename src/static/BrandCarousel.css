@@ -44,11 +44,64 @@
     transition: .2s;
 }
 
-/* @keyframes scroll {
+@keyframes scroll {
     0% {
         transform: translateX(0);
     }
     100% {
         transform: translateX(-50%); 
     }
-} */
+}
+
+/* Responsive changes */
+@media (max-width: 768px) {
+    .brand-carousel-container {
+        padding: 3rem 0;
+    }
+
+    .brand-carousel-title {
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .brand-carousel-track {
+        width: calc(250px * 10); /* Adjusted for mobile */
+        animation: scroll 25s linear infinite; /* Slightly faster for mobile */
+    }
+
+    .brand-logo {
+        width: 250px;
+        padding: 0 1.5rem;
+    }
+
+    .brand-logo img {
+        max-width: 80px;
+        max-height: 80px;
+    }
+}
+
+@media (max-width: 480px) {
+    .brand-carousel-container {
+        padding: 2rem 0;
+    }
+
+    .brand-carousel-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .brand-carousel-track {
+        width: calc(200px * 10); /* Further adjusted for small mobile */
+        animation: scroll 20s linear infinite; /* Faster for small screens */
+    }
+
+    .brand-logo {
+        width: 200px;
+        padding: 0 1rem;
+    }
+
+    .brand-logo img {
+        max-width: 60px;
+        max-height: 60px;
+    }
+}

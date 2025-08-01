@@ -394,41 +394,110 @@
 @media (max-width: 768px) {
     .hero-container {
         flex-direction: column;
-        padding: 4rem 3%;
+        padding: 4rem 3% 2rem 3%;
         text-align: center;
+        height: auto;
+        min-height: 90vh;
+        padding-top: 6rem; /* Account for navbar */
     }
 
     .hero-text {
         max-width: 100%;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
     }
 
     .hero-text h1 {
-        font-size: 3rem;
+        font-size: clamp(2rem, 8vw, 3rem);
+        margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
     }
 
     .hero-images {
         width: 100%;
         height: 300px;
+        margin-top: 1rem;
     }
 
     .hero-image {
-        width: 200px;
-        height: 280px;
+        width: 160px;
+        height: 240px;
     }
 
     .cta-container {
-        flex-direction: row;
+        flex-direction: column;
         align-items: center;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .cta-button, .cta-button-outlined {
+        width: 100%;
+        max-width: 280px;
+        padding: 0.8rem 1.5rem;
+        font-size: 0.9rem;
+        justify-content: center;
     }
 
     .stats-container {
         flex-direction: column;
         align-items: center;
         gap: 1rem;
+        margin-top: 2rem;
     }
 
     .stat-item {
-        min-width: 200px;
+        min-width: 150px;
+        padding: 1rem 1.2rem;
+    }
+
+    .stat-number {
+        font-size: 1.5rem;
+    }
+
+    .stat-label {
+        font-size: 0.7rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+    .hero-container {
+        padding: 5rem 4% 2rem 4%;
+        padding-top: 5rem;
+    }
+
+    .hero-text h1 {
+        font-size: clamp(1.8rem, 7vw, 2.5rem);
+    }
+
+    .hero-text p {
+        font-size: 0.9rem;
+    }
+
+    .hero-images {
+        height: 250px;
+    }
+
+    .hero-image {
+        width: 140px;
+        height: 200px;
+    }
+
+    .cta-button, .cta-button-outlined {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+    }
+
+    .stat-item {
+        min-width: 120px;
+        padding: 0.8rem 1rem;
+    }
+
+    .stat-number {
+        font-size: 1.3rem;
     }
 }

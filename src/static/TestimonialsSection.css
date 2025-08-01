@@ -198,11 +198,56 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
+    .testimonials-section {
+        padding: 6rem 1rem;
+    }
     .testimonials-title {
-        font-size: 2.8rem;
+        font-size: 2.5rem;
+        margin-bottom: 3rem;
     }
     .testimonials-grid {
         grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+    .testimonial-card {
+        padding: 2rem;
+    }
+    .testimonial-quote {
+        font-size: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+    }
+    .author-name {
+        font-size: 0.9rem;
+    }
+    .author-title {
+        font-size: 0.7rem;
+    }
+    .review-form {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .testimonials-section {
+        padding: 5rem 0.5rem;
+    }
+    .testimonials-title {
+        font-size: 2rem;
+    }
+    .testimonial-card {
+        padding: 1.5rem;
+    }
+    .testimonial-quote {
+        font-size: 0.9rem;
+    }
+    .submit-review-btn {
+        padding: 0.8rem 2rem;
+        font-size: 1rem;
+        margin-top: 1.5rem;
     }
     .review-form-title {
         font-size: 2rem;
