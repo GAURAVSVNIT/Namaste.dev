@@ -360,8 +360,13 @@ export const deleteVideo = async (videoId, userId) => {
 
     const videoData = videoSnap.data();
     
-    // Check if user owns the video
-    if (videoData.userId !== userId) {
+    // Get user role to check admin privileges
+    const { getUserById } = require('./user');
+    const userData = await getUserById(userId);
+    const isAdmin = userData?.role === 'admin';
+    
+    // Check if user owns the video OR is an admin
+    if (videoData.userId !== userId && !isAdmin) {
       throw new Error('You can only delete your own videos');
     }
 

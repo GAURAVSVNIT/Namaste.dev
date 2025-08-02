@@ -459,8 +459,13 @@ export const deleteLook = async (lookId, userId) => {
 
     const lookData = lookSnap.data();
     
-    // Check if user owns the look
-    if (lookData.userId !== userId) {
+    // Get user role to check admin privileges
+    const { getUserById } = require('./user');
+    const userData = await getUserById(userId);
+    const isAdmin = userData?.role === 'admin';
+    
+    // Check if user owns the look OR is an admin
+    if (lookData.userId !== userId && !isAdmin) {
       throw new Error('Unauthorized: You can only delete your own looks');
     }
 
