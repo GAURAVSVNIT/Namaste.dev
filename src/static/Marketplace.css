@@ -62,7 +62,7 @@ body {
   position: relative;
   z-index: 1;
   border-radius: 2rem; /* Add rounded corners to the wrapper */
-  overflow: hidden; /* Ensure content respects the rounded corners */
+  overflow: visible; /* Ensure content respects the rounded corners */
   background: var(--card-bg); /* Add background to wrapper */
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08); /* Add subtle shadow */
 }
@@ -437,12 +437,15 @@ body {
   display: grid;
   grid-template-columns: 420px 1fr;
   gap: 1.5rem;
-  align-items: flex-start;
+  align-items: start; /* Use 'start' instead of 'flex-start' for better compatibility */
   max-width: 100%;
   margin: 0 auto;
+  /* Ensure container doesn't interfere with sticky positioning */
+  position: relative;
+  overflow: visible;
 }
 
-/* Filter Sidebar - Match products area height properly */
+/* Filter Sidebar - Sticky positioned */
 .filter-sidebar {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -450,17 +453,19 @@ body {
   border-radius: 0 1.5rem 1.5rem 0;
   padding: 2.5rem 1.5rem 2.5rem 1.5rem;
   position: sticky;
-  top: 120px;
+  top: 100px; /* Adjusted for better positioning */
   box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
   width: 100%;
   height: fit-content;
+  max-height: calc(100vh - 120px); /* Ensure it doesn't exceed viewport */
   overflow-y: auto;
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.98) 0%, 
     rgba(248, 250, 252, 0.95) 100%);
   border-left: 8px solid var(--accent-color);
   margin-left: 0;
+  z-index: 10; /* Ensure it stays above other content */
 }
 
 @media (max-width: 1600px) {

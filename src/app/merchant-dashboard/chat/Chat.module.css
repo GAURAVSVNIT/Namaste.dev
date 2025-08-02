@@ -6,7 +6,7 @@
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
-  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  background: #ffffff;
   min-height: 100vh;
 }
 
@@ -39,35 +39,21 @@
   flex-direction: column;
   height: calc(100vh - 300px);
   min-height: 700px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: #ffffff;
   border-radius: 2rem;
   box-shadow: 
-    0 25px 50px -12px rgba(0, 0, 0, 0.08),
-    0 20px 40px -8px rgba(0, 0, 0, 0.06),
-    0 0 0 1px rgba(255, 255, 255, 0.05);
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e5e7eb;
   position: relative;
 }
 
-.chatCard::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(168, 85, 247, 0.4), transparent);
-}
 
 .chatHeader {
   padding: 1.5rem 2rem;
-  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
-  background: linear-gradient(135deg, 
-    rgba(99, 102, 241, 0.03) 0%, 
-    rgba(139, 92, 246, 0.03) 50%, 
-    rgba(236, 72, 153, 0.03) 100%);
+  border-bottom: 1px solid #e5e7eb;
+  background: #ffffff;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -117,27 +103,8 @@
   flex: 1;
   padding: 2rem;
   overflow-y: auto;
-  background: linear-gradient(135deg, #fafbfc 0%, #f8fafc 100%);
-  background-image: 
-    radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.02) 0%, transparent 50%),
-    radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.02) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.02) 0%, transparent 50%);
+  background: #ffffff;
   position: relative;
-}
-
-.messagesContainer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: 
-    linear-gradient(rgba(248, 250, 252, 0.3) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(248, 250, 252, 0.3) 1px, transparent 1px);
-  background-size: 30px 30px;
-  pointer-events: none;
-  opacity: 0.3;
 }
 
 .messagesList {
@@ -157,8 +124,7 @@
   border-radius: 1.5rem;
   position: relative;
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #e5e7eb;
   transition: all 0.3s ease;
 }
 
@@ -169,14 +135,13 @@
 
 .messageSupport {
   align-self: flex-start;
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.9) 0%, 
-    rgba(248, 250, 252, 0.8) 100%);
+  background: #f8fafc;
   border-top-left-radius: 0.5rem;
   box-shadow: 
     0 4px 12px rgba(0, 0, 0, 0.05),
     0 2px 4px rgba(0, 0, 0, 0.03);
   border-left: 3px solid #6366f1;
+  border: 1px solid #e5e7eb;
 }
 
 .messageUser {
@@ -229,26 +194,12 @@
 .messageSupport .messageContent {
   color: #1e293b;
 }
-}
 
 .inputContainer {
   padding: 1.5rem 2rem;
-  border-top: 1px solid rgba(226, 232, 240, 0.8);
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.95) 0%, 
-    rgba(248, 250, 252, 0.9) 100%);
-  backdrop-filter: blur(20px);
+  border-top: 1px solid #e5e7eb;
+  background: #ffffff;
   position: relative;
-}
-
-.inputContainer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.3), transparent);
 }
 
 .messageForm {
