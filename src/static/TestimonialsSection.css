@@ -1,20 +1,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Inter:wght@300;400;600&display=swap');
 
 .testimonials-section {
-    /* New grey-to-pinkish gradient background */
-    background: linear-gradient(to bottom, #2d3436, #fcc1ec);
+    background: transparent;
     padding: 8rem 2rem;
-    color: white;
+    color: #F8F4FF;
     text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .testimonials-title {
     font-family: 'Playfair Display', serif;
     font-size: 3.5rem;
     font-weight: 700;
-    color: white;
+    color: #F8F4FF;
     margin-bottom: 4rem;
     letter-spacing: 0.5px;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 2;
 }
 
 .testimonials-grid {
@@ -26,17 +30,19 @@
 }
 
 .testimonial-card {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(248, 244, 255, 0.12);
     border-radius: 20px;
     padding: 2.5rem;
     transition: transform 0.4s ease, box-shadow 0.4s ease;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(248, 244, 255, 0.2);
+    -webkit-backdrop-filter: blur(12px);
     backdrop-filter: blur(12px);
     text-align: left;
     position: relative;
     overflow: hidden;
     display: flex; /* Use flexbox for better alignment */
     flex-direction: column;
+    color: #F8F4FF;
 }
 
 .testimonial-card::before {
@@ -46,7 +52,7 @@
     left: 0;
     right: 0;
     height: 4px;
-    background: linear-gradient(90deg, #ff758f, #ff4d6d);
+    background: linear-gradient(90deg, #E8A5C8, #D88FB7);
     opacity: 0.8;
 }
 
@@ -121,34 +127,36 @@
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
+    position: relative;
+    z-index: 2;
 }
 
 .review-form-title {
     font-family: 'Playfair Display', serif;
     font-size: 2.5rem;
     font-weight: 700;
-    color: #2d3436;
+    color: #F8F4FF; /* Changed to light color */
     margin-bottom: 2.5rem;
+    text-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); /* Added shadow to match title */
 }
 
 .review-form {
-    background: #f7cff1;
+    background: #3d2435;
     border-radius: 20px;
     padding: 2.5rem;
-    border: 1px solid #e0e0e0;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(248, 244, 255, 0.1);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(232, 165, 200, 0.1);
 }
 
 .form-group {
     margin-bottom: 1.5rem;
 }
 
-.review-input,
-.review-textarea {
+.review-input {
     width: 100%;
     padding: 1rem 1.5rem;
-    background: #fad8ea;
-    border: 1px solid #e0e0e0;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
     border-radius: 10px;
     color: #101010;
     font-size: 1rem;
@@ -157,16 +165,36 @@
     outline: none;
 }
 
-.review-input::placeholder,
-.review-textarea::placeholder {
-    color: #999;
+.review-textarea {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    background: #2c1a28;
+    border: 1px solid rgba(248, 244, 255, 0.1);
+    border-radius: 10px;
+    color: #F8F4FF;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s ease;
+    outline: none;
 }
 
-.review-input:focus,
+.review-input::placeholder {
+    color: #a0a0a0;
+}
+
+.review-textarea::placeholder {
+    color: rgba(248, 244, 255, 0.5);
+}
+
+.review-input:focus {
+    border-color: #C879A6;
+    box-shadow: 0 0 0 3px rgba(200, 121, 166, 0.3);
+}
+
 .review-textarea:focus {
-    border-color: #ff758f;
-    background: #fff;
-    box-shadow: 0 0 0 3px rgba(255, 117, 143, 0.2);
+    border-color: #E8A5C8;
+    background: #3a2235;
+    box-shadow: 0 0 0 3px rgba(232, 165, 200, 0.2);
 }
 
 .review-textarea {
@@ -175,25 +203,27 @@
 }
 
 .submit-review-btn {
-    background: linear-gradient(135deg, #f579bd, #f8a8d4);
-    color: white;
+    background: #dcbde2;
+    color: #3d2435;
     border: none;
     padding: 1rem 2.5rem;
-    border-radius: 50px;
+    border-radius: 15px;
     font-size: 1.1rem;
-    font-weight: 600;
+    font-weight: 700;
     font-family: 'Inter', sans-serif;
     cursor: pointer;
     transition: all 0.3s ease;
     width: 100%;
     margin-top: 1rem;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px;
+    box-shadow: 0 5px 20px rgba(220, 189, 226, 0.2);
 }
 
 .submit-review-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(255, 77, 109, 0.3);
+    box-shadow: 0 10px 25px rgba(220, 189, 226, 0.4);
+    background: #e6cceb;
 }
 
 /* Responsive design */

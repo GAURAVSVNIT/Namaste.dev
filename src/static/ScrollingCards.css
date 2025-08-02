@@ -1,13 +1,13 @@
-/* Horizontal Scrolling Cards Section */
+/* Scrolling Cards Section */
 .scrolling-cards-section {
     position: relative;
-    height: 100vh; /* Takes up exactly the viewport height */
-    padding: 0; /* No extra padding needed */
-    background: linear-gradient(135deg, #f8f4ff 0%, #e8e4f3 30%, #f0f8ff 70%, #faf8ff 100%);
+    height: 100vh;
+    padding: 0;
+    background: transparent;
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    justify-content: center; /* Center content vertically */
+    justify-content: center;
 }
 
 /* Section Header */
@@ -28,12 +28,12 @@
     backdrop-filter: blur(20px);
     padding: 8px 20px;
     border-radius: 50px;
-    border: 1px solid rgba(255, 77, 237, 0.2);
-    color: #ff4ded;
+    border: 1px solid rgba(232, 165, 200, 0.3);
+    color: #8B3A5A;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    box-shadow: 0 8px 32px rgba(255, 77, 237, 0.1);
+    box-shadow: 0 8px 32px rgba(232, 165, 200, 0.15);
 }
 
 .section-title {
@@ -41,7 +41,7 @@
     font-weight: 800;
     line-height: 1.1;
     margin-bottom: 1rem;
-    background: linear-gradient(135deg, #2b2d42 0%, #3f0034 50%, #ff4ded 100%);
+    background: linear-gradient(135deg, #2b2d42 0%, #8B3A5A 50%, #D88FB7 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;

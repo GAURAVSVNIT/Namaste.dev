@@ -19,7 +19,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { User, LogOut, Settings, ShoppingCart, Sparkle, Sparkles } from 'lucide-react';
+import { User, LogOut, Settings, ShoppingCart, Sparkle, Sparkles, Shield } from 'lucide-react';
+import { isAdmin } from '@/lib/roles';
 import useCartStore from '@/store/cart-store';
 
 export default function Navbar(fontFace) {
@@ -356,6 +357,47 @@ export default function Navbar(fontFace) {
                   </div>
                 </Link>
               </DropdownMenuItem>
+              
+              {/* Admin Panel - Only show for admin users */}
+              {isAdmin(userProfile) && (
+                <DropdownMenuItem asChild>
+                  <Link href="/admin-dashboard" style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    padding: '12px 16px',
+                    textDecoration: 'none',
+                    borderRadius: '12px',
+                    transition: 'all 0.2s ease',
+                    marginBottom: '4px',
+                    background: 'transparent'
+                  }} onMouseEnter={(e) => {
+                    e.target.style.background = 'linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1))';
+                    e.target.style.transform = 'translateY(-1px)';
+                  }} onMouseLeave={(e) => {
+                    e.target.style.background = 'transparent';
+                    e.target.style.transform = 'translateY(0px)';
+                  }}>
+                    <div style={{
+                      padding: '10px',
+                      background: 'linear-gradient(135deg, #EF4444, #DC2626)',
+                      color: 'white',
+                      borderRadius: '10px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 12px rgba(239, 68, 68, 0.4)',
+                      transition: 'all 0.2s ease'
+                    }}>
+                      <Shield style={{ width: '16px', height: '16px' }} />
+                    </div>
+                    <div>
+                      <div style={{ fontWeight: '500', fontSize: '14px', color: '#374151', marginBottom: '2px' }}>Admin Panel</div>
+                      <div style={{ fontSize: '12px', color: '#9CA3AF' }}>Manage platform & dashboards</div>
+                    </div>
+                  </Link>
+                </DropdownMenuItem>
+              )}
             </div>
             
             {/* Separator */}

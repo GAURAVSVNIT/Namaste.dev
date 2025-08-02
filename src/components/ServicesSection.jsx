@@ -23,7 +23,7 @@ const ServicesSection = () => {
           <div className="service-content">
             <h3 className="service-content-title">Personal Styling</h3>
             <div className="service-links">
-              <a href="#" className="service-link">Book Consultation</a>
+              <a href="/consultation" className="service-link">Book Consultation</a>
             </div>
           </div>
         </div>
@@ -32,14 +32,14 @@ const ServicesSection = () => {
           <div className="service-image">
             <img 
               src="/fs2.jpg" 
-              alt="Custom Tailoring" 
+              alt="Virtual Try-On" 
             />
           </div>
           <div className="service-content">
-            <h3 className="service-content-title">Custom Tailoring</h3>
+            <h3 className="service-content-title">Virtual Try-On</h3>
             <div className="service-links">
-              <a href="#" className="service-link">For Women</a>
-              <a href="#" className="service-link">For Men</a>
+              <a href="/virtual-tryon" className="service-link">Try Now</a>
+              <a href="/avatars" className="service-link">Create Avatar</a>
             </div>
           </div>
         </div>
@@ -48,13 +48,14 @@ const ServicesSection = () => {
           <div className="service-image">
             <img 
               src="/fs3.jpg" 
-              alt="Become Partners" 
+              alt="Join Fashion Network" 
             />
           </div>
           <div className="service-content">
-            <h3 className="service-content-title">Become a Partner</h3>
+            <h3 className="service-content-title">Join Fashion Network</h3>
             <div className="service-links">
-              <a href="#" className="service-link">Explore Services</a>
+              <a href="/social/fashiontv" className="service-link">Watch Live</a>
+              <a href="/social" className="service-link">Join Community</a>
             </div>
           </div>
         </div>

@@ -329,6 +329,11 @@
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
   }
+
+  /* Gradient Background */
+  .gradient-background {
+    background: linear-gradient(to bottom, #fde2f0 0%, #c99ab2 15%, #b17e97 30%, #98637d 45%, #7e4963 60%, #65314a 75%, #4b1a31 85%, #320018 95%, #000000 100%);
+  }
 }
 
 /* Animation Keyframes */

@@ -99,8 +99,19 @@ export default function QuizPage() {
       {
         userProfile?.role === "admin" && (
           <div className="admin-add-quiz-section" style={{ textAlign: 'center', margin: '2rem 0' }}>
-            <Link href="/create" className="merchant-cta-btn">
+            <Link href="/quiz/create" className="merchant-cta-btn">
               <PenLine size={18} className='mr-2' /> &nbsp; Add Quiz &nbsp;<ArrowRight size={18} className="ml-2" />
+            </Link>
+          </div>
+        )
+      }
+
+      {/* Fashion Creator Add Quiz button */}
+      {
+        userProfile?.role === "fashion_creator" && (
+          <div className="fashion-creator-add-quiz-section" style={{ textAlign: 'center', margin: '2rem 0' }}>
+            <Link href="/quiz/create" className="merchant-cta-btn">
+              <PenLine size={18} className='mr-2' /> &nbsp; Create Quiz &nbsp;<ArrowRight size={18} className="ml-2" />
             </Link>
           </div>
         )

@@ -735,8 +735,8 @@ const SocialFeedPage = () => {
                   <ChevronRight className="w-4 h-4" style={{ marginLeft: '4px' }} />
                 </Link>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 2xl:grid-cols-8" style={{ gap: '20px' }}>
-              {featuredReels.length > 0 ? featuredReels.map((reel, index) => (
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-6" style={{ gap: '20px' }}>
+              {featuredReels.length > 0 ? featuredReels.slice(0, 12).map((reel, index) => (
                 <ContentCard key={`reel-${reel.id || index}`} item={reel} type="reel" />
               )) : generatePlaceholderContent('reel', 12).map((item, index) => (
                 <ContentCard key={`placeholder-reel-${index}`} item={item} type="reel" />
