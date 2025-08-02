@@ -1,26 +1,31 @@
 .brand-carousel-container {
-    background-color: #f8f4ff; /* Light background to complement the theme */
-    padding: 4rem 0; /* Increased padding */
+    background-color: transparent;
+    padding: 5rem 0;
     overflow: hidden;
     position: relative;
     width: 100%;
-    border-top: 1px solid #e0e0e0; /* Subtle top border */
-    border-bottom: 1px solid #e0e0e0; /* Subtle bottom border */
+    border-top: 1px solid rgba(200, 121, 166, 0.3);
+    border-bottom: 1px solid rgba(200, 121, 166, 0.3);
     text-align: center;
 }
 
 .brand-carousel-title {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: bold;
-    color: #2b2d42;
-    margin-bottom: 3rem;
+    color: #1C1C1C;
+    margin-bottom: 3.5rem;
     font-family: 'Garamond', serif;
+    text-shadow: 0 2px 4px rgba(200, 121, 166, 0.2);
+    position: relative;
+    z-index: 2;
 }
 
 .brand-carousel-track {
     display: flex;
-    width: calc(300px * 10); /* 300px per logo, 5 logos + 5 clones */
-    animation: scroll 30s linear infinite; /* Slower animation for larger images */
+    width: calc(300px * 10);
+    animation: scroll 30s linear infinite;
+    position: relative;
+    z-index: 1;
 }
 
 .brand-logo {

@@ -1,12 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400&display=swap');
 
 .featured-videos-section {
-    /* New greyish-white to blackish-grey gradient background */
-    background: linear-gradient(to bottom, #f8f4ff, #2d2d2d);
+    background: transparent;
     padding: 8rem 2rem;
-    /* Base text color changed for light part of the gradient */
-    color: #333;
+    color: #F8F4FF;
     overflow: hidden;
+    position: relative;
 }
 
 .featured-videos-content {
@@ -16,6 +15,8 @@
     grid-template-columns: 1fr 1.2fr;
     gap: 5rem;
     align-items: center;
+    position: relative;
+    z-index: 2;
 }
 
 .featured-videos-text {
@@ -26,18 +27,19 @@
     font-family: 'Playfair Display', serif;
     font-size: 4.5rem;
     font-weight: 700;
-    /* Changed text color */
-    color: #1a1a1a;
+    /* Changed text color for rich pink background */
+    color: #F8F4FF;
     margin-bottom: 1.5rem;
     line-height: 1.1;
     letter-spacing: -0.02em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .featured-videos-subtitle {
     font-family: 'Lato', sans-serif;
     font-size: 1.2rem;
     /* Changed text color */
-    color: #555;
+    color: #F0E7F2;
     margin-bottom: 2.5rem;
     font-weight: 300;
     line-height: 1.6;
@@ -46,9 +48,9 @@
 
 .upload-button {
     background: transparent;
-    /* Changed text and border color */
-    color: #1a1a1a;
-    border: 1px solid #ccc;
+    /* Changed text and border color for rich pink background */
+    color: #F8F4FF;
+    border: 1px solid rgba(248, 244, 255, 0.4);
     padding: 1rem 2.5rem;
     border-radius: 0;
     font-size: 1rem;
@@ -62,9 +64,10 @@
 
 .upload-button:hover {
     /* Updated hover state */
-    background: #1a1a1a;
-    color: #ffffff;
-    border-color: #1a1a1a;
+    background: rgba(248, 244, 255, 0.1);
+    color: #F8F4FF;
+    border-color: #F8F4FF;
+    box-shadow: 0 4px 12px rgba(248, 244, 255, 0.2);
 }
 
 /* Video Carousel Styling */

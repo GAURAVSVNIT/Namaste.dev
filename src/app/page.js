@@ -32,7 +32,7 @@ const Home = () => {
   }, [scroll]);
 
   return (
-    <>
+    <div>
       {/* <SplineWrapper /> */}
       <Hero />
       <ScrollingCards />
@@ -41,7 +41,7 @@ const Home = () => {
       <QuizPromo />
       <TestimonialsSection />
       <ServicesSection />
-    </>
+    </div>
   )
 }
 
