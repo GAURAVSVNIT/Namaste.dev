@@ -43,6 +43,7 @@ export default function RootLayout({ children }) {
   const pathname = usePathname();
   const isFashionTV = pathname?.startsWith('/social/fashiontv');
   const isAuthPage = pathname?.startsWith('/auth');
+  const isHomepage = pathname === '/';
 
   if (isFashionTV) {
     // Fashion TV gets full-screen experience without navbar/footer
@@ -71,8 +72,8 @@ export default function RootLayout({ children }) {
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
 
-        {/* Chatbot Button - Hidden on auth pages */}
-        {!isAuthPage && (
+        {/* Chatbot Button - Only show on homepage */}
+        {isHomepage && (
           <Link href="/chatbot" className={styles.chatbotBtn}>
             <Bot size={20} className={styles.icon} />
             <span className={styles.label}>AI Fashion Advicer</span>

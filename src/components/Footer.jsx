@@ -19,38 +19,38 @@ const Footer = (fontFace) => {
           <div className="footer-grid">
 
           <div className="footer-section floating">
-            <h3>Marketplace</h3>
+            <h3>Shop</h3>
             <ul>
-              <li><a href="#">Shop Trends</a></li>
-              <li><a href="#">Student Designers</a></li>
-              <li><a href="#">Sell Your Style</a></li>
+              <li><a href="/marketplace">Trendy Collections</a></li>
+              <li><a href="/virtual-tryon">AR Wardrobe</a></li>
+              <li><a href="/virtual-tryon/gallery">Style Showcase</a></li>
             </ul>
           </div>
 
           <div className="footer-section floating">
-            <h3>Social Feed</h3>
+            <h3>Create</h3>
             <ul>
-              <li><a href="/social/looks">Explore Looks</a></li>
-              <li><a href="/social/trending">Trending</a></li>
-              <li><a href="/social/fashion-tv">Fashion TV</a></li>
+              <li><a href="/avatars">Avatar Studio</a></li>
+              <li><a href="/social/looks">Style Discovery</a></li>
+              <li><a href="/social">Community Hub</a></li>
             </ul>
           </div>
 
           <div className="footer-section floating">
-            <h3>Virtual Try-On</h3>
+            <h3>Watch</h3>
             <ul>
-              <li><a href="#">Try 3D Outfits</a></li>
-              <li><a href="#">My Virtual Closet</a></li>
-              <li className=''><a href="#">Style Generator</a></li>
+              <li><a href="/social/fashiontv">Fashion Network</a></li>
+              <li><a href="/social/fashiontv/live">Live Runway</a></li>
+              <li><a href="/social/trending">What's Hot</a></li>
             </ul>
           </div>
 
           <div className="footer-section floating">
-            <h3>Portfolios</h3>
+            <h3>Learn</h3>
             <ul>
-              <li><a href="#">Browse Talent</a></li>
-              <li><a href="#">Submit Portfolio</a></li>
-              <li><a href="#">Get Noticed</a></li>
+              <li><a href="/quiz">Style Challenges</a></li>
+              <li><a href="/blog">Fashion Insights</a></li>
+              <li><a href="/consultation">Style Advisor</a></li>
             </ul>
           </div>
 
