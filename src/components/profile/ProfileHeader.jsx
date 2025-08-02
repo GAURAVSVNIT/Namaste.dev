@@ -304,10 +304,11 @@ export default function ProfileHeader({ user, onUpdateProfile }) {
             </p>
             
 {/* Role Display */}
-            div style={{ marginBottom: '24px', textAlign: window.innerWidth < 768 ? 'center' : 'left' }}
+            <div style={{ marginBottom: '24px', textAlign: window.innerWidth < 768 ? 'center' : 'left' }}>
               {user.role === USER_ROLES.ADMIN ? (
-                Link href="/admin-dashboard" passHref
-                  a style={{
+                <Link 
+                  href="/admin-dashboard" 
+                  style={{
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '8px',
@@ -319,25 +320,32 @@ export default function ProfileHeader({ user, onUpdateProfile }) {
                     textDecoration: 'none',
                     boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
                     transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-                  }} onMouseEnter={(e) = e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.5)'; }} onMouseLeave={(e) = e.target.style.transform = 'none'; e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'; }}
-                  a className="flex items-center"
-                     < LayoutDashboard className="w-5 h-5" /> 
-                    Admin Dashboard
-                  /a
-                /Link
+                  }} 
+                  onMouseEnter={(e) => { 
+                    e.target.style.transform = 'translateY(-2px)'; 
+                    e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.5)'; 
+                  }} 
+                  onMouseLeave={(e) => { 
+                    e.target.style.transform = 'none'; 
+                    e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'; 
+                  }}
+                >
+                  <LayoutDashboard className="w-5 h-5" />
+                  Admin Dashboard
+                </Link>
               ) : (
-                p style={{
+                <p style={{
                   display: 'inline-block',
                   padding: '8px 16px',
                   background: '#E5E7EB',
                   color: '#374151',
                   borderRadius: '8px',
                   fontWeight: '500'
-                }}
+                }}>
                   Member
-                /p
+                </p>
               )}
-            /div
+            </div>
             
             <div style={{
               display: 'flex',
