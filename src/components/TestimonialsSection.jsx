@@ -11,17 +11,15 @@ const TestimonialsSection = () => {
   }, []);
 
   const [reviewText, setReviewText] = useState('');
-  const [authorName, setAuthorName] = useState('');
 
   const handleSubmitReview = (e) => {
     e.preventDefault();
-    if (reviewText.trim() && authorName.trim()) {
-      console.log('Review submitted:', { reviewText, authorName });
+    if (reviewText.trim()) {
+      console.log('Review submitted:', { reviewText });
       alert('Thank you for your review!');
       setReviewText('');
-      setAuthorName('');
     } else {
-      alert('Please fill in both fields');
+      alert('Please fill in the review field');
     }
   };
 
@@ -79,16 +77,6 @@ const TestimonialsSection = () => {
         <div className="review-submission-section">
           <h3 className="review-form-title">Leave Your Impression</h3>
           <form onSubmit={handleSubmitReview} className="review-form">
-            <div className="form-group">
-              <input
-                type="text"
-                placeholder="Your Name"
-                value={authorName}
-                onChange={(e) => setAuthorName(e.target.value)}
-                className="review-input"
-                required
-              />
-            </div>
             <div className="form-group">
               <textarea
                 placeholder="Share your experience with us..."

@@ -45,17 +45,7 @@ const QuizPromo = () => {
 
   return (
     <div className={`quiz-promo-container ${isVisible ? 'visible' : ''}`} ref={containerRef}>
-      {/* New Side Stats */}
-      <div className="side-stat left-stat">
-        <span className="stat-number">25K+</span>
-        <span className="stat-label">Quizzes Taken</span>
-      </div>
-      <div className="side-stat right-stat">
-        <span className="stat-number">5K+</span>
-        <span className="stat-label">Prizes Won</span>
-      </div>
-
-      <div 
+      <div
         className="mouse-follower"
         style={{
           left: `${mousePosition.x}%`,
@@ -77,8 +67,8 @@ const QuizPromo = () => {
         </div>
         
         <p className="quiz-promo-description">
-          Discover your unique fashion style and unlock exclusive rewards! 
-          Take our personalized fashion quiz and get instant access to special discounts, 
+          Discover your unique fashion style and unlock exclusive rewards!
+          Take our personalized fashion quiz and get instant access to special discounts,
           limited-time offers, and style recommendations tailored just for you.
         </p>
 

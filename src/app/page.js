@@ -11,7 +11,7 @@ import '../static/ScrollingCards.css';
 
 const Home = () => {
   return (
-    <>
+    <div>
       {/* <SplineWrapper /> */}
       <Hero />
       <ScrollingCards />
@@ -20,7 +20,7 @@ const Home = () => {
       <QuizPromo />
       <TestimonialsSection />
       <ServicesSection />
-    </>
+    </div>
   )
 }
 
