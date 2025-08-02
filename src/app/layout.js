@@ -72,11 +72,11 @@ export default function RootLayout({ children }) {
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
 
-        {/* Chatbot Button - Only show on homepage */}
-        {isHomepage && (
+        {/* Chatbot Button - show everywhere */}
+        {(
           <Link href="/chatbot" className={styles.chatbotBtn}>
             <Bot size={20} className={styles.icon} />
-            <span className={styles.label}>AI Fashion Advicer</span>
+            <span className={styles.label}>Zyra, AI Fashion Advicer</span>
           </Link>
         )}
 

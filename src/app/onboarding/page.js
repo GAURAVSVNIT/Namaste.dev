@@ -2,7 +2,7 @@ import OnboardingFlow from '@/components/OnboardingFlow';
 import '@/static/Onboarding.css';
 
 export const metadata = {
-  title: 'Onboarding - Fashion Hub',
+  title: 'Onboarding - Trendora',
   description: 'Complete your profile setup to get started',
 };
 

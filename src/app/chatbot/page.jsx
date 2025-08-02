@@ -234,7 +234,7 @@ export default function ChatBot() {
 
         {loading && (
           <div className="chatbot-message bot">
-            Glamina is typing<span className="typing-dots">
+            Zyra is typing<span className="typing-dots">
               <span>.</span><span>.</span><span>.</span>
             </span>
           </div>
@@ -267,7 +267,7 @@ export default function ChatBot() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           className="chatbot-input"
-          placeholder="Ask Glamina..."
+          placeholder="Ask Zyra anything about fashion..."
         />
         <button onClick={handleSend} className="chatbot-send-btn">Send</button>
         <input
