@@ -51,6 +51,17 @@ export default function QuizPage() {
     fetchQuizzes();
   }, []);
 
+
+  // set bg to white so that UI dont break
+  useEffect(() => {
+  document.body.style.background = "white";
+
+  return () => {
+    document.body.style.background = ""; 
+  };
+}, []);
+
+
   useEffect(() => {
     if (!authLoading && user) {
       fetchUserProfile();

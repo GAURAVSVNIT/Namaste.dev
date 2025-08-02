@@ -210,20 +210,7 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
   const canDeleteVideo = () => {
     const isOwner = user && video.userId === user.uid;
     const isAdmin = user && userRole === 'admin';
-    const canDelete = user && (isOwner || isAdmin);
-    
-    // Debug logging
-    console.log('Delete permission check:', {
-      videoId: video.id,
-      userId: user?.uid,
-      videoUserId: video.userId,
-      userRole,
-      isOwner,
-      isAdmin,
-      canDelete
-    });
-    
-    return canDelete;
+    return user && (isOwner || isAdmin);
   };
 
   return (
@@ -312,7 +299,7 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
         {/* Right Side Action Buttons - Raised much higher from profile and description */}
         <div className={`absolute right-3 md:right-4 bottom-32 md:bottom-28 lg:bottom-24 flex flex-col items-center justify-end z-20 transition-opacity duration-300 ${
           showComments ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        }`} style={{ height: '220px', gap: '8px' }}>
+        }`} style={{ height: 'auto', gap: '12px' }}>
           {/* Like Button */}
           <button
             onClick={handleLike}
@@ -372,13 +359,13 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '8px',
+              gap: '4px',
               border: 'none',
               backgroundColor: 'transparent',
               cursor: 'pointer',
               padding: '4px',
-              minHeight: '80px',
-              width: '60px'
+              minHeight: '60px',
+              width: '56px'
             }}
           >
             <div style={{

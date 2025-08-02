@@ -81,7 +81,7 @@ const Footer = (fontFace) => {
             <a href="#"><FaTwitter /></a>
             <a href="#"><FaLinkedin /></a>
           </div>
-          <p>&copy; 2025 Fashion Hub. All rights reserved.</p>
+          <p>&copy; 2025 Trendora. All rights reserved.</p>
         </div>
         </div>
       )}

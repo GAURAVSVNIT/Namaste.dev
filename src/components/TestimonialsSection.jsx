@@ -1,27 +1,85 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { getUserById } from '@/lib/user';
+import { useAuth } from "@/hooks/useAuth";
+import { generateUserMultiavatar, generateMultiavatar } from '@/lib/multiavatar';
 import '../static/TestimonialsSection.css';
 
 const TestimonialsSection = () => {
   const [isClient, setIsClient] = useState(false);
+  const [userProfile, setUserProfile] = useState(null);
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
+
+  function UserAvatar({ seed }) {
+    const avatarSvg = generateMultiavatar(seed);
+
+    return (
+      <div
+        dangerouslySetInnerHTML={{ __html: avatarSvg }}
+        className='author-avatar'
+      />
+    );
+  }
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  useEffect(() => {
+    if (!authLoading && user) {
+      fetchUserProfile();
+      console.log("Logged-in user info:", user);
+    }
+  }, [authLoading, user]);
+
+  const fetchUserProfile = async () => {
+      try {
+        const profile = await getUserById(user.uid);
+        setUserProfile(profile);
+        console.log("User Profile: ",profile)
+      } 
+      catch (error) {
+        console.error('Error loading user profile:', error);
+      }
+    }
+
+
   const [reviewText, setReviewText] = useState('');
 
-  const handleSubmitReview = (e) => {
-    e.preventDefault();
-    if (reviewText.trim()) {
-      console.log('Review submitted:', { reviewText });
-      alert('Thank you for your review!');
-      setReviewText('');
-    } else {
-      alert('Please fill in the review field');
-    }
-  };
+  const handleSubmitReview = async (e) => {
+  e.preventDefault();
+  if (!reviewText.trim()) {
+    alert('Please fill in the review field');
+    return;
+  }
+
+  try {
+    await fetch('https://script.google.com/macros/s/AKfycbx88OcHe1xhSD2QqJKib1S-2qJVyddMSbTcJQ8AnMjrC-CiasdD-OmE343cyjXpSYTGHw/exec', {
+      method: 'POST',
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: user?.displayName || 'Anonymous',
+        title: userProfile?.role || 'user',
+        feedback: reviewText.trim(),
+        toShow: '0',
+        timestamp: new Date().toISOString(),
+      }),
+    });
+
+
+    alert('Thank you for your review!');
+    setReviewText('');
+  } catch (error) {
+    console.error('Submission failed:', error);
+    alert('Something went wrong. Please try again.');
+  }
+};
+
+
 
   const testimonials = [
     {
@@ -29,7 +87,7 @@ const TestimonialsSection = () => {
       quote: "This platform has revolutionized my shopping experience. The curated collections and personalized recommendations have helped me discover my unique style. It's not just shopping, it's a journey of self-expression.",
       author: "Gourav",
       title: "FASHION ENTHUSIAST",
-      avatar: "#"
+      avatar: "anything"
     },
     {
       id: 2,
@@ -44,8 +102,16 @@ const TestimonialsSection = () => {
       author: "Aayush",
       title: "STYLE EXPLORER",
       avatar: "#"
+    },
+    {
+      id: 4,
+      quote: "Avtarra is amazing! I created a stylish avatar with cool outfits and realistic expressions. The 3D download option is a great bonus. Also, Zyra, the AI fashion designer, gave me really helpful style suggestions. Loved the overall experience!",
+      author: "Arshad",
+      title: "FASHION EXPERT",
+      avatar: "#"
     }
   ];
+
 
   return (
     <div id="testimonials" className="testimonials-section">
@@ -58,11 +124,7 @@ const TestimonialsSection = () => {
               <p className="testimonial-quote">“{testimonial.quote}”</p>
               
               <div className="testimonial-author">
-                <img 
-                  src={testimonial.avatar} 
-                  alt={testimonial.author} 
-                  className="author-avatar"
-                />
+                <UserAvatar seed={ testimonial.author.split(" ")[0].toLowerCase() } />
                 <div className="author-info">
                   <h4 className="author-name">{testimonial.author}</h4>
                   <p className="author-title">{testimonial.title}</p>
