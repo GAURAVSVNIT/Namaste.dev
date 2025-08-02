@@ -3,12 +3,24 @@
 import React, { useState, useEffect } from 'react';
 import { getUserById } from '@/lib/user';
 import { useAuth } from "@/hooks/useAuth";
+import { generateUserMultiavatar, generateMultiavatar } from '@/lib/multiavatar';
 import '../static/TestimonialsSection.css';
 
 const TestimonialsSection = () => {
   const [isClient, setIsClient] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const { user, loading: authLoading, isAuthenticated } = useAuth();
+
+  function UserAvatar({ seed }) {
+    const avatarSvg = generateMultiavatar(seed);
+
+    return (
+      <div
+        dangerouslySetInnerHTML={{ __html: avatarSvg }}
+        className='author-avatar'
+      />
+    );
+  }
 
   useEffect(() => {
     setIsClient(true);
@@ -112,11 +124,7 @@ const TestimonialsSection = () => {
               <p className="testimonial-quote">“{testimonial.quote}”</p>
               
               <div className="testimonial-author">
-                <img 
-                  src={testimonial.avatar} 
-                  alt={testimonial.author} 
-                  className="author-avatar"
-                />
+                <UserAvatar seed={ testimonial.author.split(" ")[0].toLowerCase() } />
                 <div className="author-info">
                   <h4 className="author-name">{testimonial.author}</h4>
                   <p className="author-title">{testimonial.title}</p>
