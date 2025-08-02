@@ -112,7 +112,7 @@ body,
 }
 
 .quiz-button, .quiz-submit-button {
-  background-color: var(--color-fashion-primary);
+  background-color: green;
   color: white;
   padding: 0.75rem 2rem;
   border-radius: 0.75rem;
