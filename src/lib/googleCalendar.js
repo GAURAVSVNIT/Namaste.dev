@@ -295,9 +295,11 @@ export const getUserCalendars = async (userId) => {
   }
 };
 
-export default {
+const googleCalendar = {
   createCalendarEvent,
   updateCalendarEvent,
   deleteCalendarEvent,
   getUserCalendars,
 };
+
+export default googleCalendar;
