@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { toggleLikeVideo, deleteVideo } from '@/lib/fashiontv';
+import { getUserProfile } from '@/lib/firebase';
 import { Heart, MessageCircle, Play, Volume2, VolumeX, Trash2, MoreVertical } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
@@ -19,6 +20,7 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
   const [showPauseIcon, setShowPauseIcon] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
   // Auto-play video when active, pause when inactive
   useEffect(() => {
@@ -47,6 +49,24 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
       videoRef.current.muted = isGloballyMuted;
     }
   }, [isGloballyMuted]);
+
+  // Fetch user role when user changes
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user?.uid) {
+        try {
+          const userData = await getUserProfile(user.uid);
+          setUserRole(userData?.role || null);
+        } catch (error) {
+          console.error('Error fetching user role:', error);
+        }
+      } else {
+        setUserRole(null);
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
 
   const handleLike = async (e) => {
     e.stopPropagation();
@@ -188,7 +208,22 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
   };
 
   const canDeleteVideo = () => {
-    return user && video.userId === user.uid;
+    const isOwner = user && video.userId === user.uid;
+    const isAdmin = user && userRole === 'admin';
+    const canDelete = user && (isOwner || isAdmin);
+    
+    // Debug logging
+    console.log('Delete permission check:', {
+      videoId: video.id,
+      userId: user?.uid,
+      videoUserId: video.userId,
+      userRole,
+      isOwner,
+      isAdmin,
+      canDelete
+    });
+    
+    return canDelete;
   };
 
   return (

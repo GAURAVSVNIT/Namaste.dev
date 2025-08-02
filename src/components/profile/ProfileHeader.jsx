@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Camera, Edit3, Save, X } from 'lucide-react';
+import { Camera, Edit3, Save, X, LayoutDashboard } from 'lucide-react';
 import { uploadAvatar, updateMultiavatar, updateUser } from '@/lib/user';
 import { useAuth } from '@/hooks/useAuth';
 import AvatarSelector from '@/components/ui/avatar-selector';
@@ -13,6 +13,7 @@ import SmartAvatar from '@/components/ui/smart-avatar';
 import RoleBadge from '@/components/ui/role-badge';
 import RoleSelector from '@/components/ui/role-selector';
 import { isAdmin, USER_ROLES } from '@/lib/roles';
+import Link from 'next/link';
 
 export default function ProfileHeader({ user, onUpdateProfile }) {
   const { user: currentUser } = useAuth();
@@ -302,7 +303,42 @@ export default function ProfileHeader({ user, onUpdateProfile }) {
               {user.description || 'A brief description about yourself. Click edit to add one.'}
             </p>
             
-            {/* Role Display */}
+{/* Role Display */}
+            div style={{ marginBottom: '24px', textAlign: window.innerWidth < 768 ? 'center' : 'left' }}
+              {user.role === USER_ROLES.ADMIN ? (
+                Link href="/admin-dashboard" passHref
+                  a style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '8px 16px',
+                    background: 'linear-gradient(135deg, #3B82F6, #8B5CF6)',
+                    color: 'white',
+                    borderRadius: '8px',
+                    fontWeight: '600',
+                    textDecoration: 'none',
+                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease'
+                  }} onMouseEnter={(e) = e.target.style.transform = 'translateY(-2px)'; e.target.style.boxShadow = '0 8px 20px rgba(59, 130, 246, 0.5)'; }} onMouseLeave={(e) = e.target.style.transform = 'none'; e.target.style.boxShadow = '0 4px 12px rgba(59, 130, 246, 0.3)'; }}
+                  a className="flex items-center"
+                     < LayoutDashboard className="w-5 h-5" /> 
+                    Admin Dashboard
+                  /a
+                /Link
+              ) : (
+                p style={{
+                  display: 'inline-block',
+                  padding: '8px 16px',
+                  background: '#E5E7EB',
+                  color: '#374151',
+                  borderRadius: '8px',
+                  fontWeight: '500'
+                }}
+                  Member
+                /p
+              )}
+            /div
+            
             <div style={{
               display: 'flex',
               alignItems: 'center',

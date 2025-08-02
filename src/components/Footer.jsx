@@ -7,10 +7,24 @@ import { FaInstagram, FaTwitter, FaLinkedin, FaTshirt, FaCamera, FaUserGraduate 
 
 const Footer = (fontFace) => {
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setIsClient(true);
   }, []);
+
+  const handleScrollToFeedback = () => {
+    // If we're already on the homepage, just scroll
+    if (window.location.pathname === '/') {
+      const element = document.getElementById('leave-impression');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    } else {
+      // Navigate to homepage with scroll parameter
+      router.push('/?scroll=feedback');
+    }
+  };
 
   return (
     <footer className={"footer-glass " + fontFace}>
@@ -56,7 +70,7 @@ const Footer = (fontFace) => {
 
           <div className="footer-cta">
             <button className="cta-button-footer" onClick={() => window.location.href = '/social/look/upload'}><FaCamera /> Upload Your Look</button>
-            <button className="cta-button-footer secondary"><FaUserGraduate /> Join the Community</button>
+            <button className="cta-button-footer secondary" onClick={handleScrollToFeedback}><FaUserGraduate /> Share Your Vibe</button>
           </div>
 
         </div>

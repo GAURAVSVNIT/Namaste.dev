@@ -102,7 +102,7 @@ const TestimonialsSection = () => {
 
 
   return (
-    <div className="testimonials-section">
+    <div id="testimonials" className="testimonials-section">
       <h2 className="testimonials-title">Voices of Our Community</h2>
       
       <div className="testimonials-grid">
@@ -128,7 +128,7 @@ const TestimonialsSection = () => {
       </div>
       
       {isClient && (
-        <div className="review-submission-section">
+        <div id="leave-impression" className="review-submission-section">
           <h3 className="review-form-title">Leave Your Impression</h3>
           <form onSubmit={handleSubmitReview} className="review-form">
             <div className="form-group">

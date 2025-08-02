@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useAuth } from '@/hooks/useAuth';
 import { getLookById, toggleLikeLook, addCommentToLook, deleteCommentFromLook } from '@/lib/look';
-import { getUserProfile } from '@/lib/firebase';
+import { getUserProfile, getUserById } from '@/lib/firebase';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,12 +46,30 @@ export default function LookDetailPage({ params }) {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     if (id) {
       fetchLook();
     }
   }, [id]);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user?.uid) {
+        try {
+          const userData = await getUserById(user.uid);
+          setUserRole(userData?.role || null);
+        } catch (error) {
+          console.error('Error fetching user role:', error);
+        }
+      } else {
+        setUserRole(null);
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
 
   const fetchLook = async () => {
     try {
@@ -627,7 +645,7 @@ border: '2px solid rgba(239, 68, 68, 0.2)'
                     </div>
                   </div>
               
-              {user && user.uid === look.userId && (
+{user && (user.uid === look.userId || userRole === 'admin') && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <button style={{
