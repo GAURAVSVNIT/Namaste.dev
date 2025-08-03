@@ -18,6 +18,9 @@ import { Poppins } from "next/font/google";
 import "@/static/chatbot/markupStyle.css";
 import "@/static/chatbot/chatbot-ui.css";
 import DOMPurify from 'dompurify';
+import { onAuthStateChanged } from "firebase/auth";
+import { db, auth } from '@/lib/quiz'; // just to check authentication and avoid repeated code
+import { useRouter } from "next/navigation";
 
 const renderer = new marked.Renderer();
 
@@ -57,9 +60,23 @@ export default function ChatBot() {
   const [looks, setLooks] = useState([]);
   const [videos, setVideos] = useState([]);
 
+  const router = useRouter();
+
   const fileInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (!u) {
+        alert("Please Login first to talk with Zyra, our AI fashion consultant.")
+        router.push('/auth/login');
+      }
+      // else setUser(u);
+    });
+
+    return () => unsub();
+  }, []);
 
   // Load chat history
   useEffect(() => {

@@ -26,7 +26,10 @@ export default function PlayQuizPage() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
-      if (!u) router.push('/');
+      if (!u) {
+        alert("Please Login first to play a quiz!")
+        router.push('/auth/login');
+      }
       else setUser(u);
     });
 

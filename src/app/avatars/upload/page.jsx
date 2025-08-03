@@ -14,8 +14,8 @@ function UploadAvatarContent() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const searchParams = useSearchParams();
 
-    const avatarUrl = "https://models.readyplayer.me/" + searchParams.get('avatar').replaceAll("~", "&");
-    const bgColorOfAvatar = rgbToHex(searchParams.get('avatar').split("background=")[1].split("~")[0]);
+    const avatarUrl = "https://models.readyplayer.me/" + searchParams.get('avatar')?.replaceAll("~", "&");
+    const bgColorOfAvatar = rgbToHex(searchParams?.get('avatar')?.split("background=")[1]?.split("~")[0]);
 
     const initialData = {
         images: [avatarUrl],
