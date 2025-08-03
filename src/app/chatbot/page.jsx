@@ -284,7 +284,7 @@ export default function ChatBot() {
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSend()}
           className="chatbot-input"
-          placeholder="Ask Zyra anything about fashion..."
+          placeholder="Ask Zyra anything about fashion or type '/'"
         />
         <button onClick={handleSend} className="chatbot-send-btn">Send</button>
         <input
