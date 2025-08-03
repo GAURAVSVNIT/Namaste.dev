@@ -89,7 +89,7 @@ function AvatarExpressionPickerContent() {
     <div className="avatar-picker-container">
       {/* Sidebar */}
       <aside className="sidebar">
-        <h2 className="sidebar-title">Avtarra</h2>
+        <h2 className="sidebar-title">Avataraa</h2>
         <button className={`sidebar-btn ${activeTab === 'expressions' ? 'active' : ''}`} onClick={() => setActiveTab('expressions')}>
           <Smile className="sidebar-icon" /> Expressions
         </button>

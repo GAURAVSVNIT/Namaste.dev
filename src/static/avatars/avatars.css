@@ -6,7 +6,7 @@
   background: #fefefe;
   padding: 2rem;
   min-height: 100vh;
-  margin-top: 4.2rem;
+  padding-top: 6.3rem;
 }
 
 .avatars-title {
@@ -97,7 +97,7 @@
 /* for custom avatar builder header  */
 
 .header-section {
-  @apply w-full rounded-[2rem] text-center px-6 py-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 text-white shadow-xl;
+  @apply w-[full] rounded-[2rem] text-center px-6 py-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 text-white shadow-xl;
 }
 
 .badge {
