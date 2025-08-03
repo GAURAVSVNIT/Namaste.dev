@@ -37,7 +37,7 @@ import {
   AreaChart,
   Area
 } from 'recharts';
-import styles from '../../merchant-dashboard/analytics/Analytics.module.css';
+import styles from './Analytics.module.css';
 import RoleProtected from '@/components/auth/RoleProtected';
 import { USER_ROLES } from '@/lib/roles';
 

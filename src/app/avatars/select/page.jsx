@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   UploadCloud,
@@ -34,7 +34,7 @@ const backgroundPresets = [
   { name: 'peach', value: '255,218,185' }
 ];
 
-export default function AvatarExpressionPicker() {
+function AvatarExpressionPickerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -175,5 +175,13 @@ export default function AvatarExpressionPicker() {
         ))}
       </footer>
     </div>
+  );
+}
+
+export default function AvatarExpressionPicker() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AvatarExpressionPickerContent />
+    </Suspense>
   );
 }

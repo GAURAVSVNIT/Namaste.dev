@@ -659,7 +659,7 @@ export const checkProviderAvailability = async (providerId, dateTime, duration =
   }
 };
 
-export default {
+const consultationFirebase = {
   updateUserRole,
   uploadPortfolioImage,
   removePortfolioImage,
@@ -678,3 +678,5 @@ export default {
   updateAvailability,
   checkProviderAvailability
 };
+
+export default consultationFirebase;

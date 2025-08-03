@@ -214,6 +214,9 @@ export const getUserProfile = async (userId) => {
   return null;
 };
 
+// Alias for getUserProfile for backward compatibility
+export const getUserById = getUserProfile;
+
 export const updateUserProfile = async (userId, data) => {
   const userRef = doc(db, "users", userId);
 
