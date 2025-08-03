@@ -164,6 +164,9 @@ function handleFileUpload(file, type) {
       try {
         const response = await fetch(`${API_BASE_URL}/virtual-tryon`, {
           method: 'POST',
+          headers: {
+            'ngrok-skip-browser-warning': 'true'
+          },
           body: formData,
         });
 
