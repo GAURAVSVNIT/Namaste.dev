@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import SplineWrapper from '../components/SplineWrapper';
+// import SplineWrapper from '../components/SplineWrapper';
 import Hero from '../components/Hero';
 import ScrollingCards from '../components/ScrollingCards';
 import BrandCarousel from '../components/BrandCarousel';
@@ -13,7 +13,7 @@ import ServicesSection from '../components/ServicesSection';
 import '../static/Hero.css';
 import '../static/ScrollingCards.css';
 
-const HomeContent = () => {
+const Home = () => {
   const searchParams = useSearchParams();
   const scroll = searchParams.get('scroll');
 
@@ -43,14 +43,6 @@ const HomeContent = () => {
       <ServicesSection />
     </div>
   )
-}
-
-const Home = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <HomeContent />
-    </Suspense>
-  );
 }
 
 export default Home;
