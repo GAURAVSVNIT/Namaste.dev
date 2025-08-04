@@ -55,8 +55,8 @@ export function AvatarBuilderHeader() {
       </p>
 
       <div className="actions">
-          <button className="btn-create-look">
-            <Sparkle className="btn-icon" size={18} onClick={handleCreateAvatar} />
+          <button className="btn-create-look" onClick={handleCreateAvatar}>
+            <Sparkle className="btn-icon" size={18} />
             Create Avatar
           </button>
       </div>
