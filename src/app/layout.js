@@ -50,14 +50,14 @@ export default function RootLayout({ children }) {
     return (
       <html lang="en" suppressHydrationWarning={true}>
         {/* <!-- Google tag (gtag.js) --> */}
-          <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYETEKYVWR"></script>
-          <script>
+          <Script async src="https://www.googletagmanager.com/gtag/js?id=G-WYETEKYVWR" />
+          <Script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments)}
             gtag('js', new Date());
 
             gtag('config', 'G-WYETEKYVWR');
-          </script>
+          </Script>
         <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased gradient-background`}>
           {children}
           <Script 
@@ -73,14 +73,14 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
       {/* <!-- Google tag (gtag.js) --> */}
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYETEKYVWR"></script>
-        <script>
+        <Script async src="https://www.googletagmanager.com/gtag/js?id=G-WYETEKYVWR" />
+        <Script>
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments)}
           gtag('js', new Date());
 
           gtag('config', 'G-WYETEKYVWR');
-        </script>
+        </Script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased gradient-background`}
       >
