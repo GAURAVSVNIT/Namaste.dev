@@ -49,6 +49,15 @@ export default function RootLayout({ children }) {
     // Fashion TV gets full-screen experience without navbar/footer
     return (
       <html lang="en" suppressHydrationWarning={true}>
+        {/* <!-- Google tag (gtag.js) --> */}
+          <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYETEKYVWR"></script>
+          <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments)}
+            gtag('js', new Date());
+
+            gtag('config', 'G-WYETEKYVWR');
+          </script>
         <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased gradient-background`}>
           {children}
           <Script 
@@ -63,6 +72,15 @@ export default function RootLayout({ children }) {
   // All other pages get normal layout
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      {/* <!-- Google tag (gtag.js) --> */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-WYETEKYVWR"></script>
+        <script>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments)}
+          gtag('js', new Date());
+
+          gtag('config', 'G-WYETEKYVWR');
+        </script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased gradient-background`}
       >
