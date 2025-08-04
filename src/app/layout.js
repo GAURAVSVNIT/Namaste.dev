@@ -54,6 +54,7 @@ export default function RootLayout({ children }) {
             src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
           />
           <Script
+            id="google-analytics-config"
             strategy="afterInteractive"
             dangerouslySetInnerHTML={{
               __html: `
@@ -85,6 +86,7 @@ export default function RootLayout({ children }) {
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
         />
         <Script
+          id="google-analytics-main-config"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
