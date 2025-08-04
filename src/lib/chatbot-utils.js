@@ -16,12 +16,12 @@ import {
   arrayUnion, 
   arrayRemove 
 } from 'firebase/firestore';
-import { 
-  ref, 
-  uploadBytes, 
-  getDownloadURL, 
-  deleteObject 
-} from 'firebase/storage';
+// import { 
+//   ref, 
+//   uploadBytes, 
+//   getDownloadURL, 
+//   deleteObject 
+// } from 'firebase/storage';
 import { db, storage } from './firebase';
 
 

@@ -37,11 +37,11 @@ const menuItems = [
     label: 'Products', 
     href: '/merchant-dashboard/products' 
   },
-  // { 
-  //   icon: <BarChart2 size={18} />, 
-  //   label: 'Analytics', 
-  //   href: '/merchant-dashboard/analytics' 
-  // },
+  { 
+    icon: <BarChart2 size={18} />, 
+    label: 'Analytics', 
+    href: '/merchant-dashboard/analytics' 
+  },
   { 
     icon: <ShoppingBag size={18} />, 
     label: 'Orders', 
