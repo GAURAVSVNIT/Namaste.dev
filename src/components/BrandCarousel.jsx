@@ -5,13 +5,13 @@ import Image from 'next/image';
 import '../static/BrandCarousel.css';
 
 const brands = [
-  { name: 'Adidas', logo: '/brands/1.jpg', logoClass: 'invert mix-blend-multiply mt-3' },
-  { name: 'LouisVitton', logo: '/brands/2.png', logoClass: 'scale-150' },
-  { name: 'H&M', logo: '/brands/3.png' },
-  { name: 'Prada', logo: '/brands/4.jpg', logoClass: 'invert mix-blend-multiply scale-125' },
-  { name: 'RalphLauren', logo: '/brands/5.png', logoClass: 'brightness-0 invert-0' },
-  { name: 'Zara', logo: '/brands/6.png' },
-  { name: 'AllenSolly', logo: '/brands/7.webp' },
+  { name: 'Adidas', logo: '/brands/1.jpg', logoClass: 'mix-blend-multiply mt-3 hover:scale-105' },
+  { name: 'LouisVitton', logo: '/brands/2.png', logoClass: 'scale-150 scaleUpLV' },
+  { name: 'H&M', logo: '/brands/3.png', logoClass: 'hover:scale-105' },
+  { name: 'Prada', logo: '/brands/4.jpg', logoClass: 'mix-blend-multiply scale-116 scaleUpPrada' },
+  { name: 'RalphLauren', logo: '/brands/5.png', logoClass: 'brightness-0 invert-0 hover:scale-105' },
+  { name: 'Zara', logo: '/brands/6.png', logoClass: 'hover:scale-105' },
+  { name: 'AllenSolly', logo: '/brands/7.webp', logoClass: 'hover:scale-105' },
 ];
 
 const BrandCarousel = () => {
@@ -27,7 +27,7 @@ const BrandCarousel = () => {
         {/* Duplicate for seamless scroll */}
         {brands.map((brand, index) => (
           <div key={`clone-${index}`} className="brand-logo">
-            <img src={brand.logo} alt={brand.name} />
+            <img src={brand.logo} alt={brand.name} className={brand.logoClass ? brand.logoClass : ''} />
           </div>
         ))}
       </div>

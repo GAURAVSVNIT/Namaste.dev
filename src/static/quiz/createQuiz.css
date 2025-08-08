@@ -86,7 +86,7 @@
   color: white;
 }
 .btn-submit:hover {
-  background-color: var(--color-green-500);
+  background-color: rgb(17, 134, 17);
 }
 
 

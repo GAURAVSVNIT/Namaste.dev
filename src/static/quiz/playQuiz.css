@@ -130,6 +130,10 @@ body,
     background-color: rgb(18, 177, 18);
 }
 
+.quiz-button {
+  background: var(--color-fashion-primary);
+}
+
 .quiz-button:hover {
   background: var(--color-fashion-secondary);
 }
