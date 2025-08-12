@@ -120,10 +120,21 @@
 }
 
 .merchant-promo-inner h2 {
-  font-size: 2rem;
+  font-size: 2rem !important;
   font-weight: 700;
   color: #8b5cf6;
   margin-bottom: 1rem;
+}
+
+.quiz-merchant-split {
+  color: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  text-shadow: inherit !important;
+  letter-spacing: inherit !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 .merchant-promo-inner p {

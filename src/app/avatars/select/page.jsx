@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   UploadCloud,
@@ -34,7 +34,7 @@ const backgroundPresets = [
   { name: 'peach', value: '255,218,185' }
 ];
 
-export default function AvatarExpressionPicker() {
+function AvatarExpressionPickerContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -89,7 +89,7 @@ export default function AvatarExpressionPicker() {
     <div className="avatar-picker-container">
       {/* Sidebar */}
       <aside className="sidebar">
-        <h2 className="sidebar-title">Avtarra</h2>
+        <h2 className="sidebar-title">Avataraa</h2>
         <button className={`sidebar-btn ${activeTab === 'expressions' ? 'active' : ''}`} onClick={() => setActiveTab('expressions')}>
           <Smile className="sidebar-icon" /> Expressions
         </button>
@@ -175,5 +175,13 @@ export default function AvatarExpressionPicker() {
         ))}
       </footer>
     </div>
+  );
+}
+
+export default function AvatarExpressionPicker() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AvatarExpressionPickerContent />
+    </Suspense>
   );
 }

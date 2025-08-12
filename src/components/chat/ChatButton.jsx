@@ -61,7 +61,12 @@ const ChatButton = ({ product }) => {
 
   // Auto-scroll to bottom
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    // Add a small delay to ensure DOM has updated
+    const timer = setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, [messages]);
 
   const handleSendMessage = async (e) => {
@@ -91,6 +96,11 @@ const ChatButton = ({ product }) => {
       });
 
       setNewMessage('');
+      
+      // Immediately scroll to bottom after sending
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 200);
     } catch (error) {
       console.error('Error sending message:', error);
     }

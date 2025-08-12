@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Script from 'next/script';
 import { Geist, Geist_Mono, Poppins, Playfair_Display, Montserrat } from "next/font/google";
-import styles from "@/static/layout/chatbotButton.module.css"
+import styles from "@/static/layout/chatbotButton.module.css";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
@@ -49,11 +49,30 @@ export default function RootLayout({ children }) {
   const isConsultationPage = pathname?.startsWith('/consultation');
   const isBlogPage = pathname?.startsWith('/blog');
   const isAvatarPage = pathname?.startsWith('/avatars');
+  const GA_TRACKING_ID = 'G-WYETEKYVWR';
 
   if (isFashionTV) {
-    // Fashion TV gets full-screen experience without navbar/footer
     return (
       <html lang="en" suppressHydrationWarning={true}>
+        <head>
+          {/* Google Analytics Script */}
+          <Script
+            strategy="afterInteractive"
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+          />
+          <Script
+            id="google-analytics-config"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${GA_TRACKING_ID}');
+              `,
+            }}
+          />
+        </head>
         <body className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased gradient-background`}>
           {children}
           <Script 
@@ -65,9 +84,27 @@ export default function RootLayout({ children }) {
     );
   }
 
-  // All other pages get normal layout
   return (
     <html lang="en" suppressHydrationWarning={true}>
+      <head>
+        {/* Google Analytics Script */}
+        <Script
+          strategy="afterInteractive"
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
+        />
+        <Script
+          id="google-analytics-main-config"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${GA_TRACKING_ID}');
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased ${(isSocialPage || isVirtualTryOnPage || isConsultationPage || isBlogPage || isAvatarPage) ? '' : 'gradient-background'}`}
         style={(isSocialPage || isVirtualTryOnPage || isConsultationPage || isBlogPage || isAvatarPage) ? { backgroundColor: '#ffffff' } : {}}
@@ -79,12 +116,10 @@ export default function RootLayout({ children }) {
         </LayoutWrapper>
 
         {/* Chatbot Button - show everywhere */}
-        {(
-          <Link href="/chatbot" className={styles.chatbotBtn}>
-            <Bot size={20} className={styles.icon} />
-            <span className={styles.label}>Zyra, AI Fashion Advicer</span>
-          </Link>
-        )}
+        <Link href="/chatbot" className={styles.chatbotBtn}>
+          <Bot size={20} className={styles.icon} />
+          <span className={styles.label}>Zyra, AI Fashion Advicer</span>
+        </Link>
 
         <Script 
           src="https://checkout.razorpay.com/v1/checkout.js"

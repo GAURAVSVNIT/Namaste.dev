@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { calculateGST, calculateShipping, calculateTotal, generateOrderId } from '../lib/utils';
+import useCartStore from './cart-store';
 
 const useCheckoutStore = create((set, get) => ({
   // Order details
@@ -30,6 +31,7 @@ const useCheckoutStore = create((set, get) => ({
   
   // Order summary
   subtotal: 0,
+  couponDiscount: 0,
   shipping: 0,
   tax: 0,
   total: 0,
@@ -43,14 +45,23 @@ const useCheckoutStore = create((set, get) => ({
   // Actions
   setOrderItems: (items, type = 'cart') => {
     const subtotal = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const shipping = calculateShipping(subtotal);
-    const tax = calculateGST(subtotal);
-    const total = calculateTotal(subtotal, shipping, tax);
+    
+    // Get coupon discount from cart store
+    const cartState = useCartStore.getState();
+    const couponDiscount = cartState.couponDiscount || 0;
+    
+    // Calculate discounted subtotal for shipping calculation
+    const discountedSubtotal = Math.max(0, subtotal - couponDiscount);
+    
+    const shipping = calculateShipping(discountedSubtotal);
+    const tax = calculateGST(discountedSubtotal);
+    const total = calculateTotal(discountedSubtotal, shipping, tax);
     
     set({
       orderItems: items,
       orderType: type,
       subtotal,
+      couponDiscount,
       shipping,
       tax,
       total
@@ -194,6 +205,7 @@ const useCheckoutStore = create((set, get) => ({
         nameOnCard: ''
       },
       subtotal: 0,
+      couponDiscount: 0,
       shipping: 0,
       tax: 0,
       total: 0,
@@ -207,10 +219,41 @@ const useCheckoutStore = create((set, get) => ({
   setSelectedShipping: (shipping) => {
     set((state) => {
       const shippingCharge = shipping ? shipping.total_charge : 0;
-      const total = calculateTotal(state.subtotal, shippingCharge, state.tax);
+      // Apply coupon discount to subtotal before calculating total
+      const discountedSubtotal = Math.max(0, state.subtotal - state.couponDiscount);
+      const tax = calculateGST(discountedSubtotal);
+      const total = calculateTotal(discountedSubtotal, shippingCharge, tax);
       return {
         selectedShipping: shipping,
         shipping: shippingCharge,
+        tax,
+        total,
+      };
+    });
+  },
+  
+  // Update coupon discount and recalculate totals
+  updateCouponDiscount: () => {
+    set((state) => {
+      // Get latest coupon discount from cart store
+      const cartState = useCartStore.getState();
+      const couponDiscount = cartState.couponDiscount || 0;
+      
+      // Recalculate totals with new discount
+      const discountedSubtotal = Math.max(0, state.subtotal - couponDiscount);
+      const shippingCharge = state.selectedShipping ? state.selectedShipping.total_charge : 0;
+      const tax = calculateGST(discountedSubtotal);
+      
+      // Add COD charges if payment method is COD
+      const codCharges = (state.paymentMethod === 'cod' && state.selectedShipping?.cod_charges) 
+        ? state.selectedShipping.cod_charges 
+        : 0;
+      
+      const total = calculateTotal(discountedSubtotal, shippingCharge + codCharges, tax);
+      
+      return {
+        couponDiscount,
+        tax,
         total,
       };
     });

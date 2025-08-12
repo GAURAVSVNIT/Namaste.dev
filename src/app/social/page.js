@@ -28,6 +28,7 @@ import {
   Flame
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useAuth } from "@/hooks/useAuth";
 import { getAllLooks } from "@/lib/look";
 import { getAllVideos } from "@/lib/fashiontv";
@@ -141,6 +142,7 @@ const SocialFeedPage = () => {
       <div className="bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100">
         <div className="relative">
           <div className={`${type === 'stream' ? 'aspect-video' : 'aspect-square'} overflow-hidden bg-gray-100`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={getImageSrc()}
               alt={item.title || item.caption}

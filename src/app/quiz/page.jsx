@@ -9,6 +9,7 @@ import { Sparkles, ShoppingBag, ArrowRight, PenLine, Share, Share2 } from 'lucid
 import { useRouter } from 'next/navigation';
 import '@/static/quiz/quiz.css'; 
 import ShareModal from '@/components/common/ShareBox';
+import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
 
 export function MerchantPromo() {
   return (
@@ -17,7 +18,19 @@ export function MerchantPromo() {
         <div className="merchant-icon">
           <ShoppingBag size={48} strokeWidth={2.2} />
         </div>
-        <h2>Boost Your Brand with Interactive Quizzes</h2>
+        <h2>
+          <SplitText 
+                  text="Boost Your Brand with Interactive Quizzes" 
+                  splitType="chars"
+                  delay={80}
+                  duration={0.8}
+                  ease="power3.out"
+                  from={{ opacity: 0, y: 60, rotateX: -90 }}
+                  to={{ opacity: 1, y: 0, rotateX: 0 }}
+                  threshold={0.2}
+                  className="quiz-merchant-split"
+                />
+        </h2>
         <p>
           Want to launch a new product, or highlight a trending collection?
           Create an engaging quiz that reflects your brand’s story or a general fashion quiz.

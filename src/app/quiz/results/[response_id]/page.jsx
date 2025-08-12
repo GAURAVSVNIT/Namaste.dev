@@ -7,6 +7,7 @@ import Link from 'next/link';
 import Confetti from 'react-confetti';
 import { CheckCircle2, XCircle, Trophy } from 'lucide-react';
 import '@/static/quiz/quizResponse.css';
+import SplitText from '@/blocks/TextAnimations/SplitText/SplitText';
 
 // Add this inside ResultPage.jsx (before `export default function ResultPage`)
 function CircularScore({ score, total }) {
@@ -115,7 +116,18 @@ export default function ResultPage() {
           {wonPrize && (
           <div className="coupon-banner">
             <Trophy size={20} className="mr-2" />&nbsp;
-            Congrats! You won a coupon 🎁 <span className="coupon-code">WINNER2024</span>
+            <SplitText 
+                  text="Congrats! You won a coupon 🎁" 
+                  splitType="chars"
+                  delay={80}
+                  duration={0.8}
+                  ease="power3.out"
+                  from={{ opacity: 0, y: 60, rotateX: -90 }}
+                  to={{ opacity: 1, y: 0, rotateX: 0 }}
+                  threshold={0.2}
+                  className="coupon-code-split"
+                />
+              <span className="coupon-code">WINNER2024</span>
           </div>
         )}
         </div>

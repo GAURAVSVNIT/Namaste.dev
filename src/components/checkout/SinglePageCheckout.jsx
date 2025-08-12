@@ -16,8 +16,12 @@ import {
   Shield,
   Lock,
   Calculator,
-  Clock
+  Clock,
+  Tag,
+  LogIn
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../hooks/useAuth';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -31,11 +35,16 @@ import useCartStore from '../../store/cart-store';
 import { formatCurrency } from '../../lib/utils';
 import ShippingRates from './ShippingRates';
 import PaymentInfo from './PaymentInfo';
+import CouponInput from '../marketplace/CouponInput';
 import Image from 'next/image';
 import './Checkout.css';
 
 const SinglePageCheckout = ({ onBack }) => {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  
+  // Authentication check
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
   
   const {
     orderItems,
@@ -44,6 +53,7 @@ const SinglePageCheckout = ({ onBack }) => {
     paymentMethod,
     paymentDetails,
     subtotal,
+    couponDiscount,
     shipping,
     tax,
     total,
@@ -85,6 +95,13 @@ const SinglePageCheckout = ({ onBack }) => {
       setOrderItems(cartItems, 'cart');
     }
   }, [orderItems, cartItems]);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (mounted && !authLoading && !isAuthenticated) {
+      router.push('/auth/login?redirectTo=/checkout');
+    }
+  }, [mounted, authLoading, isAuthenticated, router]);
 
   if (!mounted) return null;
 
@@ -533,6 +550,19 @@ const SinglePageCheckout = ({ onBack }) => {
               selectedShipping={selectedShipping}
             />
 
+            {/* Coupon Code Section */}
+            <div className="checkout-card">
+              <div className="checkout-card-header">
+                <h3 className="checkout-card-title">
+                  <Tag className="checkout-card-title-icon" />
+                  Apply Coupon Code
+                </h3>
+              </div>
+              <div className="checkout-card-content">
+                <CouponInput />
+              </div>
+            </div>
+
             {/* Order Summary */}
             <div className="checkout-card">
               <div className="checkout-card-header">
@@ -547,6 +577,12 @@ const SinglePageCheckout = ({ onBack }) => {
                     <span className="checkout-summary-label">Subtotal</span>
                     <span className="checkout-summary-value">{formatCurrency(subtotal)}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className="checkout-summary-row">
+                      <span className="checkout-summary-label">Coupon Discount</span>
+                      <span className="checkout-summary-value" style={{ color: '#16a34a' }}>-{formatCurrency(couponDiscount)}</span>
+                    </div>
+                  )}
                   <div className="checkout-summary-row">
                     <span className="checkout-summary-label">Shipping</span>
                     <span className="checkout-summary-value">{shipping > 0 ? formatCurrency(shipping) : 'Free'}</span>
@@ -580,17 +616,20 @@ const SinglePageCheckout = ({ onBack }) => {
                   <span>Secure checkout with SSL encryption</span>
                 </div>
 
-                <button 
-                  onClick={handlePlaceOrder}
-                  disabled={isProcessing || !selectedShipping}
-                  className="checkout-place-order-button"
-                >
-                  {isProcessing && <div className="spinner" />}
-                  <Lock className="w-4 h-4" />
-                  <span>
-                    {isProcessing ? 'Processing...' : `Place Order - ${formatCurrency(total)}`}
-                  </span>
-                </button>
+                {/* Place Order Button - Only shown if authenticated */}
+                {isAuthenticated && (
+                  <button 
+                    onClick={handlePlaceOrder}
+                    disabled={isProcessing || !selectedShipping}
+                    className="checkout-place-order-button"
+                  >
+                    {isProcessing && <div className="spinner" />}
+                    <Lock className="w-4 h-4" />
+                    <span>
+                      {isProcessing ? 'Processing...' : `Place Order - ${formatCurrency(total)}`}
+                    </span>
+                  </button>
+                )}
 
                 {selectedShipping && (
                   <div className="checkout-delivery-info">

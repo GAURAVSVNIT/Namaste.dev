@@ -45,9 +45,15 @@
 }
 
 .brand-logo:hover img {
-    transform: scale(1.06);
     transition: .2s;
 }
+.scaleUpLV:hover {
+    transform: scale(1.64);
+}
+.scaleUpPrada:hover {
+    transform: scale(1.05);
+}
+
 
 @keyframes scroll {
     0% {

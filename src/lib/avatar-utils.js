@@ -21,7 +21,11 @@ export const generateBlendShapeQuery = (expressionName) => {
 
 
 export function rgbToHex(rgbString) {
-  const [r, g, b] = rgbString.split(',').map(Number);
+  
+  if (rgbString == '' || rgbString == undefined) {
+    return ''
+  }
+  const [r, g, b] = rgbString?.split(',').map(Number);
 
   if ([r, g, b].some(n => isNaN(n) || n < 0 || n > 255)) {
     throw new Error('Invalid RGB values. Must be numbers between 0 and 255.');

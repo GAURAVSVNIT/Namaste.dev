@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 8rem 6% 6rem 6%;
-    min-height: 85vh;
+    min-height: 100vh;
     position: relative;
     background: transparent;
     background-repeat: no-repeat;
@@ -157,7 +157,7 @@
 }
 
 .cta-button {
-    background-image: linear-gradient(135deg, #E8A5C8 0%, #D88FB7 50%, #C879A6 100%);
+    background-image: linear-gradient(135deg, #e795bf 0%, #e779b4 50%, #eb4894 100%);
     color: #FFFFFF;
     border: none;
     display: flex;
@@ -190,7 +190,7 @@
     box-shadow: 
         0 15px 40px rgba(226, 146, 187, 0.6),
         0 8px 25px rgba(195, 106, 156, 0.4);
-    background-image: linear-gradient(135deg, #D88FB7 0%, #C879A6 50%, #B568A5 100%);
+    background-image: linear-gradient(135deg, #e795bf 0%, #e76bad 50%, #f34898 100%);
 }
 
 .cta-button:hover::before {
