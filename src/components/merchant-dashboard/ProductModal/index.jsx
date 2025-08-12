@@ -20,7 +20,14 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
     stock: product?.stock || '',
     category: product?.category || '',
     imageUrl: product?.imageUrl || '',
-    tags: product?.tags || []
+    tags: product?.tags || [],
+    brand: product?.brand || '',
+    color: product?.color || '',
+    size: product?.size || '',
+    material: product?.material || '',
+    length: product?.length || '',
+    width: product?.width || '',
+    height: product?.height || '',
   });
   const [newTag, setNewTag] = useState('');
   const [imageFile, setImageFile] = useState(null);
@@ -463,6 +470,240 @@ export default function ProductModal({ product, onClose, isOpen = true }) {
                 <option value="Girls">Girls</option>
                 <option value="Boys">Boys</option>
               </select>
+            </div>
+          </div>
+
+          {/* Brand & Color */}
+          <div className={`${styles.grid} ${styles.formGroup}`}>
+            <div>
+              <label className={styles.label}>
+                Brand
+                <span className={styles.optional}>(optional)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <input
+                  type="text"
+                  name="brand"
+                  value={formData.brand}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="Enter brand name"
+                />
+              </div>
+            </div>
+            <div>
+              <label className={styles.label}>
+                Color
+                <span className={styles.optional}>(optional)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <input
+                  type="text"
+                  name="color"
+                  value={formData.color}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="Enter color"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Size & Material */}
+          <div className={`${styles.grid} ${styles.formGroup}`}>
+            <div>
+              <label className={styles.label}>
+                Size
+                <span className={styles.optional}>(optional)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <select
+                  name="size"
+                  value={formData.size}
+                  onChange={handleInputChange}
+                  className={styles.select}
+                >
+                  <option value="">Select size</option>
+                  <option value="XS">XS</option>
+                  <option value="S">S</option>
+                  <option value="M">M</option>
+                  <option value="L">L</option>
+                  <option value="XL">XL</option>
+                  <option value="XXL">XXL</option>
+                  <option value="XXXL">XXXL</option>
+                  <option value="28">28</option>
+                  <option value="30">30</option>
+                  <option value="32">32</option>
+                  <option value="34">34</option>
+                  <option value="36">36</option>
+                  <option value="38">38</option>
+                  <option value="40">40</option>
+                  <option value="42">42</option>
+                </select>
+              </div>
+            </div>
+            <div>
+              <label className={styles.label}>
+                Material
+                <span className={styles.optional}>(optional)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <input
+                  type="text"
+                  name="material"
+                  value={formData.material}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="e.g., Cotton, Polyester, Denim"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Weight & SKU */}
+          <div className={`${styles.grid} ${styles.formGroup}`}>
+            <div>
+              <label className={styles.label}>
+                Weight (kg)
+                <span className={styles.optional}>(for shipping)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <input
+                  type="number"
+                  name="weight"
+                  value={formData.weight}
+                  onChange={handleInputChange}
+                  step="0.1"
+                  min="0"
+                  className={styles.input}
+                  placeholder="0.5"
+                />
+              </div>
+            </div>
+            <div>
+              <label className={styles.label}>
+                SKU
+                <span className={styles.optional}>(auto-generated if empty)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <input
+                  type="text"
+                  name="sku"
+                  value={formData.sku}
+                  onChange={handleInputChange}
+                  className={styles.input}
+                  placeholder="Product SKU"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Dimensions */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              Dimensions (cm)
+              <span className={styles.optional}>(for shipping calculations)</span>
+            </label>
+            <div className={`${styles.grid} ${styles.dimensionsGrid}`}>
+              <div>
+                <label className={styles.dimensionLabel}>Length</label>
+                <input
+                  type="number"
+                  name="length"
+                  value={formData.length}
+                  onChange={handleInputChange}
+                  step="0.1"
+                  min="0"
+                  className={styles.input}
+                  placeholder="10"
+                />
+              </div>
+              <div>
+                <label className={styles.dimensionLabel}>Width</label>
+                <input
+                  type="number"
+                  name="width"
+                  value={formData.width}
+                  onChange={handleInputChange}
+                  step="0.1"
+                  min="0"
+                  className={styles.input}
+                  placeholder="10"
+                />
+              </div>
+              <div>
+                <label className={styles.dimensionLabel}>Height</label>
+                <input
+                  type="number"
+                  name="height"
+                  value={formData.height}
+                  onChange={handleInputChange}
+                  step="0.1"
+                  min="0"
+                  className={styles.input}
+                  placeholder="10"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Cost Price & Sale Price */}
+          <div className={`${styles.grid} ${styles.formGroup}`}>
+            <div>
+              <label className={styles.label}>
+                Cost Price
+                <span className={styles.optional}>(your cost)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <span className={styles.currencySymbol}>₹</span>
+                <input
+                  type="number"
+                  name="costPrice"
+                  value={formData.costPrice}
+                  onChange={handleInputChange}
+                  step="0.01"
+                  min="0"
+                  className={`${styles.input} ${styles.priceInput}`}
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+            <div>
+              <label className={styles.label}>
+                Sale Price
+                <span className={styles.optional}>(discounted price)</span>
+              </label>
+              <div className={styles.inputContainer}>
+                <span className={styles.currencySymbol}>₹</span>
+                <input
+                  type="number"
+                  name="salePrice"
+                  value={formData.salePrice}
+                  onChange={handleInputChange}
+                  step="0.01"
+                  min="0"
+                  className={`${styles.input} ${styles.priceInput}`}
+                  placeholder="0.00"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Barcode */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              Barcode/EAN
+              <span className={styles.optional}>(optional)</span>
+            </label>
+            <div className={styles.inputContainer}>
+              <input
+                type="text"
+                name="barcode"
+                value={formData.barcode}
+                onChange={handleInputChange}
+                className={styles.input}
+                placeholder="Enter barcode or EAN number"
+              />
             </div>
           </div>
 

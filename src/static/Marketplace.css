@@ -435,8 +435,8 @@ body {
 /* Main Body Layout - Maximized for 4 Cards Per Row */
 .marketplace-body {
   display: grid;
-  grid-template-columns: 420px 1fr;
-  gap: 1.5rem;
+  grid-template-columns: 320px 1fr;
+  gap: 2rem;
   align-items: start; /* Use 'start' instead of 'flex-start' for better compatibility */
   max-width: 100%;
   margin: 0 auto;
@@ -445,7 +445,7 @@ body {
   overflow: visible;
 }
 
-/* Filter Sidebar - Sticky positioned */
+/* Filter Sidebar - Improved Sticky positioned */
 .filter-sidebar {
   background: var(--glass-bg);
   backdrop-filter: blur(20px);
@@ -453,12 +453,13 @@ body {
   border-radius: 0 1.5rem 1.5rem 0;
   padding: 2.5rem 1.5rem 2.5rem 1.5rem;
   position: sticky;
-  top: 100px; /* Adjusted for better positioning */
+  top: 20px; /* Reduced top spacing */
+  bottom: 20px; /* Add bottom constraint */
   box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
   width: 100%;
   height: fit-content;
-  max-height: calc(100vh - 120px); /* Ensure it doesn't exceed viewport */
+  max-height: calc(100vh - 40px); /* Full viewport minus margins */
   overflow-y: auto;
   background: linear-gradient(135deg, 
     rgba(255, 255, 255, 0.98) 0%, 
@@ -466,6 +467,9 @@ body {
   border-left: 8px solid var(--accent-color);
   margin-left: 0;
   z-index: 10; /* Ensure it stays above other content */
+  /* Ensure proper scrolling behavior */
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent-color) rgba(0, 0, 0, 0.05);
 }
 
 @media (max-width: 1600px) {

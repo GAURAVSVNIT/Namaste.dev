@@ -10,9 +10,11 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import styles from './VirtualTryOn.module.css';
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, orderBy, query, serverTimestamp } from 'firebase/firestore';
+import { collection, addDoc, getDocs, orderBy, query, serverTimestamp, where } from 'firebase/firestore';
+import { useAuth } from '@/hooks/useAuth';
 
 const VirtualTryOn = () => {
+  const { user } = useAuth();
   const [personImage, setPersonImage] = useState(null);
   const [garmentImage, setGarmentImage] = useState(null);
   const [generatedImage, setGeneratedImage] = useState(null);
@@ -34,10 +36,20 @@ const VirtualTryOn = () => {
   // Firestore functions
   const loadSavedTryOns = async () => {
     try {
+      if (!user) {
+        setSavedTryOns([]);
+        return;
+      }
       const tryOnsCollection = collection(db, 'virtualTryOns');
-      const tryOnsQuery = query(tryOnsCollection, orderBy('timestamp', 'desc'));
+      const tryOnsQuery = query(tryOnsCollection, where('userId', '==', user.uid));
       const snapshot = await getDocs(tryOnsQuery);
-      const tryOns = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const tryOns = snapshot.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => {
+          const ta = a.timestamp?.toMillis?.() ? a.timestamp.toMillis() : Date.parse(a.createdAt || 0) || 0;
+          const tb = b.timestamp?.toMillis?.() ? b.timestamp.toMillis() : Date.parse(b.createdAt || 0) || 0;
+          return tb - ta;
+        });
       setSavedTryOns(tryOns);
     } catch (error) {
       console.error('Error loading saved try-ons:', error);
@@ -46,9 +58,11 @@ const VirtualTryOn = () => {
 
   const saveNewTryOn = async (imageData) => {
     try {
+      if (!user) return; // Only save for authenticated users
       const tryOnsCollection = collection(db, 'virtualTryOns');
       const newTryOn = {
         image: imageData,
+        userId: user.uid,
         timestamp: serverTimestamp(),
         createdAt: new Date().toISOString()
       };
@@ -62,9 +76,9 @@ const VirtualTryOn = () => {
 
   useEffect(() => {
     setIsMounted(true);
-    loadSavedTryOns(); // Load saved try-ons on mount
+    loadSavedTryOns(); // Load saved try-ons on mount and when user changes
     return () => setIsMounted(false);
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     let interval;
@@ -212,8 +226,7 @@ function handleFileUpload(file, type) {
         setGeneratedImage(newGeneratedImage);
         setShowSuccess(true);
         setTimeout(() => setShowSuccess(false), 3000);
-        // Save to Firestore in demo mode too
-        await saveNewTryOn(newGeneratedImage.src);
+        // Do not save fallback/demo images to gallery
 
 
         if (resultRef.current) {

@@ -16,7 +16,8 @@ import {
   Shield,
   Lock,
   Calculator,
-  Clock
+  Clock,
+  Tag
 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -31,6 +32,7 @@ import useCartStore from '../../store/cart-store';
 import { formatCurrency } from '../../lib/utils';
 import ShippingRates from './ShippingRates';
 import PaymentInfo from './PaymentInfo';
+import CouponInput from '../marketplace/CouponInput';
 import Image from 'next/image';
 import './Checkout.css';
 
@@ -44,6 +46,7 @@ const SinglePageCheckout = ({ onBack }) => {
     paymentMethod,
     paymentDetails,
     subtotal,
+    couponDiscount,
     shipping,
     tax,
     total,
@@ -533,6 +536,19 @@ const SinglePageCheckout = ({ onBack }) => {
               selectedShipping={selectedShipping}
             />
 
+            {/* Coupon Code Section */}
+            <div className="checkout-card">
+              <div className="checkout-card-header">
+                <h3 className="checkout-card-title">
+                  <Tag className="checkout-card-title-icon" />
+                  Apply Coupon Code
+                </h3>
+              </div>
+              <div className="checkout-card-content">
+                <CouponInput />
+              </div>
+            </div>
+
             {/* Order Summary */}
             <div className="checkout-card">
               <div className="checkout-card-header">
@@ -547,6 +563,12 @@ const SinglePageCheckout = ({ onBack }) => {
                     <span className="checkout-summary-label">Subtotal</span>
                     <span className="checkout-summary-value">{formatCurrency(subtotal)}</span>
                   </div>
+                  {couponDiscount > 0 && (
+                    <div className="checkout-summary-row">
+                      <span className="checkout-summary-label">Coupon Discount</span>
+                      <span className="checkout-summary-value" style={{ color: '#16a34a' }}>-{formatCurrency(couponDiscount)}</span>
+                    </div>
+                  )}
                   <div className="checkout-summary-row">
                     <span className="checkout-summary-label">Shipping</span>
                     <span className="checkout-summary-value">{shipping > 0 ? formatCurrency(shipping) : 'Free'}</span>
