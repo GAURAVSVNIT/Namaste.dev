@@ -155,7 +155,8 @@ const BlogPage = () => {
         body: JSON.stringify({
           ...blogData,
           authorId: user.uid,
-          authorName: authorName
+          authorName: authorName,
+          authorRole: userProfile.role
         }),
       });
 
@@ -212,16 +213,38 @@ const BlogPage = () => {
     }
 
     try {
-      const response = await fetch(`/api/blog?id=${blogId}&authorId=${user.uid}`, {
-        method: 'DELETE',
-      });
+      // For admin, use direct delete API call
+      if (userProfile?.role === 'admin') {
+        const response = await fetch(`/api/blog/admin-delete?id=${blogId}`, {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            adminId: user.uid
+          })
+        });
 
-      if (response.ok) {
-        fetchBlogs(); // Refresh blogs
-        alert('Blog deleted successfully!');
+        if (response.ok) {
+          fetchBlogs(); // Refresh blogs
+          alert('Blog deleted successfully!');
+        } else {
+          const error = await response.json();
+          alert(`Failed to delete blog: ${error.error}`);
+        }
       } else {
-        const error = await response.json();
-        alert(`Failed to delete blog: ${error.error}`);
+        // Regular user delete (only their own blogs)
+        const response = await fetch(`/api/blog?id=${blogId}&authorId=${user.uid}`, {
+          method: 'DELETE',
+        });
+
+        if (response.ok) {
+          fetchBlogs(); // Refresh blogs
+          alert('Blog deleted successfully!');
+        } else {
+          const error = await response.json();
+          alert(`Failed to delete blog: ${error.error}`);
+        }
       }
     } catch (error) {
       alert('Failed to delete blog. Please try again.');

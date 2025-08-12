@@ -42,6 +42,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(look.likes?.length || 0);
   const [loading, setLoading] = useState(false);
+  const [userRole, setUserRole] = useState(null);
 
   useEffect(() => {
     // Load author information
@@ -62,6 +63,23 @@ export default function LookCard({ look, onEdit, onDelete }) {
     }
   }, [look.userId, look.likes, user]);
 
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      if (user?.uid) {
+        try {
+          const userData = await getUserById(user.uid);
+          setUserRole(userData?.role || null);
+        } catch (error) {
+          console.error('Error fetching user role:', error);
+        }
+      } else {
+        setUserRole(null);
+      }
+    };
+
+    fetchUserRole();
+  }, [user]);
+
   const handleLike = async () => {
     if (!user) {
       // User must be logged in to like looks
@@ -80,7 +98,7 @@ export default function LookCard({ look, onEdit, onDelete }) {
     }
   };
 
-  const canEdit = user && user.uid === look.userId;
+  const canEdit = user && (user.uid === look.userId || userRole === 'admin');
 
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('en-US', {

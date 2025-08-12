@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/useAuth';
 import { getUserById, updateUser } from '@/lib/user';
-import { getBlogsByAuthor } from '@/lib/blog';
+import { getBlogsByAuthor, deleteBlog, updateBlog } from '@/lib/blog';
 import ProfileHeader from '@/components/profile/ProfileHeader';
 import ProfileTabs from '@/components/profile/ProfileTabs';
 import BlogGrid from '@/components/profile/BlogGrid';
@@ -69,6 +69,27 @@ export default function ProfileBlogsPage() {
       setUser(prev => ({ ...prev, ...updates }));
     } catch (error) {
       console.error('Error updating profile:', error);
+    }
+  };
+
+  // Handle edit blog
+  const handleEditBlog = (blog) => {
+    // Store the blog data in localStorage for the blog page to pick up
+    localStorage.setItem('editingBlog', JSON.stringify(blog));
+    // Navigate to blog page with edit parameter
+    router.push('/blog?edit=true');
+  };
+
+  // Handle delete blog
+  const handleDeleteBlog = async (blogId) => {
+    try {
+      await deleteBlog(blogId);
+      // Refresh the blogs list
+      loadUserBlogs();
+      alert('Blog deleted successfully!');
+    } catch (error) {
+      console.error('Error deleting blog:', error);
+      alert('Failed to delete blog. Please try again.');
     }
   };
   
@@ -203,6 +224,9 @@ export default function ProfileBlogsPage() {
             blogs={blogs}
             loading={blogsLoading}
             emptyMessage="You haven't written any blogs yet. Start sharing your thoughts with the world!"
+            onEdit={handleEditBlog}
+            onDelete={handleDeleteBlog}
+            showActions={true}
           />
         </div>
       </div>

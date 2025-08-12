@@ -668,7 +668,7 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
                   gap: '20px'
                 }}>
                   {comments.map((comment) => (
-                    <div key={comment.id} style={{
+                    <div key={comment.id} className="group" style={{
                       display: 'flex',
                       gap: '12px',
                       position: 'relative',
@@ -682,10 +682,16 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
                       e.currentTarget.style.borderColor = '#e2e8f0';
+                      // Show delete button on hover
+                      const deleteButton = e.currentTarget.querySelector('.delete-btn');
+                      if (deleteButton) deleteButton.style.opacity = '1';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.04)';
                       e.currentTarget.style.borderColor = '#f1f5f9';
+                      // Hide delete button when not hovering
+                      const deleteButton = e.currentTarget.querySelector('.delete-btn');
+                      if (deleteButton) deleteButton.style.opacity = '0.3';
                     }}>
                       {/* Avatar */}
                       <div style={{
@@ -751,31 +757,41 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
                             })}
                           </span>
                           
-                          {/* Delete button for own comments */}
-                          {comment.userId === user?.uid && (
+                          {/* Delete button for own comments, video owner, or admin */}
+                          {(comment.userId === user?.uid || video.userId === user?.uid || userRole === 'admin') && (
                             <button
                               onClick={() => handleDeleteComment(comment.id)}
+                              className="delete-btn"
                               style={{
                                 marginLeft: 'auto',
                                 color: '#9ca3af',
-                                padding: '4px',
+                                padding: '6px',
                                 borderRadius: '6px',
                                 border: 'none',
                                 backgroundColor: 'transparent',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s ease',
-                                fontSize: '14px',
-                                opacity: '0'
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                width: '24px',
+                                height: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                opacity: '0.3'
                               }}
                               onMouseEnter={(e) => {
                                 e.target.style.color = '#ef4444';
                                 e.target.style.backgroundColor = '#fef2f2';
+                                e.target.style.opacity = '1';
+                                e.target.style.transform = 'scale(1.1)';
                               }}
                               onMouseLeave={(e) => {
                                 e.target.style.color = '#9ca3af';
                                 e.target.style.backgroundColor = 'transparent';
+                                e.target.style.transform = 'scale(1)';
                               }}
-                              className="group-hover:opacity-100"
+                              title="Delete comment"
                             >
                               ×
                             </button>

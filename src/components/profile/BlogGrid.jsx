@@ -4,12 +4,39 @@ import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Heart, MessageCircle, Share, Calendar, User } from 'lucide-react';
+import { Heart, MessageCircle, Share, Calendar, User, Edit3, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { useAuth } from '@/hooks/useAuth';
+import { getUserProfile } from '@/lib/firebase';
+import { USER_ROLES } from '@/lib/roles';
 
-export default function BlogGrid({ blogs = [], loading = false, emptyMessage = "No blogs found" }) {
+export default function BlogGrid({ blogs = [], loading = false, emptyMessage = "No blogs found", onEdit, onDelete, showActions = true }) {
+  const { user: currentUser } = useAuth();
+  const [userProfile, setUserProfile] = useState(null);
+
+  // Fetch user profile to check role
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (currentUser) {
+        try {
+          const profile = await getUserProfile(currentUser.uid);
+          setUserProfile(profile);
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      }
+    };
+    fetchUserProfile();
+  }, [currentUser]);
+
+  // Check if user can edit/delete a blog
+  const canEditDelete = (blog) => {
+    if (!currentUser || !userProfile) return false;
+    // Admin can edit/delete any blog, author can edit/delete their own blog
+    return userProfile.role === USER_ROLES.ADMIN || currentUser.uid === blog.authorId;
+  };
   if (loading) {
     return (
       <div style={{
@@ -332,23 +359,106 @@ export default function BlogGrid({ blogs = [], loading = false, emptyMessage = "
                 </div>
               </div>
               
-              <Button size="sm" variant="ghost" style={{
-                padding: '8px 12px',
-                borderRadius: '10px',
-                background: 'rgba(59, 130, 246, 0.1)',
-                color: '#3b82f6',
-                border: 'none',
-                transition: 'all 0.3s ease',
-                fontWeight: '500'
-              }} onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(59, 130, 246, 0.2)';
-                e.target.style.transform = 'scale(1.05)';
-              }} onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(59, 130, 246, 0.1)';
-                e.target.style.transform = 'scale(1)';
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
               }}>
-                <Share style={{ width: '16px', height: '16px' }} />
-              </Button>
+                {/* Edit and Delete buttons for admin and blog authors */}
+                {showActions && canEditDelete(blog) && (
+                  <>
+                    {onEdit && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onEdit(blog);
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: '8px',
+                          background: 'rgba(34, 197, 94, 0.1)',
+                          color: '#059669',
+                          border: 'none',
+                          transition: 'all 0.3s ease',
+                          fontWeight: '500',
+                          fontSize: '12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'rgba(34, 197, 94, 0.2)';
+                          e.target.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'rgba(34, 197, 94, 0.1)';
+                          e.target.style.transform = 'scale(1)';
+                        }}
+                      >
+                        <Edit3 style={{ width: '14px', height: '14px' }} />
+                        Edit
+                      </Button>
+                    )}
+                    {onDelete && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (window.confirm('Are you sure you want to delete this blog?')) {
+                            onDelete(blog.id);
+                          }
+                        }}
+                        style={{
+                          padding: '6px 10px',
+                          borderRadius: '8px',
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          color: '#dc2626',
+                          border: 'none',
+                          transition: 'all 0.3s ease',
+                          fontWeight: '500',
+                          fontSize: '12px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.background = 'rgba(239, 68, 68, 0.2)';
+                          e.target.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.background = 'rgba(239, 68, 68, 0.1)';
+                          e.target.style.transform = 'scale(1)';
+                        }}
+                      >
+                        <Trash2 style={{ width: '14px', height: '14px' }} />
+                        Delete
+                      </Button>
+                    )}
+                  </>
+                )}
+                
+                {/* Share button */}
+                <Button size="sm" variant="ghost" style={{
+                  padding: '8px 12px',
+                  borderRadius: '10px',
+                  background: 'rgba(59, 130, 246, 0.1)',
+                  color: '#3b82f6',
+                  border: 'none',
+                  transition: 'all 0.3s ease',
+                  fontWeight: '500'
+                }} onMouseEnter={(e) => {
+                  e.target.style.background = 'rgba(59, 130, 246, 0.2)';
+                  e.target.style.transform = 'scale(1.05)';
+                }} onMouseLeave={(e) => {
+                  e.target.style.background = 'rgba(59, 130, 246, 0.1)';
+                  e.target.style.transform = 'scale(1)';
+                }}>
+                  <Share style={{ width: '16px', height: '16px' }} />
+                </Button>
+              </div>
             </div>
           </CardContent>
         </Card>

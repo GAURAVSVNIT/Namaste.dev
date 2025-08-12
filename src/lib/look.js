@@ -422,8 +422,13 @@ export const updateLook = async (lookId, userId, updates) => {
 
     const lookData = lookSnap.data();
     
-    // Check if user owns the look
-    if (lookData.userId !== userId) {
+    // Get user role to check admin privileges
+    const { getUserById } = require('./user');
+    const userData = await getUserById(userId);
+    const isAdmin = userData?.role === 'admin';
+    
+    // Check if user owns the look OR is an admin
+    if (lookData.userId !== userId && !isAdmin) {
       throw new Error('Unauthorized: You can only edit your own looks');
     }
 
@@ -553,8 +558,13 @@ export const deleteCommentFromLook = async (lookId, userId, commentId) => {
       throw new Error('Comment not found');
     }
 
-    // Check if user owns the comment or the look
-    if (comment.userId !== userId && lookData.userId !== userId) {
+    // Get user role to check admin privileges
+    const { getUserById } = require('./user');
+    const userData = await getUserById(userId);
+    const isAdmin = userData?.role === 'admin';
+    
+    // Check if user owns the comment, owns the look, or is an admin
+    if (comment.userId !== userId && lookData.userId !== userId && !isAdmin) {
       throw new Error('Unauthorized: You can only delete your own comments');
     }
 
