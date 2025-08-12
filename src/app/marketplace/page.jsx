@@ -83,11 +83,11 @@ const MarketPlacePage = () => {
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
   // Local UI state for filters section (expanded/collapsed)
   const [isCategoryExpanded, setIsCategoryExpanded] = useState(true);
-  const [isBrandsExpanded, setIsBrandsExpanded] = useState(false);
-  const [isSizeExpanded, setIsSizeExpanded] = useState(false);
-  const [isColorExpanded, setIsColorExpanded] = useState(false);
-  const [isMaterialExpanded, setIsMaterialExpanded] = useState(false);
-  const [isPriceExpanded, setIsPriceExpanded] = useState(false);
+  const [isBrandsExpanded, setIsBrandsExpanded] = useState(true);
+  const [isSizeExpanded, setIsSizeExpanded] = useState(true);
+  const [isColorExpanded, setIsColorExpanded] = useState(true);
+  const [isMaterialExpanded, setIsMaterialExpanded] = useState(true);
+  const [isPriceExpanded, setIsPriceExpanded] = useState(true);
   
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -392,59 +392,75 @@ const MarketPlacePage = () => {
         onNext={nextPromo}
         onGoTo={goToPromo}
       />
-      <div className="marketplace-body">
+      <div className="marketplace-body" style={{
+        display: 'flex',
+        gap: '24px',
+        alignItems: 'flex-start'
+      }}>
+        <style jsx>{`
+          @media (max-width: 768px) {
+            .marketplace-body {
+              flex-direction: column !important;
+              gap: 16px !important;
+            }
+            .filter-sidebar-container {
+              width: 100% !important;
+              flex: none !important;
+              position: static !important;
+              max-height: none !important;
+            }
+            .main-content {
+              width: 100% !important;
+            }
+          }
+        `}</style>
         <aside
           className="filter-sidebar-container"
           style={{
             width: '320px',
             flex: '0 0 320px',
             position: 'sticky',
-            top: '20px', // Reduced top spacing
+            top: '20px',
             height: 'fit-content',
-            maxHeight: 'calc(100vh - 40px)', // Full viewport minus small margin
-            zIndex: 10, // Ensure it stays above other content
+            maxHeight: 'calc(100vh - 80px)',
+            zIndex: 10,
             alignSelf: 'flex-start'
           }}
         >
           <div style={{
-            backgroundColor: '#ffffff',
-            borderRadius: '16px',
-            border: '1px solid #f1f5f9',
-            boxShadow: '0 6px 24px rgba(0,0,0,0.06)',
-            padding: '12px',
+            background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+            borderRadius: '20px',
+            border: '1px solid rgba(226, 232, 240, 0.8)',
+            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+            padding: '24px 20px 32px 20px',
             height: '100%',
-            overflowY: 'auto'
+            overflowY: 'auto',
+            overflowX: 'visible',
+            backdropFilter: 'blur(10px)',
+            position: 'relative'
           }}>
-          <div style={{ marginBottom: '16px' }}>
-            <VisualSearch onResults={handleVisualSearchResults} />
+          {/* Filters Title */}
+          <div style={{ marginBottom: '20px' }}>
+            <h2 style={{
+              margin: '0 0 16px 0',
+              fontSize: '22px',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '0.1em',
+              color: '#1f2937',
+              textAlign: 'center',
+              background: 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text'
+            }}>
+              Filters
+            </h2>
+            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent 0%, #ff4d6d 50%, transparent 100%)', margin: '0 auto', width: '60%' }}></div>
           </div>
 
-          {/* Search Bar */}
-          <div style={{ marginBottom: '20px' }}>
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{
-                width: '100%',
-                padding: '12px 16px',
-                border: '1px solid #e5e7eb',
-                borderRadius: '12px',
-                fontSize: '14px',
-                outline: 'none',
-                transition: 'border-color 0.2s ease',
-                backgroundColor: '#ffffff'
-              }}
-              onFocus={(e) => {
-                e.target.style.borderColor = '#ff4d6d';
-                e.target.style.boxShadow = '0 0 0 3px rgba(255, 77, 109, 0.1)';
-              }}
-              onBlur={(e) => {
-                e.target.style.borderColor = '#e5e7eb';
-                e.target.style.boxShadow = 'none';
-              }}
-            />
+          <div style={{ marginBottom: '16px' }}>
+            <VisualSearch onResults={handleVisualSearchResults} />
           </div>
 
           {/* Clear All Filters Button */}
@@ -505,10 +521,13 @@ const MarketPlacePage = () => {
             </h3>
             {isCategoryExpanded && (
               <div style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '12px',
-                border: '1px solid #f1f5f9'
+                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+                borderRadius: '16px',
+                padding: '16px',
+                border: '1px solid rgba(226, 232, 240, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)',
+                margin: '8px 0'
               }}>
                 <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {categories.map((cat) => (
@@ -572,10 +591,13 @@ const MarketPlacePage = () => {
             </h3>
             {isBrandsExpanded && (
               <div style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '12px',
-                border: '1px solid #f1f5f9'
+                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+                borderRadius: '16px',
+                padding: '16px',
+                border: '1px solid rgba(226, 232, 240, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)',
+                margin: '8px 0'
               }}>
                 <div style={{ maxHeight: '220px', overflowY: 'auto', paddingRight: '6px' }}>
                   <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -660,10 +682,13 @@ const MarketPlacePage = () => {
             </h3>
             {isSizeExpanded && (
               <div style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '12px',
-                border: '1px solid #f1f5f9'
+                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+                borderRadius: '16px',
+                padding: '16px',
+                border: '1px solid rgba(226, 232, 240, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)',
+                margin: '8px 0'
               }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                   {sizes.map((size) => {
@@ -717,10 +742,13 @@ const MarketPlacePage = () => {
             </h3>
             {isColorExpanded && (
               <div style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '12px',
-                border: '1px solid #f1f5f9'
+                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+                borderRadius: '16px',
+                padding: '16px',
+                border: '1px solid rgba(226, 232, 240, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)',
+                margin: '8px 0'
               }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {colors.map((color) => {
@@ -773,10 +801,13 @@ const MarketPlacePage = () => {
             </h3>
             {isMaterialExpanded && (
               <div style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '12px',
-                border: '1px solid #f1f5f9'
+                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+                borderRadius: '16px',
+                padding: '16px',
+                border: '1px solid rgba(226, 232, 240, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)',
+                margin: '8px 0'
               }}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                   {materials.map((material) => {
@@ -829,13 +860,17 @@ const MarketPlacePage = () => {
             </h3>
             {isPriceExpanded && (
               <div style={{
-                backgroundColor: '#ffffff',
-                borderRadius: '12px',
-                padding: '12px',
-                border: '1px solid #f1f5f9'
+                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
+                borderRadius: '16px',
+                padding: '16px',
+                border: '1px solid rgba(226, 232, 240, 0.6)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
+                backdropFilter: 'blur(8px)',
+                margin: '8px 0',
+                overflow: 'visible'
               }}>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                     <input
                       type="number"
                       placeholder="Min"
@@ -844,16 +879,17 @@ const MarketPlacePage = () => {
                       style={{
                         border: '1px solid #e5e7eb',
                         borderRadius: '6px',
-                        padding: '6px 8px',
-                        fontSize: '12px',
-                        flex: 1,
+                        padding: '4px 6px',
+                        fontSize: '11px',
+                        width: '65px',
+                        maxWidth: '65px',
                         outline: 'none',
                         ':focus': {
                           borderColor: '#ff4d6d'
                         }
                       }}
                     />
-                    <span style={{ color: '#9ca3af', fontSize: '12px' }}>to</span>
+                    <span style={{ color: '#9ca3af', fontSize: '10px', flexShrink: 0 }}>to</span>
                     <input
                       type="number"
                       placeholder="Max"
@@ -862,9 +898,10 @@ const MarketPlacePage = () => {
                       style={{
                         border: '1px solid #e5e7eb',
                         borderRadius: '6px',
-                        padding: '6px 8px',
-                        fontSize: '12px',
-                        flex: 1,
+                        padding: '4px 6px',
+                        fontSize: '11px',
+                        width: '65px',
+                        maxWidth: '65px',
                         outline: 'none'
                       }}
                     />
@@ -908,28 +945,137 @@ const MarketPlacePage = () => {
           </div>
         </aside>
         <main className="main-content">
-          <div className="results-header">
-            <p className="text-sm text-gray-600">Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} results</p>
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" className="lg:hidden filter-toggle-btn" onClick={() => setIsFilterSidebarOpen(true)}>
-                <Filter className="w-4 h-4 mr-2" />
-                Filters
-                {getActiveFilterCount() > 0 && (
-                  <span className="filter-count-badge">
-                    {getActiveFilterCount()}
-                  </span>
-                )}
-              </Button>
-              <Select value={sortBy} onValueChange={setSortBy}>
-                <SelectTrigger className="w-[160px] bg-white border-gray-300 hidden lg:flex">
-                  <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="newest">Newest</SelectItem>
-                  <SelectItem value="price-low">Price: Low to High</SelectItem>
-                  <SelectItem value="price-high">Price: High to Low</SelectItem>
-                </SelectContent>
-              </Select>
+          {/* Search Bar and Sort Section */}
+          <div style={{ 
+            marginBottom: '32px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '20px',
+            backgroundColor: '#ffffff',
+            padding: '24px',
+            borderRadius: '16px',
+            border: '1px solid #f1f5f9',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
+          }}>
+            {/* Search Bar */}
+            <div>
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{
+                  width: '100%',
+                  padding: '16px 20px',
+                  border: '2px solid #e5e7eb',
+                  borderRadius: '16px',
+                  fontSize: '16px',
+                  outline: 'none',
+                  transition: 'all 0.2s ease',
+                  backgroundColor: '#ffffff',
+                  fontWeight: '500'
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#ff4d6d';
+                  e.target.style.boxShadow = '0 0 0 4px rgba(255, 77, 109, 0.1)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = '#e5e7eb';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
+            </div>
+            
+            {/* Sort and Results Info */}
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'space-between', 
+              alignItems: 'center',
+              flexWrap: 'wrap',
+              gap: '16px'
+            }}>
+              <p style={{ 
+                margin: 0, 
+                fontSize: '14px', 
+                color: '#6b7280',
+                fontWeight: '500'
+              }}>Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} results</p>
+              <div style={{
+                position: 'relative',
+                minWidth: '180px'
+              }}>
+                <Select value={sortBy} onValueChange={setSortBy}>
+                  <SelectTrigger style={{
+                    width: '180px',
+                    height: '44px',
+                    backgroundColor: '#ffffff',
+                    border: '2px solid #e5e7eb',
+                    borderRadius: '12px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    color: '#374151',
+                    padding: '0 16px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}>
+                    <SelectValue placeholder="Sort by" />
+                  </SelectTrigger>
+                  <SelectContent style={{
+                    backgroundColor: '#ffffff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '12px',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+                    padding: '8px',
+                    minWidth: '180px',
+                    zIndex: 50
+                  }}>
+                    <SelectItem value="all" style={{
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#374151',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      margin: '2px 0'
+                    }}>All</SelectItem>
+                    <SelectItem value="newest" style={{
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#374151',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      margin: '2px 0'
+                    }}>Newest First</SelectItem>
+                    <SelectItem value="price-low" style={{
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#374151',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      margin: '2px 0'
+                    }}>Lowest First</SelectItem>
+                    <SelectItem value="price-high" style={{
+                      padding: '12px 16px',
+                      borderRadius: '8px',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                      color: '#374151',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      margin: '2px 0'
+                    }}>Highest First</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
           <ProductGrid 

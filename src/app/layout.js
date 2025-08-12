@@ -115,11 +115,13 @@ export default function RootLayout({ children }) {
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
 
-        {/* Chatbot Button - show everywhere */}
-        <Link href="/chatbot" className={styles.chatbotBtn}>
-          <Bot size={20} className={styles.icon} />
-          <span className={styles.label}>Zyra, AI Fashion Advicer</span>
-        </Link>
+        {/* Chatbot Button - show only on homepage */}
+        {isHomepage && (
+          <Link href="/chatbot" className={styles.chatbotBtn}>
+            <Bot size={20} className={styles.icon} />
+            <span className={styles.label}>Zyra, AI Fashion Advicer</span>
+          </Link>
+        )}
 
         <Script 
           src="https://checkout.razorpay.com/v1/checkout.js"
