@@ -77,6 +77,42 @@ const VirtualTryOn = () => {
   useEffect(() => {
     setIsMounted(true);
     loadSavedTryOns(); // Load saved try-ons on mount and when user changes
+    
+    // Check for pre-loaded garment from marketplace
+    const loadPreSelectedGarment = () => {
+      try {
+        const selectedGarmentData = sessionStorage.getItem('selectedGarment');
+        if (selectedGarmentData) {
+          const garmentData = JSON.parse(selectedGarmentData);
+          
+          // Create a garment image object from the marketplace data
+          const garmentImageData = {
+            src: garmentData.image || '/api/placeholder/300/400',
+            name: garmentData.name || 'Selected Garment',
+            size: 0, // We don't have the actual file size
+            type: 'image/jpeg', // Assume JPEG for marketplace images
+            file: null, // We'll need to convert the image URL to a File object later
+            isFromMarketplace: true, // Flag to indicate this came from marketplace
+            originalData: garmentData // Store original marketplace data
+          };
+          
+          setGarmentImage(garmentImageData);
+          
+          // Clear the sessionStorage after loading
+          sessionStorage.removeItem('selectedGarment');
+          
+          // Show a success message
+          setError(null);
+          console.log('Garment loaded from marketplace:', garmentData.name);
+        }
+      } catch (error) {
+        console.error('Error loading pre-selected garment:', error);
+        sessionStorage.removeItem('selectedGarment'); // Clean up on error
+      }
+    };
+    
+    loadPreSelectedGarment();
+    
     return () => setIsMounted(false);
   }, [user]);
 
@@ -157,6 +193,18 @@ function handleFileUpload(file, type) {
     reader.readAsDataURL(file);
   }
 
+  // Helper function to convert image URL to File object
+  const urlToFile = async (url, filename, mimeType) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      return new File([blob], filename, { type: mimeType });
+    } catch (error) {
+      console.error('Error converting URL to file:', error);
+      throw new Error('Failed to process image from URL');
+    }
+  };
+
   const handleGenerate = async () => {
     if (!personImage || !garmentImage || isProcessing) return;
 
@@ -167,8 +215,26 @@ function handleFileUpload(file, type) {
 
     try {
       const formData = new FormData();
-      formData.append('person_image', personImage.file);
-      formData.append('garment_image', garmentImage.file);
+      
+      // Handle person image
+      let personFile = personImage.file;
+      if (!personFile && personImage.src) {
+        personFile = await urlToFile(personImage.src, personImage.name || 'person-image.jpg', personImage.type || 'image/jpeg');
+      }
+      
+      // Handle garment image (could be from marketplace)
+      let garmentFile = garmentImage.file;
+      if (!garmentFile && garmentImage.src) {
+        // If it's from marketplace, use the image URL
+        garmentFile = await urlToFile(garmentImage.src, garmentImage.name || 'garment-image.jpg', garmentImage.type || 'image/jpeg');
+      }
+      
+      if (!personFile || !garmentFile) {
+        throw new Error('Failed to process images. Please try uploading again.');
+      }
+      
+      formData.append('person_image', personFile);
+      formData.append('garment_image', garmentFile);
       formData.append('garment_type', 'dress');
       formData.append('model_type', 'viton_hd');
       formData.append('steps', '30');
@@ -367,9 +433,13 @@ function handleFileUpload(file, type) {
                 </Button>
               </div>
               
-              <Badge className="absolute top-3 right-3 bg-white/90 text-gray-800 border border-gray-200 shadow-sm z-10">
+              <Badge className={`absolute top-3 right-3 border shadow-sm z-10 ${
+                image.isFromMarketplace 
+                  ? 'bg-purple-100/90 text-purple-800 border-purple-200' 
+                  : 'bg-white/90 text-gray-800 border-gray-200'
+              }`}>
                 <CheckCircle className="h-3 w-3 mr-1 text-green-500" />
-                Uploaded
+                {image.isFromMarketplace ? 'From Marketplace' : 'Uploaded'}
               </Badge>
             </motion.div>
           ) : (
@@ -513,7 +583,12 @@ function handleFileUpload(file, type) {
                         <CardTitle className="text-lg">Garment</CardTitle>
                       </div>
                       <CardDescription className="mt-1 text-gray-600 text-sm text-center">
-                        {!garmentImage ? "Upload a photo of the garment you want to try on" : "Click to change or drag a new garment"}
+                        {!garmentImage 
+                          ? "Upload a photo of the garment you want to try on" 
+                          : garmentImage.isFromMarketplace 
+                            ? `Garment loaded from marketplace: ${garmentImage.originalData?.name || 'Selected Item'}`
+                            : "Click to change or drag a new garment"
+                        }
                       </CardDescription>
                     </CardHeader>
                     <CardContent className={styles.cardContent}>

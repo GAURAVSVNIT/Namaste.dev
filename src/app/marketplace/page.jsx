@@ -3,6 +3,7 @@
 import { useEffect, useState, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
+import { Shirt as VirtualTryOnIcon } from 'lucide-react';
 import { getDocs, collection, db, query, orderBy } from '../../lib/firebase';
 import { Filter, Star, Heart, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import { Button } from '../../components/ui/button';
@@ -18,7 +19,7 @@ import MarketplacePagination from '../../components/marketplace/MarketplacePagin
 import '../../static/Marketplace.css';
 
 // Memoized ProductGrid component (moved outside main component)
-const ProductGrid = memo(({ products, onViewProduct, onAddToCart }) => (
+const ProductGrid = memo(({ products, onViewProduct, onAddToCart, onTryOn }) => (
   <div className="products-grid">
     {products.map((product) => (
       <ProductCard 
@@ -26,13 +27,14 @@ const ProductGrid = memo(({ products, onViewProduct, onAddToCart }) => (
         product={product} 
         onViewProduct={onViewProduct}
         onAddToCart={onAddToCart}
+        onTryOn={onTryOn}
       />
     ))}
   </div>
 ));
 
 // Memoized ProductCard component (moved outside main component)
-const ProductCard = memo(({ product, onViewProduct, onAddToCart }) => (
+const ProductCard = memo(({ product, onViewProduct, onAddToCart, onTryOn }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -44,6 +46,19 @@ const ProductCard = memo(({ product, onViewProduct, onAddToCart }) => (
       <div className="product-card-actions">
         <button className="product-card-action-button">
           <Heart className="w-5 h-5 text-gray-600" />
+        </button>
+        <button 
+          className="product-card-action-button"
+          onClick={(e) => onTryOn(e, product)}
+          style={{
+            background: 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)',
+            color: 'white',
+            border: 'none',
+            marginLeft: '8px'
+          }}
+          title="Virtual Try-On"
+        >
+          <VirtualTryOnIcon className="w-5 h-5" />
         </button>
       </div>
       <button className="product-card-add-to-cart" onClick={(e) => onAddToCart(e, product)}>
@@ -58,6 +73,18 @@ const ProductCard = memo(({ product, onViewProduct, onAddToCart }) => (
         <span className="text-sm font-medium text-gray-700">{product.rating || '4.5'}</span>
       </div>
       <p className="product-card-price">{formatCurrency(product.price || 0)}</p>
+      
+      {/* Try-On Button in content area */}
+      <button
+        className="w-full mt-3 py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 flex items-center justify-center gap-2"
+        onClick={(e) => onTryOn(e, product)}
+        style={{
+          background: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)'
+        }}
+      >
+        <VirtualTryOnIcon className="w-4 h-4" />
+        Virtual Try-On
+      </button>
     </div>
   </motion.div>
 ));
@@ -364,6 +391,21 @@ const MarketPlacePage = () => {
     addToCart(product);
     openCart();
   }, [addToCart, openCart]);
+
+  // Handler for try-on functionality
+  const handleTryOnMemo = useCallback((e, product) => {
+    e.stopPropagation();
+    // Store product data in sessionStorage for the virtual try-on page
+    const garmentData = {
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      type: product.category || 'garment'
+    };
+    sessionStorage.setItem('selectedGarment', JSON.stringify(garmentData));
+    // Redirect to virtual try-on page
+    router.push('/virtual-tryon');
+  }, [router]);
 
   // Handler for visual search results
   const handleVisualSearchResults = useCallback((results) => {
@@ -1104,6 +1146,7 @@ const MarketPlacePage = () => {
             products={currentProducts}
             onViewProduct={handleViewProductMemo}
             onAddToCart={handleAddToCartMemo}
+            onTryOn={handleTryOnMemo}
           />
           
           {/* Pagination Controls */}
