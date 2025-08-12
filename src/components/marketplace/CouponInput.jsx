@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Ticket, X, Check, AlertCircle, Gift } from 'lucide-react';
 import useCartStore from '../../store/cart-store';
+import useCheckoutStore from '../../store/checkout-store';
 import { formatCurrency } from '../../lib/utils';
 
 const CouponInput = () => {
@@ -20,6 +21,8 @@ const CouponInput = () => {
     getCartTotal,
     getFinalTotal
   } = useCartStore();
+  
+  const { updateCouponDiscount } = useCheckoutStore();
 
   const cartTotal = getCartTotal();
   const finalTotal = getFinalTotal();
@@ -37,6 +40,9 @@ const CouponInput = () => {
       setMessage(`Coupon applied! You saved ${formatCurrency(result.discount)}`);
       setMessageType('success');
       setCouponCode('');
+      
+      // Sync with checkout store
+      updateCouponDiscount();
     } else {
       setMessage(result.error);
       setMessageType('error');
@@ -53,6 +59,10 @@ const CouponInput = () => {
     removeCoupon();
     setMessage('Coupon removed');
     setMessageType('error');
+    
+    // Sync with checkout store
+    updateCouponDiscount();
+    
     setTimeout(() => {
       setMessage('');
       setMessageType('');
@@ -214,7 +224,25 @@ const CouponInput = () => {
                       key={coupon.code}
                       onClick={() => {
                         setCouponCode(coupon.code);
-                        handleApplyCoupon();
+                        const result = applyCoupon(coupon.code);
+                        
+                        if (result.success) {
+                          setMessage(`Coupon applied! You saved ${formatCurrency(result.discount)}`);
+                          setMessageType('success');
+                          setCouponCode('');
+                          
+                          // Sync with checkout store
+                          updateCouponDiscount();
+                        } else {
+                          setMessage(result.error);
+                          setMessageType('error');
+                        }
+                        
+                        // Clear message after 3 seconds
+                        setTimeout(() => {
+                          setMessage('');
+                          setMessageType('');
+                        }, 3000);
                       }}
                       style={{
                         display: 'flex',

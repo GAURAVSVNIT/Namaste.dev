@@ -219,10 +219,41 @@ const useCheckoutStore = create((set, get) => ({
   setSelectedShipping: (shipping) => {
     set((state) => {
       const shippingCharge = shipping ? shipping.total_charge : 0;
-      const total = calculateTotal(state.subtotal, shippingCharge, state.tax);
+      // Apply coupon discount to subtotal before calculating total
+      const discountedSubtotal = Math.max(0, state.subtotal - state.couponDiscount);
+      const tax = calculateGST(discountedSubtotal);
+      const total = calculateTotal(discountedSubtotal, shippingCharge, tax);
       return {
         selectedShipping: shipping,
         shipping: shippingCharge,
+        tax,
+        total,
+      };
+    });
+  },
+  
+  // Update coupon discount and recalculate totals
+  updateCouponDiscount: () => {
+    set((state) => {
+      // Get latest coupon discount from cart store
+      const cartState = useCartStore.getState();
+      const couponDiscount = cartState.couponDiscount || 0;
+      
+      // Recalculate totals with new discount
+      const discountedSubtotal = Math.max(0, state.subtotal - couponDiscount);
+      const shippingCharge = state.selectedShipping ? state.selectedShipping.total_charge : 0;
+      const tax = calculateGST(discountedSubtotal);
+      
+      // Add COD charges if payment method is COD
+      const codCharges = (state.paymentMethod === 'cod' && state.selectedShipping?.cod_charges) 
+        ? state.selectedShipping.cod_charges 
+        : 0;
+      
+      const total = calculateTotal(discountedSubtotal, shippingCharge + codCharges, tax);
+      
+      return {
+        couponDiscount,
+        tax,
         total,
       };
     });

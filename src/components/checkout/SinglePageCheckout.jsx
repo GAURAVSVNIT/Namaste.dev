@@ -17,8 +17,11 @@ import {
   Lock,
   Calculator,
   Clock,
-  Tag
+  Tag,
+  LogIn
 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '../../hooks/useAuth';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -38,6 +41,10 @@ import './Checkout.css';
 
 const SinglePageCheckout = ({ onBack }) => {
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
+  
+  // Authentication check
+  const { user, loading: authLoading, isAuthenticated } = useAuth();
   
   const {
     orderItems,
@@ -88,6 +95,13 @@ const SinglePageCheckout = ({ onBack }) => {
       setOrderItems(cartItems, 'cart');
     }
   }, [orderItems, cartItems]);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (mounted && !authLoading && !isAuthenticated) {
+      router.push('/auth/login?redirectTo=/checkout');
+    }
+  }, [mounted, authLoading, isAuthenticated, router]);
 
   if (!mounted) return null;
 
@@ -602,17 +616,20 @@ const SinglePageCheckout = ({ onBack }) => {
                   <span>Secure checkout with SSL encryption</span>
                 </div>
 
-                <button 
-                  onClick={handlePlaceOrder}
-                  disabled={isProcessing || !selectedShipping}
-                  className="checkout-place-order-button"
-                >
-                  {isProcessing && <div className="spinner" />}
-                  <Lock className="w-4 h-4" />
-                  <span>
-                    {isProcessing ? 'Processing...' : `Place Order - ${formatCurrency(total)}`}
-                  </span>
-                </button>
+                {/* Place Order Button - Only shown if authenticated */}
+                {isAuthenticated && (
+                  <button 
+                    onClick={handlePlaceOrder}
+                    disabled={isProcessing || !selectedShipping}
+                    className="checkout-place-order-button"
+                  >
+                    {isProcessing && <div className="spinner" />}
+                    <Lock className="w-4 h-4" />
+                    <span>
+                      {isProcessing ? 'Processing...' : `Place Order - ${formatCurrency(total)}`}
+                    </span>
+                  </button>
+                )}
 
                 {selectedShipping && (
                   <div className="checkout-delivery-info">
