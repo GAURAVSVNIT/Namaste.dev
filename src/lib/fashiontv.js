@@ -413,6 +413,94 @@ export const deleteVideo = async (videoId, userId) => {
   }
 };
 
+/**
+ * Add comment to video
+ * @param {string} videoId - Video ID
+ * @param {string} userId - User ID
+ * @param {string} comment - Comment text
+ * @returns {Promise<Object>} Created comment data
+ */
+export const addCommentToVideo = async (videoId, userId, comment) => {
+  if (!videoId || !userId || !comment?.trim()) {
+    throw new Error('Video ID, User ID, and comment text are required');
+  }
+
+  try {
+    // Get user data for the comment
+    const userData = await getUserById(userId);
+    const userName = userData.name || userData.displayName || userData.email || 'Anonymous User';
+
+    const videoRef = doc(db, 'fashiontv_videos', videoId);
+    const commentData = {
+      id: Date.now().toString(),
+      userId,
+      userName,
+      text: comment.trim(),
+      timestamp: new Date().toISOString(),
+      createdAt: new Date()
+    };
+
+    await updateDoc(videoRef, {
+      comments: arrayUnion(commentData),
+      updatedAt: serverTimestamp()
+    });
+
+    return commentData;
+  } catch (error) {
+    console.error('Error adding comment:', error);
+    throw new Error('Failed to add comment');
+  }
+};
+
+/**
+ * Delete comment from video
+ * @param {string} videoId - Video ID
+ * @param {string} userId - User ID
+ * @param {string} commentId - Comment ID
+ * @returns {Promise<Object>} Success status
+ */
+export const deleteCommentFromVideo = async (videoId, userId, commentId) => {
+  if (!videoId || !userId || !commentId) {
+    throw new Error('Video ID, User ID, and comment ID are required');
+  }
+
+  try {
+    const videoRef = doc(db, 'fashiontv_videos', videoId);
+    const videoSnap = await getDoc(videoRef);
+
+    if (!videoSnap.exists()) {
+      throw new Error('Video not found');
+    }
+
+    const videoData = videoSnap.data();
+    const comments = videoData.comments || [];
+    const comment = comments.find(c => c.id === commentId);
+
+    if (!comment) {
+      throw new Error('Comment not found');
+    }
+
+    // Get user role to check admin privileges
+    const userData = await getUserById(userId);
+    const isAdmin = userData?.role === 'admin';
+
+    // Check if user owns the comment, the video, or is an admin
+    if (comment.userId !== userId && videoData.userId !== userId && !isAdmin) {
+      throw new Error('Unauthorized: You can only delete your own comments');
+    }
+
+    await updateDoc(videoRef, {
+      comments: arrayRemove(comment),
+      updatedAt: serverTimestamp()
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error deleting comment:', error);
+    throw new Error('Failed to delete comment');
+  }
+};
+
 // LIVESTREAM FUNCTIONS
 
 /**

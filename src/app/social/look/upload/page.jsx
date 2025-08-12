@@ -116,24 +116,34 @@ export default function UploadLookPage() {
   }
 
   const handleSubmit = async (lookData) => {
-    setIsSubmitting(true);
-    try {
-      await createLook(user.uid, lookData);
-      toast({
-        title: "Success!",
-        description: "Your look has been uploaded successfully.",
-      });
-      router.push('/social/look');
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to upload look. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  // ✅ Validate required fields
+  if (!lookData.title || !lookData.description || !lookData.image) {
+    toast({
+      title: "Missing Information",
+      description: "Please fill in all required fields before uploading.",
+      variant: "destructive",
+    });
+    return; // Stop submission here
+  }
+
+  setIsSubmitting(true);
+  try {
+    await createLook(user.uid, lookData);
+    toast({
+      title: "Success!",
+      description: "Your look has been uploaded successfully.",
+    });
+    router.push('/social/look');
+  } catch (error) {
+    toast({
+      title: "Error",
+      description: error?.message || "Failed to upload look. Please try again.",
+      variant: "destructive",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const handleCancel = () => {
     router.push('/social/look');

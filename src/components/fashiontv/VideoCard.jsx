@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { toggleLikeVideo, deleteVideo } from '@/lib/fashiontv';
+import { toggleLikeVideo, deleteVideo, addCommentToVideo, deleteCommentFromVideo } from '@/lib/fashiontv';
 import { getUserProfile } from '@/lib/firebase';
 import { Heart, MessageCircle, Play, Volume2, VolumeX, Trash2, MoreVertical } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -136,30 +136,43 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
   };
 
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
-      const comment = {
-        id: Date.now(),
-        text: newComment,
-        userId: user.uid,
-        userName: user.displayName || 'Anonymous',
-        timestamp: new Date().toISOString()
-      };
-      setComments([...comments, comment]);
-      setNewComment('');
-      toast({
-        title: "Comment Added",
-        description: "Your comment has been posted",
-      });
+      try {
+        const commentData = await addCommentToVideo(video.id, user.uid, newComment);
+        setComments([...comments, commentData]);
+        setNewComment('');
+        toast({
+          title: "Comment Added",
+          description: "Your comment has been posted",
+        });
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        toast({
+          title: "Error",
+          description: "Failed to add comment. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  const handleDeleteComment = (commentId) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-    toast({
-      title: "Comment Deleted",
-      description: "Comment has been removed",
-    });
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteCommentFromVideo(video.id, user.uid, commentId);
+      setComments(comments.filter(comment => comment.id !== commentId));
+      toast({
+        title: "Comment Deleted",
+        description: "Comment has been removed",
+      });
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete comment. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleVideoLoad = (e) => {
@@ -517,19 +530,19 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
         }}>
           <div style={{
             position: 'absolute',
-            top: 0,
+            bottom: 0,
             left: '50%',
             transform: 'translateX(-50%)',
             width: '100%',
             maxWidth: '500px',
             backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            maxHeight: '100vh',
+            borderRadius: '20px 20px 0 0',
+            maxHeight: '80vh',
             minHeight: '50vh',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.25)',
-            animation: 'slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.25)',
+            animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }}>
             
             {/* Header */}

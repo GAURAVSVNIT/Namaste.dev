@@ -44,6 +44,11 @@ export default function RootLayout({ children }) {
   const isFashionTV = pathname?.startsWith('/social/fashiontv');
   const isAuthPage = pathname?.startsWith('/auth');
   const isHomepage = pathname === '/';
+  const isSocialPage = pathname?.startsWith('/social');
+  const isVirtualTryOnPage = pathname?.startsWith('/virtual-tryon');
+  const isConsultationPage = pathname?.startsWith('/consultation');
+  const isBlogPage = pathname?.startsWith('/blog');
+  const isAvatarPage = pathname?.startsWith('/avatars');
 
   if (isFashionTV) {
     // Fashion TV gets full-screen experience without navbar/footer
@@ -64,7 +69,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased gradient-background`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased ${(isSocialPage || isVirtualTryOnPage || isConsultationPage || isBlogPage || isAvatarPage) ? '' : 'gradient-background'}`}
+        style={(isSocialPage || isVirtualTryOnPage || isConsultationPage || isBlogPage || isAvatarPage) ? { backgroundColor: '#ffffff' } : {}}
       >
         <LayoutWrapper>
           <ConditionalNavbar face={poppins.className} />
