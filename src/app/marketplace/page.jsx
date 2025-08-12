@@ -82,12 +82,12 @@ const MarketPlacePage = () => {
   const [visualSearchResults, setVisualSearchResults] = useState(null);
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
   // Local UI state for filters section (expanded/collapsed)
-  const [isCategoryExpanded, setIsCategoryExpanded] = useState(true);
-  const [isBrandsExpanded, setIsBrandsExpanded] = useState(true);
-  const [isSizeExpanded, setIsSizeExpanded] = useState(true);
-  const [isColorExpanded, setIsColorExpanded] = useState(true);
-  const [isMaterialExpanded, setIsMaterialExpanded] = useState(true);
-  const [isPriceExpanded, setIsPriceExpanded] = useState(true);
+  const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
+  const [isBrandsExpanded, setIsBrandsExpanded] = useState(false);
+  const [isSizeExpanded, setIsSizeExpanded] = useState(false);
+  const [isColorExpanded, setIsColorExpanded] = useState(false);
+  const [isMaterialExpanded, setIsMaterialExpanded] = useState(false);
+  const [isPriceExpanded, setIsPriceExpanded] = useState(false);
   
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -106,22 +106,44 @@ const MarketPlacePage = () => {
   const colors = ['Black', 'White', 'Blue', 'Red', 'Green', 'Yellow', 'Pink', 'Purple', 'Orange', 'Brown', 'Gray', 'Navy', 'Beige'];
   const materials = ['Cotton', 'Polyester', 'Denim', 'Silk', 'Wool', 'Linen', 'Leather', 'Canvas', 'Viscose', 'Spandex', 'Nylon'];
 
-  // Update items per page based on screen size
+  // Update items per page and filter states based on screen size
   useEffect(() => {
-    const updateItemsPerPage = () => {
+    const updateResponsiveSettings = () => {
       const width = window.innerWidth;
-      if (width <= 768) {
+      const isMobile = width <= 768;
+      
+      // Update items per page
+      if (isMobile) {
         setItemsPerPage(4); // Mobile: 1 per row × 4 rows = 4 items
       } else if (width <= 1024) {
         setItemsPerPage(8); // Tablet: 2 per row × 4 rows = 8 items
       } else {
         setItemsPerPage(12); // Desktop: 4 per row × 3 rows = 12 items
       }
+      
+      // Set filter states based on screen size
+      if (isMobile) {
+        // All filters collapsed on mobile
+        setIsCategoryExpanded(false);
+        setIsBrandsExpanded(false);
+        setIsSizeExpanded(false);
+        setIsColorExpanded(false);
+        setIsMaterialExpanded(false);
+        setIsPriceExpanded(false);
+      } else {
+        // All filters expanded on desktop except visual search
+        setIsCategoryExpanded(true);
+        setIsBrandsExpanded(true);
+        setIsSizeExpanded(true);
+        setIsColorExpanded(true);
+        setIsMaterialExpanded(true);
+        setIsPriceExpanded(true);
+      }
     };
 
-    updateItemsPerPage();
-    window.addEventListener('resize', updateItemsPerPage);
-    return () => window.removeEventListener('resize', updateItemsPerPage);
+    updateResponsiveSettings();
+    window.addEventListener('resize', updateResponsiveSettings);
+    return () => window.removeEventListener('resize', updateResponsiveSettings);
   }, []);
 
   // Reset to first page when filters change
