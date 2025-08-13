@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { createBlog, getAllBlogs, getBlogs, updateBlog, deleteBlog, getBlogById } from '@/lib/blog';
 import { auth } from '@/lib/firebase';
+import { getUserProfile } from '@/lib/firebase';
+import { USER_ROLES } from '@/lib/roles';
 
 // GET - Fetch blogs with optional pagination
 export async function GET(request) {

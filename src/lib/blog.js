@@ -22,7 +22,7 @@ export const generateSlug = (title) => {
 };
 
 // Create a new blog post
-export const createBlog = async (blogData, authorId, authorName) => {
+export const createBlog = async (blogData, authorId, authorName, authorRole = null) => {
   try {
     const slug = generateSlug(blogData.title);
     
@@ -33,6 +33,7 @@ export const createBlog = async (blogData, authorId, authorName) => {
       slug: slug,
       authorId: authorId,
       authorName: authorName,
+      authorRole: authorRole,
       tags: blogData.tags || [],
       imageUrl: blogData.imageUrl || '',
       createdAt: serverTimestamp(),

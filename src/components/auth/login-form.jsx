@@ -48,7 +48,7 @@ export function LoginForm() {
       }
       
       if (profile.role === 'admin') {
-        router.push("/admin/users");
+        router.push("/");
         return;
       }
       
@@ -90,7 +90,7 @@ export function LoginForm() {
         }
         
         if (profile?.role === 'admin') {
-          router.push("/admin/users");
+          router.push("/");
           return;
         }
         

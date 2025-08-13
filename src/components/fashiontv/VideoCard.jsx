@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { toggleLikeVideo, deleteVideo } from '@/lib/fashiontv';
+import { toggleLikeVideo, deleteVideo, addCommentToVideo, deleteCommentFromVideo } from '@/lib/fashiontv';
 import { getUserProfile } from '@/lib/firebase';
 import { Heart, MessageCircle, Play, Volume2, VolumeX, Trash2, MoreVertical } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
@@ -136,30 +136,43 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
   };
 
 
-  const handleAddComment = () => {
+  const handleAddComment = async () => {
     if (newComment.trim()) {
-      const comment = {
-        id: Date.now(),
-        text: newComment,
-        userId: user.uid,
-        userName: user.displayName || 'Anonymous',
-        timestamp: new Date().toISOString()
-      };
-      setComments([...comments, comment]);
-      setNewComment('');
-      toast({
-        title: "Comment Added",
-        description: "Your comment has been posted",
-      });
+      try {
+        const commentData = await addCommentToVideo(video.id, user.uid, newComment);
+        setComments([...comments, commentData]);
+        setNewComment('');
+        toast({
+          title: "Comment Added",
+          description: "Your comment has been posted",
+        });
+      } catch (error) {
+        console.error('Error adding comment:', error);
+        toast({
+          title: "Error",
+          description: "Failed to add comment. Please try again.",
+          variant: "destructive",
+        });
+      }
     }
   };
 
-  const handleDeleteComment = (commentId) => {
-    setComments(comments.filter(comment => comment.id !== commentId));
-    toast({
-      title: "Comment Deleted",
-      description: "Comment has been removed",
-    });
+  const handleDeleteComment = async (commentId) => {
+    try {
+      await deleteCommentFromVideo(video.id, user.uid, commentId);
+      setComments(comments.filter(comment => comment.id !== commentId));
+      toast({
+        title: "Comment Deleted",
+        description: "Comment has been removed",
+      });
+    } catch (error) {
+      console.error('Error deleting comment:', error);
+      toast({
+        title: "Error",
+        description: "Failed to delete comment. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleVideoLoad = (e) => {
@@ -517,19 +530,19 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
         }}>
           <div style={{
             position: 'absolute',
-            top: 0,
+            bottom: 0,
             left: '50%',
             transform: 'translateX(-50%)',
             width: '100%',
             maxWidth: '500px',
             backgroundColor: '#ffffff',
-            borderRadius: '20px',
-            maxHeight: '100vh',
+            borderRadius: '20px 20px 0 0',
+            maxHeight: '80vh',
             minHeight: '50vh',
             display: 'flex',
             flexDirection: 'column',
-            boxShadow: '0 20px 60px rgba(0, 0, 0, 0.25)',
-            animation: 'slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            boxShadow: '0 -20px 60px rgba(0, 0, 0, 0.25)',
+            animation: 'slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
           }}>
             
             {/* Header */}
@@ -655,7 +668,7 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
                   gap: '20px'
                 }}>
                   {comments.map((comment) => (
-                    <div key={comment.id} style={{
+                    <div key={comment.id} className="group" style={{
                       display: 'flex',
                       gap: '12px',
                       position: 'relative',
@@ -669,10 +682,16 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
                     onMouseEnter={(e) => {
                       e.currentTarget.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.08)';
                       e.currentTarget.style.borderColor = '#e2e8f0';
+                      // Show delete button on hover
+                      const deleteButton = e.currentTarget.querySelector('.delete-btn');
+                      if (deleteButton) deleteButton.style.opacity = '1';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.04)';
                       e.currentTarget.style.borderColor = '#f1f5f9';
+                      // Hide delete button when not hovering
+                      const deleteButton = e.currentTarget.querySelector('.delete-btn');
+                      if (deleteButton) deleteButton.style.opacity = '0.3';
                     }}>
                       {/* Avatar */}
                       <div style={{
@@ -738,31 +757,41 @@ function VideoCard({ video, isActive, onCommentsToggle, isGloballyMuted, onGloba
                             })}
                           </span>
                           
-                          {/* Delete button for own comments */}
-                          {comment.userId === user?.uid && (
+                          {/* Delete button for own comments, video owner, or admin */}
+                          {(comment.userId === user?.uid || video.userId === user?.uid || userRole === 'admin') && (
                             <button
                               onClick={() => handleDeleteComment(comment.id)}
+                              className="delete-btn"
                               style={{
                                 marginLeft: 'auto',
                                 color: '#9ca3af',
-                                padding: '4px',
+                                padding: '6px',
                                 borderRadius: '6px',
                                 border: 'none',
                                 backgroundColor: 'transparent',
                                 cursor: 'pointer',
                                 transition: 'all 0.2s ease',
-                                fontSize: '14px',
-                                opacity: '0'
+                                fontSize: '16px',
+                                fontWeight: 'bold',
+                                width: '24px',
+                                height: '24px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                opacity: '0.3'
                               }}
                               onMouseEnter={(e) => {
                                 e.target.style.color = '#ef4444';
                                 e.target.style.backgroundColor = '#fef2f2';
+                                e.target.style.opacity = '1';
+                                e.target.style.transform = 'scale(1.1)';
                               }}
                               onMouseLeave={(e) => {
                                 e.target.style.color = '#9ca3af';
                                 e.target.style.backgroundColor = 'transparent';
+                                e.target.style.transform = 'scale(1)';
                               }}
-                              className="group-hover:opacity-100"
+                              title="Delete comment"
                             >
                               ×
                             </button>

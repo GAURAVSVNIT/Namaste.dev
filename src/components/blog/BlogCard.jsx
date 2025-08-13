@@ -1,15 +1,33 @@
 'use client';
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { toggleLike } from '@/lib/blog';
 import RoleBadge from '@/components/ui/role-badge';
+import { getUserProfile } from '@/lib/firebase';
+import { USER_ROLES } from '@/lib/roles';
 
 const BlogCard = ({ blog, onEdit, onDelete }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(blog.likes?.length || 0);
+  const [userProfile, setUserProfile] = useState(null);
   const { user } = useAuth();
+
+  // Fetch user profile to check role
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      if (user) {
+        try {
+          const profile = await getUserProfile(user.uid);
+          setUserProfile(profile);
+        } catch (error) {
+          console.error('Error fetching user profile:', error);
+        }
+      }
+    };
+    fetchUserProfile();
+  }, [user]);
   
   const formatDate = (timestamp) => {
     if (!timestamp) return 'Unknown date';
@@ -58,7 +76,12 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
     }
   };
 
-  const canEditDelete = user && user.uid === blog.authorId;
+  // Check if user can edit/delete a blog
+  const canEditDelete = (blog) => {
+    if (!user || !userProfile) return false;
+    // Admin can edit/delete any blog, author can edit/delete their own blog
+    return userProfile.role === USER_ROLES.ADMIN || user.uid === blog.authorId;
+  };
 
   return (
     <div style={{
@@ -280,7 +303,7 @@ const BlogCard = ({ blog, onEdit, onDelete }) => {
           </Link>
         </div>
         
-        {canEditDelete && (
+        {canEditDelete(blog) && (
           <div style={{
             display: 'flex',
             alignItems: 'center',

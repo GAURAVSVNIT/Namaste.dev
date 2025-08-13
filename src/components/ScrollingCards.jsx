@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { motion, useMotionValue, useTransform, useSpring } from 'framer-motion';
 import { ArrowRight, Heart, Package, ShoppingBag, Sparkles } from 'lucide-react';
 import Link from 'next/link';
@@ -54,40 +54,47 @@ const Card = ({ card, index, progress }) => {
   const cardProgress = 1 / totalCards;
   const startProgress = index * cardProgress;
   const endProgress = (index + 1) * cardProgress;
-  const nextCardStart = (index + 1) * cardProgress;
   
   let x, scale;
   
+  // Create comprehensive animation ranges that work smoothly in both directions
   if (index === 0) {
-    // First card: visible at start, completely slides out as next card slides in
+    // First card: starts visible, slides left on forward scroll, slides back from left on reverse
     x = useTransform(progress, 
-      [0, cardProgress], 
-      ['0%', '-120%']
+      [0, cardProgress, 1], 
+      ['0%', '-120%', '-120%'] // Stays out once it goes left
     );
     scale = useTransform(progress, 
-      [0, cardProgress], 
-      [1, 0.8]
-    );
-  } else if (index === totalCards - 1) {
-    // Last card: slides in completely and slides out completely on reverse
-    x = useTransform(progress, 
-      [startProgress - cardProgress, startProgress], 
-      ['120%', '0%']
-    );
-    scale = useTransform(progress, 
-      [startProgress - cardProgress, startProgress], 
-      [0.8, 1]
+      [0, cardProgress, 1], 
+      [1, 0.8, 0.8]
     );
   } else {
-    // Middle cards: slide in from right as previous slides out, then completely slide out as next slides in
-    x = useTransform(progress, 
-      [startProgress - cardProgress, startProgress, endProgress], 
-      ['120%', '0%', '-120%']
-    );
-    scale = useTransform(progress, 
-      [startProgress - cardProgress, startProgress, endProgress], 
-      [0.8, 1, 0.8]
-    );
+    // All other cards: comprehensive bidirectional animation
+    const prevProgress = Math.max(0, (index - 1) * cardProgress);
+    const currentStart = index * cardProgress;
+    const currentEnd = Math.min(1, (index + 1) * cardProgress);
+    
+    if (index === totalCards - 1) {
+      // Last card: slides in from right, stays visible at end
+      x = useTransform(progress, 
+        [0, prevProgress, currentStart, 1], 
+        ['120%', '120%', '0%', '0%'] // Comes from right and stays
+      );
+      scale = useTransform(progress, 
+        [0, prevProgress, currentStart, 1], 
+        [0.8, 0.8, 1, 1]
+      );
+    } else {
+      // Middle cards: full cycle animation
+      x = useTransform(progress, 
+        [0, prevProgress, currentStart, currentEnd, 1], 
+        ['120%', '120%', '0%', '-120%', '-120%']
+      );
+      scale = useTransform(progress, 
+        [0, prevProgress, currentStart, currentEnd, 1], 
+        [0.8, 0.8, 1, 0.8, 0.8]
+      );
+    }
   }
 
   return (
@@ -156,7 +163,38 @@ const Card = ({ card, index, progress }) => {
 const ScrollingCards = () => {
   const sectionRef = useRef(null);
   const scrollProgress = useMotionValue(0);
-  const smoothProgress = useSpring(scrollProgress, { stiffness: 120, damping: 40 });
+  const smoothProgress = useSpring(scrollProgress, { 
+    stiffness: 150, 
+    damping: 50, 
+    mass: 1.2,
+    restDelta: 0.001,
+    restSpeed: 0.01
+  });
+  const [isFullyVisible, setIsFullyVisible] = useState(false);
+
+  // Intersection Observer to check if carousel is visible
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        // Activate horizontal scroll when section is at least 60% visible for better UX
+        setIsFullyVisible(entry.intersectionRatio >= 0.6);
+      },
+      {
+        threshold: [0, 0.2, 0.4, 0.6, 0.8, 1], // Multiple thresholds for smooth detection
+        rootMargin: '-10% 0px -10% 0px' // Add margin for better trigger area
+      }
+    );
+
+    observer.observe(section);
+
+    return () => {
+      observer.unobserve(section);
+    };
+  }, []);
 
   useEffect(() => {
     const section = sectionRef.current;
@@ -176,27 +214,50 @@ const ScrollingCards = () => {
     const handleTouchMove = (e) => {
       if (!isTouching) return;
       
+      // ULTRA STRICT: Always prevent default when carousel is visible
+      if (!isFullyVisible) {
+        return;
+      }
+      
       const touchY = e.touches[0].clientY;
       const touchX = e.touches[0].clientX;
       const deltaY = touchStartY - touchY;
       const deltaX = Math.abs(touchStartX - touchX);
       
       // Only handle vertical swipes (ignore horizontal swipes)
-      if (deltaX > Math.abs(deltaY)) return;
+      if (deltaX > Math.abs(deltaY) * 1.2) {
+        e.preventDefault(); // Still block even horizontal-ish swipes near carousel
+        return;
+      }
       
       const currentProgress = scrollProgress.get();
-      const scrollSensitivity = 0.002;
+      const scrollSensitivity = 0.004;
       const newProgress = currentProgress + deltaY * scrollSensitivity;
       
-      const isInHorizontalRange = currentProgress > 0 && currentProgress < 1;
-      const isAtStartAndScrollingDown = currentProgress === 0 && deltaY > 0;
-      const isAtEndAndScrollingUp = currentProgress === 1 && deltaY < 0;
+      // Determine scroll conditions
+      const isScrollingDown = deltaY > 0;
+      const isScrollingUp = deltaY < 0;
       
-      if (isInHorizontalRange || isAtStartAndScrollingDown || isAtEndAndScrollingUp) {
-        e.preventDefault();
-        scrollProgress.set(Math.max(0, Math.min(1, newProgress)));
-        touchStartY = touchY; // Update touch start for continuous scrolling
+      // ULTRA STRICT CONDITIONS
+      const isAtExactStart = currentProgress <= 0.001; // Almost zero tolerance
+      const isAtExactEnd = currentProgress >= 0.999;   // Almost complete
+      
+      // Allow ONLY these very specific cases for page scrolling:
+      const allowUpwardPageScroll = isAtExactStart && isScrollingUp;
+      const allowDownwardPageScroll = isAtExactEnd && isScrollingDown;
+      
+      if (allowUpwardPageScroll || allowDownwardPageScroll) {
+        // Allow page scroll only in these exact cases
+        return;
       }
+      
+      // EVERYTHING ELSE: Block page scroll and handle with carousel
+      e.preventDefault();
+      e.stopPropagation(); // Extra blocking
+      
+      const clampedProgress = Math.max(0, Math.min(1, newProgress));
+      scrollProgress.set(clampedProgress);
+      touchStartY = touchY;
     };
 
     const handleTouchEnd = () => {
@@ -205,23 +266,37 @@ const ScrollingCards = () => {
 
     // Mouse wheel handling for desktop
     const handleWheel = (e) => {
+      // ULTRA STRICT: Always prevent default when carousel is visible
+      if (!isFullyVisible) return;
+      
       const currentProgress = scrollProgress.get();
       const scrollDelta = e.deltaY;
-      const scrollSensitivity = 0.0007;
+      const scrollSensitivity = 0.002;
       const newProgress = currentProgress + scrollDelta * scrollSensitivity;
       
-      // Only prevent default if:
-      // 1. We're currently in the middle of horizontal animation (0 < progress < 1)
-      // 2. OR we're at the boundaries and scrolling would continue the horizontal animation
-      const isInHorizontalRange = currentProgress > 0 && currentProgress < 1;
-      const isAtStartAndScrollingDown = currentProgress === 0 && scrollDelta > 0;
-      const isAtEndAndScrollingUp = currentProgress === 1 && scrollDelta < 0;
+      // Determine scroll direction
+      const isScrollingDown = scrollDelta > 0;
+      const isScrollingUp = scrollDelta < 0;
       
-      if (isInHorizontalRange || isAtStartAndScrollingDown || isAtEndAndScrollingUp) {
-        e.preventDefault();
-        scrollProgress.set(Math.max(0, Math.min(1, newProgress)));
+      // ULTRA STRICT CONDITIONS - Same as touch
+      const isAtExactStart = currentProgress <= 0.001; // Almost zero tolerance
+      const isAtExactEnd = currentProgress >= 0.999;   // Almost complete
+      
+      // Allow ONLY these very specific cases for page scrolling:
+      const allowUpwardPageScroll = isAtExactStart && isScrollingUp;
+      const allowDownwardPageScroll = isAtExactEnd && isScrollingDown;
+      
+      if (allowUpwardPageScroll || allowDownwardPageScroll) {
+        // Allow page scroll only in these exact cases
+        return;
       }
-      // Allow normal vertical scrolling when at boundaries and scrolling away from horizontal range
+      
+      // EVERYTHING ELSE: Block page scroll and handle with carousel
+      e.preventDefault();
+      e.stopPropagation(); // Extra blocking
+      
+      const clampedProgress = Math.max(0, Math.min(1, newProgress));
+      scrollProgress.set(clampedProgress);
     };
 
     // Add event listeners
@@ -236,7 +311,7 @@ const ScrollingCards = () => {
       section.removeEventListener('touchmove', handleTouchMove);
       section.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [scrollProgress]);
+  }, [isFullyVisible]);
   
 
   return (

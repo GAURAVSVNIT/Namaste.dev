@@ -97,7 +97,8 @@
 /* for custom avatar builder header  */
 
 .header-section {
-  @apply w-[full] rounded-[2rem] text-center px-6 py-16 bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-400 text-white shadow-xl;
+  @apply w-full rounded-[2rem] text-center px-6 py-16 text-white shadow-xl;
+  background: linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%);
 }
 
 .badge {
@@ -129,7 +130,8 @@
 }
 
 .btn-create-look {
-  @apply flex items-center gap-2 px-6 py-3 rounded-full font-semibold bg-gradient-to-r from-orange-400 to-pink-500 text-white shadow-md hover:scale-105 transition;
+  @apply flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-white shadow-md hover:scale-105 transition;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
 }
 
 .btn-create-reel {

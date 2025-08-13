@@ -1318,7 +1318,7 @@ border: '2px solid rgba(239, 68, 68, 0.2)',
                                   {formatDate(comment.createdAt)}
                                 </time>
                               </div>
-                              {user && (user.uid === comment.userId || user.uid === look.userId) && (
+                              {user && (user.uid === comment.userId || user.uid === look.userId || userRole === 'admin') && (
                                 <button
                                   onClick={() => handleDeleteComment(comment.id)}
                                   style={{

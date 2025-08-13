@@ -7,6 +7,8 @@ export const metadata = {
 
 export default function VirtualTryOnPage() {
   return (
-    <VirtualTryOn />
+    <div className="virtual-tryon-layout" style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
+      <VirtualTryOn />
+    </div>
   );
 }

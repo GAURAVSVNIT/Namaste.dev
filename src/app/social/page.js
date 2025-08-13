@@ -349,7 +349,7 @@ const SocialFeedPage = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="relative mb-8">
             <div className="animate-spin rounded-full h-20 w-20 border-4 border-gray-200 border-t-pink-500"></div>
@@ -363,10 +363,10 @@ const SocialFeedPage = () => {
   }
 
   return (
-    <div className="min-h-screen" style={{ background: 'var(--background)' }}>
+    <div className="min-h-screen" style={{ background: '#ffffff' }}>
       <div style={{
         paddingTop: '40px',
-        paddingBottom: '80px',
+        paddingBottom: '0px',
         marginTop: '40px'
       }}>
         

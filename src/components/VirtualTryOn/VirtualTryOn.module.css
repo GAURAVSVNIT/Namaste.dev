@@ -2,7 +2,7 @@
   min-height: calc(100vh - 80px);
   padding: 3rem 1rem; /* Reset padding */
   margin-top: 80px; /* Add space for fixed navbar */
-  background-color: #f8fafc; /* Light background for the whole page */
+  background-color: #ffffff; /* Pure white background to match body */
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -10,7 +10,7 @@ export default function SocialLayout({ children }) {
   const shouldShowBottomNav = !pathname.includes('/live') && !pathname.includes('/fashiontv');
 
   return (
-    <div className="social-layout">
+    <div className="social-layout" style={{ backgroundColor: '#ffffff', minHeight: '100vh' }}>
       <div className={shouldShowBottomNav ? 'pb-28' : ''}>
         {children}
       </div>

@@ -58,7 +58,7 @@ export async function GET(request) {
       // Check if user is admin to set redirect
       const userData = userDoc.data();
       if (userData?.role === 'admin') {
-        redirectTarget = '/admin/users';
+        redirectTarget = '/';
       }
     }
     

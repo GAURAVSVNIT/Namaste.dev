@@ -42,6 +42,13 @@ const montserrat = Montserrat({
 export default function RootLayout({ children }) {
   const pathname = usePathname();
   const isFashionTV = pathname?.startsWith('/social/fashiontv');
+  const isAuthPage = pathname?.startsWith('/auth');
+  const isHomepage = pathname === '/';
+  const isSocialPage = pathname?.startsWith('/social');
+  const isVirtualTryOnPage = pathname?.startsWith('/virtual-tryon');
+  const isConsultationPage = pathname?.startsWith('/consultation');
+  const isBlogPage = pathname?.startsWith('/blog');
+  const isAvatarPage = pathname?.startsWith('/avatars');
   const GA_TRACKING_ID = 'G-WYETEKYVWR';
 
   if (isFashionTV) {
@@ -99,7 +106,8 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased gradient-background`}
+        className={`${geistSans.variable} ${geistMono.variable} ${playfairDisplay.variable} ${montserrat.variable} antialiased ${(isSocialPage || isVirtualTryOnPage || isConsultationPage || isBlogPage || isAvatarPage) ? '' : 'gradient-background'}`}
+        style={(isSocialPage || isVirtualTryOnPage || isConsultationPage || isBlogPage || isAvatarPage) ? { backgroundColor: '#ffffff' } : {}}
       >
         <LayoutWrapper>
           <ConditionalNavbar face={poppins.className} />
@@ -107,11 +115,13 @@ export default function RootLayout({ children }) {
           <ConditionalFooter face={poppins.className} />
         </LayoutWrapper>
 
-        {/* Chatbot Button - show everywhere */}
-        <Link href="/chatbot" className={styles.chatbotBtn}>
-          <Bot size={20} className={styles.icon} />
-          <span className={styles.label}>Zyra, AI Fashion Advicer</span>
-        </Link>
+        {/* Chatbot Button - show only on homepage */}
+        {isHomepage && (
+          <Link href="/chatbot" className={styles.chatbotBtn}>
+            <Bot size={20} className={styles.icon} />
+            <span className={styles.label}>Zyra, AI Fashion Advicer</span>
+          </Link>
+        )}
 
         <Script 
           src="https://checkout.razorpay.com/v1/checkout.js"
