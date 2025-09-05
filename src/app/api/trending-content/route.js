@@ -10,8 +10,9 @@ import {
   where
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { globalP2PCache } from '@/lib/p2p-cache';
 
-// Function to fetch actual trending data from Firebase
+// Function to fetch actual trending data from Firebase with P2P caching
 const fetchActualTrendingData = async (sortBy, timeRange) => {
   try {
     const trendingContent = [];
@@ -46,25 +47,55 @@ const fetchActualTrendingData = async (sortBy, timeRange) => {
     
     const looksSnapshot = await getDocs(looksQuery);
     
-    // Process looks and get creator info
+    // Extract unique user IDs from looks for batch processing
+    const looksUserIds = new Set();
+    const lookDataArray = [];
+    
     for (const lookDoc of looksSnapshot.docs) {
       const lookData = lookDoc.data();
+      lookDataArray.push({ id: lookDoc.id, data: lookData });
+      if (lookData.userId) {
+        looksUserIds.add(lookData.userId);
+      }
+    }
+    
+    // Batch fetch user data with P2P caching for looks
+    const looksUserDataMap = await globalP2PCache.batchGetUsers(
+      Array.from(looksUserIds),
+      async (userId) => {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          return {
+            name: userData.name || userData.email?.split('@')[0] || 'Unknown User',
+            verified: userData.verified || false,
+            email: userData.email,
+            avatar: userData.avatar || null,
+            followers: userData.followers || 0,
+            totalLikes: userData.totalLikes || 0,
+            frequentCollaborators: userData.frequentCollaborators || []
+          };
+        }
+        return null;
+      }
+    );
+    
+    // Process looks with cached creator info
+    for (const lookItem of lookDataArray) {
+      const { id: lookId, data: lookData } = lookItem;
       
-      // Get creator info
+      // Get creator info from cache
       let creatorName = 'Unknown User';
       let isVerified = false;
+      let creatorAvatar = null;
       
-      try {
-        if (lookData.userId) {
-          const userDoc = await getDoc(doc(db, 'users', lookData.userId));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            creatorName = userData.name || userData.email?.split('@')[0] || 'Unknown User';
-            isVerified = userData.verified || false;
-          }
+      if (lookData.userId) {
+        const cachedUser = looksUserDataMap.get(lookData.userId);
+        if (cachedUser) {
+          creatorName = cachedUser.name;
+          isVerified = cachedUser.verified;
+          creatorAvatar = cachedUser.avatar;
         }
-      } catch (error) {
-        console.error('Error fetching creator info:', error);
       }
       
       const likes = Array.isArray(lookData.likes) ? lookData.likes.length : 0;
@@ -72,10 +103,11 @@ const fetchActualTrendingData = async (sortBy, timeRange) => {
       const views = likes * Math.floor(Math.random() * 10) + comments * 5; // Estimate views
       
       trendingContent.push({
-        id: lookDoc.id,
+        id: lookId,
         type: 'look',
         title: lookData.caption || 'Untitled Look',
         creator: creatorName,
+        creatorAvatar: creatorAvatar,
         image: Array.isArray(lookData.images) && lookData.images.length > 0 ? lookData.images[0] : null,
         views: views,
         likes: likes,
@@ -89,7 +121,7 @@ const fetchActualTrendingData = async (sortBy, timeRange) => {
       });
     }
     
-    // Fetch reels (fashiontv_videos)
+    // Fetch reels (fashiontv_videos) with P2P caching
     let reelsQuery = query(
       collection(db, 'fashiontv_videos'),
       orderBy('createdAt', 'desc'),
@@ -107,25 +139,55 @@ const fetchActualTrendingData = async (sortBy, timeRange) => {
     
     const reelsSnapshot = await getDocs(reelsQuery);
     
-    // Process reels and get creator info
+    // Extract unique user IDs for batch processing
+    const userIds = new Set();
+    const reelDataArray = [];
+    
     for (const reelDoc of reelsSnapshot.docs) {
       const reelData = reelDoc.data();
+      reelDataArray.push({ id: reelDoc.id, data: reelData });
+      if (reelData.userId) {
+        userIds.add(reelData.userId);
+      }
+    }
+    
+    // Batch fetch user data with P2P caching
+    const userDataMap = await globalP2PCache.batchGetUsers(
+      Array.from(userIds),
+      async (userId) => {
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          return {
+            name: userData.name || userData.email?.split('@')[0] || 'Unknown User',
+            verified: userData.verified || false,
+            email: userData.email,
+            avatar: userData.avatar || null,
+            followers: userData.followers || 0,
+            totalLikes: userData.totalLikes || 0,
+            frequentCollaborators: userData.frequentCollaborators || []
+          };
+        }
+        return null;
+      }
+    );
+    
+    // Process reels with cached creator info
+    for (const reelItem of reelDataArray) {
+      const { id: reelId, data: reelData } = reelItem;
       
-      // Get creator info
+      // Get creator info from cache
       let creatorName = 'Unknown User';
       let isVerified = false;
+      let creatorAvatar = null;
       
-      try {
-        if (reelData.userId) {
-          const userDoc = await getDoc(doc(db, 'users', reelData.userId));
-          if (userDoc.exists()) {
-            const userData = userDoc.data();
-            creatorName = userData.name || userData.email?.split('@')[0] || 'Unknown User';
-            isVerified = userData.verified || false;
-          }
+      if (reelData.userId) {
+        const cachedUser = userDataMap.get(reelData.userId);
+        if (cachedUser) {
+          creatorName = cachedUser.name;
+          isVerified = cachedUser.verified;
+          creatorAvatar = cachedUser.avatar;
         }
-      } catch (error) {
-        console.error('Error fetching creator info:', error);
       }
       
       const likes = Array.isArray(reelData.likes) ? reelData.likes.length : 0;
@@ -157,11 +219,12 @@ const fetchActualTrendingData = async (sortBy, timeRange) => {
       };
       
       trendingContent.push({
-        id: reelDoc.id,
+        id: reelId,
         type: 'reel',
         title: reelData.caption || 'Untitled Reel',
         creator: creatorName,
-        image: reelData.thumbnail || reelData.thumbnailUrl || getPlaceholderForReel(reelDoc.id),
+        creatorAvatar: creatorAvatar,
+        image: reelData.thumbnail || reelData.thumbnailUrl || getPlaceholderForReel(reelId),
         videoUrl: reelData.videoUrl,
         views: views,
         likes: likes,
@@ -173,6 +236,9 @@ const fetchActualTrendingData = async (sortBy, timeRange) => {
         duration: reelData.duration || null
       });
     }
+
+    // Log cache performance
+    console.log('P2P Cache Performance:', globalP2PCache.getStats());
     
     return trendingContent;
     
@@ -207,6 +273,31 @@ export async function GET(request) {
 
     console.log(`Fetching trending content: sort=${sort}, timeRange=${timeRange}`);
 
+    // Warm cache with popular users periodically
+    const shouldWarmCache = Math.random() < 0.1; // 10% chance to warm cache
+    if (shouldWarmCache) {
+      // Example: warm cache with known popular user IDs
+      const popularUserIds = []; // This could be populated from your analytics
+      if (popularUserIds.length > 0) {
+        globalP2PCache.warmCache(popularUserIds, async (userId) => {
+          const userDoc = await getDoc(doc(db, 'users', userId));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            return {
+              name: userData.name || userData.email?.split('@')[0] || 'Unknown User',
+              verified: userData.verified || false,
+              email: userData.email,
+              avatar: userData.avatar || null,
+              followers: userData.followers || 0,
+              totalLikes: userData.totalLikes || 0,
+              frequentCollaborators: userData.frequentCollaborators || []
+            };
+          }
+          return null;
+        });
+      }
+    }
+
     // Fetch actual trending data from Firebase
     let data = await fetchActualTrendingData(sort, timeRange);
 
@@ -233,7 +324,14 @@ export async function GET(request) {
     // Limit to top 50 results for performance
     data = data.slice(0, 50);
 
-    return NextResponse.json(data);
+    // Add cache performance metrics to response headers
+    const cacheStats = globalP2PCache.getStats();
+    const response = NextResponse.json(data);
+    response.headers.set('X-Cache-Hit-Rate', cacheStats.hitRate);
+    response.headers.set('X-Cache-Size', cacheStats.cacheSize.toString());
+    response.headers.set('X-Cache-Efficiency', cacheStats.cacheEfficiency);
+
+    return response;
   } catch (error) {
     console.error('Error in trending-content API:', error);
     return NextResponse.json(

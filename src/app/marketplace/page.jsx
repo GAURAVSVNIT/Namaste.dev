@@ -3,7 +3,6 @@
 import { useEffect, useState, useCallback, memo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { Shirt as VirtualTryOnIcon } from 'lucide-react';
 import { getDocs, collection, db, query, orderBy } from '../../lib/firebase';
 import { Filter, Star, Heart, ChevronDown, ChevronUp, Check } from 'lucide-react';
 import { Button } from '../../components/ui/button';
@@ -19,7 +18,7 @@ import MarketplacePagination from '../../components/marketplace/MarketplacePagin
 import '../../static/Marketplace.css';
 
 // Memoized ProductGrid component (moved outside main component)
-const ProductGrid = memo(({ products, onViewProduct, onAddToCart, onTryOn }) => (
+const ProductGrid = memo(({ products, onViewProduct, onAddToCart }) => (
   <div className="products-grid">
     {products.map((product) => (
       <ProductCard 
@@ -27,14 +26,13 @@ const ProductGrid = memo(({ products, onViewProduct, onAddToCart, onTryOn }) => 
         product={product} 
         onViewProduct={onViewProduct}
         onAddToCart={onAddToCart}
-        onTryOn={onTryOn}
       />
     ))}
   </div>
 ));
 
 // Memoized ProductCard component (moved outside main component)
-const ProductCard = memo(({ product, onViewProduct, onAddToCart, onTryOn }) => (
+const ProductCard = memo(({ product, onViewProduct, onAddToCart }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -46,19 +44,6 @@ const ProductCard = memo(({ product, onViewProduct, onAddToCart, onTryOn }) => (
       <div className="product-card-actions">
         <button className="product-card-action-button">
           <Heart className="w-5 h-5 text-gray-600" />
-        </button>
-        <button 
-          className="product-card-action-button"
-          onClick={(e) => onTryOn(e, product)}
-          style={{
-            background: 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)',
-            color: 'white',
-            border: 'none',
-            marginLeft: '8px'
-          }}
-          title="Virtual Try-On"
-        >
-          <VirtualTryOnIcon className="w-5 h-5" />
         </button>
       </div>
       <button className="product-card-add-to-cart" onClick={(e) => onAddToCart(e, product)}>
@@ -73,18 +58,6 @@ const ProductCard = memo(({ product, onViewProduct, onAddToCart, onTryOn }) => (
         <span className="text-sm font-medium text-gray-700">{product.rating || '4.5'}</span>
       </div>
       <p className="product-card-price">{formatCurrency(product.price || 0)}</p>
-      
-      {/* Try-On Button in content area */}
-      <button
-        className="w-full mt-3 py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-medium rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all duration-200 flex items-center justify-center gap-2"
-        onClick={(e) => onTryOn(e, product)}
-        style={{
-          background: 'linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%)'
-        }}
-      >
-        <VirtualTryOnIcon className="w-4 h-4" />
-        Virtual Try-On
-      </button>
     </div>
   </motion.div>
 ));
@@ -100,21 +73,14 @@ const MarketPlacePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Fashion');
   const [selectedBrands, setSelectedBrands] = useState([]);
-  const [selectedSizes, setSelectedSizes] = useState([]);
-  const [selectedColors, setSelectedColors] = useState([]);
-  const [selectedMaterials, setSelectedMaterials] = useState([]);
   const [priceRange, setPriceRange] = useState([0, 5000]);
   const [selectedRating, setSelectedRating] = useState(0);
   const [sortBy, setSortBy] = useState('newest');
   const [visualSearchResults, setVisualSearchResults] = useState(null);
   const [isFilterSidebarOpen, setIsFilterSidebarOpen] = useState(false);
   // Local UI state for filters section (expanded/collapsed)
-  const [isCategoryExpanded, setIsCategoryExpanded] = useState(false);
+  const [isCategoryExpanded, setIsCategoryExpanded] = useState(true);
   const [isBrandsExpanded, setIsBrandsExpanded] = useState(false);
-  const [isSizeExpanded, setIsSizeExpanded] = useState(false);
-  const [isColorExpanded, setIsColorExpanded] = useState(false);
-  const [isMaterialExpanded, setIsMaterialExpanded] = useState(false);
-  const [isPriceExpanded, setIsPriceExpanded] = useState(false);
   
   // Pagination States
   const [currentPage, setCurrentPage] = useState(1);
@@ -128,55 +94,28 @@ const MarketPlacePage = () => {
   
   const { addToCart, openCart } = useCartStore();
 
-  // Filter options based on add product form
-  const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '28', '30', '32', '34', '36', '38', '40', '42'];
-  const colors = ['Black', 'White', 'Blue', 'Red', 'Green', 'Yellow', 'Pink', 'Purple', 'Orange', 'Brown', 'Gray', 'Navy', 'Beige'];
-  const materials = ['Cotton', 'Polyester', 'Denim', 'Silk', 'Wool', 'Linen', 'Leather', 'Canvas', 'Viscose', 'Spandex', 'Nylon'];
-
-  // Update items per page and filter states based on screen size
+  // Update items per page based on screen size
   useEffect(() => {
-    const updateResponsiveSettings = () => {
+    const updateItemsPerPage = () => {
       const width = window.innerWidth;
-      const isMobile = width <= 768;
-      
-      // Update items per page
-      if (isMobile) {
+      if (width <= 768) {
         setItemsPerPage(4); // Mobile: 1 per row × 4 rows = 4 items
       } else if (width <= 1024) {
         setItemsPerPage(8); // Tablet: 2 per row × 4 rows = 8 items
       } else {
         setItemsPerPage(12); // Desktop: 4 per row × 3 rows = 12 items
       }
-      
-      // Set filter states based on screen size
-      if (isMobile) {
-        // All filters collapsed on mobile
-        setIsCategoryExpanded(false);
-        setIsBrandsExpanded(false);
-        setIsSizeExpanded(false);
-        setIsColorExpanded(false);
-        setIsMaterialExpanded(false);
-        setIsPriceExpanded(false);
-      } else {
-        // All filters expanded on desktop except visual search
-        setIsCategoryExpanded(true);
-        setIsBrandsExpanded(true);
-        setIsSizeExpanded(true);
-        setIsColorExpanded(true);
-        setIsMaterialExpanded(true);
-        setIsPriceExpanded(true);
-      }
     };
 
-    updateResponsiveSettings();
-    window.addEventListener('resize', updateResponsiveSettings);
-    return () => window.removeEventListener('resize', updateResponsiveSettings);
+    updateItemsPerPage();
+    window.addEventListener('resize', updateItemsPerPage);
+    return () => window.removeEventListener('resize', updateItemsPerPage);
   }, []);
 
   // Reset to first page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, selectedCategory, selectedBrands, selectedSizes, selectedColors, selectedMaterials, priceRange, sortBy]);
+  }, [searchTerm, selectedCategory, selectedBrands, sortBy]);
 
   // Calculate pagination
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
@@ -284,69 +223,18 @@ const MarketPlacePage = () => {
       tempProducts = tempProducts.filter(p => selectedBrands.includes(p.brand));
     }
 
-    // Size Filter
-    if (selectedSizes.length > 0) {
-      tempProducts = tempProducts.filter(p => {
-        const productSizes = p.sizes || p.size || [];
-        const sizesArray = Array.isArray(productSizes) ? productSizes : [productSizes];
-        return selectedSizes.some(size => sizesArray.includes(size));
-      });
-    }
-
-    // Color Filter
-    if (selectedColors.length > 0) {
-      tempProducts = tempProducts.filter(p => {
-        const productColors = p.colors || p.color || [];
-        const colorsArray = Array.isArray(productColors) ? productColors : [productColors];
-        return selectedColors.some(color => 
-          colorsArray.some(productColor => 
-            productColor && productColor.toLowerCase() === color.toLowerCase()
-          )
-        );
-      });
-    }
-
-    // Material Filter
-    if (selectedMaterials.length > 0) {
-      tempProducts = tempProducts.filter(p => {
-        const productMaterials = p.materials || p.material || [];
-        const materialsArray = Array.isArray(productMaterials) ? productMaterials : [productMaterials];
-        return selectedMaterials.some(material => 
-          materialsArray.some(productMaterial => 
-            productMaterial && productMaterial.toLowerCase() === material.toLowerCase()
-          )
-        );
-      });
-    }
-
-    // Price Range Filter
-    if (priceRange[0] > 0 || priceRange[1] < 5000) {
-      tempProducts = tempProducts.filter(p => {
-        const price = parseFloat(p.price) || 0;
-        return price >= priceRange[0] && price <= priceRange[1];
-      });
-    }
-
     // Search Filter
     if (searchTerm) {
-      tempProducts = tempProducts.filter(p => {
-        const searchText = searchTerm.toLowerCase();
-        return (
-          p.name.toLowerCase().includes(searchText) ||
-          (p.description && p.description.toLowerCase().includes(searchText)) ||
-          (p.shortDescription && p.shortDescription.toLowerCase().includes(searchText)) ||
-          (p.tags && Array.isArray(p.tags) && p.tags.some(tag => tag.toLowerCase().includes(searchText)))
-        );
-      });
+      tempProducts = tempProducts.filter(p => p.name.toLowerCase().includes(searchTerm.toLowerCase()));
     }
     
     // Sorting
     switch (sortBy) {
       case 'price-low':
-        tempProducts.sort((a, b) => (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0));
+        tempProducts.sort((a, b) => a.price - b.price);
         break;
       case 'price-high':
-        tempProducts.sort((a, b) => (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0));
+        tempProducts.sort((a, b) => b.price - a.price);
         break;
       case 'newest':
       default:
@@ -355,30 +243,12 @@ const MarketPlacePage = () => {
     }
 
     setFilteredProducts(tempProducts);
-  }, [products, searchTerm, selectedCategory, selectedBrands, selectedSizes, selectedColors, selectedMaterials, priceRange, sortBy]);
+  }, [products, searchTerm, selectedCategory, selectedBrands, sortBy]);
 
   // Memoized handlers to prevent recreation
   const handleBrandChange = useCallback((brand, checked) => {
     setSelectedBrands(prev => 
       checked ? [...prev, brand] : prev.filter(b => b !== brand)
-    );
-  }, []);
-
-  const handleSizeChange = useCallback((size, checked) => {
-    setSelectedSizes(prev => 
-      checked ? [...prev, size] : prev.filter(s => s !== size)
-    );
-  }, []);
-
-  const handleColorChange = useCallback((color, checked) => {
-    setSelectedColors(prev => 
-      checked ? [...prev, color] : prev.filter(c => c !== color)
-    );
-  }, []);
-
-  const handleMaterialChange = useCallback((material, checked) => {
-    setSelectedMaterials(prev => 
-      checked ? [...prev, material] : prev.filter(m => m !== material)
     );
   }, []);
 
@@ -391,21 +261,6 @@ const MarketPlacePage = () => {
     addToCart(product);
     openCart();
   }, [addToCart, openCart]);
-
-  // Handler for try-on functionality
-  const handleTryOnMemo = useCallback((e, product) => {
-    e.stopPropagation();
-    // Store product data in sessionStorage for the virtual try-on page
-    const garmentData = {
-      id: product.id,
-      name: product.name,
-      image: product.image,
-      type: product.category || 'garment'
-    };
-    sessionStorage.setItem('selectedGarment', JSON.stringify(garmentData));
-    // Redirect to virtual try-on page
-    router.push('/virtual-tryon');
-  }, [router]);
 
   // Handler for visual search results
   const handleVisualSearchResults = useCallback((results) => {
@@ -423,31 +278,14 @@ const MarketPlacePage = () => {
     let count = 0;
     if (selectedCategory && selectedCategory !== 'Fashion') count++;
     if (selectedBrands.length > 0) count++;
-    if (selectedSizes.length > 0) count++;
-    if (selectedColors.length > 0) count++;
-    if (selectedMaterials.length > 0) count++;
-    if (priceRange[0] > 0 || priceRange[1] < 5000) count++;
     if (searchTerm) count++;
     return count;
   };
 
-  // Function to clear all filters
-  const clearAllFilters = useCallback(() => {
-    setSelectedCategory('Fashion');
-    setSelectedBrands([]);
-    setSelectedSizes([]);
-    setSelectedColors([]);
-    setSelectedMaterials([]);
-    setPriceRange([0, 5000]);
-    setSearchTerm('');
-    setSortBy('newest');
-    setCurrentPage(1);
-  }, []);
-
   if (loading) return <div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>;
 
     return (
-    <div className="marketplace-container" style={{ paddingLeft: '2%', paddingRight: '2%' }}>
+    <div className="marketplace-container" style={{ paddingLeft: '8%', paddingRight: '8%' }}>
       <PromoSection 
         currentPromoIndex={currentPromoIndex}
         actualSlideIndex={actualSlideIndex}
@@ -456,113 +294,27 @@ const MarketPlacePage = () => {
         onNext={nextPromo}
         onGoTo={goToPromo}
       />
-      <div className="marketplace-body" style={{
-        display: 'flex',
-        gap: '24px',
-        alignItems: 'flex-start'
-      }}>
-        <style jsx>{`
-          @media (max-width: 768px) {
-            .marketplace-body {
-              flex-direction: column !important;
-              gap: 16px !important;
-            }
-            .filter-sidebar-container {
-              width: 100% !important;
-              flex: none !important;
-              position: static !important;
-              max-height: none !important;
-            }
-            .main-content {
-              width: 100% !important;
-            }
-          }
-        `}</style>
+      <div className="marketplace-body">
         <aside
-          className="filter-sidebar-container"
           style={{
-            width: '320px',
-            flex: '0 0 320px',
+            width: '280px',
+            flex: '0 0 280px',
+            alignSelf: 'flex-start',
             position: 'sticky',
             top: '20px',
+            backgroundColor: '#ffffff',
+            borderRadius: '16px',
+            border: '1px solid #f1f5f9',
+            boxShadow: '0 6px 24px rgba(0,0,0,0.06)',
+            padding: '20px',
             height: 'fit-content',
-            maxHeight: 'calc(100vh - 80px)',
-            zIndex: 10,
-            alignSelf: 'flex-start'
+            maxHeight: 'calc(100vh - 40px)',
+            overflowY: 'auto'
           }}
         >
-          <div style={{
-            background: 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
-            borderRadius: '20px',
-            border: '1px solid rgba(226, 232, 240, 0.8)',
-            boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08), 0 8px 16px rgba(0, 0, 0, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
-            padding: '24px 20px 32px 20px',
-            height: '100%',
-            overflowY: 'auto',
-            overflowX: 'visible',
-            backdropFilter: 'blur(10px)',
-            position: 'relative'
-          }}>
-          {/* Filters Title */}
-          <div style={{ marginBottom: '20px' }}>
-            <h2 style={{
-              margin: '0 0 16px 0',
-              fontSize: '22px',
-              fontWeight: 900,
-              textTransform: 'uppercase',
-              letterSpacing: '0.1em',
-              color: '#1f2937',
-              textAlign: 'center',
-              background: 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text'
-            }}>
-              Filters
-            </h2>
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent 0%, #ff4d6d 50%, transparent 100%)', margin: '0 auto', width: '60%' }}></div>
-          </div>
-
           <div style={{ marginBottom: '16px' }}>
             <VisualSearch onResults={handleVisualSearchResults} />
           </div>
-
-          {/* Clear All Filters Button */}
-          {getActiveFilterCount() > 0 && (
-            <div style={{ marginBottom: '24px' }}>
-              <button
-                onClick={clearAllFilters}
-                style={{
-                  width: '100%',
-                  padding: '10px 16px',
-                  backgroundColor: '#f8fafc',
-                  border: '1px solid #ff4d6d',
-                  borderRadius: '10px',
-                  color: '#ff4d6d',
-                  fontSize: '13px',
-                  fontWeight: 600,
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.025em'
-                }}
-                onMouseEnter={(e) => {
-                  e.target.style.backgroundColor = '#ff4d6d';
-                  e.target.style.color = '#ffffff';
-                  e.target.style.transform = 'translateY(-1px)';
-                  e.target.style.boxShadow = '0 4px 12px rgba(255, 77, 109, 0.3)';
-                }}
-                onMouseLeave={(e) => {
-                  e.target.style.backgroundColor = '#f8fafc';
-                  e.target.style.color = '#ff4d6d';
-                  e.target.style.transform = 'translateY(0)';
-                  e.target.style.boxShadow = 'none';
-                }}
-              >
-                Clear All ({getActiveFilterCount()})
-              </button>
-            </div>
-          )}
 
           <div style={{ marginBottom: '24px' }}>
             <h3
@@ -577,7 +329,7 @@ const MarketPlacePage = () => {
                 fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
-                color: '#ff4d6d'
+                color: '#111827'
               }}
             >
               <span>Category</span>
@@ -585,13 +337,10 @@ const MarketPlacePage = () => {
             </h3>
             {isCategoryExpanded && (
               <div style={{
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-                borderRadius: '16px',
-                padding: '16px',
-                border: '1px solid rgba(226, 232, 240, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
-                backdropFilter: 'blur(8px)',
-                margin: '8px 0'
+                backgroundColor: '#ffffff',
+                borderRadius: '12px',
+                padding: '12px',
+                border: '1px solid #f1f5f9'
               }}>
                 <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   {categories.map((cat) => (
@@ -599,10 +348,10 @@ const MarketPlacePage = () => {
                       <button
                         onClick={() => handleCategoryChange(cat)}
                         style={{
-                          background: selectedCategory === cat ? 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)' : '#f8fafc',
+                          background: selectedCategory === cat ? 'linear-gradient(135deg, #111827 0%, #374151 100%)' : '#f8fafc',
                           color: selectedCategory === cat ? '#ffffff' : '#374151',
                           border: '1px solid',
-                          borderColor: selectedCategory === cat ? '#ff4d6d' : '#e5e7eb',
+                          borderColor: selectedCategory === cat ? '#111827' : '#e5e7eb',
                           padding: '10px 12px',
                           borderRadius: '10px',
                           width: '100%',
@@ -634,7 +383,7 @@ const MarketPlacePage = () => {
             )}
           </div>
 
-          <div style={{ marginBottom: '24px' }}>
+          <div>
             <h3
               onClick={() => setIsBrandsExpanded(!isBrandsExpanded)}
               style={{
@@ -647,7 +396,7 @@ const MarketPlacePage = () => {
                 fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.05em',
-                color: '#ff4d6d'
+                color: '#111827'
               }}
             >
               <span>Brands</span>
@@ -655,13 +404,10 @@ const MarketPlacePage = () => {
             </h3>
             {isBrandsExpanded && (
               <div style={{
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-                borderRadius: '16px',
-                padding: '16px',
-                border: '1px solid rgba(226, 232, 240, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
-                backdropFilter: 'blur(8px)',
-                margin: '8px 0'
+                backgroundColor: '#ffffff',
+                borderRadius: '12px',
+                padding: '12px',
+                border: '1px solid #f1f5f9'
               }}>
                 <div style={{ maxHeight: '220px', overflowY: 'auto', paddingRight: '6px' }}>
                   <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -677,9 +423,9 @@ const MarketPlacePage = () => {
                               gap: '10px',
                               padding: '10px 12px',
                               borderRadius: '10px',
-                              background: checked ? 'rgba(255, 77, 109, 0.08)' : '#f8fafc',
+                              background: checked ? 'rgba(17,24,39,0.06)' : '#f8fafc',
                               border: '1px solid',
-                              borderColor: checked ? '#ff4d6d' : '#e5e7eb',
+                              borderColor: checked ? '#111827' : '#e5e7eb',
                               cursor: 'pointer',
                               transition: 'all 0.2s ease'
                             }}
@@ -723,430 +469,36 @@ const MarketPlacePage = () => {
               </div>
             )}
           </div>
-
-          {/* Size Filter */}
-          <div style={{ marginBottom: '24px' }}>
-            <h3
-              onClick={() => setIsSizeExpanded(!isSizeExpanded)}
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                margin: '0 0 12px 0',
-                fontSize: '14px',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: '#ff4d6d'
-              }}
-            >
-              <span>Size</span>
-              {isSizeExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </h3>
-            {isSizeExpanded && (
-              <div style={{
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-                borderRadius: '16px',
-                padding: '16px',
-                border: '1px solid rgba(226, 232, 240, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
-                backdropFilter: 'blur(8px)',
-                margin: '8px 0'
-              }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-                  {sizes.map((size) => {
-                    const checked = selectedSizes.includes(size);
-                    return (
-                      <button
-                        key={size}
-                        onClick={() => handleSizeChange(size, !checked)}
-                        style={{
-                          background: checked ? 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)' : '#f8fafc',
-                          color: checked ? '#ffffff' : '#4b5563',
-                          border: '1px solid',
-                          borderColor: checked ? '#ff4d6d' : '#e5e7eb',
-                          padding: '6px 12px',
-                          borderRadius: '6px',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: checked ? 600 : 500,
-                          transition: 'all 0.2s ease',
-                          minWidth: '36px'
-                        }}
-                      >
-                        {size}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Color Filter */}
-          <div style={{ marginBottom: '24px' }}>
-            <h3
-              onClick={() => setIsColorExpanded(!isColorExpanded)}
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                margin: '0 0 12px 0',
-                fontSize: '14px',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: '#ff4d6d'
-              }}
-            >
-              <span>Color</span>
-              {isColorExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </h3>
-            {isColorExpanded && (
-              <div style={{
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-                borderRadius: '16px',
-                padding: '16px',
-                border: '1px solid rgba(226, 232, 240, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
-                backdropFilter: 'blur(8px)',
-                margin: '8px 0'
-              }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {colors.map((color) => {
-                    const checked = selectedColors.includes(color);
-                    return (
-                      <button
-                        key={color}
-                        onClick={() => handleColorChange(color, !checked)}
-                        style={{
-                          background: checked ? 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)' : '#f8fafc',
-                          color: checked ? '#ffffff' : '#4b5563',
-                          border: '1px solid',
-                          borderColor: checked ? '#ff4d6d' : '#e5e7eb',
-                          padding: '6px 10px',
-                          borderRadius: '16px',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: checked ? 600 : 500,
-                          transition: 'all 0.2s ease'
-                        }}
-                      >
-                        {color}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Material Filter */}
-          <div style={{ marginBottom: '24px' }}>
-            <h3
-              onClick={() => setIsMaterialExpanded(!isMaterialExpanded)}
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                margin: '0 0 12px 0',
-                fontSize: '14px',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: '#ff4d6d'
-              }}
-            >
-              <span>Material</span>
-              {isMaterialExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </h3>
-            {isMaterialExpanded && (
-              <div style={{
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-                borderRadius: '16px',
-                padding: '16px',
-                border: '1px solid rgba(226, 232, 240, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
-                backdropFilter: 'blur(8px)',
-                margin: '8px 0'
-              }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                  {materials.map((material) => {
-                    const checked = selectedMaterials.includes(material);
-                    return (
-                      <button
-                        key={material}
-                        onClick={() => handleMaterialChange(material, !checked)}
-                        style={{
-                          background: checked ? 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)' : '#f8fafc',
-                          color: checked ? '#ffffff' : '#4b5563',
-                          border: '1px solid',
-                          borderColor: checked ? '#ff4d6d' : '#e5e7eb',
-                          padding: '6px 10px',
-                          borderRadius: '16px',
-                          cursor: 'pointer',
-                          fontSize: '12px',
-                          fontWeight: checked ? 600 : 500,
-                          transition: 'all 0.2s ease'
-                        }}
-                      >
-                        {material}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Price Range Filter */}
-          <div>
-            <h3
-              onClick={() => setIsPriceExpanded(!isPriceExpanded)}
-              style={{
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                margin: '0 0 12px 0',
-                fontSize: '14px',
-                fontWeight: 800,
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em',
-                color: '#ff4d6d'
-              }}
-            >
-              <span>Price Range</span>
-              {isPriceExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-            </h3>
-            {isPriceExpanded && (
-              <div style={{
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.95) 100%)',
-                borderRadius: '16px',
-                padding: '16px',
-                border: '1px solid rgba(226, 232, 240, 0.6)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7)',
-                backdropFilter: 'blur(8px)',
-                margin: '8px 0',
-                overflow: 'visible'
-              }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                  <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-                    <input
-                      type="number"
-                      placeholder="Min"
-                      value={priceRange[0]}
-                      onChange={(e) => setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])}
-                      style={{
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '6px',
-                        padding: '4px 6px',
-                        fontSize: '11px',
-                        width: '65px',
-                        maxWidth: '65px',
-                        outline: 'none',
-                        ':focus': {
-                          borderColor: '#ff4d6d'
-                        }
-                      }}
-                    />
-                    <span style={{ color: '#9ca3af', fontSize: '10px', flexShrink: 0 }}>to</span>
-                    <input
-                      type="number"
-                      placeholder="Max"
-                      value={priceRange[1]}
-                      onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value) || 5000])}
-                      style={{
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '6px',
-                        padding: '4px 6px',
-                        fontSize: '11px',
-                        width: '65px',
-                        maxWidth: '65px',
-                        outline: 'none'
-                      }}
-                    />
-                  </div>
-                  <div style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'repeat(2, 1fr)', 
-                    gap: '6px',
-                    width: '100%'
-                  }}>
-                    {[{label: '<₹500', min: 0, max: 500}, {label: '₹500-1K', min: 500, max: 1000}, {label: '₹1K-2K', min: 1000, max: 2000}, {label: '₹2K+', min: 2000, max: 10000}].map((range) => (
-                      <button
-                        key={range.label}
-                        onClick={() => setPriceRange([range.min, range.max])}
-                        style={{
-                          background: priceRange[0] === range.min && priceRange[1] === range.max ? 'linear-gradient(135deg, #ff4d6d 0%, #ff758f 100%)' : '#f8fafc',
-                          color: priceRange[0] === range.min && priceRange[1] === range.max ? '#ffffff' : '#4b5563',
-                          border: '1px solid',
-                          borderColor: priceRange[0] === range.min && priceRange[1] === range.max ? '#ff4d6d' : '#e5e7eb',
-                          padding: '8px 10px',
-                          borderRadius: '8px',
-                          cursor: 'pointer',
-                          fontSize: '11px',
-                          fontWeight: 500,
-                          transition: 'all 0.2s ease',
-                          textAlign: 'center',
-                          whiteSpace: 'nowrap',
-                          overflow: 'visible',
-                          minWidth: 'auto',
-                          width: '100%'
-                        }}
-                      >
-                        {range.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-          </div>
         </aside>
         <main className="main-content">
-          {/* Search Bar and Sort Section */}
-          <div style={{ 
-            marginBottom: '32px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '20px',
-            backgroundColor: '#ffffff',
-            padding: '24px',
-            borderRadius: '16px',
-            border: '1px solid #f1f5f9',
-            boxShadow: '0 4px 16px rgba(0,0,0,0.06)'
-          }}>
-            {/* Search Bar */}
-            <div>
-              <input
-                type="text"
-                placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '16px 20px',
-                  border: '2px solid #e5e7eb',
-                  borderRadius: '16px',
-                  fontSize: '16px',
-                  outline: 'none',
-                  transition: 'all 0.2s ease',
-                  backgroundColor: '#ffffff',
-                  fontWeight: '500'
-                }}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#ff4d6d';
-                  e.target.style.boxShadow = '0 0 0 4px rgba(255, 77, 109, 0.1)';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.boxShadow = 'none';
-                }}
-              />
-            </div>
-            
-            {/* Sort and Results Info */}
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between', 
-              alignItems: 'center',
-              flexWrap: 'wrap',
-              gap: '16px'
-            }}>
-              <p style={{ 
-                margin: 0, 
-                fontSize: '14px', 
-                color: '#6b7280',
-                fontWeight: '500'
-              }}>Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} results</p>
-              <div style={{
-                position: 'relative',
-                minWidth: '180px'
-              }}>
-                <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger style={{
-                    width: '180px',
-                    height: '44px',
-                    backgroundColor: '#ffffff',
-                    border: '2px solid #e5e7eb',
-                    borderRadius: '12px',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    color: '#374151',
-                    padding: '0 16px',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                  }}>
-                    <SelectValue placeholder="Sort by" />
-                  </SelectTrigger>
-                  <SelectContent style={{
-                    backgroundColor: '#ffffff',
-                    border: '1px solid #e5e7eb',
-                    borderRadius: '12px',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
-                    padding: '8px',
-                    minWidth: '180px',
-                    zIndex: 50
-                  }}>
-                    <SelectItem value="all" style={{
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#374151',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      margin: '2px 0'
-                    }}>All</SelectItem>
-                    <SelectItem value="newest" style={{
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#374151',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      margin: '2px 0'
-                    }}>Newest First</SelectItem>
-                    <SelectItem value="price-low" style={{
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#374151',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      margin: '2px 0'
-                    }}>Lowest First</SelectItem>
-                    <SelectItem value="price-high" style={{
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      fontSize: '14px',
-                      fontWeight: '500',
-                      color: '#374151',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease',
-                      margin: '2px 0'
-                    }}>Highest First</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+          <div className="results-header">
+            <p className="text-sm text-gray-600">Showing {startIndex + 1}-{Math.min(endIndex, filteredProducts.length)} of {filteredProducts.length} results</p>
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" className="lg:hidden filter-toggle-btn" onClick={() => setIsFilterSidebarOpen(true)}>
+                <Filter className="w-4 h-4 mr-2" />
+                Filters
+                {getActiveFilterCount() > 0 && (
+                  <span className="filter-count-badge">
+                    {getActiveFilterCount()}
+                  </span>
+                )}
+              </Button>
+              <Select value={sortBy} onValueChange={setSortBy}>
+                <SelectTrigger className="w-[160px] bg-white border-gray-300 hidden lg:flex">
+                  <SelectValue placeholder="Sort by" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="newest">Newest</SelectItem>
+                  <SelectItem value="price-low">Price: Low to High</SelectItem>
+                  <SelectItem value="price-high">Price: High to Low</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
           <ProductGrid 
             products={currentProducts}
             onViewProduct={handleViewProductMemo}
             onAddToCart={handleAddToCartMemo}
-            onTryOn={handleTryOnMemo}
           />
           
           {/* Pagination Controls */}
